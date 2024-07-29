@@ -2,7 +2,7 @@ import SwiftUI
 import CoreData
 import UserNotifications
 
-let apiurl = "http://192.168.1.234:8000"
+let apiurl = "http://192.168.1.80:8000"
 
 
 // Thank you Claude.
