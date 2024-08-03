@@ -21,6 +21,7 @@
 		CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D19822C27973800FDC979 /* NotificationModel.swift */; };
 		CD9CC8662C1AA7FD00E65A86 /* UserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8652C1AA7FA00E65A86 /* UserScreen.swift */; };
 		CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */; };
+		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
 		CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC9428C2C3B67E500EDF62C /* Costello.swift */; };
 		CDC942932C3B69BD00EDF62C /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC942922C3B69BD00EDF62C /* Shaders.metal */; };
@@ -50,6 +51,35 @@
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF9D9AA2C3084C4001CEC02 /* AnimatedGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		CD9F27412C5C3B100094C7E5 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.ci.metal";
+			fileType = pattern.proxy;
+			inputFiles = (
+			);
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).air",
+			);
+			script = "xcrun metal -c -fcikernel  \"${INPUT_FILE_PATH}\" -o \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+		};
+		CD9F27422C5C3B770094C7E5 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.ci.air";
+			fileType = pattern.proxy;
+			inputFiles = (
+			);
+			isEditable = 1;
+			outputFiles = (
+				"$(METAL_LIBRARY_OUTPUT_DIR)/$(INPUT_FILE_BASE).metallib",
+			);
+			script = "xcrun metallib -cikernel \"${INPUT_FILE_PATH}\" -o \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
 		CDDED7482C194C8600958B39 /* PBXContainerItemProxy */ = {
@@ -85,6 +115,7 @@
 		CD8D19842C29C5FF00FDC979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CD9CC8652C1AA7FA00E65A86 /* UserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScreen.swift; sourceTree = "<group>"; };
 		CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
+		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
 		CDC9428C2C3B67E500EDF62C /* Costello.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Costello.swift; sourceTree = "<group>"; };
 		CDC942922C3B69BD00EDF62C /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
@@ -198,6 +229,7 @@
 				CDC9428C2C3B67E500EDF62C /* Costello.swift */,
 				CDC942922C3B69BD00EDF62C /* Shaders.metal */,
 				CD32B2602C56D3440077F959 /* IridescenceShaderTypes.h */,
+				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -357,6 +389,8 @@
 				CDDED7302C194C8400958B39 /* Resources */,
 			);
 			buildRules = (
+				CD9F27422C5C3B770094C7E5 /* PBXBuildRule */,
+				CD9F27412C5C3B100094C7E5 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -493,6 +527,7 @@
 				CD3936E42C34B7FE00AE63DF /* SoundScreen.swift in Sources */,
 				CDE7729D2C1EB3C200107829 /* ShapeMorphing.swift in Sources */,
 				CDE7729E2C1EB3C200107829 /* AnimationProgress.swift in Sources */,
+				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */,
 				CDE7729F2C1EB3C200107829 /* NavView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,
