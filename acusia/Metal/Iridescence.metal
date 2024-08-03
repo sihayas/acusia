@@ -11,25 +11,10 @@ using namespace metal;
 
 #include <SceneKit/scn_metal>
 
-struct VertexInput {
-    float3 position [[attribute(SCNVertexSemanticPosition)]];
-    float3 normal [[attribute(SCNVertexSemanticNormal)]];
-    float2 textureCoordinate [[attribute(SCNVertexSemanticTexcoord0)]];
-    float3 tangent [[attribute(SCNVertexSemanticTangent)]];
-};
-
-
 struct NodeBuffer {
     float4x4 modelViewProjectionTransform;
     float4x4 modelViewTransform;
     float3x3 normalTransform;
-};
-
-struct VertexOutput {
-    float4 position [[position]];
-    float3 worldPosition;
-    float3 worldNormal;
-    float2 textureCoordinate;
 };
 
 struct FragmentUniforms {
@@ -44,14 +29,36 @@ struct FragmentUniforms {
 
 constexpr sampler textureSampler(filter::linear, address::repeat);
 
+struct VertexInput {
+    float3 position [[attribute(SCNVertexSemanticPosition)]];
+    float3 normal [[attribute(SCNVertexSemanticNormal)]];
+    float2 textureCoordinate [[attribute(SCNVertexSemanticTexcoord0)]];
+    float4 tangent [[attribute(SCNVertexSemanticTangent)]]; // Now expecting a float4 for handedness
+};
+
+struct VertexOutput {
+    float4 position [[position]];
+    float3 worldPosition;
+    float3 worldNormal;
+    float2 textureCoordinate;
+    float3 worldTangent;
+    float3 worldBitangent;
+};
+
 vertex VertexOutput vertexShader(VertexInput in [[stage_in]],
                                  constant NodeBuffer& scn_node [[buffer(1)]]) {
     VertexOutput out;
 
     out.position = scn_node.modelViewProjectionTransform * float4(in.position, 1.0);
     out.worldPosition = (scn_node.modelViewTransform * float4(in.position, 1.0)).xyz;
-    out.worldNormal = scn_node.normalTransform * in.normal;
+    out.worldNormal = normalize(scn_node.normalTransform * in.normal);
     out.textureCoordinate = in.textureCoordinate;
+    
+    float3 worldTangent = normalize(scn_node.normalTransform * in.tangent.xyz);
+    float3 worldBitangent = normalize(cross(out.worldNormal, worldTangent) * in.tangent.w); // Use the handedness to determine bitangent direction
+    out.worldTangent = worldTangent;
+    out.worldBitangent = worldBitangent;
+
     return out;
 }
 
@@ -161,45 +168,41 @@ float3 iridescenceFresnel(float outsideIor, float iridescenceIor, float3 baseF0,
 
 // Fragment shader
 fragment float4 fragmentShader(VertexOutput in [[stage_in]],
-                               constant FragmentUniforms& uniforms [[buffer(0)]]) {
-    // Normalize vectors
-    float3 N = normalize(in.worldNormal);
+                               constant FragmentUniforms& uniforms [[buffer(0)]],
+                               texture2d<float> normalMap [[texture(0)]]) {
+    // Sample normal map
+    float3 normalColor = normalMap.sample(textureSampler, in.textureCoordinate).xyz;
+    normalColor = normalColor * 2.0 - 1.0; // Transform from [0,1] to [-1,1]
+
+    // Construct TBN matrix from individual vectors
+    float3x3 tbnMatrix = float3x3(in.worldTangent, in.worldBitangent, in.worldNormal);
+    
+    // Transform normal from tangent space to world space
+    float3 N = normalize(tbnMatrix * normalColor);
+
+    // Existing code to calculate lighting
     float3 V = normalize(uniforms.cameraPosition - in.worldPosition);
     float3 L = normalize(float3(1.0, 1.0, 1.0)); // Directional light
     float3 H = normalize(V + L);
-    
-    // Compute dot products
+
     float NdotV = max(dot(N, V), 0.0);
     float NdotL = max(dot(N, L), 0.0);
     float NdotH = max(dot(N, H), 0.0);
     float HdotV = max(dot(H, V), 0.0);
-    
-    // Base metal properties
+
     float3 F0 = uniforms.baseColor;
-    
-    // Iridescence properties
     float iridescence = uniforms.iridescenceFactor;
     float thickness = mix(uniforms.iridescenceThicknessMin, uniforms.iridescenceThicknessMax, iridescence);
-    
-    // Calculate iridescent Fresnel
     float3 F_iridescence = iridescenceFresnel(1.0, uniforms.iridescenceIor, F0, thickness, NdotV);
-    
-    // Mix iridescence with base metal Fresnel
     float3 F = mix(fresnelSchlick(HdotV, F0), F_iridescence, iridescence);
-    
-    // Specular BRDF
+
     float D = distributionGGX(NdotH, uniforms.roughness);
     float G = geometrySmith(NdotV, NdotL, uniforms.roughness);
     float3 specular = (D * F * G) / (4.0 * NdotV * NdotL + 0.0001);
-    
-    // Final color
+
     float3 color = specular * NdotL;
-    
-    // Tone mapping (simple Reinhard operator)
     color = color / (color + 1.0);
-    
-    // Gamma correction
     color = pow(color, 1.0 / 2.2);
-    
+
     return float4(color, 1.0);
 }

@@ -221,12 +221,11 @@ extension SoundScreen {
 
     private func createIridescentMaterial(normalMapCGImage: CGImage) -> SCNMaterial {
         let material = SCNMaterial()
-        
-        let textureLoader = MTKTextureLoader(device: MTLCreateSystemDefaultDevice()!)
-        let options: [MTKTextureLoader.Option: Any] = [.SRGB: false]
-        let normalMapTexture = try! textureLoader.newTexture(cgImage: normalMapCGImage, options: options)
 
-        // Other material properties
+//        let textureLoader = MTKTextureLoader(device: MTLCreateSystemDefaultDevice()!)
+//        let options: [MTKTextureLoader.Option: Any] = [.SRGB: false]
+//        let normalMapTexture = try! textureLoader.newTexture(cgImage: normalMapCGImage, options: options)
+
         guard let device = MTLCreateSystemDefaultDevice(),
               let library = device.makeDefaultLibrary(),
               let vertexFunction = library.makeFunction(name: "vertexShader"),
@@ -252,8 +251,10 @@ extension SoundScreen {
         uniformBuffer.contents().copyMemory(from: &uniforms, byteCount: MemoryLayout<FragmentUniforms>.stride)
         
         material.setValue(uniformBuffer, forKey: "uniforms")
-        material.setValue(normalMapTexture, forKey: "normalMap")
         
+        let imageProperty = SCNMaterialProperty(contents: normalMapCGImage)
+        material.setValue(imageProperty, forKey: "normalMap")
+
         return material
     }
     
