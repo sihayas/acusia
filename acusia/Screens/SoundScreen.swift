@@ -6,6 +6,7 @@ import SpriteKit
 import CoreImage
 
 struct FragmentUniforms {
+    var time: Float
     var cameraPosition: SIMD3<Float>
     var baseColor: SIMD3<Float>
     var roughness: Float
@@ -42,16 +43,20 @@ struct SoundScreen: View {
     @State private var isReversing = true
     
     @State private var iridescenceFactor: Float = 1.0
-    @State private var iridescenceIor: Float = 1.35
+    @State private var iridescenceIor: Float = 2.50
     @State private var iridescenceThicknessMin: Float = 100.0
     @State private var iridescenceThicknessMax: Float = 400.0
+    @State private var time: Float = 0
+    
+    let timer = Timer.publish(every: 1/60, on: .main, in: .common).autoconnect()
     
     var body: some View {
         ZStack {
             if let scene = scene {
                 SceneView(
                     scene: scene,
-                    options: [.allowsCameraControl, .autoenablesDefaultLighting]
+                    options: [.allowsCameraControl, .autoenablesDefaultLighting],
+                    antialiasingMode: .multisampling4X
                 )
                 .ignoresSafeArea()
             } else {
@@ -61,19 +66,92 @@ struct SoundScreen: View {
             
             VStack {
                 Spacer()
+                
+                
+                VStack {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Iridescence Factor")
+                            HStack {
+                                Text(String(format: "%.2f", iridescenceFactor))
+                                Slider(value: $iridescenceFactor, in: 0.0...1.0)
+                                    .onChange(of: iridescenceFactor) { _ in updateMaterial() }
+                            }
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.7))
+                        .cornerRadius(10)
+                
+                        VStack(alignment: .leading) {
+                            Text("Iridescence IOR")
+                            HStack {
+                                Text(String(format: "%.2f", iridescenceIor))
+                                Slider(value: $iridescenceIor, in: 1.0...2.5)
+                                    .onChange(of: iridescenceIor) { _ in updateMaterial() }
+                            }
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.7))
+                        .cornerRadius(10)
+                    }
+                
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Thickness Min")
+                            HStack {
+                                Text(String(format: "%.1f", iridescenceThicknessMin))
+                                Slider(value: $iridescenceThicknessMin, in: 0.0...1000.0)
+                                    .onChange(of: iridescenceThicknessMin) { _ in updateMaterial() }
+                            }
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.7))
+                        .cornerRadius(10)
+                
+                        VStack(alignment: .leading) {
+                            Text("Thickness Max")
+                            HStack {
+                                Text(String(format: "%.1f", iridescenceThicknessMax))
+                                Slider(value: $iridescenceThicknessMax, in: 0.0...1000.0)
+                                    .onChange(of: iridescenceThicknessMax) { _ in updateMaterial() }
+                            }
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.7))
+                        .cornerRadius(10)
+                    }
+                }
+                .background(Color.clear)
 
-                Button {
-                    self.scene = createScene()
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
-                        .background(Color.black.opacity(0.5))
-                        .clipShape(Circle())
+
+                HStack {
+                    Button {
+                        self.scene = createScene()
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
+                    
+                    Button {
+                        flipEllipsoid()
+                    } label: {
+                        Image(systemName: "arrow.left.and.right")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
                 }
             }
         }
         .onAppear(perform: setupScene)
+        .onReceive(timer) { _ in
+            time += 1/60
+            updateMaterial()
+        }
     }
     
     private func setupScene() {
@@ -85,6 +163,7 @@ struct SoundScreen: View {
         
         let uniformBuffer = device.makeBuffer(length: MemoryLayout<FragmentUniforms>.stride, options: [])!
         var uniforms = FragmentUniforms(
+            time: time,
             cameraPosition: SIMD3<Float>(0, 0, 0),
             baseColor: SIMD3<Float>(0.0, 0.0, 0.0),
             roughness: 0.1,
@@ -97,6 +176,12 @@ struct SoundScreen: View {
         
         ellipsoidNode?.geometry?.firstMaterial?.setValue(uniformBuffer, forKey: "uniforms")
     }
+    
+    private func flipEllipsoid() {
+        guard let ellipsoidNode = ellipsoidNode else { return }
+        let flipAction = SCNAction.rotateBy(x: 0, y: CGFloat.pi, z: 0, duration: 0.5)
+        ellipsoidNode.runAction(flipAction)
+    }
 }
 
 // MARK: - Scene Setup
@@ -106,8 +191,9 @@ extension SoundScreen {
         scene.background.contents = UIColor.black
 
         let discDiameter: CGFloat = 4
-        let discThickness: CGFloat = 0.25
+        let discThickness: CGFloat = 0.4
 
+        // Create disc mesh
         let allocator = MTKMeshBufferAllocator(device: MTLCreateSystemDefaultDevice()!)
         let disc = MDLMesh.newEllipsoid(
             withRadii: vector_float3(Float(discDiameter / 2), Float(discDiameter / 2), Float(discThickness)),
@@ -118,20 +204,16 @@ extension SoundScreen {
             hemisphere: false,
             allocator: allocator
         )
+        // Needed for normal map with shader.
         disc.addTangentBasis(forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
                              tangentAttributeNamed: MDLVertexAttributeTangent,
                              bitangentAttributeNamed: MDLVertexAttributeBitangent)
-        
-        print(disc.vertexDescriptor)
 
         let discGeometry = SCNGeometry(mdlMesh: disc)
-        
-        guard let ciCirclesImage = createCICirclesImage()
-        else {
-            fatalError("Failed to create normal map CIImage")
+        guard let normalMap = createNormalMap(size: CGSize(width: 1000, height: 500)) else {
+            fatalError("Failed to create text image")
         }
-
-        let material = createIridescentMaterial(normalMapCGImage: ciCirclesImage)
+        let material = createIridescence(normalMap: normalMap)
         discGeometry.materials = [material]
 
         let ellipsoidNode = SCNNode(geometry: discGeometry)
@@ -158,73 +240,8 @@ extension SoundScreen {
         return scene
     }
 
-    private func createCICirclesImage() -> CGImage? {
-        guard let radialFilter = CIFilter(name: "CIGaussianGradient", parameters: [
-            kCIInputCenterKey: CIVector(x: 50, y: 50),
-            kCIInputRadiusKey: 45,
-            "inputColor0": CIColor(red: 1, green: 1, blue: 1),
-            "inputColor1": CIColor(red: 0, green: 0, blue: 0)
-        ]) else {
-            print("Failed to create radial filter")
-            return nil
-        }
-        
-        guard let initialImage = radialFilter.outputImage?
-            .cropped(to: CGRect(x: 0, y: 0, width: 100, height: 100))
-            .applyingFilter("CIAffineTile", parameters: [:])
-            .cropped(to: CGRect(x: 0, y: 0, width: 1000, height: 500)) else {
-            print("Failed to create initial CIImage")
-            return nil
-        }
-        
-        // Apply custom NormalMapFilter
-        let normalMapFilter = NormalMapFilter()
-        normalMapFilter.inputImage = initialImage
-        guard let normalMapOutput = normalMapFilter.outputImage else {
-            print("Failed to apply NormalMapFilter")
-            return nil
-        }
-        
-        guard let finalImage = CIFilter(name: "CIColorControls", parameters: [
-            kCIInputImageKey: normalMapOutput,
-            "inputContrast": 2.5
-        ])?.outputImage else {
-            print("Failed to apply contrast filter")
-            return nil
-        }
-        
-        let context = CIContext()
-        guard let cgNormalMap = context.createCGImage(finalImage, from: finalImage.extent) else {
-            print("Failed to create CGImage from CIImage")
-            return nil
-        }
-        
-        // Save the image to the file system
-        let uiImage = UIImage(cgImage: cgNormalMap)
-        if let data = uiImage.pngData() {
-            let fileManager = FileManager.default
-            if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-                let fileURL = documentsDirectory.appendingPathComponent("filteredImage.png")
-                do {
-                    try data.write(to: fileURL)
-                    print("Image saved successfully to \(fileURL.path)")
-                } catch {
-                    print("Failed to save image: \(error)")
-                }
-            }
-        } else {
-            print("Failed to convert UIImage to PNG data")
-        }
-        
-        return cgNormalMap
-    }
-
-    private func createIridescentMaterial(normalMapCGImage: CGImage) -> SCNMaterial {
+    private func createIridescence(normalMap: CGImage) -> SCNMaterial {
         let material = SCNMaterial()
-
-//        let textureLoader = MTKTextureLoader(device: MTLCreateSystemDefaultDevice()!)
-//        let options: [MTKTextureLoader.Option: Any] = [.SRGB: false]
-//        let normalMapTexture = try! textureLoader.newTexture(cgImage: normalMapCGImage, options: options)
 
         guard let device = MTLCreateSystemDefaultDevice(),
               let library = device.makeDefaultLibrary(),
@@ -238,8 +255,10 @@ extension SoundScreen {
         program.fragmentFunctionName = "fragmentShader"
         material.program = program
 
+        // Set up parameters
         let uniformBuffer = device.makeBuffer(length: MemoryLayout<FragmentUniforms>.stride, options: [])!
         var uniforms = FragmentUniforms(
+            time: time,
             cameraPosition: SIMD3<Float>(0, 0, 0),
             baseColor: SIMD3<Float>(1.0, 1.0, 1.0),
             roughness: 0.1,
@@ -249,46 +268,76 @@ extension SoundScreen {
             iridescenceThicknessMax: iridescenceThicknessMax
         )
         uniformBuffer.contents().copyMemory(from: &uniforms, byteCount: MemoryLayout<FragmentUniforms>.stride)
-        
+
+        // Create time buffer
+        let timeBuffer = device.makeBuffer(length: MemoryLayout<Float>.size, options: [])!
+
+        // Set up material
         material.setValue(uniformBuffer, forKey: "uniforms")
-        
-        let imageProperty = SCNMaterialProperty(contents: normalMapCGImage)
-        material.setValue(imageProperty, forKey: "normalMap")
+        material.setValue(timeBuffer, forKey: "timeBuffer")
+        let normalMapProperty = SCNMaterialProperty(contents: normalMap)
+        material.setValue(normalMapProperty, forKey: "normalMap")
 
         return material
     }
     
-    //    func createTextImage(text: String, size: CGSize, attributes: [NSAttributedString.Key: Any]) -> UIImage {
-    //        let image = UIGraphicsImageRenderer(size: size).image { context in
-    //            // Set black background
-    //            UIColor.black.setFill()
-    //            context.fill(CGRect(origin: .zero, size: size))
-    //
-    //            // Draw the white text on the black background
-    //            let whiteTextAttributes: [NSAttributedString.Key: Any] = [
-    //                .font: attributes[.font] ?? UIFont.systemFont(ofSize: 15),
-    //                .foregroundColor: UIColor.white
-    //            ]
-    //            text.draw(in: CGRect(origin: .zero, size: size), withAttributes: whiteTextAttributes)
-    //        }
-    //
-    //        let grayscaleImage = image.convertToGrayscale()
-    //
-    //        // Save the grayscale image to the file system for debugging
-    //        if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-    //            let fileURL = documentsDirectory.appendingPathComponent("grayscaleTextImage.png")
-    //            if let data = grayscaleImage.pngData() {
-    //                try? data.write(to: fileURL)
-    //                print("Grayscale text image saved to \(fileURL.path)")
-    //            }
-    //        }
-    //
-    //        return grayscaleImage
-    //    }
+    private func createNormalMap(size: CGSize) -> CGImage? {
+        let offsetToFront: CGFloat = 250.0
+        
+        let image = UIGraphicsImageRenderer(size: size).image { context in
+            UIColor.black.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+
+            let secondText = "LYRA"
+            let secondTextAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 15, weight: .thin),
+                .foregroundColor: UIColor.white,
+                .kern: 3.0
+            ]
+
+            let secondTextSize = (secondText as NSString).size(withAttributes: secondTextAttributes)
+            
+            // Calculate the starting Y position to center the text
+            let startingY = (size.height - secondTextSize.height) / 2
+
+            let secondTextRect = CGRect(
+                x: (size.width - secondTextSize.width) / 2 + offsetToFront,
+                y: startingY,
+                width: secondTextSize.width,
+                height: secondTextSize.height
+            )
+
+            context.cgContext.translateBy(x: size.width, y: size.height)
+            context.cgContext.scaleBy(x: -1.0, y: -1.0)
+
+            secondText.draw(in: secondTextRect, withAttributes: secondTextAttributes)
+        }
+
+        guard let ciImage = CIImage(image: image),
+              let blurredImage = CIFilter(name: "CIGaussianBlur", parameters: [
+                kCIInputImageKey: ciImage,
+                kCIInputRadiusKey: 0.0
+              ])?.outputImage?.cropped(to: ciImage.extent),
+              let invertedImage = CIFilter(name: "CIColorInvert", parameters: [
+                kCIInputImageKey: blurredImage
+              ])?.outputImage?.cropped(to: blurredImage.extent) else {
+            print("Failed to process image")
+            return nil
+        }
+
+        let normalMapFilter = NormalMapFilter()
+        normalMapFilter.inputImage = invertedImage
+
+        guard let normalMapOutput = normalMapFilter.outputImage,
+              let cgImage = CIContext().createCGImage(normalMapOutput, from: normalMapOutput.extent) else {
+            print("Failed to process image")
+            return nil
+        }
+
+        return cgImage
+    }
 
 }
-
-
 
 // MARK: - Animation Helpers
 extension SoundScreen {
@@ -352,58 +401,3 @@ extension UIImage {
     }
 }
 
-//
-//VStack {
-//    HStack {
-//        VStack(alignment: .leading) {
-//            Text("Iridescence Factor")
-//            HStack {
-//                Text(String(format: "%.2f", iridescenceFactor))
-//                Slider(value: $iridescenceFactor, in: 0.0...1.0)
-//                    .onChange(of: iridescenceFactor) { _ in updateMaterial() }
-//            }
-//        }
-//        .padding()
-//        .background(Color.gray.opacity(0.7))
-//        .cornerRadius(10)
-//        
-//        VStack(alignment: .leading) {
-//            Text("Iridescence IOR")
-//            HStack {
-//                Text(String(format: "%.2f", iridescenceIor))
-//                Slider(value: $iridescenceIor, in: 1.0...2.5)
-//                    .onChange(of: iridescenceIor) { _ in updateMaterial() }
-//            }
-//        }
-//        .padding()
-//        .background(Color.gray.opacity(0.7))
-//        .cornerRadius(10)
-//    }
-//    
-//    HStack {
-//        VStack(alignment: .leading) {
-//            Text("Thickness Min")
-//            HStack {
-//                Text(String(format: "%.1f", iridescenceThicknessMin))
-//                Slider(value: $iridescenceThicknessMin, in: 0.0...1000.0)
-//                    .onChange(of: iridescenceThicknessMin) { _ in updateMaterial() }
-//            }
-//        }
-//        .padding()
-//        .background(Color.gray.opacity(0.7))
-//        .cornerRadius(10)
-//        
-//        VStack(alignment: .leading) {
-//            Text("Thickness Max")
-//            HStack {
-//                Text(String(format: "%.1f", iridescenceThicknessMax))
-//                Slider(value: $iridescenceThicknessMax, in: 0.0...1000.0)
-//                    .onChange(of: iridescenceThicknessMax) { _ in updateMaterial() }
-//            }
-//        }
-//        .padding()
-//        .background(Color.gray.opacity(0.7))
-//        .cornerRadius(10)
-//    }
-//}
-//.background(Color.clear)

@@ -18,6 +18,7 @@ struct NodeBuffer {
 };
 
 struct FragmentUniforms {
+    float time;
     float3 cameraPosition;
     float3 baseColor;
     float roughness;
@@ -33,7 +34,7 @@ struct VertexInput {
     float3 position [[attribute(SCNVertexSemanticPosition)]];
     float3 normal [[attribute(SCNVertexSemanticNormal)]];
     float2 textureCoordinate [[attribute(SCNVertexSemanticTexcoord0)]];
-    float4 tangent [[attribute(SCNVertexSemanticTangent)]]; // Now expecting a float4 for handedness
+    float4 tangent [[attribute(SCNVertexSemanticTangent)]];
 };
 
 struct VertexOutput {
@@ -46,7 +47,8 @@ struct VertexOutput {
 };
 
 vertex VertexOutput vertexShader(VertexInput in [[stage_in]],
-                                 constant NodeBuffer& scn_node [[buffer(1)]]) {
+                                 constant NodeBuffer& scn_node [[buffer(1)]],
+                                 constant FragmentUniforms &uniforms [[buffer(2)]]) {
     VertexOutput out;
 
     out.position = scn_node.modelViewProjectionTransform * float4(in.position, 1.0);
@@ -55,7 +57,7 @@ vertex VertexOutput vertexShader(VertexInput in [[stage_in]],
     out.textureCoordinate = in.textureCoordinate;
     
     float3 worldTangent = normalize(scn_node.normalTransform * in.tangent.xyz);
-    float3 worldBitangent = normalize(cross(out.worldNormal, worldTangent) * in.tangent.w); // Use the handedness to determine bitangent direction
+    float3 worldBitangent = normalize(cross(out.worldNormal, worldTangent) * in.tangent.w);
     out.worldTangent = worldTangent;
     out.worldBitangent = worldBitangent;
 
@@ -131,7 +133,6 @@ float3 iridescenceFresnel(float outsideIor, float iridescenceIor, float3 baseF0,
     // Reflectance at interface between air and thin film
     float R0 = IorToFresnel0(iridescenceIor, outsideIor);
     float R12 = fresnelSchlick(cosTheta1, float3(R0)).x;
-    float R21 = R12;
     float T121 = 1.0 - R12;
     float phi12 = (iridescenceIor < outsideIor) ? M_PI_F : 0.0;
     float phi21 = M_PI_F - phi12;
@@ -166,7 +167,7 @@ float3 iridescenceFresnel(float outsideIor, float iridescenceIor, float3 baseF0,
     return max(I, float3(0.0));
 }
 
-// Fragment shader
+
 fragment float4 fragmentShader(VertexOutput in [[stage_in]],
                                constant FragmentUniforms& uniforms [[buffer(0)]],
                                texture2d<float> normalMap [[texture(0)]]) {
@@ -206,3 +207,54 @@ fragment float4 fragmentShader(VertexOutput in [[stage_in]],
 
     return float4(color, 1.0);
 }
+
+//    fragment float4 fragmentShader(VertexOutput in [[stage_in]],
+//                               constant FragmentUniforms& uniforms [[buffer(0)]],
+//                               texture2d<float> normalMap [[texture(0)]],
+//                               texture2d<float> environmentMap [[texture(1)]]) {
+//    // Sample normal map
+//    float3 normalColor = normalMap.sample(textureSampler, in.textureCoordinate).xyz;
+//    normalColor = normalColor * 2.0 - 1.0; // Transform from [0,1] to [-1,1]
+//
+//    // Construct TBN matrix from individual vectors
+//    float3x3 tbnMatrix = float3x3(in.worldTangent, in.worldBitangent, in.worldNormal);
+//
+//    // Transform normal from tangent space to world space
+//    float3 N = normalize(tbnMatrix * normalColor);
+//
+//    // Existing code to calculate lighting
+//    float3 V = normalize(uniforms.cameraPosition - in.worldPosition);
+//    float3 L = normalize(float3(1.0, 1.0, 1.0)); // Directional light
+//    float3 H = normalize(V + L);
+//
+//    float NdotV = max(dot(N, V), 0.0);
+//    float NdotL = max(dot(N, L), 0.0);
+//    float NdotH = max(dot(N, H), 0.0);
+//    float HdotV = max(dot(H, V), 0.0);
+//
+//    float3 F0 = uniforms.baseColor;
+//    float iridescence = uniforms.iridescenceFactor;
+//    float thickness = mix(uniforms.iridescenceThicknessMin, uniforms.iridescenceThicknessMax, iridescence);
+//    float3 F_iridescence = iridescenceFresnel(1.0, uniforms.iridescenceIor, F0, thickness, NdotV);
+//    float3 F = mix(fresnelSchlick(HdotV, F0), F_iridescence, iridescence);
+//
+//    float D = distributionGGX(NdotH, uniforms.roughness);
+//    float G = geometrySmith(NdotV, NdotL, uniforms.roughness);
+//    float3 specular = (D * F * G) / (4.0 * NdotV * NdotL + 0.0001);
+//
+//    // Sample the environment map (2D texture)
+//    float3 reflectDir = reflect(-V, N);
+//
+//    // Convert reflectDir to UV coordinates for 2D texture sampling
+//    float2 uv = float2(atan2(reflectDir.z, reflectDir.x) / (2.0 * M_PI_F) + 0.5, acos(reflectDir.y) / M_PI_F);
+//
+//    float3 envColor = environmentMap.sample(textureSampler, uv).rgb;
+//
+//    // Combine environment reflection with specular highlights
+//    float3 color = specular + envColor * F;
+//
+//    color = color / (color + 1.0);
+//    color = pow(color, 1.0 / 2.2);
+//
+//    return float4(color, 1.0);
+//}
