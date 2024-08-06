@@ -164,7 +164,7 @@ struct ASoundCard: View {
                         .multilineTextAlignment(.leading)
                         .padding(.bottom, 4)
                     NavigationLink {
-                        SoundScreen(sound: entry.sound.appleData!)
+                        SoundScreen()
                             .navigationTransition(.zoom(sourceID: entry.sound.id, in: namespace))
                     } label: {
                         AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in

@@ -1,3 +1,5 @@
+// Create a normal map out of a 2D B&W image where the black represents height and white represents baseline.
+
 #include <metal_stdlib>
 using namespace metal;
 #include <CoreImage/CoreImage.h>

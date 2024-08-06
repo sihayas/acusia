@@ -162,7 +162,7 @@ struct ContentView: View {
                     .navigationDestination(for: SearchResultItem.self) { item in
                         switch item {
                         case .sound(let sound):
-                            SoundScreen(sound: sound)
+                            SoundScreen()
                         case .user(let user):
                             UserScreen(initialUserData: nil, userResult: user)
                         }

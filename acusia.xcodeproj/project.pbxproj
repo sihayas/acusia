@@ -23,8 +23,9 @@
 		CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
+		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
 		CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC9428C2C3B67E500EDF62C /* Costello.swift */; };
-		CDC942932C3B69BD00EDF62C /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC942922C3B69BD00EDF62C /* Shaders.metal */; };
+		CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC942922C3B69BD00EDF62C /* Costello.metal */; };
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
 		CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */; };
@@ -104,7 +105,6 @@
 		CD01D7DB2C42580C00FD0E07 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactCard.swift; sourceTree = "<group>"; };
 		CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
-		CD32B2602C56D3440077F959 /* IridescenceShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IridescenceShaderTypes.h; sourceTree = "<group>"; };
 		CD3936E32C34B7FC00AE63DF /* SoundScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundScreen.swift; sourceTree = "<group>"; };
 		CD4F76F12C437CA000B56C31 /* FormArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormArtworkView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescence.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescence.metal; sourceTree = "<group>"; };
@@ -117,8 +117,9 @@
 		CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
+		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CDC9428C2C3B67E500EDF62C /* Costello.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Costello.swift; sourceTree = "<group>"; };
-		CDC942922C3B69BD00EDF62C /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		CDC942922C3B69BD00EDF62C /* Costello.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Costello.metal; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -225,13 +226,37 @@
 		CD13D5252C3FAD84007E3120 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				CD69761E2C51B9EA003E4481 /* Iridescence.metal */,
-				CDC9428C2C3B67E500EDF62C /* Costello.swift */,
-				CDC942922C3B69BD00EDF62C /* Shaders.metal */,
-				CD32B2602C56D3440077F959 /* IridescenceShaderTypes.h */,
-				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
+				CDC37D492C606C16002D2709 /* IridescentHolo */,
+				CDC37D482C606BF3002D2709 /* Costello */,
+				CDC37D442C6067FA002D2709 /* IridescentLight */,
 			);
 			path = Metal;
+			sourceTree = "<group>";
+		};
+		CDC37D442C6067FA002D2709 /* IridescentLight */ = {
+			isa = PBXGroup;
+			children = (
+				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
+				CD69761E2C51B9EA003E4481 /* Iridescence.metal */,
+			);
+			path = IridescentLight;
+			sourceTree = "<group>";
+		};
+		CDC37D482C606BF3002D2709 /* Costello */ = {
+			isa = PBXGroup;
+			children = (
+				CDC942922C3B69BD00EDF62C /* Costello.metal */,
+				CDC9428C2C3B67E500EDF62C /* Costello.swift */,
+			);
+			path = Costello;
+			sourceTree = "<group>";
+		};
+		CDC37D492C606C16002D2709 /* IridescentHolo */ = {
+			isa = PBXGroup;
+			children = (
+				CDC37D4B2C606C2A002D2709 /* Iridescent.metal */,
+			);
+			path = IridescentHolo;
 			sourceTree = "<group>";
 		};
 		CDDED7292C194C8400958B39 = {
@@ -509,7 +534,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDC942932C3B69BD00EDF62C /* Shaders.metal in Sources */,
+				CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */,
 				CD7885852C322CD100F16E03 /* EntryMorphView.swift in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
@@ -543,6 +568,7 @@
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
+				CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
 				CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
