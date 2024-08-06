@@ -26,6 +26,15 @@
 		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
 		CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC9428C2C3B67E500EDF62C /* Costello.swift */; };
 		CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC942922C3B69BD00EDF62C /* Costello.metal */; };
+		CDD48E182C62C20F0001C4E8 /* StickerWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* StickerWallView.swift */; };
+		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
+		CDD48E242C62C2C20001C4E8 /* XcodeStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E232C62C2C20001C4E8 /* XcodeStickerView.swift */; };
+		CDD48E252C62C2C20001C4E8 /* GiftStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1E2C62C2C20001C4E8 /* GiftStickerView.swift */; };
+		CDD48E262C62C2C20001C4E8 /* SwiftUIStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E222C62C2C20001C4E8 /* SwiftUIStickerView.swift */; };
+		CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */; };
+		CDD48E282C62C2C20001C4E8 /* MemojiStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E202C62C2C20001C4E8 /* MemojiStickerView.swift */; };
+		CDD48E292C62C2C20001C4E8 /* BunnyStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */; };
+		CDD48E2A2C62C2C20001C4E8 /* SwiftStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E212C62C2C20001C4E8 /* SwiftStickerView.swift */; };
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
 		CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */; };
@@ -120,6 +129,14 @@
 		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CDC9428C2C3B67E500EDF62C /* Costello.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Costello.swift; sourceTree = "<group>"; };
 		CDC942922C3B69BD00EDF62C /* Costello.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Costello.metal; sourceTree = "<group>"; };
+		CDD48E172C62C20B0001C4E8 /* StickerWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerWallView.swift; sourceTree = "<group>"; };
+		CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BunnyStickerView.swift; sourceTree = "<group>"; };
+		CDD48E1E2C62C2C20001C4E8 /* GiftStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftStickerView.swift; sourceTree = "<group>"; };
+		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
+		CDD48E202C62C2C20001C4E8 /* MemojiStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemojiStickerView.swift; sourceTree = "<group>"; };
+		CDD48E212C62C2C20001C4E8 /* SwiftStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftStickerView.swift; sourceTree = "<group>"; };
+		CDD48E222C62C2C20001C4E8 /* SwiftUIStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIStickerView.swift; sourceTree = "<group>"; };
+		CDD48E232C62C2C20001C4E8 /* XcodeStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeStickerView.swift; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -174,6 +191,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +277,20 @@
 			path = IridescentHolo;
 			sourceTree = "<group>";
 		};
+		CDD48E1C2C62C28A0001C4E8 /* StickerViews */ = {
+			isa = PBXGroup;
+			children = (
+				CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */,
+				CDD48E1E2C62C2C20001C4E8 /* GiftStickerView.swift */,
+				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
+				CDD48E202C62C2C20001C4E8 /* MemojiStickerView.swift */,
+				CDD48E212C62C2C20001C4E8 /* SwiftStickerView.swift */,
+				CDD48E222C62C2C20001C4E8 /* SwiftUIStickerView.swift */,
+				CDD48E232C62C2C20001C4E8 /* XcodeStickerView.swift */,
+			);
+			path = StickerViews;
+			sourceTree = "<group>";
+		};
 		CDDED7292C194C8400958B39 = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +372,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CDD48E1C2C62C28A0001C4E8 /* StickerViews */,
 				CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */,
 				CDDED7922C195B6000958B39 /* CircleView.swift */,
 				CDDED7902C195B4B00958B39 /* DashView.swift */,
@@ -374,6 +407,7 @@
 		CDDED7872C1955A500958B39 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				CDD48E172C62C20B0001C4E8 /* StickerWallView.swift */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
 				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
 				CD3936E32C34B7FC00AE63DF /* SoundScreen.swift */,
@@ -420,6 +454,9 @@
 			dependencies = (
 			);
 			name = acusia;
+			packageProductDependencies = (
+				CDD48E1A2C62C26B0001C4E8 /* Wave */,
+			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
 			productType = "com.apple.product-type.application";
@@ -492,6 +529,9 @@
 				Base,
 			);
 			mainGroup = CDDED7292C194C8400958B39;
+			packageReferences = (
+				CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */,
+			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -537,6 +577,13 @@
 				CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */,
 				CD7885852C322CD100F16E03 /* EntryMorphView.swift in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
+				CDD48E242C62C2C20001C4E8 /* XcodeStickerView.swift in Sources */,
+				CDD48E252C62C2C20001C4E8 /* GiftStickerView.swift in Sources */,
+				CDD48E262C62C2C20001C4E8 /* SwiftUIStickerView.swift in Sources */,
+				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
+				CDD48E282C62C2C20001C4E8 /* MemojiStickerView.swift in Sources */,
+				CDD48E292C62C2C20001C4E8 /* BunnyStickerView.swift in Sources */,
+				CDD48E2A2C62C2C20001C4E8 /* SwiftStickerView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
 				CD01D7DC2C42580E00FD0E07 /* AvatarView.swift in Sources */,
 				CD01D7D72C42579600FD0E07 /* SearchResultsList.swift in Sources */,
@@ -555,6 +602,7 @@
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */,
 				CDE7729F2C1EB3C200107829 /* NavView.swift in Sources */,
+				CDD48E182C62C20F0001C4E8 /* StickerWallView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,
@@ -906,6 +954,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jtrivedi/Wave";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CDD48E1A2C62C26B0001C4E8 /* Wave */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */;
+			productName = Wave;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */ = {
