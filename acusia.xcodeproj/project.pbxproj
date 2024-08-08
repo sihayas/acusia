@@ -12,21 +12,19 @@
 		CD01D7DC2C42580E00FD0E07 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD01D7DB2C42580C00FD0E07 /* AvatarView.swift */; };
 		CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */; };
 		CD0E47DB2C473BD000BBBB5F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */; };
-		CD3936E42C34B7FE00AE63DF /* SoundScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3936E32C34B7FC00AE63DF /* SoundScreen.swift */; };
 		CD4F76F22C437CAE00B56C31 /* FormArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4F76F12C437CA000B56C31 /* FormArtworkView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescence.metal */; };
 		CD7885852C322CD100F16E03 /* EntryMorphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7885842C322CC900F16E03 /* EntryMorphView.swift */; };
 		CD78858A2C33BCCE00F16E03 /* AvatarMorphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7885892C33BCC800F16E03 /* AvatarMorphView.swift */; };
 		CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D197E2C24E3CD00FDC979 /* Auth.swift */; };
 		CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D19822C27973800FDC979 /* NotificationModel.swift */; };
-		CD9CC8662C1AA7FD00E65A86 /* UserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8652C1AA7FA00E65A86 /* UserScreen.swift */; };
 		CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
 		CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC9428C2C3B67E500EDF62C /* Costello.swift */; };
 		CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC942922C3B69BD00EDF62C /* Costello.metal */; };
-		CDD48E182C62C20F0001C4E8 /* StickerWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* StickerWallView.swift */; };
+		CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* UserScreen.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
 		CDD48E242C62C2C20001C4E8 /* XcodeStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E232C62C2C20001C4E8 /* XcodeStickerView.swift */; };
 		CDD48E252C62C2C20001C4E8 /* GiftStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1E2C62C2C20001C4E8 /* GiftStickerView.swift */; };
@@ -35,6 +33,7 @@
 		CDD48E282C62C2C20001C4E8 /* MemojiStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E202C62C2C20001C4E8 /* MemojiStickerView.swift */; };
 		CDD48E292C62C2C20001C4E8 /* BunnyStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */; };
 		CDD48E2A2C62C2C20001C4E8 /* SwiftStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E212C62C2C20001C4E8 /* SwiftStickerView.swift */; };
+		CDD48E2E2C62FA6B0001C4E8 /* ContourView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* ContourView.swift */; };
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
 		CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */; };
@@ -114,7 +113,6 @@
 		CD01D7DB2C42580C00FD0E07 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactCard.swift; sourceTree = "<group>"; };
 		CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
-		CD3936E32C34B7FC00AE63DF /* SoundScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundScreen.swift; sourceTree = "<group>"; };
 		CD4F76F12C437CA000B56C31 /* FormArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormArtworkView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescence.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescence.metal; sourceTree = "<group>"; };
 		CD7885842C322CC900F16E03 /* EntryMorphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryMorphView.swift; sourceTree = "<group>"; };
@@ -122,14 +120,13 @@
 		CD8D197E2C24E3CD00FDC979 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		CD8D19822C27973800FDC979 /* NotificationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModel.swift; sourceTree = "<group>"; };
 		CD8D19842C29C5FF00FDC979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		CD9CC8652C1AA7FA00E65A86 /* UserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScreen.swift; sourceTree = "<group>"; };
 		CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CDC9428C2C3B67E500EDF62C /* Costello.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Costello.swift; sourceTree = "<group>"; };
 		CDC942922C3B69BD00EDF62C /* Costello.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Costello.metal; sourceTree = "<group>"; };
-		CDD48E172C62C20B0001C4E8 /* StickerWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerWallView.swift; sourceTree = "<group>"; };
+		CDD48E172C62C20B0001C4E8 /* UserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScreen.swift; sourceTree = "<group>"; };
 		CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BunnyStickerView.swift; sourceTree = "<group>"; };
 		CDD48E1E2C62C2C20001C4E8 /* GiftStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftStickerView.swift; sourceTree = "<group>"; };
 		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
@@ -137,6 +134,7 @@
 		CDD48E212C62C2C20001C4E8 /* SwiftStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftStickerView.swift; sourceTree = "<group>"; };
 		CDD48E222C62C2C20001C4E8 /* SwiftUIStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIStickerView.swift; sourceTree = "<group>"; };
 		CDD48E232C62C2C20001C4E8 /* XcodeStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeStickerView.swift; sourceTree = "<group>"; };
+		CDD48E2D2C62FA670001C4E8 /* ContourView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContourView.swift; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -280,6 +278,7 @@
 		CDD48E1C2C62C28A0001C4E8 /* StickerViews */ = {
 			isa = PBXGroup;
 			children = (
+				CDD48E2D2C62FA670001C4E8 /* ContourView.swift */,
 				CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */,
 				CDD48E1E2C62C2C20001C4E8 /* GiftStickerView.swift */,
 				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
@@ -314,19 +313,19 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
-				CD0E47D92C473BC600BBBB5F /* MusicKit */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
-				CDDED73E2C194C8500958B39 /* Persistence.swift */,
 				CD8D19842C29C5FF00FDC979 /* Info.plist */,
 				CDDED7352C194C8400958B39 /* App.swift */,
-				CDDED7852C19543D00958B39 /* CoreDataStack.swift */,
 				CD8D197E2C24E3CD00FDC979 /* Auth.swift */,
+				CDDED7852C19543D00958B39 /* CoreDataStack.swift */,
+				CDDED73E2C194C8500958B39 /* Persistence.swift */,
 				CDDED7392C194C8500958B39 /* Assets.xcassets */,
 				CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */,
 				CDDED7712C1951BE00958B39 /* Components */,
 				CD13D5252C3FAD84007E3120 /* Metal */,
 				CDDED77C2C19520300958B39 /* Models */,
 				CDE772972C1EB39700107829 /* Morph */,
+				CD0E47D92C473BC600BBBB5F /* MusicKit */,
 				CDDED7802C1953A000958B39 /* Networking */,
 				CDDED73B2C194C8500958B39 /* Preview Content */,
 				CD0E47D62C47361C00BBBB5F /* SceneKit */,
@@ -407,11 +406,9 @@
 		CDDED7872C1955A500958B39 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				CDD48E172C62C20B0001C4E8 /* StickerWallView.swift */,
+				CDD48E172C62C20B0001C4E8 /* UserScreen.swift */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
 				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
-				CD3936E32C34B7FC00AE63DF /* SoundScreen.swift */,
-				CD9CC8652C1AA7FA00E65A86 /* UserScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -585,6 +582,7 @@
 				CDD48E292C62C2C20001C4E8 /* BunnyStickerView.swift in Sources */,
 				CDD48E2A2C62C2C20001C4E8 /* SwiftStickerView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
+				CDD48E2E2C62FA6B0001C4E8 /* ContourView.swift in Sources */,
 				CD01D7DC2C42580E00FD0E07 /* AvatarView.swift in Sources */,
 				CD01D7D72C42579600FD0E07 /* SearchResultsList.swift in Sources */,
 				CDDED76D2C19516B00958B39 /* NavManager.swift in Sources */,
@@ -596,13 +594,12 @@
 				CDDED77D2C19520300958B39 /* FeedModel.swift in Sources */,
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
 				CD4F76F22C437CAE00B56C31 /* FormArtworkView.swift in Sources */,
-				CD3936E42C34B7FE00AE63DF /* SoundScreen.swift in Sources */,
 				CDE7729D2C1EB3C200107829 /* ShapeMorphing.swift in Sources */,
 				CDE7729E2C1EB3C200107829 /* AnimationProgress.swift in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */,
 				CDE7729F2C1EB3C200107829 /* NavView.swift in Sources */,
-				CDD48E182C62C20F0001C4E8 /* StickerWallView.swift in Sources */,
+				CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,
@@ -611,7 +608,6 @@
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD01D7DA2C4257E300FD0E07 /* NotificationsList.swift in Sources */,
 				CDDED78D2C1959FD00958B39 /* StarRatingView.swift in Sources */,
-				CD9CC8662C1AA7FD00E65A86 /* UserScreen.swift in Sources */,
 				CD0E47DB2C473BD000BBBB5F /* MusicKit.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,

@@ -141,144 +141,136 @@ struct HelloStickerView: View {
             .simultaneously(with: doubleTap3D)
         
         ZStack {
-            Image("helloStickerOutline")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 180, height: 65, alignment: .center)
-                .offset(x: 0, y: 0)
-                .foregroundColor(activeSticker == .hello ? .white.opacity(0.4) : .white)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+            MKSymbolShape(imageName: "helloSticker")
+                .stroke(
+                    activeSticker == .swift ? .white.opacity(0.4) : .red,
+                    style: StrokeStyle(
+                        lineWidth: 8,
+                        lineCap: .round, // This makes the stroke ends rounded
+                        lineJoin: .round // This makes the stroke joins rounded
+                    )
+                )
+                .frame(width: 170, height: 56)
                 .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
                 .shadow(color: Color.black.opacity(dragTrigger ? 0.35 : 0.25), radius: dragTrigger ? 25 : 4, x: 0, y: dragTrigger ? 55 : 2)
-
            
             Image("helloSticker")
                 .resizable()
                 .scaledToFill()
-                .frame(width: 171, height: 56)
+                .frame(width: 170, height: 56)
                 .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
                 .shadow(color: Color.black.opacity(0.4), radius: 1, x: 0, y: 0)
                 .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
                 .offset(x: 0, y: activeSticker == .hello ? -1*offsetSliderValue : 0)
-                
             
-            Image("helloStickerOutline")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 180, height: 65, alignment: .center)
-                .offset(x: 0, y: 0)
-                .foregroundColor(.black.opacity(0.15))
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -2*offsetSliderValue : 0)
-            
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(
-                        stops: [
-                            Gradient.Stop(color: Color(hex: "#FE7F7F").opacity(0.9), location: 0),
-                            Gradient.Stop(color: Color(hex: "#FE91E4").opacity(0.9), location: 0.1),
-                            Gradient.Stop(color: Color(hex: "#FFE6AA").opacity(0.95), location: 0.25),
-                            Gradient.Stop(color: Color(hex: "#FFFFF2").opacity(1), location: 0.5),
-                            Gradient.Stop(color: Color(hex: "#A5D2FF").opacity(0.95), location: 0.75),
-                            Gradient.Stop(color: Color(hex: "#7E70FF").opacity(0.9), location: 0.9),
-                            Gradient.Stop(color: Color(hex: "#C033FF").opacity(0.9), location: 1)
-                        ]
-                    ),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .opacity(1)
-                .blur(radius: 20.0)
-                .frame(width: 200, height: 80)
-                .offset(x: CGFloat(0), y:CGFloat(MotionManager.shared.relativePitch * 400)+55)
-                .rotationEffect(.degrees(MotionManager.shared.relativeRoll * 60))
-                .overlay {
-                    Image("WhiteNoiseLayer")
-                        .resizable()
-                        .scaledToFill()
-                        .opacity(0.7 - abs(MotionManager.shared.relativePitch * 1))
-                        .blendMode(.plusLighter)
-                }
-                .mask {
-                    Image("helloStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 180, height: 65, alignment: .center)
-                        .offset(x: 0, y: 0)
-                }
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -3*offsetSliderValue : 0)
-                .allowsHitTesting(false)
-            
-            Image("helloSticker")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 171, height: 56)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .opacity(0.25)
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -4*offsetSliderValue : 0)
-            
-            Image("NoiseLayer")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 200, height: 70, alignment: .center)
-                .offset(x: 10, y: -2)
-                .opacity(0.05)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .mask {
-                    Image("helloStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 180, height: 65, alignment: .center)
-                        .offset(x: 0, y: 0)
-                }
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -5*offsetSliderValue : 0)
-                .allowsHitTesting(false)
-            
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(
-                        stops: [
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.2),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.3),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.4), location: 0.5),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.7),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.8),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 1)
-                        ]
-                    ),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .frame(width: 190, height: 80)
-                .blur(radius: 10.0)
-                .offset(x: 0, y: glareTrigger ? 80 : -80)
-                .opacity(activeSticker == .hello ? 0 : 1)
-                .mask {
-                    Image("helloStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 180, height: 65, alignment: .center)
-                        .offset(x: 0, y: 0)
-                }
-                .allowsHitTesting(false)
+//            MKSymbolShape(imageName: "helloSticker")
+//                .fill(.black.opacity(0.15))
+//                .strokeBorder(.black.opacity(0.15), style: StrokeStyle(lineWidth: 8, lineCap: .round))
+//                .frame(width: 170, height: 56)
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .hello ? -2*offsetSliderValue : 0)
+//            
+//            Rectangle()
+//                .fill(
+//                    LinearGradient(
+//                        gradient: Gradient(
+//                        stops: [
+//                            Gradient.Stop(color: Color(hex: "#FE7F7F").opacity(0.9), location: 0),
+//                            Gradient.Stop(color: Color(hex: "#FE91E4").opacity(0.9), location: 0.1),
+//                            Gradient.Stop(color: Color(hex: "#FFE6AA").opacity(0.95), location: 0.25),
+//                            Gradient.Stop(color: Color(hex: "#FFFFF2").opacity(1), location: 0.5),
+//                            Gradient.Stop(color: Color(hex: "#A5D2FF").opacity(0.95), location: 0.75),
+//                            Gradient.Stop(color: Color(hex: "#7E70FF").opacity(0.9), location: 0.9),
+//                            Gradient.Stop(color: Color(hex: "#C033FF").opacity(0.9), location: 1)
+//                        ]
+//                    ),
+//                        startPoint: .top,
+//                        endPoint: .bottom
+//                    )
+//                )
+//                .opacity(1)
+//                .blur(radius: 20.0)
+//                .frame(width: 200, height: 80)
+//                .offset(x: CGFloat(0), y:CGFloat(MotionManager.shared.relativePitch * 400)+55)
+//                .rotationEffect(.degrees(MotionManager.shared.relativeRoll * 60))
+//                .overlay {
+//                    Image("WhiteNoiseLayer")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .opacity(0.7 - abs(MotionManager.shared.relativePitch * 1))
+//                        .blendMode(.plusLighter)
+//                }
+//                .mask {
+//                    MKSymbolShape(imageName: "helloSticker")
+//                        .fill(.black)
+//                        .strokeBorder(.black, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+//                        .frame(width: 170, height: 56)
+//                }
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .hello ? -3*offsetSliderValue : 0)
+//                .allowsHitTesting(false)
+//            
+//            Image("helloSticker")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 170, height: 56)
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .opacity(0.25)
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .hello ? -4*offsetSliderValue : 0)
+//            
+//            Image("NoiseLayer")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 200, height: 70, alignment: .center)
+//                .offset(x: 10, y: -2)
+//                .opacity(0.05)
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .mask {
+//                    MKSymbolShape(imageName: "helloSticker")
+//                        .fill(.black)
+//                        .strokeBorder(.black, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+//                        .frame(width: 170, height: 56)
+//                }
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .hello ? -5*offsetSliderValue : 0)
+//                .allowsHitTesting(false)
+//            
+//            Rectangle()
+//                .fill(
+//                    LinearGradient(
+//                        gradient: Gradient(
+//                        stops: [
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.2),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.3),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.4), location: 0.5),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.7),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.8),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 1)
+//                        ]
+//                    ),
+//                        startPoint: .top,
+//                        endPoint: .bottom
+//                    )
+//                )
+//                .frame(width: 170, height: 56)
+//                .blur(radius: 10.0)
+//                .offset(x: 0, y: glareTrigger ? 80 : -80)
+//                .opacity(activeSticker == .hello ? 0 : 1)
+//                .mask {
+//                    MKSymbolShape(imageName: "helloSticker")
+//                        .fill(.black)
+//                        .strokeBorder(.black, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+//                        .frame(width: 170, height: 56)
+//                }
+//                .allowsHitTesting(false)
             
         }
         .scaleEffect((currentMagnification * pinchMagnification) * (dragTrigger ? 1.2 : 1.0))
@@ -309,8 +301,4 @@ struct HelloStickerView: View {
             }
         }
     }
-}
-
-#Preview {
-    StickerWallView()
 }

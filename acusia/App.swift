@@ -2,7 +2,7 @@ import SwiftUI
 import CoreData
 import UserNotifications
 
-let apiurl = "http://192.168.1.234:8000"
+let apiurl = "http://192.168.1.17:8000"
 
 // Thank you Claude.
 class PassThroughWindow: UIWindow {
@@ -161,8 +161,8 @@ struct ContentView: View {
                     .navigationBarHidden(true)
                     .navigationDestination(for: SearchResultItem.self) { item in
                         switch item {
-                        case .sound(let sound):
-                            SoundScreen()
+                        case .sound(_):
+                            EmptyView()
                         case .user(let user):
                             UserScreen(initialUserData: nil, userResult: user)
                         }

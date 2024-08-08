@@ -308,7 +308,3 @@ struct SwiftUIStickerView: View {
         }
     }
 }
-
-#Preview {
-    StickerWallView()
-}

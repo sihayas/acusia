@@ -141,142 +141,150 @@ struct XcodeStickerView: View {
             .simultaneously(with: doubleTap3D)
         
         ZStack {
-            Image("XcodeStickerOutline")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 160, height: 163, alignment: .center)
-                .offset(x: 8, y: -1)
-                .foregroundColor(activeSticker == .xcode ? .white.opacity(0.4) : .white)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//            Image("XcodeStickerOutline")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 160, height: 160, alignment: .center)
+//                .offset(x: 8, y: -1)
+//                .foregroundColor(activeSticker == .xcode ? .white.opacity(0.4) : .white)
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .shadow(color: Color.black.opacity(dragTrigger ? 0.35 : 0.25), radius: dragTrigger ? 25 : 4, x: 0, y: dragTrigger ? 55 : 2)
+//            
+            
+            MKSymbolShape(imageName: "XcodeSticker")
+//                .fill(activeSticker == .xcode ? .white.opacity(0.4) : .white)
+                .strokeBorder(activeSticker == .xcode ? .white.opacity(0.4) : .red, style: StrokeStyle(lineWidth: 1, lineCap: .round))
+                .frame(width: 160, height: 160)
                 .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .shadow(color: Color.black.opacity(dragTrigger ? 0.35 : 0.25), radius: dragTrigger ? 25 : 4, x: 0, y: dragTrigger ? 55 : 2)
-           
+            
             Image("XcodeSticker")
                 .resizable()
                 .scaledToFill()
-                .frame(width: 160, height: 165)
+                .frame(width: 160, height: 160)
                 .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
                 .shadow(color: Color.black.opacity(0.4), radius: 1, x: 0, y: 0)
                 .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
                 .offset(x: 0, y: activeSticker == .xcode ? -1*offsetSliderValue : 0)
-                
             
-            Image("XcodeStickerOutline")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 160, height: 163, alignment: .center)
-                .offset(x: 8, y: -1)
-                .foregroundColor(.black.opacity(0.15))
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .xcode ? -2*offsetSliderValue : 0)
+//            Image("XcodeStickerOutline")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 160, height: 160, alignment: .center)
+//                .offset(x: 8, y: -1)
+//                .foregroundColor(.black.opacity(0.15))
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .xcode ? -2*offsetSliderValue : 0)
+//
             
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(
-                        stops: [
-                            Gradient.Stop(color: Color(hex: "#FE7F7F").opacity(0.9), location: 0),
-                            Gradient.Stop(color: Color(hex: "#FE91E4").opacity(0.9), location: 0.1),
-                            Gradient.Stop(color: Color(hex: "#FFE6AA").opacity(0.95), location: 0.25),
-                            Gradient.Stop(color: Color(hex: "#FFFFF2").opacity(1), location: 0.5),
-                            Gradient.Stop(color: Color(hex: "#A5D2FF").opacity(0.95), location: 0.75),
-                            Gradient.Stop(color: Color(hex: "#7E70FF").opacity(0.9), location: 0.9),
-                            Gradient.Stop(color: Color(hex: "#C033FF").opacity(0.9), location: 1)
-                        ]
-                    ),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .opacity(1)
-                .blur(radius: 20.0)
-                .frame(width: 200, height: 200)
-                .offset(x: CGFloat(0), y: CGFloat(MotionManager.shared.relativePitch * 400) + (activeSticker == .xcode ? 0 : 160))
-                .rotationEffect(.degrees(MotionManager.shared.relativeRoll * 60))
-                .overlay {
-                    Image("WhiteNoiseLayer")
-                        .resizable()
-                        .scaledToFill()
-                        .opacity(0.62 - abs(MotionManager.shared.relativePitch * 1))
-                        .blendMode(.plusLighter)
-                }
-                .mask {
-                    Image("XcodeStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 160, height: 163, alignment: .center)
-                        .offset(x: 8, y: -1)
-                }
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .xcode ? -3*offsetSliderValue : 0)
+//            Rectangle()
+//                .fill(
+//                    LinearGradient(
+//                        gradient: Gradient(
+//                        stops: [
+//                            Gradient.Stop(color: Color(hex: "#FE7F7F").opacity(0.9), location: 0),
+//                            Gradient.Stop(color: Color(hex: "#FE91E4").opacity(0.9), location: 0.1),
+//                            Gradient.Stop(color: Color(hex: "#FFE6AA").opacity(0.95), location: 0.25),
+//                            Gradient.Stop(color: Color(hex: "#FFFFF2").opacity(1), location: 0.5),
+//                            Gradient.Stop(color: Color(hex: "#A5D2FF").opacity(0.95), location: 0.75),
+//                            Gradient.Stop(color: Color(hex: "#7E70FF").opacity(0.9), location: 0.9),
+//                            Gradient.Stop(color: Color(hex: "#C033FF").opacity(0.9), location: 1)
+//                        ]
+//                    ),
+//                        startPoint: .top,
+//                        endPoint: .bottom
+//                    )
+//                )
+//                .opacity(1)
+//                .blur(radius: 20.0)
+//                .frame(width: 200, height: 200)
+//                .offset(x: CGFloat(0), y: CGFloat(MotionManager.shared.relativePitch * 400) + (activeSticker == .xcode ? 0 : 160))
+//                .rotationEffect(.degrees(MotionManager.shared.relativeRoll * 60))
+//                .overlay {
+//                    Image("WhiteNoiseLayer")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .opacity(0.62 - abs(MotionManager.shared.relativePitch * 1))
+//                        .blendMode(.plusLighter)
+//                }
+//                .mask {
+//                    Image("XcodeStickerOutline")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                        .frame(width: 160, height: 160, alignment: .center)
+//                        .offset(x: 8, y: -1)
+//                }
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .xcode ? -3*offsetSliderValue : 0)
             
-            Image("XcodeSticker")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 160, height: 165)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .opacity(0.25)
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .xcode ? -4*offsetSliderValue : 0)
-            
-            Image("NoiseLayer")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 200, height: 200, alignment: .center)
-                .offset(x: 10, y: -2)
-                .opacity(activeSticker == .xcode ? 0.1 : 0.05)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .mask {
-                    Image("XcodeStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 160, height: 163, alignment: .center)
-                        .offset(x: 8, y: -1)
-                }
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .xcode ? -5*offsetSliderValue : 0)
-            
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(
-                        stops: [
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.2),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.3),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.3), location: 0.5),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.7),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.8),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 1)
-                        ]
-                    ),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .frame(width: 170, height: 170)
-                .blur(radius: 10.0)
-                .offset(x: 0, y: glareTrigger ? 170 : -170)
-                .opacity(activeSticker == .xcode ? 0 : 1)
-                .mask {
-                    Image("XcodeStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 160, height: 163, alignment: .center)
-                        .offset(x: 8, y: -1)
-                }
-                .allowsHitTesting(false)
-            
+//            Image("XcodeSticker")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 160, height: 160)
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .opacity(0.25)
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .xcode ? -4*offsetSliderValue : 0)
+//
+//            
+//            Image("NoiseLayer")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 200, height: 200, alignment: .center)
+//                .offset(x: 10, y: -2)
+//                .opacity(activeSticker == .xcode ? 0.1 : 0.05)
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .mask {
+//                    Image("XcodeStickerOutline")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                        .frame(width: 160, height: 163, alignment: .center)
+//                        .offset(x: 8, y: -1)
+//                }
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .xcode ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .xcode ? -5*offsetSliderValue : 0)
+//            
+//            Rectangle()
+//                .fill(
+//                    LinearGradient(
+//                        gradient: Gradient(
+//                        stops: [
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.2),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.3),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.3), location: 0.5),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.7),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.8),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 1)
+//                        ]
+//                    ),
+//                        startPoint: .top,
+//                        endPoint: .bottom
+//                    )
+//                )
+//                .frame(width: 170, height: 170)
+//                .blur(radius: 10.0)
+//                .offset(x: 0, y: glareTrigger ? 170 : -170)
+//                .opacity(activeSticker == .xcode ? 0 : 1)
+//                .mask {
+//                    Image("XcodeStickerOutline")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                        .frame(width: 160, height: 160, alignment: .center)
+//                        .offset(x: 8, y: -1)
+//                }
+//                .allowsHitTesting(false)
             
         }
         .scaleEffect((currentMagnification * pinchMagnification) * (dragTrigger ? 1.2 : 1.0))
@@ -308,8 +316,4 @@ struct XcodeStickerView: View {
             }
         }
     }
-}
-
-#Preview {
-    StickerWallView()
 }

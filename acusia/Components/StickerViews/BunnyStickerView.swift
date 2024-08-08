@@ -141,18 +141,13 @@ struct BunnyStickerView: View {
             .simultaneously(with: doubleTap3D)
         
         ZStack {
-            Image("bunnyStickerOutline")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 103, height: 122, alignment: .center)
-                .offset(x: 0, y: 0)
-                .foregroundColor(activeSticker == .bunny ? .white.opacity(0.4) : .white)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+            MKSymbolShape(imageName: "bunnySticker")
+                .strokeBorder(activeSticker == .bunny ? .white.opacity(0.4) : .red, style: StrokeStyle(lineWidth: 1, lineCap: .round))
+                .frame(width: 90, height: 110)
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
                 .shadow(color: Color.black.opacity(dragTrigger ? 0.35 : 0.25), radius: dragTrigger ? 25 : 4, x: 0, y: dragTrigger ? 55 : 2)
 
-           
             Image("bunnySticker")
                 .resizable()
                 .scaledToFill()
@@ -162,122 +157,122 @@ struct BunnyStickerView: View {
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
                 .offset(x: 0, y: activeSticker == .bunny ? -1*offsetSliderValue : 0)
-                
-            
-            Image("bunnyStickerOutline")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 103, height: 122, alignment: .center)
-                .offset(x: 0, y: 0)
-                .foregroundColor(.black.opacity(0.15))
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .bunny ? -2*offsetSliderValue : 0)
-            
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(
-                        stops: [
-                            Gradient.Stop(color: Color(hex: "#FE7F7F").opacity(0.9), location: 0),
-                            Gradient.Stop(color: Color(hex: "#FE91E4").opacity(0.9), location: 0.1),
-                            Gradient.Stop(color: Color(hex: "#FFE6AA").opacity(0.95), location: 0.25),
-                            Gradient.Stop(color: Color(hex: "#FFFFF2").opacity(1), location: 0.5),
-                            Gradient.Stop(color: Color(hex: "#A5D2FF").opacity(0.95), location: 0.75),
-                            Gradient.Stop(color: Color(hex: "#7E70FF").opacity(0.9), location: 0.9),
-                            Gradient.Stop(color: Color(hex: "#C033FF").opacity(0.9), location: 1)
-                        ]
-                    ),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .opacity(1)
-                .blur(radius: 20.0)
-                .frame(width: 110, height: 130)
-                .offset(x: CGFloat(0), y:CGFloat(MotionManager.shared.relativePitch * 400)+80)
-                .rotationEffect(.degrees(MotionManager.shared.relativeRoll * 60))
-                .overlay {
-                    Image("WhiteNoiseLayer")
-                        .resizable()
-                        .scaledToFill()
-                        .opacity(0.7 - abs(MotionManager.shared.relativePitch * 1))
-                        .blendMode(.plusLighter)
-                }
-                .mask {
-                    Image("bunnyStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 103, height: 122, alignment: .center)
-                        .offset(x: 0, y: 0)
-                }
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .bunny ? -3*offsetSliderValue : 0)
-            
-            Image("bunnySticker")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 90, height: 110)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .opacity(0.25)
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .bunny ? -4*offsetSliderValue : 0)
-            
-            Image("NoiseLayer")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 110, height: 130, alignment: .center)
-                .offset(x: 10, y: -2)
-                .opacity(0.05)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                .mask {
-                    Image("bunnyStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 103, height: 122, alignment: .center)
-                        .offset(x: 0, y: 0)
-                }
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .bunny ? -5*offsetSliderValue : 0)
-            
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(
-                        stops: [
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.2),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.3),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.4), location: 0.5),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.7),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.8),
-                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 1)
-                        ]
-                    ),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .frame(width: 110, height: 130)
-                .blur(radius: 10.0)
-                .offset(x: 0, y: glareTrigger ? 90 : -90)
-                .opacity(activeSticker == .bunny ? 0 : 1)
-                .mask {
-                    Image("bunnyStickerOutline")
-                        .resizable()
-                        .scaledToFill()
-                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                        .frame(width: 103, height: 122, alignment: .center)
-                        .offset(x: 0, y: 0)
-                }
-                .allowsHitTesting(false)
-            
+               
+         
+//            Image("bunnyStickerOutline")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 103, height: 122, alignment: .center)
+//                .offset(x: 0, y: 0)
+//                .foregroundColor(.black.opacity(0.15))
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .bunny ? -2*offsetSliderValue : 0)
+//            
+//            Rectangle()
+//                .fill(
+//                    LinearGradient(
+//                        gradient: Gradient(
+//                        stops: [
+//                            Gradient.Stop(color: Color(hex: "#FE7F7F").opacity(0.9), location: 0),
+//                            Gradient.Stop(color: Color(hex: "#FE91E4").opacity(0.9), location: 0.1),
+//                            Gradient.Stop(color: Color(hex: "#FFE6AA").opacity(0.95), location: 0.25),
+//                            Gradient.Stop(color: Color(hex: "#FFFFF2").opacity(1), location: 0.5),
+//                            Gradient.Stop(color: Color(hex: "#A5D2FF").opacity(0.95), location: 0.75),
+//                            Gradient.Stop(color: Color(hex: "#7E70FF").opacity(0.9), location: 0.9),
+//                            Gradient.Stop(color: Color(hex: "#C033FF").opacity(0.9), location: 1)
+//                        ]
+//                    ),
+//                        startPoint: .top,
+//                        endPoint: .bottom
+//                    )
+//                )
+//                .opacity(1)
+//                .blur(radius: 20.0)
+//                .frame(width: 110, height: 130)
+//                .offset(x: CGFloat(0), y:CGFloat(MotionManager.shared.relativePitch * 400)+80)
+//                .rotationEffect(.degrees(MotionManager.shared.relativeRoll * 60))
+//                .overlay {
+//                    Image("WhiteNoiseLayer")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .opacity(0.7 - abs(MotionManager.shared.relativePitch * 1))
+//                        .blendMode(.plusLighter)
+//                }
+//                .mask {
+//                    Image("bunnyStickerOutline")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                        .frame(width: 103, height: 122, alignment: .center)
+//                        .offset(x: 0, y: 0)
+//                }
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .bunny ? -3*offsetSliderValue : 0)
+//            
+//            Image("bunnySticker")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 90, height: 110)
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .opacity(0.25)
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .bunny ? -4*offsetSliderValue : 0)
+//            
+//            Image("NoiseLayer")
+//                .resizable()
+//                .scaledToFill()
+//                .frame(width: 110, height: 130, alignment: .center)
+//                .offset(x: 10, y: -2)
+//                .opacity(0.05)
+//                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                .mask {
+//                    Image("bunnyStickerOutline")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                        .frame(width: 103, height: 122, alignment: .center)
+//                        .offset(x: 0, y: 0)
+//                }
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+//                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+//                .offset(x: 0, y: activeSticker == .bunny ? -5*offsetSliderValue : 0)
+//            
+//            Rectangle()
+//                .fill(
+//                    LinearGradient(
+//                        gradient: Gradient(
+//                        stops: [
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.2),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.3),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.4), location: 0.5),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.1), location: 0.7),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 0.8),
+//                            Gradient.Stop(color: Color(hex: "#000000").opacity(0.0), location: 1)
+//                        ]
+//                    ),
+//                        startPoint: .top,
+//                        endPoint: .bottom
+//                    )
+//                )
+//                .frame(width: 110, height: 130)
+//                .blur(radius: 10.0)
+//                .offset(x: 0, y: glareTrigger ? 90 : -90)
+//                .opacity(activeSticker == .bunny ? 0 : 1)
+//                .mask {
+//                    Image("bunnyStickerOutline")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+//                        .frame(width: 103, height: 122, alignment: .center)
+//                        .offset(x: 0, y: 0)
+//                }
+//                .allowsHitTesting(false)
+//            
         }
         .scaleEffect((currentMagnification * pinchMagnification) * (dragTrigger ? 1.2 : 1.0))
         .animation(.spring(), value: MotionManager.shared.relativePitch)
@@ -307,8 +302,4 @@ struct BunnyStickerView: View {
             }
         }
     }
-}
-
-#Preview {
-    StickerWallView()
 }
