@@ -43,10 +43,10 @@ struct BunnyStickerView: View {
     
     var body: some View {
         let magnificationGesture = MagnificationGesture()
-            .updating($pinchMagnification, body: { (value, state, _) in
+            .updating($pinchMagnification, body: { value, state, _ in
                 state = value
             })
-            .onChanged { value in
+            .onChanged { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
                     zIndexMap[.bunny] = nextZIndex
@@ -56,7 +56,7 @@ struct BunnyStickerView: View {
                     glareTrigger = true
                 }
             }
-            .onEnded {(value) in
+            .onEnded { value in
                 self.currentMagnification *= value
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = false
@@ -68,16 +68,16 @@ struct BunnyStickerView: View {
         let dragGesture = DragGesture()
             .onChanged { value in
                 if initialLocation == .zero {
-                   initialLocation = value.startLocation
-               }
+                    initialLocation = value.startLocation
+                }
 
-               let xOffset = value.translation.width
-               let yOffset = value.translation.height
+                let xOffset = value.translation.width
+                let yOffset = value.translation.height
 
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.6, blendDuration: 0)) {
-                        offset.width = previousOffset.width + xOffset
-                        offset.height = previousOffset.height + yOffset
-                    }
+                    offset.width = previousOffset.width + xOffset
+                    offset.height = previousOffset.height + yOffset
+                }
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
                     zIndexMap[.bunny] = nextZIndex
@@ -87,10 +87,10 @@ struct BunnyStickerView: View {
                     glareTrigger = true
                 }
             }
-            .onEnded { state in
+            .onEnded { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.6, blendDuration: 0)) {
-                        previousOffset = offset
-                    }
+                    previousOffset = offset
+                }
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = false
                 }
@@ -100,10 +100,10 @@ struct BunnyStickerView: View {
             }
 
         let rotationGesture = RotationGesture()
-            .updating($twistAngle, body: { (value, state, _) in
+            .updating($twistAngle, body: { value, state, _ in
                 state = value
             })
-            .onChanged { value in
+            .onChanged { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
                     zIndexMap[.bunny] = nextZIndex
@@ -113,7 +113,7 @@ struct BunnyStickerView: View {
                     glareTrigger = true
                 }
             }
-            .onEnded { (value) in
+            .onEnded { value in
                 self.currentRotation += value
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = false
@@ -124,15 +124,14 @@ struct BunnyStickerView: View {
             }
         
         let doubleTap3D = TapGesture(count: 2)
-            .onEnded {(value) in
+            .onEnded { _ in
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 0)) {
-                        if activeSticker == .bunny {
-                            activeSticker = nil
-                        } else {
-                            activeSticker = .bunny
-                        }
+                    if activeSticker == .bunny {
+                        activeSticker = nil
+                    } else {
+                        activeSticker = .bunny
+                    }
                 }
-                
             }
         
         let combinedGestures = magnificationGesture
@@ -142,7 +141,14 @@ struct BunnyStickerView: View {
         
         ZStack {
             MKSymbolShape(imageName: "bunnySticker")
-                .strokeBorder(activeSticker == .bunny ? .white.opacity(0.4) : .red, style: StrokeStyle(lineWidth: 1, lineCap: .round))
+                .stroke(
+                    activeSticker == .swift ? .white.opacity(0.4) : .white,
+                    style: StrokeStyle(
+                        lineWidth: 8,
+                        lineCap: .round, // This makes the stroke ends rounded
+                        lineJoin: .round // This makes the stroke joins rounded
+                    )
+                )
                 .frame(width: 90, height: 110)
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
@@ -152,13 +158,12 @@ struct BunnyStickerView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: 90, height: 110)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/ .fill/*@END_MENU_TOKEN@*/)
                 .shadow(color: Color.black.opacity(0.4), radius: 1, x: 0, y: 0)
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .bunny ? -1*offsetSliderValue : 0)
+                .offset(x: 0, y: activeSticker == .bunny ? -1 * offsetSliderValue : 0)
                
-         
 //            Image("bunnyStickerOutline")
 //                .resizable()
 //                .scaledToFill()
@@ -169,7 +174,7 @@ struct BunnyStickerView: View {
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .bunny ? -2*offsetSliderValue : 0)
-//            
+//
 //            Rectangle()
 //                .fill(
 //                    LinearGradient(
@@ -211,7 +216,7 @@ struct BunnyStickerView: View {
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .bunny ? -3*offsetSliderValue : 0)
-//            
+//
 //            Image("bunnySticker")
 //                .resizable()
 //                .scaledToFill()
@@ -221,7 +226,7 @@ struct BunnyStickerView: View {
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .bunny ? -4*offsetSliderValue : 0)
-//            
+//
 //            Image("NoiseLayer")
 //                .resizable()
 //                .scaledToFill()
@@ -240,7 +245,7 @@ struct BunnyStickerView: View {
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .bunny ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .bunny ? -5*offsetSliderValue : 0)
-//            
+//
 //            Rectangle()
 //                .fill(
 //                    LinearGradient(
@@ -272,7 +277,7 @@ struct BunnyStickerView: View {
 //                        .offset(x: 0, y: 0)
 //                }
 //                .allowsHitTesting(false)
-//            
+//
         }
         .scaleEffect((currentMagnification * pinchMagnification) * (dragTrigger ? 1.2 : 1.0))
         .animation(.spring(), value: MotionManager.shared.relativePitch)
@@ -294,11 +299,11 @@ struct BunnyStickerView: View {
         .onChange(of: activeSticker) {
             withAnimation(.spring(response: 0.36, dampingFraction: 0.86, blendDuration: 0)) {
                 if activeSticker == .bunny {
-                        previousRotation = currentRotation + twistAngle
-                        currentRotation = .zero
-                    } else {
-                        currentRotation = previousRotation
-                    }
+                    previousRotation = currentRotation + twistAngle
+                    currentRotation = .zero
+                } else {
+                    currentRotation = previousRotation
+                }
             }
         }
     }

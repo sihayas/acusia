@@ -33,7 +33,7 @@
 		CDD48E282C62C2C20001C4E8 /* MemojiStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E202C62C2C20001C4E8 /* MemojiStickerView.swift */; };
 		CDD48E292C62C2C20001C4E8 /* BunnyStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */; };
 		CDD48E2A2C62C2C20001C4E8 /* SwiftStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E212C62C2C20001C4E8 /* SwiftStickerView.swift */; };
-		CDD48E2E2C62FA6B0001C4E8 /* ContourView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* ContourView.swift */; };
+		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
 		CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */; };
@@ -134,7 +134,7 @@
 		CDD48E212C62C2C20001C4E8 /* SwiftStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftStickerView.swift; sourceTree = "<group>"; };
 		CDD48E222C62C2C20001C4E8 /* SwiftUIStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIStickerView.swift; sourceTree = "<group>"; };
 		CDD48E232C62C2C20001C4E8 /* XcodeStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeStickerView.swift; sourceTree = "<group>"; };
-		CDD48E2D2C62FA670001C4E8 /* ContourView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContourView.swift; sourceTree = "<group>"; };
+		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -278,7 +278,7 @@
 		CDD48E1C2C62C28A0001C4E8 /* StickerViews */ = {
 			isa = PBXGroup;
 			children = (
-				CDD48E2D2C62FA670001C4E8 /* ContourView.swift */,
+				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
 				CDD48E1D2C62C2C20001C4E8 /* BunnyStickerView.swift */,
 				CDD48E1E2C62C2C20001C4E8 /* GiftStickerView.swift */,
 				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
@@ -582,7 +582,7 @@
 				CDD48E292C62C2C20001C4E8 /* BunnyStickerView.swift in Sources */,
 				CDD48E2A2C62C2C20001C4E8 /* SwiftStickerView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
-				CDD48E2E2C62FA6B0001C4E8 /* ContourView.swift in Sources */,
+				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
 				CD01D7DC2C42580E00FD0E07 /* AvatarView.swift in Sources */,
 				CD01D7D72C42579600FD0E07 /* SearchResultsList.swift in Sources */,
 				CDDED76D2C19516B00958B39 /* NavManager.swift in Sources */,

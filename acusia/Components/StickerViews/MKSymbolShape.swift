@@ -1,7 +1,6 @@
 import SwiftUI
 import Vision
 
-
 struct MKSymbolShape: InsettableShape {
     var insetAmount = 0.0
     let imageName: String

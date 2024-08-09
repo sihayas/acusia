@@ -142,7 +142,14 @@ struct MemojiStickerView: View {
         
         ZStack {
             MKSymbolShape(imageName: "memojiSticker")
-                .strokeBorder(activeSticker == .memoji ? .white.opacity(0.4) : .red, style: StrokeStyle(lineWidth: 1, lineCap: .round))
+                .stroke(
+                    activeSticker == .swift ? .white.opacity(0.4) : .white,
+                    style: StrokeStyle(
+                        lineWidth: 8,
+                        lineCap: .round, // This makes the stroke ends rounded
+                        lineJoin: .round // This makes the stroke joins rounded
+                    )
+                )
                 .frame(width: 69, height: 90)
                 .rotation3DEffect(activeSticker == .memoji ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .memoji ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))

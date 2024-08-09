@@ -43,10 +43,10 @@ struct SwiftStickerView: View {
     
     var body: some View {
         let magnificationGesture = MagnificationGesture()
-            .updating($pinchMagnification, body: { (value, state, _) in
+            .updating($pinchMagnification, body: { value, state, _ in
                 state = value
             })
-            .onChanged { value in
+            .onChanged { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
                     zIndexMap[.swift] = nextZIndex
@@ -56,7 +56,7 @@ struct SwiftStickerView: View {
                     glareTrigger = true
                 }
             }
-            .onEnded {(value) in
+            .onEnded { value in
                 self.currentMagnification *= value
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = false
@@ -68,16 +68,16 @@ struct SwiftStickerView: View {
         let dragGesture = DragGesture()
             .onChanged { value in
                 if initialLocation == .zero {
-                   initialLocation = value.startLocation
-               }
+                    initialLocation = value.startLocation
+                }
 
-               let xOffset = value.translation.width
-               let yOffset = value.translation.height
+                let xOffset = value.translation.width
+                let yOffset = value.translation.height
 
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.6, blendDuration: 0)) {
-                        offset.width = previousOffset.width + xOffset
-                        offset.height = previousOffset.height + yOffset
-                    }
+                    offset.width = previousOffset.width + xOffset
+                    offset.height = previousOffset.height + yOffset
+                }
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
                     zIndexMap[.swift] = nextZIndex
@@ -87,10 +87,10 @@ struct SwiftStickerView: View {
                     glareTrigger = true
                 }
             }
-            .onEnded { state in
+            .onEnded { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.6, blendDuration: 0)) {
-                        previousOffset = offset
-                    }
+                    previousOffset = offset
+                }
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = false
                 }
@@ -100,10 +100,10 @@ struct SwiftStickerView: View {
             }
 
         let rotationGesture = RotationGesture()
-            .updating($twistAngle, body: { (value, state, _) in
+            .updating($twistAngle, body: { value, state, _ in
                 state = value
             })
-            .onChanged { value in
+            .onChanged { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
                     zIndexMap[.swift] = nextZIndex
@@ -113,7 +113,7 @@ struct SwiftStickerView: View {
                     glareTrigger = true
                 }
             }
-            .onEnded { (value) in
+            .onEnded { value in
                 self.currentRotation += value
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = false
@@ -124,15 +124,14 @@ struct SwiftStickerView: View {
             }
         
         let doubleTap3D = TapGesture(count: 2)
-            .onEnded {(value) in
+            .onEnded { _ in
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 0)) {
-                        if activeSticker == .swift {
-                            activeSticker = nil
-                        } else {
-                            activeSticker = .swift
-                        }
+                    if activeSticker == .swift {
+                        activeSticker = nil
+                    } else {
+                        activeSticker = .swift
+                    }
                 }
-                
             }
         
         let combinedGestures = magnificationGesture
@@ -143,7 +142,7 @@ struct SwiftStickerView: View {
         ZStack {
             MKSymbolShape(imageName: "swiftSticker")
                 .stroke(
-                    activeSticker == .swift ? .white.opacity(0.4) : .red,
+                    activeSticker == .swift ? .white.opacity(0.4) : .white,
                     style: StrokeStyle(
                         lineWidth: 8,
                         lineCap: .round, // This makes the stroke ends rounded
@@ -159,11 +158,11 @@ struct SwiftStickerView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: 92, height: 82)
-                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/ .fill/*@END_MENU_TOKEN@*/)
                 .shadow(color: Color.black.opacity(0.4), radius: 1, x: 0, y: 0)
                 .rotation3DEffect(activeSticker == .swift ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
                 .rotation3DEffect(activeSticker == .swift ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .swift ? -1*offsetSliderValue : 0)
+                .offset(x: 0, y: activeSticker == .swift ? -1 * offsetSliderValue : 0)
                 
 //            Image("swiftStickerOutline")
 //                .resizable()
@@ -175,7 +174,7 @@ struct SwiftStickerView: View {
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .swift ? -2*offsetSliderValue : 0)
-//            
+//
 //            Rectangle()
 //                .fill(
 //                    LinearGradient(
@@ -217,7 +216,7 @@ struct SwiftStickerView: View {
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .swift ? -3*offsetSliderValue : 0)
-//            
+//
 //            Image("swiftSticker")
 //                .resizable()
 //                .scaledToFill()
@@ -227,7 +226,7 @@ struct SwiftStickerView: View {
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .swift ? -4*offsetSliderValue : 0)
-//            
+//
 //            Image("NoiseLayer")
 //                .resizable()
 //                .scaledToFill()
@@ -246,7 +245,7 @@ struct SwiftStickerView: View {
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
 //                .rotation3DEffect(activeSticker == .swift ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
 //                .offset(x: 0, y: activeSticker == .swift ? -5*offsetSliderValue : 0)
-//            
+//
 //            Rectangle()
 //                .fill(
 //                    LinearGradient(
@@ -278,7 +277,6 @@ struct SwiftStickerView: View {
 //                        .offset(x: 0, y: 0)
 //                }
 //                .allowsHitTesting(false)
-            
         }
         .scaleEffect((currentMagnification * pinchMagnification) * (dragTrigger ? 1.2 : 1.0))
         .animation(.spring(), value: MotionManager.shared.relativePitch)
@@ -300,11 +298,11 @@ struct SwiftStickerView: View {
         .onChange(of: activeSticker) {
             withAnimation(.spring(response: 0.36, dampingFraction: 0.86, blendDuration: 0)) {
                 if activeSticker == .swift {
-                        previousRotation = currentRotation + twistAngle
-                        currentRotation = .zero
-                    } else {
-                        currentRotation = previousRotation
-                    }
+                    previousRotation = currentRotation + twistAngle
+                    currentRotation = .zero
+                } else {
+                    currentRotation = previousRotation
+                }
             }
         }
     }
