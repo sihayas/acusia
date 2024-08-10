@@ -5,8 +5,62 @@
 //  Created by decoherence on 8/6/24.
 //
 
-import SwiftUI
 import CoreMotion
+import SwiftUI
+
+struct MeshTransform: ViewModifier, Animatable {
+    var animatableData: AnimatablePair<AnimatablePair<CGFloat, CGFloat>, CGFloat> {
+        get {
+            AnimatableData(AnimatablePair(squeezeProgressX, squeezeProgressY), squeezeTranslationY)
+        }
+        set {
+            squeezeProgressX = newValue.first.first
+            squeezeProgressY = newValue.first.second
+            squeezeTranslationY = newValue.second
+        }
+    }
+
+    var offset: CGSize
+    var currentRotation: Angle
+    var currentMagnification: CGFloat
+    var pinchMagnification: CGFloat
+    var twistAngle: Angle
+
+    var squeezeCenterX: CGFloat
+    var squeezeProgressX: CGFloat
+    var squeezeProgressY: CGFloat
+    var squeezeTranslationY: CGFloat
+
+    init(squeezeProgressX: CGFloat, squeezeProgressY: CGFloat, squeezeTranslationY: CGFloat, squeezeCenterX: CGFloat, offset: CGSize, currentRotation: Angle, currentMagnification: CGFloat, pinchMagnification: CGFloat, twistAngle: Angle) {
+        self.squeezeProgressX = squeezeProgressX
+        self.squeezeProgressY = squeezeProgressY
+        self.squeezeTranslationY = squeezeTranslationY
+        self.squeezeCenterX = squeezeCenterX
+        self.offset = offset
+        self.currentRotation = currentRotation
+        self.currentMagnification = currentMagnification
+        self.pinchMagnification = pinchMagnification
+        self.twistAngle = twistAngle
+    }
+
+    func shader() -> Shader {
+        Shader(function: .init(library: .default, name: "distortion"), arguments: [
+            .boundingRect,
+            .float(squeezeCenterX),
+            .float(squeezeProgressX),
+            .float(squeezeProgressY),
+            .float(squeezeTranslationY)
+        ])
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .distortionEffect(shader(), maxSampleOffset: CGSize(width: 500, height: 500))
+            .scaleEffect(currentMagnification * pinchMagnification)
+            .rotationEffect(currentRotation + twistAngle, anchor: .center)
+            .offset(offset)
+    }
+}
 
 struct UserScreen: View {
     // Data
@@ -17,14 +71,21 @@ struct UserScreen: View {
     let userResult: UserResult?
     
     init(initialUserData: APIUser?, userResult: UserResult?) {
-         self.initialUserData = initialUserData
-         self.userResult = userResult
-         self._viewModel = StateObject(wrappedValue: UserViewModel())
-     }
+        self.initialUserData = initialUserData
+        self.userResult = userResult
+        self._viewModel = StateObject(wrappedValue: UserViewModel())
+    }
     
     private var pageUserId: String {
-         userResult?.id ?? initialUserData?.id ?? ""
-     }
+        userResult?.id ?? initialUserData?.id ?? ""
+    }
+    
+    @State var isFollowing = false
+    var follow: () -> Void {
+        return {
+            isFollowing.toggle()
+        }
+    }
     
     // Load animation
     @State var viewVisible = false
@@ -36,35 +97,17 @@ struct UserScreen: View {
     
     // 3D Config
     @State var activeSticker: StickerViewType? = nil
-    @State var xAxisSliderValueXcode: Double = 60
     @State var xAxisSliderValueHello: Double = 60
-    @State var xAxisSliderValueSwift: Double = 60
-    @State var xAxisSliderValueGift: Double = 60
-    @State var xAxisSliderValueMemoji: Double = 60
-    @State var xAxisSliderValueSwiftui: Double = 60
-    @State var xAxisSliderValueBunny: Double = 60
     
-    @State var zAxisSliderValueXcode: Double = -45
     @State var zAxisSliderValueHello: Double = -45
-    @State var zAxisSliderValueSwift: Double = 0
-    @State var zAxisSliderValueGift: Double = -35
-    @State var zAxisSliderValueMemoji: Double = -45
-    @State var zAxisSliderValueSwiftui: Double = -45
-    @State var zAxisSliderValueBunny: Double = -30
     
-    @State var offsetSliderValueXcode: Double = 40
     @State var offsetSliderValueHello: Double = 15
-    @State var offsetSliderValueSwift: Double = 18
-    @State var offsetSliderValueGift: Double = 16
-    @State var offsetSliderValueMemoji: Double = 15
-    @State var offsetSliderValueSwiftui: Double = 40
-    @State var offsetSliderValueBunny: Double = 44
     
     // Resetting
     @State var resetStickerOffset = false
     
     // Background Config
-    @State var backgroundImageIndex = 1
+    @State var backgroundImageIndex = 4
     
     private func loadBackgroundImage() -> Image {
         switch backgroundImageIndex {
@@ -85,61 +128,42 @@ struct UserScreen: View {
     
     var body: some View {
         let tapReset = TapGesture(count: 1)
-            .onEnded {(value) in
+            .onEnded { _ in
                 resetStickerOffset.toggle()
                 
                 withAnimation(.spring(response: 0.36, dampingFraction: 0.86, blendDuration: 0)) {
-                        xAxisSliderValueXcode = 60
-                        xAxisSliderValueHello = 60
-                        xAxisSliderValueSwift = 60
-                        xAxisSliderValueGift = 60
-                        xAxisSliderValueMemoji = 60
-                        xAxisSliderValueSwiftui = 60
-                        xAxisSliderValueBunny = 60
+                    xAxisSliderValueHello = 60
                         
-                        zAxisSliderValueXcode = -45
-                        zAxisSliderValueHello = -45
-                        zAxisSliderValueSwift = 0
-                        zAxisSliderValueGift = -35
-                        zAxisSliderValueMemoji = -45
-                        zAxisSliderValueSwiftui = -45
-                        zAxisSliderValueBunny = -30
+                    zAxisSliderValueHello = -45
                         
-                        offsetSliderValueXcode = 40
-                        offsetSliderValueHello = 15
-                        offsetSliderValueSwift = 18
-                        offsetSliderValueGift = 16
-                        offsetSliderValueMemoji = 15
-                        offsetSliderValueSwiftui = 40
-                        offsetSliderValueBunny = 44
+                    offsetSliderValueHello = 15
                 }
-        }
+            }
         
         let doubleTapReset = TapGesture(count: 2)
-            .onEnded {(value) in
+            .onEnded { _ in
                 viewVisible.toggle()
                 activeSticker = nil
-        }
+            }
         
         let longTap = LongPressGesture(minimumDuration: 1.0)
-            .onEnded {(value) in
+            .onEnded { _ in
                 backgroundImageIndex += 1
                 if backgroundImageIndex > 5 {
                     backgroundImageIndex = 1
                 }
-        }
+            }
         
         let combinedGestures = doubleTapReset
             .simultaneously(with: longTap)
             .simultaneously(with: tapReset)
         
-        
         ZStack {
-            loadBackgroundImage()
-                .resizable()
-                .scaledToFill()
-                .edgesIgnoringSafeArea(.all)
-                .gesture(combinedGestures)
+//            loadBackgroundImage()
+//                .resizable()
+//                .scaledToFill()
+//                .edgesIgnoringSafeArea(.all)
+//                .gesture(combinedGestures)
             
             // 3D Config Slider Interface
             ZStack {
@@ -163,68 +187,26 @@ struct UserScreen: View {
                                         .opacity(0.4)
                                     Spacer()
                                     Text({
-                                        if activeSticker == .xcode {
-                                            return "\(xAxisSliderValueXcode, specifier: "%.0f")"
-                                        } else if activeSticker == .hello {
+                                        if activeSticker == .sticker_zero {
                                             return "\(xAxisSliderValueHello, specifier: "%.0f")"
-                                        } else if activeSticker == .swift {
-                                            return "\(xAxisSliderValueSwift, specifier: "%.0f")"
-                                        } else if activeSticker == .gift {
-                                            return "\(xAxisSliderValueGift, specifier: "%.0f")"
-                                        } else if activeSticker == .memoji {
-                                            return "\(xAxisSliderValueMemoji, specifier: "%.0f")"
-                                        } else if activeSticker == .swiftui {
-                                            return "\(xAxisSliderValueSwiftui, specifier: "%.0f")"
-                                        } else if activeSticker == .bunny {
-                                            return "\(xAxisSliderValueBunny, specifier: "%.0f")"
                                         } else {
                                             return "0"
                                         }
                                     }())
-                                    .font(.system(size: 15, weight: .medium, design: .monospaced))
-                                    .opacity(0.4)
+                                        .font(.system(size: 15, weight: .medium, design: .monospaced))
+                                        .opacity(0.4)
                                 }
                                 Slider(
                                     value: Binding(
                                         get: {
                                             if let activeSticker = activeSticker {
-                                                switch activeSticker {
-                                                case .xcode:
-                                                    return xAxisSliderValueXcode
-                                                case .hello:
-                                                    return xAxisSliderValueHello
-                                                case .swift:
-                                                    return xAxisSliderValueSwift
-                                                case .gift:
-                                                    return xAxisSliderValueGift
-                                                case .memoji:
-                                                    return xAxisSliderValueMemoji
-                                                case .swiftui:
-                                                    return xAxisSliderValueSwiftui
-                                                case .bunny:
-                                                    return xAxisSliderValueBunny
-                                                }
+                                                return xAxisSliderValueHello
                                             }
                                             return 0 // Default value
                                         },
                                         set: { newValue in
                                             if let activeSticker = activeSticker {
-                                                switch activeSticker {
-                                                case .xcode:
-                                                    xAxisSliderValueXcode = newValue
-                                                case .hello:
-                                                    xAxisSliderValueHello = newValue
-                                                case .swift:
-                                                    xAxisSliderValueSwift = newValue
-                                                case .gift:
-                                                    xAxisSliderValueGift = newValue
-                                                case .memoji:
-                                                    xAxisSliderValueMemoji = newValue
-                                                case .swiftui:
-                                                    xAxisSliderValueSwiftui = newValue
-                                                case .bunny:
-                                                    xAxisSliderValueBunny = newValue
-                                                }
+                                                xAxisSliderValueHello = newValue
                                             }
                                         }
                                     ),
@@ -256,68 +238,26 @@ struct UserScreen: View {
                                         .opacity(0.4)
                                     Spacer()
                                     Text({
-                                        if activeSticker == .xcode {
-                                            return "\(zAxisSliderValueXcode, specifier: "%.0f")"
-                                        } else if activeSticker == .hello {
+                                        if activeSticker == .sticker_zero {
                                             return "\(zAxisSliderValueHello, specifier: "%.0f")"
-                                        } else if activeSticker == .swift {
-                                            return "\(zAxisSliderValueSwift, specifier: "%.0f")"
-                                        } else if activeSticker == .gift {
-                                            return "\(zAxisSliderValueGift, specifier: "%.0f")"
-                                        } else if activeSticker == .memoji {
-                                            return "\(zAxisSliderValueMemoji, specifier: "%.0f")"
-                                        } else if activeSticker == .swiftui {
-                                            return "\(zAxisSliderValueSwiftui, specifier: "%.0f")"
-                                        } else if activeSticker == .bunny {
-                                            return "\(zAxisSliderValueBunny, specifier: "%.0f")"
                                         } else {
                                             return "0"
                                         }
                                     }())
-                                    .font(.system(size: 15, weight: .medium, design: .monospaced))
-                                    .opacity(0.4)
+                                        .font(.system(size: 15, weight: .medium, design: .monospaced))
+                                        .opacity(0.4)
                                 }
                                 Slider(
                                     value: Binding(
                                         get: {
                                             if let activeSticker = activeSticker {
-                                                switch activeSticker {
-                                                case .xcode:
-                                                    return zAxisSliderValueXcode
-                                                case .hello:
-                                                    return zAxisSliderValueHello
-                                                case .swift:
-                                                    return zAxisSliderValueSwift
-                                                case .gift:
-                                                    return zAxisSliderValueGift
-                                                case .memoji:
-                                                    return zAxisSliderValueMemoji
-                                                case .swiftui:
-                                                    return zAxisSliderValueSwiftui
-                                                case .bunny:
-                                                    return zAxisSliderValueBunny
-                                                }
+                                                return zAxisSliderValueHello
                                             }
                                             return 0 // Default value
                                         },
                                         set: { newValue in
                                             if let activeSticker = activeSticker {
-                                                switch activeSticker {
-                                                case .xcode:
-                                                    zAxisSliderValueXcode = newValue
-                                                case .hello:
-                                                    zAxisSliderValueHello = newValue
-                                                case .swift:
-                                                    zAxisSliderValueSwift = newValue
-                                                case .gift:
-                                                    zAxisSliderValueGift = newValue
-                                                case .memoji:
-                                                    zAxisSliderValueMemoji = newValue
-                                                case .swiftui:
-                                                    zAxisSliderValueSwiftui = newValue
-                                                case .bunny:
-                                                    zAxisSliderValueBunny = newValue
-                                                }
+                                                zAxisSliderValueHello = newValue
                                             }
                                         }
                                     ),
@@ -349,75 +289,33 @@ struct UserScreen: View {
                                     .opacity(0.4)
                                 Spacer()
                                 Text({
-                                    if activeSticker == .xcode {
-                                        return "\(offsetSliderValueXcode, specifier: "%.0f")"
-                                    } else if activeSticker == .hello {
+                                    if activeSticker == .sticker_zero {
                                         return "\(offsetSliderValueHello, specifier: "%.0f")"
-                                    } else if activeSticker == .swift {
-                                        return "\(offsetSliderValueSwift, specifier: "%.0f")"
-                                    } else if activeSticker == .gift {
-                                        return "\(offsetSliderValueGift, specifier: "%.0f")"
-                                    } else if activeSticker == .memoji {
-                                        return "\(offsetSliderValueMemoji, specifier: "%.0f")"
-                                    } else if activeSticker == .swiftui {
-                                        return "\(offsetSliderValueSwiftui, specifier: "%.0f")"
-                                    } else if activeSticker == .bunny {
-                                        return "\(offsetSliderValueBunny, specifier: "%.0f")"
                                     } else {
                                         return "0"
                                     }
                                 }())
-                                .font(.system(size: 15, weight: .medium, design: .monospaced))
-                                .opacity(0.4)
+                                    .font(.system(size: 15, weight: .medium, design: .monospaced))
+                                    .opacity(0.4)
                             }
                             Slider(
                                 value: Binding(
                                     get: {
                                         if let activeSticker = activeSticker {
-                                            switch activeSticker {
-                                            case .xcode:
-                                                return offsetSliderValueXcode
-                                            case .hello:
-                                                return offsetSliderValueHello
-                                            case .swift:
-                                                return offsetSliderValueSwift
-                                            case .gift:
-                                                return offsetSliderValueGift
-                                            case .memoji:
-                                                return offsetSliderValueMemoji
-                                            case .swiftui:
-                                                return offsetSliderValueSwiftui
-                                            case .bunny:
-                                                return offsetSliderValueBunny
-                                            }
+                                            return offsetSliderValueHello
                                         }
                                         return 0 // Default value
                                     },
                                     set: { newValue in
                                         if let activeSticker = activeSticker {
-                                            switch activeSticker {
-                                            case .xcode:
-                                                offsetSliderValueXcode = newValue
-                                            case .hello:
-                                                offsetSliderValueHello = newValue
-                                            case .swift:
-                                                offsetSliderValueSwift = newValue
-                                            case .gift:
-                                                offsetSliderValueGift = newValue
-                                            case .memoji:
-                                                offsetSliderValueMemoji = newValue
-                                            case .swiftui:
-                                                offsetSliderValueSwiftui = newValue
-                                            case .bunny:
-                                                offsetSliderValueBunny = newValue
-                                            }
+                                            offsetSliderValueHello = newValue
                                         }
                                     }
                                 ),
                                 in: 0...100,
                                 step: 1
                             )
-                            .onChange(of: offsetSliderValueXcode + offsetSliderValueHello + offsetSliderValueSwift + offsetSliderValueGift + offsetSliderValueMemoji + offsetSliderValueSwiftui + offsetSliderValueBunny) {
+                            .onChange(of: offsetSliderValueHello) {
                                 // Trigger haptic feedback
                                 let feedbackGenerator = UISelectionFeedbackGenerator()
                                 feedbackGenerator.selectionChanged()
@@ -436,132 +334,132 @@ struct UserScreen: View {
             .padding(.trailing, 16)
             .opacity(activeSticker != nil ? 1 : 0)
             
-            // Main Interface
+            AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 80, height: 80)
+                    .clipShape(Circle())
+            } placeholder: {
+                ProgressView()
+            }
+            
+            // User data interface
+            VStack() {
+                VStack(alignment: .leading) {
+                    Text("@dracarys")
+                        .font(.system(size: 27, weight: .semibold))
+                        .foregroundColor(.primary)
+                    
+                    Divider()
+                        .background(Color.primary)
+                        .frame(width: UIScreen.main.bounds.width * 0.4)
+                    
+                    Group {
+                        HStack {
+                            Text("FOLLOW")
+                                .font(.system(size: 15, weight: .regular))
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("7643")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.bottom, 2)
+                        
+                        HStack {
+                            Text("REVERIE")
+                                .font(.system(size: 15, weight: .regular))
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("967")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.bottom, 2)
+                        
+                        HStack {
+                            Text("SOUND")
+                                .font(.system(size: 15, weight: .regular))
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("12.3K")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .frame(width: UIScreen.main.bounds.width * 0.4, alignment: .leading)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+//                .border(Color.green.opacity(1.0), width: 1)
+                .padding(.horizontal, 24)
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    
+                    Button(action: follow) {
+                        // Follow button
+                        Image(systemName: isFollowing ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.plus")
+                            .contentTransition(
+                                .symbolEffect(.replace)
+                            )
+                            .font(.system(size: 24))
+                            .frame(width: 48, height: 48)
+                            .background(.ultraThinMaterial, in: .circle)
+                            .contentShape(.circle)
+                            .foregroundColor(.primary)
+                            .symbolRenderingMode(.multicolor)
+                    }
+                }
+                .padding(.horizontal, 24)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+//            .border(Color.red.opacity(1.0), width: 1)
+            .padding(.top, 60)
+            .allowsHitTesting(false)
+            
+            // Sticker Interface
             ZStack {
-                XcodeStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex, resetStickerOffset: $resetStickerOffset, xAxisSliderValue: $xAxisSliderValueXcode, zAxisSliderValue: $zAxisSliderValueXcode, offsetSliderValue: $offsetSliderValueXcode, activeSticker: $activeSticker)
-                    .offset(x: -140, y: 180)
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .rotationEffect(Angle(degrees: activeSticker == .xcode ? 0 : 10))
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0.6), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                self.triggerSensoryFeedback += 1
-                                }
-                            }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.xcode] ?? 0))
-
-
-                HelloStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex, resetStickerOffset: $resetStickerOffset, xAxisSliderValue: $xAxisSliderValueHello, zAxisSliderValue: $zAxisSliderValueHello, offsetSliderValue: $offsetSliderValueHello, activeSticker: $activeSticker)
-                    .offset(x: 0, y: -30)
-                    .rotationEffect(Angle(degrees: activeSticker == .hello ? 0 : -2))
+                HelloStickerView(zIndexMap: $zIndexMap,
+                                 nextZIndex: $nextZIndex,
+                                 resetStickerOffset: $resetStickerOffset,
+                                 xAxisSliderValue: $xAxisSliderValueHello,
+                                 zAxisSliderValue: $zAxisSliderValueHello,
+                                 offsetSliderValue: $offsetSliderValueHello,
+                                 activeSticker: $activeSticker)
+                    .offset(x: 0, y: -160)
+                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
                     .scaleEffect(viewVisible ? 1 : 2)
                     .blur(radius: viewVisible ? 0.0 : 30.0)
                     .opacity(viewVisible ? 1.0 : 0.0)
                     .animation(.spring().delay(0), value: viewVisible)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                                self.triggerSensoryFeedback += 1
-                                }
-                            }
+                            self.triggerSensoryFeedback += 1
+                        }
+                    }
                     .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.hello] ?? 0))
-                
-                SwiftStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex, resetStickerOffset: $resetStickerOffset, xAxisSliderValue: $xAxisSliderValueSwift, zAxisSliderValue: $zAxisSliderValueSwift, offsetSliderValue: $offsetSliderValueSwift, activeSticker: $activeSticker)
-                    .offset(x: 30, y: -310)
-                    .rotationEffect(Angle(degrees: activeSticker == .swift ? 0 : -2))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0.2), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                self.triggerSensoryFeedback += 1
-                                }
-                            }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.swift] ?? 0))
-                
-                GiftStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex, resetStickerOffset: $resetStickerOffset, xAxisSliderValue: $xAxisSliderValueGift, zAxisSliderValue: $zAxisSliderValueGift, offsetSliderValue: $offsetSliderValueGift, activeSticker: $activeSticker)
-                    .offset(x: -168, y: -185)
-                    .rotationEffect(Angle(degrees: activeSticker == .gift ? 0 : 12))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0.1), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                self.triggerSensoryFeedback += 1
-                                }
-                            }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.gift] ?? 0))
-                
-                MemojiStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex, resetStickerOffset: $resetStickerOffset, xAxisSliderValue: $xAxisSliderValueMemoji, zAxisSliderValue: $zAxisSliderValueMemoji, offsetSliderValue: $offsetSliderValueMemoji, activeSticker: $activeSticker)
-                    .offset(x: 80, y: -182)
-                    .rotationEffect(Angle(degrees: activeSticker == .memoji ? 0 : 17))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0.3), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                self.triggerSensoryFeedback += 1
-                                }
-                            }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.memoji] ?? 0))
-                
-                SwiftUIStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex, resetStickerOffset: $resetStickerOffset, xAxisSliderValue: $xAxisSliderValueSwiftui, zAxisSliderValue: $zAxisSliderValueSwiftui, offsetSliderValue: $offsetSliderValueSwiftui, activeSticker: $activeSticker)
-                    .offset(x: 156, y: 132)
-                    .rotationEffect(Angle(degrees: activeSticker == .swiftui ? 0 : -4))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0.4), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                                self.triggerSensoryFeedback += 1
-                                }
-                            }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.swiftui] ?? 0))
-                
-                BunnyStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex, resetStickerOffset: $resetStickerOffset, xAxisSliderValue: $xAxisSliderValueBunny, zAxisSliderValue: $zAxisSliderValueBunny, offsetSliderValue: $offsetSliderValueBunny, activeSticker: $activeSticker)
-                    .offset(x: 155, y: 250)
-                    .rotationEffect(Angle(degrees: activeSticker == .bunny ? 0 : 20))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0.5), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
-                                self.triggerSensoryFeedback += 1
-                                }
-                            }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.bunny] ?? 0))
-                
+                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
             }
-            .ignoresSafeArea()
-            .onAppear{
+            .onAppear {
                 viewVisible.toggle()
             }
         }
-        .onAppear {
-            Task {
-                await viewModel.fetchUserData(userId: "cba2086a-21e8-43d9-9c03-2bd5e9b651ff", pageUserId: pageUserId)
-            }
-        }
+        .ignoresSafeArea(.all, edges: .top)
+        .background(Color.black)
+//        .onAppear {
+//            Task {
+//                await viewModel.fetchUserData(userId: "cba2086a-21e8-43d9-9c03-2bd5e9b651ff", pageUserId: pageUserId)
+//            }
+//        }
         .alert(isPresented: Binding<Bool>(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }
         )) {
             Alert(title: Text("Error"), message: Text(viewModel.errorMessage ?? ""), dismissButton: .default(Text("OK")))
         }
-       
     }
 }
 
@@ -590,7 +488,7 @@ class MotionManager: ObservableObject {
     }
     
     private func startMotionUpdates() {
-        motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motionData, error in
+        motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motionData, _ in
             if let motionData = motionData {
                 self?.pitch = motionData.attitude.pitch
                 self?.roll = motionData.attitude.roll
@@ -615,7 +513,7 @@ class MotionManager: ObservableObject {
     private func startTimer() {
         var lastUpdate = Date()
 
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self = self else { return }
 
             let now = Date()
@@ -648,10 +546,10 @@ class MotionManager: ObservableObject {
 }
 
 enum StickerViewType {
-    case xcode, hello, swift, gift, memoji, swiftui, bunny
+    case sticker_zero, sticker_one, sticker_two, sticker_three, sticker_four, sticker_five, sticker_six
 }
 
 #Preview {
-    UserScreen(initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/564x/9b/69/c2/9b69c2b207a3c6653d6d623c0c87733b.jpg"))
+    UserScreen(initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
 }
     

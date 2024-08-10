@@ -49,7 +49,7 @@ struct HelloStickerView: View {
             .onChanged { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
-                    zIndexMap[.hello] = nextZIndex
+                    zIndexMap[.sticker_one] = nextZIndex
                     nextZIndex += 1
                 }
                 withAnimation(.spring(response: 0.9, dampingFraction: 0.9, blendDuration: 0)) {
@@ -80,7 +80,7 @@ struct HelloStickerView: View {
                 }
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
-                    zIndexMap[.hello] = nextZIndex
+                    zIndexMap[.sticker_zero] = nextZIndex
                     nextZIndex += 1
                 }
                 withAnimation(.spring(response: 0.9, dampingFraction: 0.9, blendDuration: 0)) {
@@ -106,7 +106,7 @@ struct HelloStickerView: View {
             .onChanged { _ in
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8, blendDuration: 0)) {
                     dragTrigger = true
-                    zIndexMap[.hello] = nextZIndex
+                    zIndexMap[.sticker_zero] = nextZIndex
                     nextZIndex += 1
                 }
                 withAnimation(.spring(response: 0.9, dampingFraction: 0.9, blendDuration: 0)) {
@@ -126,10 +126,10 @@ struct HelloStickerView: View {
         let doubleTap3D = TapGesture(count: 2)
             .onEnded { _ in
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 0)) {
-                    if activeSticker == .hello {
+                    if activeSticker == .sticker_zero {
                         activeSticker = nil
                     } else {
-                        activeSticker = .hello
+                        activeSticker = .sticker_zero
                     }
                 }
             }
@@ -144,7 +144,7 @@ struct HelloStickerView: View {
         ZStack {
             mkShape
                 .stroke(
-                    activeSticker == .swift ? .white.opacity(0.4) : .white,
+                    activeSticker == .sticker_zero ? .white.opacity(0.4) : .white,
                     style: StrokeStyle(
                         lineWidth: 8,
                         lineCap: .round, // This makes the stroke ends rounded
@@ -153,11 +153,11 @@ struct HelloStickerView: View {
                 )
                 .frame(width: 170, height: 56)
                 .rotation3DEffect(
-                    activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero,
+                    activeSticker == .sticker_zero ? .degrees(zAxisSliderValue) : .zero,
                     axis: (x: 0, y: 0, z: 1)
                 )
                 .rotation3DEffect(
-                    activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero,
+                    activeSticker == .sticker_zero ? .degrees(xAxisSliderValue) : .zero,
                     axis: (x: 1, y: 0, z: 0)
                 )
                 .shadow(
@@ -173,9 +173,9 @@ struct HelloStickerView: View {
                 .frame(width: 170, height: 56)
                 .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/ .fill/*@END_MENU_TOKEN@*/)
                 .shadow(color: Color.black.opacity(0.4), radius: 1, x: 0, y: 0)
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -1 * offsetSliderValue : 0)
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+                .offset(x: 0, y: activeSticker == .sticker_zero ? -1 * offsetSliderValue : 0)
             
             mkShape
                 .stroke(
@@ -187,9 +187,9 @@ struct HelloStickerView: View {
                     )
                 )
                 .frame(width: 170, height: 56)
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -2*offsetSliderValue : 0)
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+                .offset(x: 0, y: activeSticker == .sticker_zero ? -2*offsetSliderValue : 0)
             
             Rectangle()
                 .fill(
@@ -226,9 +226,9 @@ struct HelloStickerView: View {
                         .stroke(.black, style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round))
                         .frame(width: 170, height: 56)
                 }
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -3*offsetSliderValue : 0)
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+                .offset(x: 0, y: activeSticker == .sticker_zero ? -3*offsetSliderValue : 0)
                 .allowsHitTesting(false)
             
 
@@ -238,9 +238,9 @@ struct HelloStickerView: View {
                 .frame(width: 170, height: 56)
                 .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
                 .opacity(0.25)
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -4*offsetSliderValue : 0)
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+                .offset(x: 0, y: activeSticker == .sticker_zero ? -4*offsetSliderValue : 0)
 
             Image("NoiseLayer")
                 .resizable()
@@ -254,9 +254,9 @@ struct HelloStickerView: View {
                         .stroke(.black, style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round))
                         .frame(width: 170, height: 56)
                 }
-                .rotation3DEffect(activeSticker == .hello ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
-                .rotation3DEffect(activeSticker == .hello ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
-                .offset(x: 0, y: activeSticker == .hello ? -5*offsetSliderValue : 0)
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(zAxisSliderValue) : .zero, axis: (x: 0, y: 0, z: 1))
+                .rotation3DEffect(activeSticker == .sticker_zero ? .degrees(xAxisSliderValue) : .zero, axis: (x: 1, y: 0, z: 0))
+                .offset(x: 0, y: activeSticker == .sticker_zero ? -5*offsetSliderValue : 0)
                 .allowsHitTesting(false)
 
             Rectangle()
@@ -280,7 +280,7 @@ struct HelloStickerView: View {
                 .frame(width: 170, height: 56)
                 .blur(radius: 10.0)
                 .offset(x: 0, y: glareTrigger ? 80 : -80)
-                .opacity(activeSticker == .hello ? 0 : 1)
+                .opacity(activeSticker == .sticker_zero ? 0 : 1)
                 .mask {
                     mkShape
                         .stroke(.black, style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round))
@@ -307,7 +307,7 @@ struct HelloStickerView: View {
         }
         .onChange(of: activeSticker) {
             withAnimation(.spring(response: 0.36, dampingFraction: 0.86, blendDuration: 0)) {
-                if activeSticker == .hello {
+                if activeSticker == .sticker_zero {
                     previousRotation = currentRotation + twistAngle
                     currentRotation = .zero
                 } else {
