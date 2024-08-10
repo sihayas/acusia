@@ -81,11 +81,8 @@ struct UserScreen: View {
     }
     
     @State var isFollowing = false
-    var follow: () -> Void {
-        return {
-            isFollowing.toggle()
-        }
-    }
+    @State var showSettings = false
+    @State private var selectedTagColor: TagColor = .blue
     
     // Load animation
     @State var viewVisible = false
@@ -345,7 +342,7 @@ struct UserScreen: View {
             }
             
             // User data interface
-            VStack() {
+            VStack {
                 VStack(alignment: .leading) {
                     Text("@dracarys")
                         .font(.system(size: 27, weight: .semibold))
@@ -358,40 +355,39 @@ struct UserScreen: View {
                     Group {
                         HStack {
                             Text("FOLLOW")
-                                .font(.system(size: 15, weight: .regular))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(.secondary)
                             Spacer()
                             Text("7643")
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(.secondary)
                         }
                         .padding(.bottom, 2)
                         
                         HStack {
                             Text("REVERIE")
-                                .font(.system(size: 15, weight: .regular))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(.secondary)
                             Spacer()
                             Text("967")
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(.secondary)
                         }
                         .padding(.bottom, 2)
                         
                         HStack {
                             Text("SOUND")
-                                .font(.system(size: 15, weight: .regular))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(.secondary)
                             Spacer()
                             Text("12.3K")
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(.secondary)
                         }
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.4, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-//                .border(Color.green.opacity(1.0), width: 1)
                 .padding(.horizontal, 24)
                 
                 Spacer()
@@ -399,12 +395,68 @@ struct UserScreen: View {
                 HStack {
                     Spacer()
                     
-                    Button(action: follow) {
-                        // Follow button
-                        Image(systemName: isFollowing ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.plus")
-                            .contentTransition(
-                                .symbolEffect(.replace)
-                            )
+//                    Button(action: {
+//                        isFollowing.toggle()
+//                    }) {
+//                        Image(systemName: isFollowing ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.plus")
+//                            .contentTransition(
+//                                .symbolEffect(.replace)
+//                            )
+//                            .font(.system(size: 24))
+//                            .frame(width: 48, height: 48)
+//                            .background(.ultraThinMaterial, in: .circle)
+//                            .contentShape(.circle)
+//                            .foregroundColor(.primary)
+//                            .symbolRenderingMode(.multicolor)
+//                    }
+                    Menu {
+                        Menu("Data") {
+                            Section("Permanently erase user data from the heavens.") {
+                                Button(role: .destructive) {
+                                    // Action for "Add to Favorites"
+                                } label: {
+                                    Label("Delete", systemImage: "xmark.icloud.fill")
+                                }
+                            }
+                            
+                            Section("Temporarily disable user in the heavens.") {
+                                Button {
+                                    // Action for "Add to Favorites"
+                                } label: {
+                                    Label("Archive", systemImage: "exclamationmark.icloud.fill")
+                                }
+                            }
+                            
+                            Section("Download user data from the heavens.") {
+                                Button {
+                                    // Action for "Add to Favorites"
+                                } label: {
+                                    Label("Export", systemImage: "icloud.and.arrow.down.fill")
+                                }
+                            }
+                        }
+                        Section("System") {
+                            Button {
+                                // Action for "Add to Bookmarks"
+                            } label: {
+                                Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
+                            }
+                        }
+                        Section("Identity") {
+                            Button {
+                                // Action for "Add to Favorites"
+                            } label: {
+                                Label("Name", systemImage: "questionmark.text.page.fill")
+                            }
+                            Button {
+                                // Action for "Add to Bookmarks"
+                            } label: {
+                                Label("Avatar", systemImage: "person.circle.fill")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "gear.circle")
+                            .symbolEffect(.scale, isActive: showSettings)
                             .font(.system(size: 24))
                             .frame(width: 48, height: 48)
                             .background(.ultraThinMaterial, in: .circle)
@@ -412,13 +464,15 @@ struct UserScreen: View {
                             .foregroundColor(.primary)
                             .symbolRenderingMode(.multicolor)
                     }
+                    .onTapGesture {
+                        showSettings.toggle()
+                    }
                 }
                 .padding(.horizontal, 24)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-//            .border(Color.red.opacity(1.0), width: 1)
             .padding(.top, 60)
-            .allowsHitTesting(false)
+//            .allowsHitTesting(false)
             
             // Sticker Interface
             ZStack {
@@ -547,6 +601,30 @@ class MotionManager: ObservableObject {
 
 enum StickerViewType {
     case sticker_zero, sticker_one, sticker_two, sticker_three, sticker_four, sticker_five, sticker_six
+}
+
+enum TagColor: String, CaseIterable, Identifiable {
+    case blue
+    case brown
+    case green
+    case yellow
+    case indigo
+    case red
+    case cyan
+
+    var id: Self { self }
+
+    var color: Color {
+        switch self {
+        case .blue: return .blue
+        case .brown: return .brown
+        case .green: return .green
+        case .yellow: return .yellow
+        case .indigo: return .indigo
+        case .red: return .red
+        case .cyan: return .cyan
+        }
+    }
 }
 
 #Preview {

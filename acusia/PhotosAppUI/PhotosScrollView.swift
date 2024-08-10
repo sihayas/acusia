@@ -114,6 +114,6 @@ struct PhotosScrollView: View {
     }
 }
 
-#Preview {
-    PhotosAppView()
-}
+//#Preview {
+//    PhotosAppView()
+//}

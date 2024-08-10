@@ -7,18 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD01D7D72C42579600FD0E07 /* SearchResultsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD01D7D62C42579000FD0E07 /* SearchResultsList.swift */; };
-		CD01D7DA2C4257E300FD0E07 /* NotificationsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD01D7D92C4257DD00FD0E07 /* NotificationsList.swift */; };
-		CD01D7DC2C42580E00FD0E07 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD01D7DB2C42580C00FD0E07 /* AvatarView.swift */; };
 		CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */; };
 		CD0E47DB2C473BD000BBBB5F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */; };
-		CD4F76F22C437CAE00B56C31 /* FormArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4F76F12C437CA000B56C31 /* FormArtworkView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescence.metal */; };
 		CD75A2F72C66A58000ED8A1A /* CustomGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD75A2F62C66A57D00ED8A1A /* CustomGesture.swift */; };
 		CD75A2FB2C66A65900ED8A1A /* CustomPagingIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD75A2FA2C66A65400ED8A1A /* CustomPagingIndicatorView.swift */; };
 		CD75A2FD2C66A67C00ED8A1A /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD75A2FC2C66A67A00ED8A1A /* Home.swift */; };
-		CD7885852C322CD100F16E03 /* EntryMorphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7885842C322CC900F16E03 /* EntryMorphView.swift */; };
-		CD78858A2C33BCCE00F16E03 /* AvatarMorphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7885892C33BCC800F16E03 /* AvatarMorphView.swift */; };
 		CD7B7DF82C66A6B7001BE9F4 /* BottomContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7B7DF72C66A6B4001BE9F4 /* BottomContents.swift */; };
 		CD7B7DFA2C66A6C4001BE9F4 /* PhotosScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7B7DF92C66A6C1001BE9F4 /* PhotosScrollView.swift */; };
 		CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D197E2C24E3CD00FDC979 /* Auth.swift */; };
@@ -41,7 +35,6 @@
 		CDDED74C2C194C8600958B39 /* acusiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED74B2C194C8600958B39 /* acusiaTests.swift */; };
 		CDDED7562C194C8600958B39 /* acusiaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7552C194C8600958B39 /* acusiaUITests.swift */; };
 		CDDED7582C194C8600958B39 /* acusiaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7572C194C8600958B39 /* acusiaUITestsLaunchTests.swift */; };
-		CDDED76D2C19516B00958B39 /* NavManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7682C19516B00958B39 /* NavManager.swift */; };
 		CDDED77D2C19520300958B39 /* FeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7792C19520300958B39 /* FeedModel.swift */; };
 		CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED77A2C19520300958B39 /* SearchModel.swift */; };
 		CDDED77F2C19520300958B39 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED77B2C19520300958B39 /* UserModel.swift */; };
@@ -53,9 +46,6 @@
 		CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* FeedScreen.swift */; };
 		CDDED7912C195B4B00958B39 /* DashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7902C195B4B00958B39 /* DashView.swift */; };
 		CDDED7932C195B6000958B39 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7922C195B6000958B39 /* CircleView.swift */; };
-		CDE7729D2C1EB3C200107829 /* ShapeMorphing.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7729B2C1EB3C200107829 /* ShapeMorphing.swift */; };
-		CDE7729E2C1EB3C200107829 /* AnimationProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE772982C1EB3C200107829 /* AnimationProgress.swift */; };
-		CDE7729F2C1EB3C200107829 /* NavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7729A2C1EB3C200107829 /* NavView.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF9D9AA2C3084C4001CEC02 /* AnimatedGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */; };
 /* End PBXBuildFile section */
@@ -107,18 +97,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CD01D7D62C42579000FD0E07 /* SearchResultsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsList.swift; sourceTree = "<group>"; };
-		CD01D7D92C4257DD00FD0E07 /* NotificationsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsList.swift; sourceTree = "<group>"; };
-		CD01D7DB2C42580C00FD0E07 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactCard.swift; sourceTree = "<group>"; };
 		CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
-		CD4F76F12C437CA000B56C31 /* FormArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormArtworkView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescence.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescence.metal; sourceTree = "<group>"; };
 		CD75A2F62C66A57D00ED8A1A /* CustomGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGesture.swift; sourceTree = "<group>"; };
 		CD75A2FA2C66A65400ED8A1A /* CustomPagingIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPagingIndicatorView.swift; sourceTree = "<group>"; };
 		CD75A2FC2C66A67A00ED8A1A /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
-		CD7885842C322CC900F16E03 /* EntryMorphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryMorphView.swift; sourceTree = "<group>"; };
-		CD7885892C33BCC800F16E03 /* AvatarMorphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarMorphView.swift; sourceTree = "<group>"; };
 		CD7B7DF72C66A6B4001BE9F4 /* BottomContents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomContents.swift; sourceTree = "<group>"; };
 		CD7B7DF92C66A6C1001BE9F4 /* PhotosScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosScrollView.swift; sourceTree = "<group>"; };
 		CD8D197E2C24E3CD00FDC979 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
@@ -144,7 +128,6 @@
 		CDDED7512C194C8600958B39 /* acusiaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = acusiaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7552C194C8600958B39 /* acusiaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = acusiaUITests.swift; sourceTree = "<group>"; };
 		CDDED7572C194C8600958B39 /* acusiaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = acusiaUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		CDDED7682C19516B00958B39 /* NavManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavManager.swift; sourceTree = "<group>"; };
 		CDDED7792C19520300958B39 /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
 		CDDED77A2C19520300958B39 /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
 		CDDED77B2C19520300958B39 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
@@ -157,9 +140,6 @@
 		CDDED7902C195B4B00958B39 /* DashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashView.swift; sourceTree = "<group>"; };
 		CDDED7922C195B6000958B39 /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
-		CDE772982C1EB3C200107829 /* AnimationProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationProgress.swift; sourceTree = "<group>"; };
-		CDE7729A2C1EB3C200107829 /* NavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavView.swift; sourceTree = "<group>"; };
-		CDE7729B2C1EB3C200107829 /* ShapeMorphing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeMorphing.swift; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
 		CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedGradient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,19 +188,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CD01D7D82C42579D00FD0E07 /* Nav */ = {
-			isa = PBXGroup;
-			children = (
-				CD01D7DB2C42580C00FD0E07 /* AvatarView.swift */,
-				CD4F76F12C437CA000B56C31 /* FormArtworkView.swift */,
-				CDDED7682C19516B00958B39 /* NavManager.swift */,
-				CDE7729A2C1EB3C200107829 /* NavView.swift */,
-				CD01D7D92C4257DD00FD0E07 /* NotificationsList.swift */,
-				CD01D7D62C42579000FD0E07 /* SearchResultsList.swift */,
-			);
-			path = Nav;
-			sourceTree = "<group>";
-		};
 		CD0E47D62C47361C00BBBB5F /* SceneKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,7 +296,6 @@
 				CDDED7712C1951BE00958B39 /* Components */,
 				CD13D5252C3FAD84007E3120 /* Metal */,
 				CDDED77C2C19520300958B39 /* Models */,
-				CDE772972C1EB39700107829 /* Morph */,
 				CD0E47D92C473BC600BBBB5F /* MusicKit */,
 				CDDED7802C1953A000958B39 /* Networking */,
 				CDDED73B2C194C8500958B39 /* Preview Content */,
@@ -416,26 +382,6 @@
 				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
 			);
 			path = Screens;
-			sourceTree = "<group>";
-		};
-		CDE772972C1EB39700107829 /* Morph */ = {
-			isa = PBXGroup;
-			children = (
-				CD7885892C33BCC800F16E03 /* AvatarMorphView.swift */,
-				CD7885842C322CC900F16E03 /* EntryMorphView.swift */,
-				CDE772992C1EB3C200107829 /* Helpers */,
-				CD01D7D82C42579D00FD0E07 /* Nav */,
-			);
-			path = Morph;
-			sourceTree = "<group>";
-		};
-		CDE772992C1EB3C200107829 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				CDE7729B2C1EB3C200107829 /* ShapeMorphing.swift */,
-				CDE772982C1EB3C200107829 /* AnimationProgress.swift */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -577,15 +523,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */,
-				CD7885852C322CD100F16E03 /* EntryMorphView.swift in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
-				CD01D7DC2C42580E00FD0E07 /* AvatarView.swift in Sources */,
-				CD01D7D72C42579600FD0E07 /* SearchResultsList.swift in Sources */,
-				CDDED76D2C19516B00958B39 /* NavManager.swift in Sources */,
-				CD78858A2C33BCCE00F16E03 /* AvatarMorphView.swift in Sources */,
 				CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */,
 				CDDED7912C195B4B00958B39 /* DashView.swift in Sources */,
 				CDDED7932C195B6000958B39 /* CircleView.swift in Sources */,
@@ -593,13 +534,9 @@
 				CDF9D9AA2C3084C4001CEC02 /* AnimatedGradient.swift in Sources */,
 				CDDED77D2C19520300958B39 /* FeedModel.swift in Sources */,
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
-				CD4F76F22C437CAE00B56C31 /* FormArtworkView.swift in Sources */,
-				CDE7729D2C1EB3C200107829 /* ShapeMorphing.swift in Sources */,
 				CD7B7DF82C66A6B7001BE9F4 /* BottomContents.swift in Sources */,
-				CDE7729E2C1EB3C200107829 /* AnimationProgress.swift in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */,
-				CDE7729F2C1EB3C200107829 /* NavView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
@@ -608,7 +545,6 @@
 				CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */,
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
-				CD01D7DA2C4257E300FD0E07 /* NotificationsList.swift in Sources */,
 				CDDED78D2C1959FD00958B39 /* StarRatingView.swift in Sources */,
 				CD7B7DFA2C66A6C4001BE9F4 /* PhotosScrollView.swift in Sources */,
 				CD0E47DB2C473BD000BBBB5F /* MusicKit.swift in Sources */,

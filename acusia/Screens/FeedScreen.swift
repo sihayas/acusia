@@ -200,7 +200,6 @@ struct ASoundCard: View {
 }
 
 struct Artifact: View {
-    @EnvironmentObject private var navManager: NavManager
     let userId: String
     let entry: APIEntry
     var namespace: Namespace.ID
@@ -311,13 +310,9 @@ struct Artifact: View {
                 .presentationBackground(.thinMaterial)
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                 .onWillDisappear {
-                    navManager.isViewingEntry = false
                     withAnimation(.spring()) {
                         expandedEntryID = nil
                     }
-                }
-                .onAppear {
-                    navManager.isViewingEntry = true
                 }
             }
         }
@@ -326,7 +321,6 @@ struct Artifact: View {
 
 
 struct Wisp: View {
-    @EnvironmentObject private var navManager: NavManager
     let userId: String
     let entry: APIEntry
     var namespace: Namespace.ID

@@ -84,7 +84,3 @@ struct CustomPagingIndicatorView: View {
         .foregroundStyle(.primary)
     }
 }
-
-#Preview {
-    PhotosAppView()
-}
