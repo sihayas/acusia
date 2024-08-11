@@ -409,64 +409,61 @@ struct UserScreen: View {
 //                            .foregroundColor(.primary)
 //                            .symbolRenderingMode(.multicolor)
 //                    }
-                    Menu {
-                        Menu("Data") {
-                            Section("Permanently erase user data from the heavens.") {
-                                Button(role: .destructive) {
-                                    // Action for "Add to Favorites"
-                                } label: {
-                                    Label("Delete", systemImage: "xmark.icloud.fill")
-                                }
-                            }
-                            
-                            Section("Temporarily disable user in the heavens.") {
-                                Button {
-                                    // Action for "Add to Favorites"
-                                } label: {
-                                    Label("Archive", systemImage: "exclamationmark.icloud.fill")
-                                }
-                            }
-                            
-                            Section("Download user data from the heavens.") {
-                                Button {
-                                    // Action for "Add to Favorites"
-                                } label: {
-                                    Label("Export", systemImage: "icloud.and.arrow.down.fill")
-                                }
-                            }
-                        }
-                        Section("System") {
-                            Button {
-                                // Action for "Add to Bookmarks"
-                            } label: {
-                                Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
-                            }
-                        }
-                        Section("Identity") {
-                            Button {
-                                // Action for "Add to Favorites"
-                            } label: {
-                                Label("Name", systemImage: "questionmark.text.page.fill")
-                            }
-                            Button {
-                                // Action for "Add to Bookmarks"
-                            } label: {
-                                Label("Avatar", systemImage: "person.circle.fill")
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "gear.circle")
-                            .symbolEffect(.scale, isActive: showSettings)
-                            .font(.system(size: 24))
-                            .frame(width: 48, height: 48)
-                            .background(.ultraThinMaterial, in: .circle)
-                            .contentShape(.circle)
-                            .foregroundColor(.primary)
-                            .symbolRenderingMode(.multicolor)
-                    }
-                    .onTapGesture {
-                        showSettings.toggle()
-                    }
+//                    Menu {
+//                        Menu("Data") {
+//                            Section("Permanently erase user data from the heavens.") {
+//                                Button(role: .destructive) {
+//                                    // Action for "Add to Favorites"
+//                                } label: {
+//                                    Label("Delete", systemImage: "xmark.icloud.fill")
+//                                }
+//                            }
+//                            
+//                            Section("Temporarily disable user in the heavens.") {
+//                                Button {
+//                                    // Action for "Add to Favorites"
+//                                } label: {
+//                                    Label("Archive", systemImage: "exclamationmark.icloud.fill")
+//                                }
+//                            }
+//                            
+//                            Section("Download user data from the heavens.") {
+//                                Button {
+//                                    // Action for "Add to Favorites"
+//                                } label: {
+//                                    Label("Export", systemImage: "icloud.and.arrow.down.fill")
+//                                }
+//                            }
+//                        }
+//                        Section("System") {
+//                            Button {
+//                                // Action for "Add to Bookmarks"
+//                            } label: {
+//                                Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
+//                            }
+//                        }
+//                        Section("Identity") {
+//                            Button {
+//                                // Action for "Add to Favorites"
+//                            } label: {
+//                                Label("Name", systemImage: "questionmark.text.page.fill")
+//                            }
+//                            Button {
+//                                // Action for "Add to Bookmarks"
+//                            } label: {
+//                                Label("Avatar", systemImage: "person.circle.fill")
+//                            }
+//                        }
+//                    } label: {
+//                        Image(systemName: "gear.circle")
+//                            .symbolEffect(.scale, isActive: showSettings)
+//                            .font(.system(size: 24))
+//                            .frame(width: 48, height: 48)
+//                            .background(.ultraThinMaterial, in: .circle)
+//                            .contentShape(.circle)
+//                            .foregroundColor(.primary)
+//                            .symbolRenderingMode(.multicolor)
+//                    }
                 }
                 .padding(.horizontal, 24)
             }
