@@ -44,7 +44,7 @@ struct SearchResultsList: View {
     @State var rotation: Double = 45
 
     var body: some View {
-        let cardHeight: CGFloat = 77
+        let cardHeight: CGFloat = 128
         
         GeometryReader {
             let size = $0.size
@@ -60,24 +60,22 @@ struct SearchResultsList: View {
                             size: size,
                             cardHeight: cardHeight
                         )
-                        .visualEffect { effect, proxy in
-                            let offset = -min(0, proxy.frame(in: .scrollView).minY)
-                            let scaleAdjustment = max(0.98, 1.0 - (offset / 5000))
-                            let maxDimming = 1.0 // This will allow dimming all the way to black
-                            let dimmingAdjustment = min(maxDimming, offset / 1000) // Adjusted for faster dimming
-
-                            return effect
-                                .offset(y: offset)
-                                .scaleEffect(scaleAdjustment, anchor: .bottom)
-                                .brightness(-dimmingAdjustment) // Negative value for dimming
+                        .visualEffect { content, geometryProxy in
+                            content
+                                .rotation3DEffect(.init(degrees: rotation(geometryProxy)),
+                                                  axis: (x: 1, y: 0, z: 0),
+                                                  anchor: .center,
+                                                  perspective: 0.5
+                                )
                         }
-                        .padding(.bottom, 12)
+                        .padding(.bottom, 0)
                     }
                 }
-                .padding(.bottom, (size.height - cardHeight))
-                .frame(maxHeight: .infinity, alignment: .top)
+                .padding(.vertical, (size.height - cardHeight) / 2.0)
+                .scrollTargetLayout()
             }
             .scrollClipDisabled()
+            .scrollTargetBehavior(.viewAligned)
             .scrollPosition(id: $activeResult)
             .onChange(of: searchText) { _, newValue in
                 Task {
@@ -116,7 +114,7 @@ struct SearchResultCell: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: 28, style: .continuous)
-            .fill(.black)
+            .fill(.clear)
             .frame(width: size.width - 48, height: cardHeight)
             .overlay(
                 HStack(spacing: 0) {
@@ -124,27 +122,13 @@ struct SearchResultCell: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                    .stroke(Color(UIColor.systemGray5), lineWidth: 1)
-                            )
-                            .padding(16)
+                            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                     } placeholder: {
                         Color.clear
                     }
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(result.title)
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundColor(.white)
-                            .lineLimit(1)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(width: size.width - 48, height: cardHeight, alignment: .topTrailing)
+                .frame(width: size.width - 48, height: cardHeight)
             )
-            .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 4)
             .scaleEffect(isVisible ? 1 : 0.8)
             .opacity(isVisible ? 1 : 0)
             .blur(radius: isVisible ? 0 : 4)

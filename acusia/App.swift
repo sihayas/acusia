@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreData
 
-let apiurl = "http://192.168.1.245:8000"
+let apiurl = "http://192.168.1.234:8000"
 
 @main
 struct AcusiaApp: App {
