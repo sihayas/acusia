@@ -68,10 +68,19 @@ enum SearchResultItem: Decodable, Hashable {
     var imageUrl: URL {
         switch self {
         case .sound(let sound):
-            let urlString = sound.artworkUrl.replacingOccurrences(of: "{w}x{h}", with: "128x128")
+            let urlString = sound.artworkUrl.replacingOccurrences(of: "{w}x{h}", with: "320x320")
             return URL(string: urlString)!
         case .user(let user):
             return URL(string: user.image)!
+        }
+    }
+    
+    var bgColorHex: String {
+        switch self {
+        case .sound(let sound):
+            return sound.artworkBgColor
+        case .user:
+            return "#FF4500"
         }
     }
     

@@ -66,7 +66,7 @@ struct BottomScrollView: View {
     
     var body: some View {
         let screenHeight = size.height + safeArea.top + safeArea.bottom
-        let minimizedHeight = screenHeight - safeArea.top
+        let minimizedHeight = screenHeight - safeArea.bottom
         
         VStack() {
             ScrollView(.vertical) {
@@ -86,14 +86,15 @@ struct BottomScrollView: View {
             .onScrollGeometryChange(for: CGFloat.self) { proxy in
                 proxy.contentOffset.y
             } action: { oldValue, newValue in
-                shareData.topScrollViewValue = newValue
+//                shareData.bottomScrollViewValue = newValue
             }
             .frame(width: size.width)
             .id(4)
             .clipped()
         }
         .frame(height: screenHeight)
-        .border(Color.green, width: 1)
+        .frame(height: screenHeight - minimizedHeight + minimizedHeight * shareData.gestureProgress, alignment: .top)
+        .border(Color.red, width: 1)
         .overlay(alignment: .top) {
             BottomBarView {
                 Task {

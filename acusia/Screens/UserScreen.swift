@@ -8,81 +8,23 @@
 import CoreMotion
 import SwiftUI
 
-struct MeshTransform: ViewModifier, Animatable {
-    var animatableData: AnimatablePair<AnimatablePair<CGFloat, CGFloat>, CGFloat> {
-        get {
-            AnimatableData(AnimatablePair(squeezeProgressX, squeezeProgressY), squeezeTranslationY)
-        }
-        set {
-            squeezeProgressX = newValue.first.first
-            squeezeProgressY = newValue.first.second
-            squeezeTranslationY = newValue.second
-        }
-    }
-
-    var offset: CGSize
-    var currentRotation: Angle
-    var currentMagnification: CGFloat
-    var pinchMagnification: CGFloat
-    var twistAngle: Angle
-
-    var squeezeCenterX: CGFloat
-    var squeezeProgressX: CGFloat
-    var squeezeProgressY: CGFloat
-    var squeezeTranslationY: CGFloat
-
-    init(squeezeProgressX: CGFloat, squeezeProgressY: CGFloat, squeezeTranslationY: CGFloat, squeezeCenterX: CGFloat, offset: CGSize, currentRotation: Angle, currentMagnification: CGFloat, pinchMagnification: CGFloat, twistAngle: Angle) {
-        self.squeezeProgressX = squeezeProgressX
-        self.squeezeProgressY = squeezeProgressY
-        self.squeezeTranslationY = squeezeTranslationY
-        self.squeezeCenterX = squeezeCenterX
-        self.offset = offset
-        self.currentRotation = currentRotation
-        self.currentMagnification = currentMagnification
-        self.pinchMagnification = pinchMagnification
-        self.twistAngle = twistAngle
-    }
-
-    func shader() -> Shader {
-        Shader(function: .init(library: .default, name: "distortion"), arguments: [
-            .boundingRect,
-            .float(squeezeCenterX),
-            .float(squeezeProgressX),
-            .float(squeezeProgressY),
-            .float(squeezeTranslationY)
-        ])
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .distortionEffect(shader(), maxSampleOffset: CGSize(width: 500, height: 500))
-            .scaleEffect(currentMagnification * pinchMagnification)
-            .rotationEffect(currentRotation + twistAngle, anchor: .center)
-            .offset(offset)
-    }
-}
-
 struct UserScreen: View {
     // Data
-    @StateObject private var viewModel: UserViewModel
-//    @EnvironmentObject var auth: Auth
+    @StateObject private var viewModel = UserViewModel()
     
+    @Binding var homePath: NavigationPath
     let initialUserData: APIUser?
     let userResult: UserResult?
-    
-    init(initialUserData: APIUser?, userResult: UserResult?) {
-        self.initialUserData = initialUserData
-        self.userResult = userResult
-        self._viewModel = StateObject(wrappedValue: UserViewModel())
-    }
     
     private var pageUserId: String {
         userResult?.id ?? initialUserData?.id ?? ""
     }
     
+    @State private var keyboardOffset: CGFloat = 0
     @State var isFollowing = false
     @State var showSettings = false
-    @State private var selectedTagColor: TagColor = .blue
+    @State var searchSheet = false
+    @State private var searchText = ""
     
     // Load animation
     @State var viewVisible = false
@@ -102,26 +44,6 @@ struct UserScreen: View {
     
     // Resetting
     @State var resetStickerOffset = false
-    
-    // Background Config
-    @State var backgroundImageIndex = 4
-    
-    private func loadBackgroundImage() -> Image {
-        switch backgroundImageIndex {
-        case 1:
-            return Image("background-7")
-        case 2:
-            return Image("background-2")
-        case 3:
-            return Image("background-3")
-        case 4:
-            return Image("background-8")
-        case 5:
-            return Image("")
-        default:
-            return Image("background")
-        }
-    }
     
     var body: some View {
         let tapReset = TapGesture(count: 1)
@@ -143,25 +65,7 @@ struct UserScreen: View {
                 activeSticker = nil
             }
         
-        let longTap = LongPressGesture(minimumDuration: 1.0)
-            .onEnded { _ in
-                backgroundImageIndex += 1
-                if backgroundImageIndex > 5 {
-                    backgroundImageIndex = 1
-                }
-            }
-        
-        let combinedGestures = doubleTapReset
-            .simultaneously(with: longTap)
-            .simultaneously(with: tapReset)
-        
         ZStack {
-//            loadBackgroundImage()
-//                .resizable()
-//                .scaledToFill()
-//                .edgesIgnoringSafeArea(.all)
-//                .gesture(combinedGestures)
-            
             // 3D Config Slider Interface
             ZStack {
                 VStack {
@@ -388,7 +292,6 @@ struct UserScreen: View {
                     .frame(width: UIScreen.main.bounds.width * 0.4, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 24)
                 
                 Spacer()
                 
@@ -409,97 +312,150 @@ struct UserScreen: View {
 //                            .foregroundColor(.primary)
 //                            .symbolRenderingMode(.multicolor)
 //                    }
-//                    Menu {
-//                        Menu("Data") {
-//                            Section("Permanently erase user data from the heavens.") {
-//                                Button(role: .destructive) {
-//                                    // Action for "Add to Favorites"
-//                                } label: {
-//                                    Label("Delete", systemImage: "xmark.icloud.fill")
-//                                }
-//                            }
-//                            
-//                            Section("Temporarily disable user in the heavens.") {
-//                                Button {
-//                                    // Action for "Add to Favorites"
-//                                } label: {
-//                                    Label("Archive", systemImage: "exclamationmark.icloud.fill")
-//                                }
-//                            }
-//                            
-//                            Section("Download user data from the heavens.") {
-//                                Button {
-//                                    // Action for "Add to Favorites"
-//                                } label: {
-//                                    Label("Export", systemImage: "icloud.and.arrow.down.fill")
-//                                }
-//                            }
-//                        }
-//                        Section("System") {
-//                            Button {
-//                                // Action for "Add to Bookmarks"
-//                            } label: {
-//                                Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
-//                            }
-//                        }
-//                        Section("Identity") {
-//                            Button {
-//                                // Action for "Add to Favorites"
-//                            } label: {
-//                                Label("Name", systemImage: "questionmark.text.page.fill")
-//                            }
-//                            Button {
-//                                // Action for "Add to Bookmarks"
-//                            } label: {
-//                                Label("Avatar", systemImage: "person.circle.fill")
-//                            }
-//                        }
-//                    } label: {
-//                        Image(systemName: "gear.circle")
-//                            .symbolEffect(.scale, isActive: showSettings)
-//                            .font(.system(size: 24))
-//                            .frame(width: 48, height: 48)
-//                            .background(.ultraThinMaterial, in: .circle)
-//                            .contentShape(.circle)
-//                            .foregroundColor(.primary)
-//                            .symbolRenderingMode(.multicolor)
-//                    }
+                    
+                    // Search
+                    Button {
+                        searchSheet.toggle()
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                            .symbolEffect(.scale, isActive: showSettings)
+                            .font(.system(size: 16))
+                            .frame(width: 32, height: 32)
+                            .background(.ultraThinMaterial, in: .circle)
+                            .contentShape(.circle)
+                            .foregroundColor(.white)
+                            .symbolRenderingMode(.multicolor)
+                    }
+                    
+                    Menu {
+                        Menu("Data") {
+                            Section("Permanently erase user data from the heavens.") {
+                                Button(role: .destructive) {
+                                    // Action for "Add to Favorites"
+                                } label: {
+                                    Label("Delete", systemImage: "xmark.icloud.fill")
+                                }
+                            }
+                            
+                            Section("Temporarily disable user in the heavens.") {
+                                Button {
+                                    // Action for "Add to Favorites"
+                                } label: {
+                                    Label("Archive", systemImage: "exclamationmark.icloud.fill")
+                                }
+                            }
+                            
+                            Section("Download user data from the heavens.") {
+                                Button {
+                                    // Action for "Add to Favorites"
+                                } label: {
+                                    Label("Export", systemImage: "icloud.and.arrow.down.fill")
+                                }
+                            }
+                        }
+                        Section("System") {
+                            Button {
+                                // Action for "Add to Bookmarks"
+                            } label: {
+                                Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
+                            }
+                        }
+                        Section("Identity") {
+                            Button {
+                                // Action for "Add to Favorites"
+                            } label: {
+                                Label("Name", systemImage: "questionmark.text.page.fill")
+                            }
+                            Button {
+                                // Action for "Add to Bookmarks"
+                            } label: {
+                                Label("Avatar", systemImage: "person.circle.fill")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "gear")
+                            .symbolEffect(.scale, isActive: showSettings)
+                            .font(.system(size: 20))
+                            .frame(width: 32, height: 32)
+                            .background(.ultraThinMaterial, in: .circle)
+                            .contentShape(.circle)
+                            .foregroundColor(.white)
+                            .symbolRenderingMode(.multicolor)
+                    }
                 }
-                .padding(.horizontal, 24)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .padding(.top, 60)
-//            .allowsHitTesting(false)
+            .padding(.horizontal, 24)
             
             // Sticker Interface
-            ZStack {
-                HelloStickerView(zIndexMap: $zIndexMap,
-                                 nextZIndex: $nextZIndex,
-                                 resetStickerOffset: $resetStickerOffset,
-                                 xAxisSliderValue: $xAxisSliderValueHello,
-                                 zAxisSliderValue: $zAxisSliderValueHello,
-                                 offsetSliderValue: $offsetSliderValueHello,
-                                 activeSticker: $activeSticker)
-                    .offset(x: 0, y: -160)
-                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            self.triggerSensoryFeedback += 1
-                        }
-                    }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
+//            ZStack {
+//                HelloStickerView(zIndexMap: $zIndexMap,
+//                                 nextZIndex: $nextZIndex,
+//                                 resetStickerOffset: $resetStickerOffset,
+//                                 xAxisSliderValue: $xAxisSliderValueHello,
+//                                 zAxisSliderValue: $zAxisSliderValueHello,
+//                                 offsetSliderValue: $offsetSliderValueHello,
+//                                 activeSticker: $activeSticker)
+//                    .offset(x: 0, y: -160)
+//                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
+//                    .scaleEffect(viewVisible ? 1 : 2)
+//                    .blur(radius: viewVisible ? 0.0 : 30.0)
+//                    .opacity(viewVisible ? 1.0 : 0.0)
+//                    .animation(.spring().delay(0), value: viewVisible)
+//                    .onAppear {
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//                            self.triggerSensoryFeedback += 1
+//                        }
+//                    }
+//                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
+//                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
+//            }
+//            .onAppear {
+//                viewVisible.toggle()
+//            }
+        }
+        .sheet(isPresented: $searchSheet) {
+            VStack(alignment: .leading) {
+                HStack(alignment: .bottom) {
+                    // search text preview
+                    Text(searchText.isEmpty ? "Index" :"Indexing \"\(searchText)\"")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.secondary)
+                }
+                .padding([.top, .horizontal], 24)
+                
+                SearchResultsList(path: $homePath, searchText: $searchText)
             }
-            .onAppear {
-                viewVisible.toggle()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .presentationDetents([.fraction(0.85), .large])
+            .presentationDragIndicator(.hidden)
+            .presentationBackground(.thickMaterial)
+            .presentationCornerRadius(32)
+            .overlay(
+                VStack {
+                    Spacer()
+                    SearchBar(searchText: $searchText)
+                        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
+                        .padding(.horizontal, 24)
+                        .offset(y: -keyboardOffset)
+                }
+                .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
+            )
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
+                withAnimation(.spring()) {
+                    keyboardOffset = 32 
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                withAnimation {
+                    keyboardOffset = 0
+                }
             }
         }
-        .ignoresSafeArea(.all, edges: .top)
         .background(Color.black)
+        .onAppear {
+            searchSheet = true
+        }
 //        .onAppear {
 //            Task {
 //                await viewModel.fetchUserData(userId: "cba2086a-21e8-43d9-9c03-2bd5e9b651ff", pageUserId: pageUserId)
@@ -513,6 +469,62 @@ struct UserScreen: View {
         }
     }
 }
+
+
+struct MeshTransform: ViewModifier, Animatable {
+    var animatableData: AnimatablePair<AnimatablePair<CGFloat, CGFloat>, CGFloat> {
+        get {
+            AnimatableData(AnimatablePair(squeezeProgressX, squeezeProgressY), squeezeTranslationY)
+        }
+        set {
+            squeezeProgressX = newValue.first.first
+            squeezeProgressY = newValue.first.second
+            squeezeTranslationY = newValue.second
+        }
+    }
+
+    var offset: CGSize
+    var currentRotation: Angle
+    var currentMagnification: CGFloat
+    var pinchMagnification: CGFloat
+    var twistAngle: Angle
+
+    var squeezeCenterX: CGFloat
+    var squeezeProgressX: CGFloat
+    var squeezeProgressY: CGFloat
+    var squeezeTranslationY: CGFloat
+
+    init(squeezeProgressX: CGFloat, squeezeProgressY: CGFloat, squeezeTranslationY: CGFloat, squeezeCenterX: CGFloat, offset: CGSize, currentRotation: Angle, currentMagnification: CGFloat, pinchMagnification: CGFloat, twistAngle: Angle) {
+        self.squeezeProgressX = squeezeProgressX
+        self.squeezeProgressY = squeezeProgressY
+        self.squeezeTranslationY = squeezeTranslationY
+        self.squeezeCenterX = squeezeCenterX
+        self.offset = offset
+        self.currentRotation = currentRotation
+        self.currentMagnification = currentMagnification
+        self.pinchMagnification = pinchMagnification
+        self.twistAngle = twistAngle
+    }
+
+    func shader() -> Shader {
+        Shader(function: .init(library: .default, name: "distortion"), arguments: [
+            .boundingRect,
+            .float(squeezeCenterX),
+            .float(squeezeProgressX),
+            .float(squeezeProgressY),
+            .float(squeezeTranslationY)
+        ])
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .distortionEffect(shader(), maxSampleOffset: CGSize(width: 500, height: 500))
+            .scaleEffect(currentMagnification * pinchMagnification)
+            .rotationEffect(currentRotation + twistAngle, anchor: .center)
+            .offset(offset)
+    }
+}
+
 
 class MotionManager: ObservableObject {
     static let shared = MotionManager()
@@ -624,7 +636,7 @@ enum TagColor: String, CaseIterable, Identifiable {
     }
 }
 
-#Preview {
-    UserScreen(initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
-}
-    
+// #Preview {
+//    UserScreen(initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
+// }
+//

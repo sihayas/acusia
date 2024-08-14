@@ -25,7 +25,7 @@ struct CircleView: View {
                 )
             )
             .frame(width: width, height: height)
-            .blur(radius: 40)
+            .blur(radius: 64)
     }
 }
 

@@ -1,16 +1,8 @@
-//
-//  Home.swift
-//  iOS18PhotosAppUI
-//
-//  Created by Xiaofu666 on 2024/7/20.
-//
-
 import SwiftUI
-
 
 @Observable
 class ShareData {
-    // This is true when the Photos Grid ScrollView is Expanded
+    // This is true when the TopScrollView is Expanded
     var isExpanded: Bool = false
     
     // MainScrollView Properties
@@ -33,77 +25,99 @@ struct Home: View {
     let safeArea: EdgeInsets
     let shareData = ShareData()
     
-    var body: some View {
-        let minimizedHeight = (size.height + safeArea.top + safeArea.bottom) * 0.2
-        
-        ZStack {
-            UserScreen(initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
+    @Binding var homePath: NavigationPath
 
-            ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    TopScrollView(size: size, safeArea: safeArea)
+    // State to track current visible view
+    @State private var currentView: String = "mainView"
+
+    var body: some View {
+        let sidebarWidth = size.width * 0.9
+        
+        GeometryReader { geometry in
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 0) {
+                    ScrollView(.vertical) {
+                        VStack(spacing: 0) {
+                            TopScrollView(size: size, safeArea: safeArea)
+                            
+                            UserScreen(homePath: $homePath, initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
+                                .border(Color.purple, width: 2)
+                                .frame(minHeight: size.height)
+                                .offset(y: shareData.gestureProgress * 30)
+                            
+                            BottomScrollView(size: size, safeArea: safeArea)
+                        }
+                    }
+                    .onScrollGeometryChange(for: CGFloat.self) { proxy in
+                        proxy.contentOffset.y
+                    } action: { oldValue, newValue in
+                        shareData.mainScrollValue = newValue
+                    }
+                    .scrollDisabled(shareData.isExpanded)
+                    .environment(shareData)
+                    .simultaneousGesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let translation = value.translation.height * 0.1 // Friction
+                                let draggingUp = translation < 0
+                                let draggingDown = translation > 0
+                                
+                                if draggingDown && shareData.mainScrollValue <= 0 && !shareData.isExpanded {
+                                    shareData.canPullDown = true
+                                    let progress = max(min(translation / (size.height + safeArea.top + safeArea.bottom) * 0.2, 1.0), 0.0)
+                                    shareData.gestureProgress = progress
+                                } else if draggingUp && shareData.topScrollViewValue >= 0 && shareData.isExpanded {
+                                    shareData.canPullUp = true
+                                    let progress = max(min(-translation / (size.height + safeArea.top + safeArea.bottom) * 0.2, 1.0), 0.0)
+                                    shareData.gestureProgress = 1 - progress
+                                } else {
+                                    // Conditions not met for progress calculation
+                                }
+                            }
+                            .onEnded { value in
+                                withAnimation(.snappy(duration: 0.6, extraBounce: 0)) {
+                                    if shareData.canPullDown && value.translation.height > 0 && !shareData.isExpanded {
+                                        shareData.isExpanded = true
+                                        shareData.gestureProgress = 1
+                                    } else if shareData.canPullUp && value.translation.height < 0 && shareData.isExpanded {
+                                        shareData.isExpanded = false
+                                        shareData.gestureProgress = 0
+                                    }
+                                }
+                                shareData.canPullDown = false
+                                shareData.canPullUp = false
+                            }
+                    )
+                    .frame(width: size.width)
+                    .id("mainView")
                     
-                    MiddleScrollView(size: size, safeArea: safeArea)
-                        .offset(y: shareData.gestureProgress * 30)
                     
-                    
-                    BottomScrollView(size: size, safeArea: safeArea)
+                    VStack {
+                        Text("Notifications")
+                            .font(.largeTitle)
+                            .padding()
+                        Spacer()
+                    }
+                    .frame(width: sidebarWidth)
+                    .background(Color.black)
+                    .border(Color.cyan, width: 1)
+                    .id("sidebar")
+                }
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.paging)
+            .onScrollTargetVisibilityChange(idType: String.self) { visibleTargets in
+                if let visibleTarget = visibleTargets.first, visibleTarget != currentView {
+                    currentView = visibleTarget
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 }
             }
-            .onScrollGeometryChange(for: CGFloat.self) { proxy in
-                proxy.contentOffset.y
-            } action: { oldValue, newValue in
-                shareData.mainScrollValue = newValue
-            }
-            /// Disabling the Main ScrollView Interaction, When the Photos Grid is Expanded
-            .scrollDisabled(shareData.isExpanded)
-            .environment(shareData)
-            .simultaneousGesture(
-                DragGesture()
-                    .onChanged { value in
-                        // Apply friction by scaling down the translation
-                        let translation = value.translation.height * 0.1 // Friction
-                        
-                        let draggingUp = translation < 0
-                        let draggingDown = translation > 0
-                        
-                        if draggingDown && shareData.mainScrollValue <= 0 && !shareData.isExpanded {
-                            shareData.canPullDown = true
-                            
-                            let progress = max(min(translation / minimizedHeight, 1.0), 0.0)
-                            shareData.gestureProgress = progress
-
-                        } else if draggingUp && shareData.topScrollViewValue >= 0 && shareData.isExpanded {
-                            shareData.canPullUp = true
-                            let progress = max(min(-translation / minimizedHeight, 1.0), 0.0)
-                            shareData.gestureProgress = 1 - progress
-
-                        } else {
-                            print("Conditions not met for progress calculation.")
-                        }
-                    }
-                    .onEnded { value in
-                        withAnimation(.snappy(duration: 0.6, extraBounce: 0)) {
-                            if shareData.canPullDown && value.translation.height > 0 && !shareData.isExpanded {
-                                shareData.isExpanded = true
-                                shareData.gestureProgress = 1
-
-                            } else if shareData.canPullUp && value.translation.height < 0 && shareData.isExpanded {
-                                shareData.isExpanded = false
-                                shareData.gestureProgress = 0
-
-                            }
-                        }
-                        // Reset pull-up/pull-down flags
-                        shareData.canPullDown = false
-                        shareData.canPullUp = false
-                    }
-            )
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(.black)
+        .ignoresSafeArea()
     }
 }
-
 
 #Preview {
     AcusiaAppView()

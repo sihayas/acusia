@@ -226,8 +226,8 @@ struct Artifact: View {
                     .padding(.bottom, 4)
                 HStack(alignment: .top, spacing: 8) {
                     NavigationLink {
-                        UserScreen(initialUserData: entry.author, userResult: nil)
-                            .navigationTransition(.zoom(sourceID: entry.id, in: namespace))
+//                        UserScreen(initialUserData: entry.author, userResult: nil)
+//                            .navigationTransition(.zoom(sourceID: entry.id, in: namespace))
                     } label: {
                         AsyncImage(url: URL(string: entry.author.image)) { image in
                             image
@@ -331,7 +331,7 @@ struct Wisp: View {
         HStack(alignment: .top) {
             // Avatar Image View
             NavigationLink {
-                UserScreen(initialUserData: entry.author, userResult: nil)
+//                UserScreen(initialUserData: entry.author, userResult: nil)
             } label: {
                 AsyncImage(url: URL(string: entry.author.image)) { image in
                     image

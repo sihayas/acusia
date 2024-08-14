@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreData
 
-let apiurl = "http://192.168.1.17:8000"
+let apiurl = "http://192.168.1.245:8000"
 
 @main
 struct AcusiaApp: App {
@@ -19,6 +19,7 @@ struct AcusiaApp: App {
 
 struct AcusiaAppView: View {
 //    @EnvironmentObject var auth: Auth
+    @State private var homePath = NavigationPath()
     
     var body: some View {
 //        Group {
@@ -40,8 +41,9 @@ struct AcusiaAppView: View {
         GeometryReader {
             let size = $0.size
             let safeArea = $0.safeAreaInsets
-            Home(size: size, safeArea: safeArea)
-                .ignoresSafeArea(.all, edges: .top)
+            Home(size: size, safeArea: safeArea, homePath: $homePath)
+                .ignoresSafeArea(.all)
+                .background(Color.black)
         }
     }
 }
@@ -64,17 +66,18 @@ struct ContentView: View {
                         case .sound(_):
                             EmptyView()
                         case .user(let user):
-                            UserScreen(initialUserData: nil, userResult: user)
+                            EmptyView()
+//                            UserScreen(initialUserData: nil, userResult: user)
                         }
                     }
                     .tag(0)
             }
             
             NavigationStack(path: $userPath) {
-                UserScreen(initialUserData: user, userResult: nil)
-                    .toolbar(.hidden, for: .tabBar)
-                    .navigationBarHidden(true)
-                    .tag(1)
+//                UserScreen(initialUserData: user, userResult: nil)
+//                    .toolbar(.hidden, for: .tabBar)
+//                    .navigationBarHidden(true)
+//                    .tag(1)
             }
         }
         .tabViewStyle(DefaultTabViewStyle())
