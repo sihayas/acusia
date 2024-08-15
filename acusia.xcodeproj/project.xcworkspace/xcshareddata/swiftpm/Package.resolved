@@ -1,6 +1,15 @@
 {
-  "originHash" : "0681745c53c4d8c116c256942cf49932fcfd116fdac82fb259732942917f1cef",
+  "originHash" : "0f09ad6fad8791513dbf81a63882360a91ee1a6b52f924555ca6a5734c909661",
   "pins" : [
+    {
+      "identity" : "biguipaging",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/notsobigcompany/BigUIPaging.git",
+      "state" : {
+        "revision" : "40fa6e1683bd47b962e216c05377bfd1b8f760de",
+        "version" : "0.0.3"
+      }
+    },
     {
       "identity" : "wave",
       "kind" : "remoteSourceControl",

@@ -420,16 +420,16 @@ struct UserScreen: View {
                     // search text preview
                     Text(searchText.isEmpty ? "Index" :"Indexing \"\(searchText)\"")
                             .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.white)
                 }
                 .padding([.top, .horizontal], 24)
                 
                 SearchResultsList(path: $homePath, searchText: $searchText)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .presentationDetents([.fraction(0.85), .large])
+            .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
-            .presentationBackground(.thickMaterial)
+            .presentationBackground(.black)
             .presentationCornerRadius(32)
             .overlay(
                 VStack {
