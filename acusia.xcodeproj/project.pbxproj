@@ -10,6 +10,9 @@
 		CD06C2702C69B10600FC010C /* SearchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* SearchScreen.swift */; };
 		CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */; };
 		CD0E47DB2C473BD000BBBB5F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */; };
+		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
+		CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA62C6DE76900C16804 /* Loupe.metal */; };
+		CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA82C6DE7B100C16804 /* Loupe.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescence.metal */; };
 		CD75A2FB2C66A65900ED8A1A /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD75A2FA2C66A65400ED8A1A /* BottomBarView.swift */; };
 		CD75A2FD2C66A67C00ED8A1A /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD75A2FC2C66A67A00ED8A1A /* Home.swift */; };
@@ -99,6 +102,8 @@
 		CD06C26F2C69B10100FC010C /* SearchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchScreen.swift; sourceTree = "<group>"; };
 		CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactCard.swift; sourceTree = "<group>"; };
 		CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
+		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
+		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescence.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescence.metal; sourceTree = "<group>"; };
 		CD75A2FA2C66A65400ED8A1A /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		CD75A2FC2C66A67A00ED8A1A /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
@@ -166,6 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */,
+				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,9 +208,18 @@
 			path = MusicKit;
 			sourceTree = "<group>";
 		};
+		CD132AA42C6DE75800C16804 /* Loupe */ = {
+			isa = PBXGroup;
+			children = (
+				CD132AA62C6DE76900C16804 /* Loupe.metal */,
+			);
+			path = Loupe;
+			sourceTree = "<group>";
+		};
 		CD13D5252C3FAD84007E3120 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
+				CD132AA42C6DE75800C16804 /* Loupe */,
 				CDC37D492C606C16002D2709 /* IridescentHolo */,
 				CDC37D482C606BF3002D2709 /* Costello */,
 				CDC37D442C6067FA002D2709 /* IridescentLight */,
@@ -373,6 +388,7 @@
 		CDDED7872C1955A500958B39 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				CD132AA82C6DE7B100C16804 /* Loupe.swift */,
 				CD06C26F2C69B10100FC010C /* SearchScreen.swift */,
 				CDD48E172C62C20B0001C4E8 /* UserScreen.swift */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
@@ -401,6 +417,7 @@
 			name = acusia;
 			packageProductDependencies = (
 				CDD48E1A2C62C26B0001C4E8 /* Wave */,
+				CD132AA22C6DDB7200C16804 /* BigUIPaging */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -520,6 +537,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */,
 				CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
@@ -548,6 +566,7 @@
 				CD0E47DB2C473BD000BBBB5F /* MusicKit.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
+				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
@@ -908,6 +927,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CD132AA22C6DDB7200C16804 /* BigUIPaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */;
+			productName = BigUIPaging;
+		};
 		CDD48E1A2C62C26B0001C4E8 /* Wave */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */;

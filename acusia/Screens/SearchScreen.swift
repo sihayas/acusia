@@ -6,7 +6,85 @@
 //
 
 import SwiftUI
+import BigUIPaging
 
+struct CardDeckExample: View {
+    
+    @State private var selection: Int = 1
+    private let totalPages = 10
+    
+    var body: some View {
+        VStack {
+            PageView(selection: $selection) {
+                ForEach(1...totalPages, id: \.self) { value in
+                    ExamplePage(value: value)
+                        // Resize to be more card-like.
+                        .aspectRatio(0.7, contentMode: .fit)
+                }
+            }
+            // Set the card style
+            .pageViewStyle(.cardDeck)
+            // Card styling options
+            .pageViewCardCornerRadius(45.0)
+            .pageViewCardShadow(.visible)
+            // A tap gesture works great here
+            .onTapGesture {
+                print("Tapped card \(selection)")
+            }
+        }
+        .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: .infinity)
+        .border(Color.red)
+    }
+    
+    // Here's where you'd map your selection to a page index.
+    // In this example it's just the selection minus one.
+    var indicatorSelection: Binding<Int> {
+        .init {
+            selection - 1
+        } set: { newValue in
+            selection = newValue + 1
+        }
+    }
+}
+
+struct ExamplePage: View {
+    
+    let value: Int
+    
+    var body: some View {
+//        let _ = Self._printChanges()
+        GeometryReader { geometry in
+            ZStack(alignment: .center) {
+                Rectangle()
+                    .fill(value.color)
+                    .ignoresSafeArea()
+                Image(systemName: "\(value).circle.fill")
+                    .font(.system(size: geometry.size.height / 4))
+                    .foregroundStyle(.white)
+            }
+        }
+    }
+}
+
+extension Int {
+    
+    var color: Color {
+        switch self % 10 {
+        case 0: return .pink
+        case 1: return .red
+        case 2: return .orange
+        case 3: return .yellow
+        case 4: return .green
+        case 5: return .mint
+        case 6: return .teal
+        case 7: return .blue
+        case 8: return .indigo
+        case 9: return .purple
+        default: return .gray
+        }
+    }
+}
+ 
 struct SearchBar: View {
     @Binding var searchText: String
 
@@ -34,6 +112,7 @@ struct SearchBar: View {
         .frame(height: 48)
     }
 }
+
 
 struct SearchResultsList: View {
     @Binding var path: NavigationPath
