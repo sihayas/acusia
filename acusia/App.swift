@@ -1,49 +1,50 @@
-import SwiftUI
 import CoreData
+import SwiftUI
 
 let apiurl = "http://192.168.1.234:8000"
 
 @main
 struct AcusiaApp: App {
     let persistenceController = PersistenceController.shared
-//    @StateObject private var auth = Auth()
-    
+    @StateObject private var auth = Auth()
+
     var body: some Scene {
         WindowGroup {
             AcusiaAppView()
-//                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-//                .environmentObject(auth)
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(auth)
         }
     }
 }
 
 struct AcusiaAppView: View {
-//    @EnvironmentObject var auth: Auth
+    @EnvironmentObject var auth: Auth
     @State private var homePath = NavigationPath()
-    
+
     var body: some View {
-//        Group {
-//            if auth.isAuthenticated {
-//                if let user = auth.user {
+        Group {
+            if auth.isAuthenticated {
+                if let user = auth.user {
 //                    ContentView(user: user)
-//                } else {
-//                    ProgressView()
-//                }
-//            } else {
-//                AuthScreen()
-//            }
-//        }
-//        .onAppear {
-//            Task {
-//                await auth.initSession()
-//            }
-//        }
-        GeometryReader {
-            let size = $0.size
-            let safeArea = $0.safeAreaInsets
-            Home(size: size, safeArea: safeArea, homePath: $homePath)
-                .ignoresSafeArea(.all)
-                .background(Color.black)
+                    GeometryReader {
+                        let size = $0.size
+                        let safeArea = $0.safeAreaInsets
+                        Home(size: size, safeArea: safeArea, homePath: $homePath)
+                            .ignoresSafeArea(.all)
+                            .background(Color.black)
+                    }
+
+                } else {
+                    ProgressView()
+                }
+            } else {
+                AuthScreen()
+            }
+        }
+        .onAppear {
+            Task {
+                await auth.initSession()
+            }
         }
     }
 }
@@ -54,7 +55,7 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @State private var feedPath = NavigationPath()
     @State private var userPath = NavigationPath()
-    
+
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack(path: $feedPath) {
@@ -63,7 +64,7 @@ struct ContentView: View {
                     .navigationBarHidden(true)
                     .navigationDestination(for: SearchResultItem.self) { item in
                         switch item {
-                        case .sound(_):
+                        case .sound:
                             EmptyView()
                         case .user(let user):
                             EmptyView()
@@ -72,7 +73,7 @@ struct ContentView: View {
                     }
                     .tag(0)
             }
-            
+
             NavigationStack(path: $userPath) {
 //                UserScreen(initialUserData: user, userResult: nil)
 //                    .toolbar(.hidden, for: .tabBar)
@@ -83,6 +84,7 @@ struct ContentView: View {
         .tabViewStyle(DefaultTabViewStyle())
     }
 }
+
 extension Notification.Name {
     static let authenticationSucceeded = Notification.Name("AuthenticationSucceeded")
 }

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD06C2702C69B10600FC010C /* SearchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* SearchScreen.swift */; };
+		CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* SearchSheet.swift */; };
 		CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */; };
 		CD0E47DB2C473BD000BBBB5F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
@@ -99,7 +99,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CD06C26F2C69B10100FC010C /* SearchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchScreen.swift; sourceTree = "<group>"; };
+		CD06C26F2C69B10100FC010C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
 		CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactCard.swift; sourceTree = "<group>"; };
 		CD0E47DA2C473BCC00BBBB5F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
@@ -389,7 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				CD132AA82C6DE7B100C16804 /* Loupe.swift */,
-				CD06C26F2C69B10100FC010C /* SearchScreen.swift */,
+				CD06C26F2C69B10100FC010C /* SearchSheet.swift */,
 				CDD48E172C62C20B0001C4E8 /* UserScreen.swift */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
 				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
@@ -555,7 +555,7 @@
 				CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
-				CD06C2702C69B10600FC010C /* SearchScreen.swift in Sources */,
+				CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */,
 				CD75A2FD2C66A67C00ED8A1A /* Home.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,
 				CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */,

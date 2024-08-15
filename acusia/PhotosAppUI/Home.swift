@@ -45,7 +45,7 @@ struct Home: View {
                                 .frame(minHeight: size.height)
                                 .offset(y: shareData.gestureProgress * 30)
                             
-                            BottomScrollView(size: size, safeArea: safeArea)
+                            FeedScreen(userId: "3f6a2219-8ea1-4ff1-9057-6578ae3252af")
                         }
                     }
                     .onScrollGeometryChange(for: CGFloat.self) { proxy in

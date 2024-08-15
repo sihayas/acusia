@@ -424,8 +424,7 @@ struct UserScreen: View {
                 }
                 .padding([.top, .horizontal], 24)
                 
-//                SearchResultsList(path: $homePath, searchText: $searchText)
-                CardDeckExample()
+                SearchSheet(path: $homePath, searchText: $searchText)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .presentationDetents([.large])
