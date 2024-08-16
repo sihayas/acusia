@@ -4,8 +4,8 @@
 //
 //  Created by decoherence on 6/12/24.
 //
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct FeedScreen: View {
     @StateObject private var musicPlayer = MusicPlayer()
@@ -31,7 +31,6 @@ struct FeedScreen: View {
                     ForEach(viewModel.entries) { entry in
                         if entry.rating == 2 {
                             Wisp(
-                                userId: userId,
                                 entry: entry,
                                 namespace: ns,
                                 scrolledEntryID: scrolledEntryID,
@@ -39,7 +38,6 @@ struct FeedScreen: View {
                             )
                         } else {
                             Artifact(
-                                userId: userId,
                                 entry: entry,
                                 namespace: ns,
                                 scrolledEntryID: scrolledEntryID,
@@ -74,15 +72,16 @@ struct FeedScreen: View {
             }
             
             // Container for expanded text card
-            GeometryReader { geometry in
+            GeometryReader { _ in
                 if let expandedID = expandedEntryID,
-                   let expandedEntry = viewModel.entries.first(where: { $0.id == expandedID }) {
-                    HStack(spacing: -48){
-                            TextCard(entry: expandedEntry, namespace: ns)
+                   let expandedEntry = viewModel.entries.first(where: { $0.id == expandedID })
+                {
+                    HStack(spacing: -48) {
+                        TextCard(entry: expandedEntry, namespace: ns)
                             .zIndex(1)
                             .padding(.bottom, 16)
                             .rotationEffect(.degrees(-2))
-                            SoundCard(entry: expandedEntry, namespace: ns)
+                        SoundCard(entry: expandedEntry, namespace: ns)
                             .rotationEffect(.degrees(2))
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -109,13 +108,12 @@ struct FeedScreen: View {
     }
 }
 
-
 struct TextCard: View {
     let entry: APIEntry
     var namespace: Namespace.ID
     
     var body: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
+        RoundedRectangle(cornerRadius: 32, style: .continuous)
             .fill(Color(UIColor.systemGray6))
             .frame(width: 216, height: 304)
             .shadow(radius: 8)
@@ -137,23 +135,29 @@ struct SoundCard: View {
     var namespace: Namespace.ID
     
     var body: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
+        RoundedRectangle(cornerRadius: 32, style: .continuous)
             .fill(Color(UIColor.systemGray6))
             .frame(width: 216, height: 304)
             .shadow(radius: 8)
             .overlay(
-                VStack(alignment: .leading) {
-                    Text(entry.sound.appleData?.artistName ?? "")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(Color.secondary)
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                    Text(entry.sound.appleData?.name ?? "")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(Color.white)
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                        .padding(.bottom, 4)
+                VStack() {
+                    VStack(alignment: .trailing) {
+                        Text(entry.sound.appleData?.artistName ?? "")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(Color.secondary)
+                            .lineLimit(1)
+                            .multilineTextAlignment(.leading)
+                        Text(entry.sound.appleData?.name ?? "")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(Color.white)
+                            .lineLimit(1)
+                            .multilineTextAlignment(.leading)
+                            .padding(.bottom, 4)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    
+                    Spacer()
+                    
                     NavigationLink {
                         EmptyView()
                             .navigationTransition(.zoom(sourceID: entry.sound.id, in: namespace))
@@ -161,10 +165,9 @@ struct SoundCard: View {
                         AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
                             image
                                 .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 176, height: 176)
+                                .aspectRatio(contentMode: .fit)
                                 .matchedTransitionSource(id: entry.sound.id, in: namespace)
-                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                                 .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: -15)
                         } placeholder: {
                             ProgressView()
@@ -173,25 +176,26 @@ struct SoundCard: View {
                     
                     Spacer()
 
-                    Image("heartbreak")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 32, height: 32)
-                        .foregroundColor(.black)
-                        .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 2)
-                        .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
-
+                    HStack {
+                        Image("heartbreak")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 32, height: 32)
+                            .foregroundColor(.black)
+                            .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 2)
+                            .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
+                        Spacer()
+                    }
                 }
                 .padding(.horizontal, 20)
-                .padding(.vertical, 16)
-                .frame(width: 216, height: 304, alignment: .trailing)
+                .padding(.vertical, 20)
+                .frame(width: 216, height: 304, alignment: .center)
             )
             .matchedGeometryEffect(id: "soundCard_\(entry.id)", in: namespace)
     }
 }
 
 struct Artifact: View {
-    let userId: String
     let entry: APIEntry
     var namespace: Namespace.ID
     let scrolledEntryID: APIEntry.ID?
@@ -217,8 +221,7 @@ struct Artifact: View {
                     .padding(.bottom, 4)
                 HStack(alignment: .top, spacing: 8) {
                     NavigationLink {
-//                        UserScreen(initialUserData: entry.author, userResult: nil)
-//                            .navigationTransition(.zoom(sourceID: entry.id, in: namespace))
+                        EmptyView()
                     } label: {
                         AsyncImage(url: URL(string: entry.author.image)) { image in
                             image
@@ -233,6 +236,7 @@ struct Artifact: View {
                     
                     VStack(alignment: .leading, spacing: -56) {
                         // MARK: Sound Card View
+
                         if expandedEntryID != entry.id {
                             SoundCard(entry: entry, namespace: namespace)
                                 .overlay(
@@ -250,7 +254,9 @@ struct Artifact: View {
                         
                         HStack {
                             Spacer()
+
                             // MARK: Text Card View
+
                             if expandedEntryID != entry.id {
                                 TextCard(entry: entry, namespace: namespace)
                                     .onTapGesture {
@@ -261,27 +267,13 @@ struct Artifact: View {
                                     }
                                     .contextMenu {
                                         Menu {
-                                            Button() {
+                                            Button {
                                                 // Flag functionality
                                             } label: {
                                                 Label("Spam", systemImage: "exclamationmark.triangle")
                                             }
                                         } label: {
                                             Label("Flag", systemImage: "flag.fill")
-                                        }
-                                        
-                                        if entry.author.id == userId {
-                                            Menu {
-                                                Button(role: .destructive) {
-                                                    Task {
-                                                        await onDelete(entry.id)
-                                                    }
-                                                } label: {
-                                                    Label("Confirm deletion", systemImage: "checkmark")
-                                                }
-                                            } label: {
-                                                Label("Delete", systemImage: "trash")
-                                            }
                                         }
                                     }
                             }
@@ -293,21 +285,17 @@ struct Artifact: View {
             .padding(.horizontal, 24)
             .sheet(isPresented: $isSheetPresented) {
                 // Sheet content
-                VStack {
-                    
-                }
-                .presentationDetents([.medium, .large])
-                .presentationCornerRadius(32)
-                .presentationBackground(.thinMaterial)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                VStack {}
+                    .presentationDetents([.medium, .large])
+                    .presentationCornerRadius(32)
+                    .presentationBackground(.thinMaterial)
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
             }
         }
     }
 }
 
-
 struct Wisp: View {
-    let userId: String
     let entry: APIEntry
     var namespace: Namespace.ID
     let scrolledEntryID: APIEntry.ID?
@@ -317,7 +305,7 @@ struct Wisp: View {
         HStack(alignment: .top) {
             // Avatar Image View
             NavigationLink {
-//                UserScreen(initialUserData: entry.author, userResult: nil)
+                EmptyView()
             } label: {
                 AsyncImage(url: URL(string: entry.author.image)) { image in
                     image
@@ -332,7 +320,7 @@ struct Wisp: View {
             
             // Wisp
             VStack(alignment: .leading, spacing: 8) {
-                HStack() {
+                HStack {
                     AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
                         image
                             .resizable()
@@ -392,27 +380,13 @@ struct Wisp: View {
                     .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                     .contextMenu {
                         Menu {
-                            Button() {
+                            Button {
                                 // Flag functionality
                             } label: {
                                 Label("Spam", systemImage: "exclamationmark.triangle")
                             }
                         } label: {
                             Label("Flag", systemImage: "flag")
-                        }
-                        
-                        if entry.author.id == userId {
-                            Menu {
-                                Button(role: .destructive) {
-                                    Task {
-                                        await onDelete(entry.id)
-                                    }
-                                } label: {
-                                    Label("Confirm deletion", systemImage: "checkmark")
-                                }
-                            } label: {
-                                Label("Delete", systemImage: "trash.fill")
-                            }
                         }
                     }
             }
