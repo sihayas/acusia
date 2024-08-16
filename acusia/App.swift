@@ -25,7 +25,6 @@ struct AcusiaAppView: View {
         Group {
             if auth.isAuthenticated {
                 if let user = auth.user {
-//                    ContentView(user: user)
                     GeometryReader {
                         let size = $0.size
                         let safeArea = $0.safeAreaInsets
@@ -45,43 +44,20 @@ struct AcusiaAppView: View {
             Task {
                 await auth.initSession()
             }
+            setupNavigationBar()
         }
     }
-}
-
-struct ContentView: View {
-    @EnvironmentObject var auth: Auth
-    let user: APIUser
-    @State private var selectedTab = 0
-    @State private var feedPath = NavigationPath()
-    @State private var userPath = NavigationPath()
-
-    var body: some View {
-        TabView(selection: $selectedTab) {
-            NavigationStack(path: $feedPath) {
-                FeedScreen(userId: user.id)
-                    .toolbar(.hidden, for: .tabBar)
-                    .navigationBarHidden(true)
-                    .navigationDestination(for: SearchResultItem.self) { item in
-                        switch item {
-                        case .sound:
-                            EmptyView()
-                        case .user(let user):
-                            EmptyView()
-//                            UserScreen(initialUserData: nil, userResult: user)
-                        }
-                    }
-                    .tag(0)
-            }
-
-            NavigationStack(path: $userPath) {
-//                UserScreen(initialUserData: user, userResult: nil)
-//                    .toolbar(.hidden, for: .tabBar)
-//                    .navigationBarHidden(true)
-//                    .tag(1)
-            }
-        }
-        .tabViewStyle(DefaultTabViewStyle())
+    
+    private func setupNavigationBar() {
+        var backButtonBackgroundImage = UIImage(systemName: "chevron.left.circle.fill")!
+        backButtonBackgroundImage = backButtonBackgroundImage.applyingSymbolConfiguration(.init(paletteColors: [.white, .darkGray]))!
+        UINavigationBar.appearance().backIndicatorImage = backButtonBackgroundImage
+        UINavigationBar.appearance().backIndicatorTransitionMaskImage = backButtonBackgroundImage
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().isTranslucent = true
+        UINavigationBar.appearance().backgroundColor = .clear
+        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -1000.0, vertical: 0.0), for: .default)
     }
 }
 

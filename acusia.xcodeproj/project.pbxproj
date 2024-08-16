@@ -49,6 +49,7 @@
 		CDDED7912C195B4B00958B39 /* DashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7902C195B4B00958B39 /* DashView.swift */; };
 		CDDED7932C195B6000958B39 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7922C195B6000958B39 /* CircleView.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
+		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 		CDF9D9AA2C3084C4001CEC02 /* AnimatedGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */; };
 /* End PBXBuildFile section */
 
@@ -144,6 +145,7 @@
 		CDDED7922C195B6000958B39 /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
+		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 		CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedGradient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -345,6 +347,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CDF652B12C6EE1CB00C5D42B /* Extensions */,
 				CDDED78A2C1959C600958B39 /* UIKit */,
 			);
 			path = Utils;
@@ -395,6 +398,14 @@
 				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
 			);
 			path = Screens;
+			sourceTree = "<group>";
+		};
+		CDF652B12C6EE1CB00C5D42B /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -542,6 +553,7 @@
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
+				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
 				CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */,
 				CDDED7912C195B4B00958B39 /* DashView.swift in Sources */,
