@@ -123,7 +123,7 @@ struct TextCard: View {
                     .font(.system(size: 15, weight: .medium))
                     .multilineTextAlignment(.leading)
                     .padding(.horizontal, 20)
-                    .padding(.vertical, 16)
+                    .padding(.vertical, 20)
                     .frame(width: 216, height: 304, alignment: .topLeading)
             )
             .matchedGeometryEffect(id: "textCard_\(entry.id)", in: namespace)
@@ -140,8 +140,31 @@ struct SoundCard: View {
             .frame(width: 216, height: 304)
             .shadow(radius: 8)
             .overlay(
-                VStack() {
-                    VStack(alignment: .trailing) {
+                VStack(alignment: .leading, spacing: 0) {
+                    NavigationLink {
+                        EmptyView()
+                            .navigationTransition(.zoom(sourceID: entry.sound.id, in: namespace))
+                    } label: {
+                        AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .matchedTransitionSource(id: entry.sound.id, in: namespace)
+                                .clipShape(
+                                    .rect(
+                                        topLeadingRadius: 32,
+                                        bottomLeadingRadius: 0,
+                                        bottomTrailingRadius: 0,
+                                        topTrailingRadius: 32,
+                                        style: .continuous
+                                    )
+                                )
+                        } placeholder: {
+                            ProgressView()
+                        }
+                    }
+                    
+                    VStack(alignment: .leading) {
                         Text(entry.sound.appleData?.artistName ?? "")
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(Color.secondary)
@@ -153,43 +176,20 @@ struct SoundCard: View {
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
                             .padding(.bottom, 4)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    
-                    Spacer()
-                    
-                    NavigationLink {
-                        EmptyView()
-                            .navigationTransition(.zoom(sourceID: entry.sound.id, in: namespace))
-                    } label: {
-                        AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .matchedTransitionSource(id: entry.sound.id, in: namespace)
-                                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                                .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: -15)
-                        } placeholder: {
-                            ProgressView()
-                        }
-                    }
-                    
-                    Spacer()
-
-                    HStack {
+                        
                         Image("heartbreak")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 32, height: 32)
+                            .frame(width: 20, height: 20)
                             .foregroundColor(.black)
                             .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 2)
                             .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
-                        Spacer()
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 20)
-                .frame(width: 216, height: 304, alignment: .center)
+                .frame(width: 216, height: 304, alignment: .topLeading)
             )
             .matchedGeometryEffect(id: "soundCard_\(entry.id)", in: namespace)
     }
@@ -234,9 +234,8 @@ struct Artifact: View {
                         .matchedTransitionSource(id: entry.id, in: namespace)
                     }
                     
-                    VStack(alignment: .leading, spacing: -56) {
+                    VStack(alignment: .leading, spacing: -32) {
                         // MARK: Sound Card View
-
                         if expandedEntryID != entry.id {
                             SoundCard(entry: entry, namespace: namespace)
                                 .overlay(
@@ -249,7 +248,7 @@ struct Artifact: View {
                                         .offset(x: 24, y: 64),
                                     alignment: .topTrailing
                                 )
-                                .rotationEffect(.degrees(2), anchor: .topTrailing)
+                                .rotationEffect(.degrees(2), anchor: .center)
                         }
                         
                         HStack {
