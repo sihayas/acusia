@@ -6,7 +6,7 @@ let apiurl = "http://192.168.1.234:8000"
 @main
 struct AcusiaApp: App {
     let persistenceController = PersistenceController.shared
-    @StateObject private var auth = Auth()
+    @StateObject private var auth = Auth.shared // Singleton
 
     var body: some Scene {
         WindowGroup {
@@ -18,33 +18,26 @@ struct AcusiaApp: App {
 }
 
 struct AcusiaAppView: View {
-    @EnvironmentObject var auth: Auth
+    @StateObject private var auth = Auth.shared
     @State private var homePath = NavigationPath()
 
     var body: some View {
         Group {
-            if auth.isAuthenticated {
-                if let user = auth.user {
-                    GeometryReader {
-                        let size = $0.size
-                        let safeArea = $0.safeAreaInsets
-                        Home(size: size, safeArea: safeArea, homePath: $homePath)
-                            .ignoresSafeArea(.all)
-                            .background(Color.black)
-                    }
-
-                } else {
-                    ProgressView()
+            if auth.isAuthenticated && auth.user != nil {
+                GeometryReader {
+                    let size = $0.size
+                    let safeArea = $0.safeAreaInsets
+                    Home(size: size, safeArea: safeArea, homePath: $homePath)
+                        .ignoresSafeArea(.all)
+                        .background(Color.black)
                 }
             } else {
                 AuthScreen()
             }
         }
         .onAppear {
-            Task {
-                await auth.initSession()
-            }
             setupNavigationBar()
+            Task { await auth.initSession() }
         }
     }
     

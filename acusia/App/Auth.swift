@@ -9,13 +9,15 @@ import SwiftUI
 import CoreData
 
 class Auth: ObservableObject {
+    static let shared = Auth()
+    
     @Published var session: Session?
     @Published var isAuthenticated = false
     @Published var user: APIUser?
     
     private let userAPI: UserAPI
     
-    init(userAPI: UserAPI = UserAPI()) {
+    private init(userAPI: UserAPI = UserAPI()) {
         self.userAPI = userAPI
     }
     

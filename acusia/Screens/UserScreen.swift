@@ -66,7 +66,7 @@ struct UserScreen: View {
             }
         
         ZStack {
-            // 3D Config Slider Interface
+            // MARK: 3D Config Slider Interface
             ZStack {
                 VStack {
                     HStack(spacing: 0) {
@@ -245,7 +245,7 @@ struct UserScreen: View {
                 ProgressView()
             }
             
-            // User data interface
+            // MARK: User data interface
             VStack {
                 VStack(alignment: .leading) {
                     Text("@dracarys")
@@ -388,31 +388,31 @@ struct UserScreen: View {
             .padding(.horizontal, 24)
             
             // Sticker Interface
-//            ZStack {
-//                HelloStickerView(zIndexMap: $zIndexMap,
-//                                 nextZIndex: $nextZIndex,
-//                                 resetStickerOffset: $resetStickerOffset,
-//                                 xAxisSliderValue: $xAxisSliderValueHello,
-//                                 zAxisSliderValue: $zAxisSliderValueHello,
-//                                 offsetSliderValue: $offsetSliderValueHello,
-//                                 activeSticker: $activeSticker)
-//                    .offset(x: 0, y: -160)
-//                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
-//                    .scaleEffect(viewVisible ? 1 : 2)
-//                    .blur(radius: viewVisible ? 0.0 : 30.0)
-//                    .opacity(viewVisible ? 1.0 : 0.0)
-//                    .animation(.spring().delay(0), value: viewVisible)
-//                    .onAppear {
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-//                            self.triggerSensoryFeedback += 1
-//                        }
-//                    }
-//                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-//                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
-//            }
-//            .onAppear {
-//                viewVisible.toggle()
-//            }
+            ZStack {
+                HelloStickerView(zIndexMap: $zIndexMap,
+                                 nextZIndex: $nextZIndex,
+                                 resetStickerOffset: $resetStickerOffset,
+                                 xAxisSliderValue: $xAxisSliderValueHello,
+                                 zAxisSliderValue: $zAxisSliderValueHello,
+                                 offsetSliderValue: $offsetSliderValueHello,
+                                 activeSticker: $activeSticker)
+                    .offset(x: 0, y: -160)
+                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
+                    .scaleEffect(viewVisible ? 1 : 2)
+                    .blur(radius: viewVisible ? 0.0 : 30.0)
+                    .opacity(viewVisible ? 1.0 : 0.0)
+                    .animation(.spring().delay(0), value: viewVisible)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            self.triggerSensoryFeedback += 1
+                        }
+                    }
+                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
+                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
+            }
+            .onAppear {
+                viewVisible.toggle()
+            }
         }
         .sheet(isPresented: $searchSheet) {
             VStack(alignment: .leading) {
@@ -454,7 +454,7 @@ struct UserScreen: View {
         }
         .background(Color.black)
         .onAppear {
-            searchSheet = true
+            searchSheet = false
         }
 //        .onAppear {
 //            Task {

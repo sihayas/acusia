@@ -108,13 +108,216 @@ struct FeedScreen: View {
     }
 }
 
+struct Artifact: View {
+    let entry: APIEntry
+    var namespace: Namespace.ID
+    let scrolledEntryID: APIEntry.ID?
+    @Binding var expandedEntryID: APIEntry.ID?
+    let onDelete: (String) async -> Void
+    
+    @State private var isSheetPresented = false
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(entry.author.username)
+                .font(.system(size: 15, weight: .regular))
+                .foregroundColor(.white)
+                .lineLimit(1)
+                .multilineTextAlignment(.leading)
+                .padding(.leading, 64)
+                .padding(.bottom, 4)
+                
+            HStack(alignment: .top, spacing: 12) {
+                NavigationLink {
+                    EmptyView()
+                } label: {
+                    AsyncImage(url: URL(string: entry.author.image)) { image in
+                        image
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .clipShape(Circle())
+                    } placeholder: {
+                        EmptyView()
+                    }
+                    .matchedTransitionSource(id: entry.id, in: namespace)
+                }
+                    
+                VStack(alignment: .leading, spacing: -32) {
+                    // MARK: Sound Card View
+
+                    if expandedEntryID != entry.id {
+                        ZStack(alignment: .bottomLeading) {
+                            // Ambiance
+                            Circle()
+                                .fill(
+                                    RadialGradient(
+                                        gradient: Gradient(colors: [.white, .clear]),
+                                        center: .center,
+                                        startRadius: 0,
+                                        endRadius: 40
+                                    )
+                                )
+                                .frame(width: 80, height: 80)
+                            
+                            SoundCard(entry: entry, namespace: namespace)
+                                .overlay(
+                                    HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
+                                        .offset(x: 20, y: -20),
+                                    alignment: .topTrailing
+                                )
+                        }
+                        .rotationEffect(.degrees(2), anchor: .center)
+                    }
+                        
+                    // MARK: Text Card View
+
+                    HStack {
+                        Spacer()
+                        if expandedEntryID != entry.id {
+                            TextCard(entry: entry, namespace: namespace)
+                                .onTapGesture {
+                                    withAnimation(.spring()) {
+                                        expandedEntryID = entry.id
+                                        isSheetPresented = true
+                                    }
+                                }
+                                .contextMenu {
+                                    Menu {
+                                        Button {
+                                            // Flag functionality
+                                        } label: {
+                                            Label("Spam", systemImage: "exclamationmark.triangle")
+                                        }
+                                    } label: {
+                                        Label("Flag", systemImage: "flag.fill")
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 24)
+        .padding(.horizontal, 24)
+        .sheet(isPresented: $isSheetPresented) {
+            // Sheet content
+            VStack {}
+                .presentationDetents([.medium, .large])
+                .presentationCornerRadius(32)
+                .presentationBackground(.thinMaterial)
+                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+        }
+    }
+}
+
+struct Wisp: View {
+    let entry: APIEntry
+    var namespace: Namespace.ID
+    let scrolledEntryID: APIEntry.ID?
+    let onDelete: (String) async -> Void
+    
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 12) {
+            // Avatar Image View
+            NavigationLink {
+                EmptyView()
+            } label: {
+                AsyncImage(url: URL(string: entry.author.image)) { image in
+                    image
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
+                } placeholder: {
+                    ProgressView()
+                }
+            }
+            
+            // Wisp
+            VStack(alignment: .leading, spacing: 0) {
+                ZStack(alignment: .leading) {
+                    // Ambiance
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                gradient: Gradient(colors: [Color(hex: entry.sound.appleData?.artworkBgColor ?? "FFFFFF"), .clear]),
+                                center: .center,
+                                startRadius: 0,
+                                endRadius: 40
+                            )
+                        )
+                        .frame(width: 80, height: 80)
+                    
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.thinMaterial)
+                        .frame(width: .infinity, height: 72)
+                        .overlay(
+                            HStack(spacing: 0) {
+                                AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
+                                    image
+                                        .resizable()
+                                        .frame(width: 48, height: 48)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                        .padding(12)
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                                
+                                VStack(alignment: .leading) {
+                                    Text(entry.sound.appleData?.artistName ?? "")
+                                        .font(.system(size: 13, weight: .medium))
+                                        .foregroundColor(Color.white.opacity(0.4))
+                                        .lineLimit(1)
+                                        .multilineTextAlignment(.leading)
+                                    
+                                    Text(entry.sound.appleData?.name ?? "")
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(Color.white.opacity(0.7))
+                                        .lineLimit(1)
+                                        .multilineTextAlignment(.leading)
+                                }
+                                
+                                Spacer()
+                            }
+                        )
+                }
+                
+                ZStack(alignment: .bottomLeading) {
+                    Circle()
+                        .fill(.thinMaterial)
+                        .frame(width: 12, height: 12)
+                        .offset(x: 0, y: 0)
+                    
+                    Circle()
+                        .fill(.thinMaterial)
+                        .frame(width: 6, height: 6)
+                        .offset(x: -4, y: 4)
+                    
+                    Text(entry.text)
+                        .foregroundColor(.white)
+                        .font(.system(size: 15, weight: .regular))
+                        .multilineTextAlignment(.leading)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(.thinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                }
+            }
+            .padding(.bottom, 12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
 struct TextCard: View {
     let entry: APIEntry
     var namespace: Namespace.ID
     
     var body: some View {
         RoundedRectangle(cornerRadius: 32, style: .continuous)
-            .fill(Color(UIColor.systemGray6))
+            .fill(.thinMaterial)
             .frame(width: 216, height: 304)
             .shadow(radius: 8)
             .overlay(
@@ -136,7 +339,7 @@ struct SoundCard: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 32, style: .continuous)
-            .fill(Color(UIColor.systemGray6))
+            .fill(.thinMaterial)
             .frame(width: 216, height: 304)
             .shadow(radius: 8)
             .overlay(
@@ -159,6 +362,7 @@ struct SoundCard: View {
                                         style: .continuous
                                     )
                                 )
+                                .layoutPriority(1)
                         } placeholder: {
                             ProgressView()
                         }
@@ -181,7 +385,7 @@ struct SoundCard: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 20, height: 20)
-                            .foregroundColor(.black)
+                            .foregroundColor(.white)
                             .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 2)
                             .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
                     }
@@ -192,206 +396,5 @@ struct SoundCard: View {
                 .frame(width: 216, height: 304, alignment: .topLeading)
             )
             .matchedGeometryEffect(id: "soundCard_\(entry.id)", in: namespace)
-    }
-}
-
-struct Artifact: View {
-    let entry: APIEntry
-    var namespace: Namespace.ID
-    let scrolledEntryID: APIEntry.ID?
-    @Binding var expandedEntryID: APIEntry.ID?
-    let onDelete: (String) async -> Void
-    
-    @State private var isSheetPresented = false
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color(hex: entry.sound.appleData?.artworkBgColor ?? ""))
-                .frame(maxWidth: UIScreen.main.bounds.width / 2, maxHeight: UIScreen.main.bounds.width / 2)
-                .blur(radius: 164)
-            
-            VStack(alignment: .leading) {
-                Text(entry.author.username)
-                    .font(.system(size: 13, weight: .regular))
-                    .foregroundColor(Color.secondary)
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .padding(.leading, 64)
-                    .padding(.bottom, 4)
-                HStack(alignment: .top, spacing: 8) {
-                    NavigationLink {
-                        EmptyView()
-                    } label: {
-                        AsyncImage(url: URL(string: entry.author.image)) { image in
-                            image
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                                .clipShape(Circle())
-                        } placeholder: {
-                            EmptyView()
-                        }
-                        .matchedTransitionSource(id: entry.id, in: namespace)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: -32) {
-                        // MARK: Sound Card View
-                        if expandedEntryID != entry.id {
-                            SoundCard(entry: entry, namespace: namespace)
-                                .overlay(
-                                    HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
-                                        .offset(x: 20, y: -20),
-                                    alignment: .topTrailing
-                                )
-                                .overlay(
-                                    FlameTap(isTapped: entry.isHeartTapped, count: entry.flameCount)
-                                        .offset(x: 24, y: 64),
-                                    alignment: .topTrailing
-                                )
-                                .rotationEffect(.degrees(2), anchor: .center)
-                        }
-                        
-                        HStack {
-                            Spacer()
-
-                            // MARK: Text Card View
-
-                            if expandedEntryID != entry.id {
-                                TextCard(entry: entry, namespace: namespace)
-                                    .onTapGesture {
-                                        withAnimation(.spring()) {
-                                            expandedEntryID = entry.id
-                                            isSheetPresented = true
-                                        }
-                                    }
-                                    .contextMenu {
-                                        Menu {
-                                            Button {
-                                                // Flag functionality
-                                            } label: {
-                                                Label("Spam", systemImage: "exclamationmark.triangle")
-                                            }
-                                        } label: {
-                                            Label("Flag", systemImage: "flag.fill")
-                                        }
-                                    }
-                            }
-                        }
-                    }
-                }
-            }
-            .padding(.vertical, 24)
-            .padding(.horizontal, 24)
-            .sheet(isPresented: $isSheetPresented) {
-                // Sheet content
-                VStack {}
-                    .presentationDetents([.medium, .large])
-                    .presentationCornerRadius(32)
-                    .presentationBackground(.thinMaterial)
-                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-            }
-        }
-    }
-}
-
-struct Wisp: View {
-    let entry: APIEntry
-    var namespace: Namespace.ID
-    let scrolledEntryID: APIEntry.ID?
-    let onDelete: (String) async -> Void
-    
-    var body: some View {
-        HStack(alignment: .top) {
-            // Avatar Image View
-            NavigationLink {
-                EmptyView()
-            } label: {
-                AsyncImage(url: URL(string: entry.author.image)) { image in
-                    image
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .clipShape(Circle())
-                        .padding(.top, 64)
-                } placeholder: {
-                    ProgressView()
-                }
-            }
-            
-            // Wisp
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 32, height: 32)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .shadow(radius: 4)
-                    } placeholder: {
-                        ProgressView()
-                    }
-                    
-                    Text(entry.sound.appleData?.name ?? "")
-                        .font(.system(size: 11, weight: .regular))
-                        .foregroundColor(Color.secondary)
-                        .lineLimit(1)
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 8)
-                        .background(Color(UIColor.systemGray5))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    
-                    Spacer()
-                    
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 14))
-                        .foregroundColor(Color.white)
-                        .frame(width: 32, height: 32)
-                        .background(Color(UIColor.systemGray5))
-                        .clipShape(Circle())
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(18)
-                .background(Color(UIColor.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
-                .overlay(
-                    Circle()
-                        .fill(Color(UIColor.systemGray6))
-                        .frame(width: 12, height: 12)
-                        .offset(x: 4, y: -4),
-                    alignment: .bottomLeading
-                )
-                .overlay(
-                    Circle()
-                        .fill(Color(uiColor: .systemGray6))
-                        .frame(width: 6, height: 6)
-                        .offset(x: -2, y: 2),
-                    alignment: .bottomLeading
-                )
-                
-                Text(entry.text)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(.white)
-                    .font(.system(size: 15, weight: .regular))
-                    .multilineTextAlignment(.leading)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 16)
-                    .background(Color(UIColor.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                    .contextMenu {
-                        Menu {
-                            Button {
-                                // Flag functionality
-                            } label: {
-                                Label("Spam", systemImage: "exclamationmark.triangle")
-                            }
-                        } label: {
-                            Label("Flag", systemImage: "flag")
-                        }
-                    }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 24)
-        .padding(.vertical, 24)
     }
 }
