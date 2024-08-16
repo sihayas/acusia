@@ -23,8 +23,6 @@
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
-		CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC9428C2C3B67E500EDF62C /* Costello.swift */; };
-		CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC942922C3B69BD00EDF62C /* Costello.metal */; };
 		CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* UserScreen.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
 		CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */; };
@@ -116,8 +114,6 @@
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
-		CDC9428C2C3B67E500EDF62C /* Costello.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Costello.swift; sourceTree = "<group>"; };
-		CDC942922C3B69BD00EDF62C /* Costello.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Costello.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* UserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScreen.swift; sourceTree = "<group>"; };
 		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
@@ -223,7 +219,6 @@
 			children = (
 				CD132AA42C6DE75800C16804 /* Loupe */,
 				CDC37D492C606C16002D2709 /* IridescentHolo */,
-				CDC37D482C606BF3002D2709 /* Costello */,
 				CDC37D442C6067FA002D2709 /* IridescentLight */,
 			);
 			path = Metal;
@@ -246,15 +241,6 @@
 				CD69761E2C51B9EA003E4481 /* Iridescence.metal */,
 			);
 			path = IridescentLight;
-			sourceTree = "<group>";
-		};
-		CDC37D482C606BF3002D2709 /* Costello */ = {
-			isa = PBXGroup;
-			children = (
-				CDC942922C3B69BD00EDF62C /* Costello.metal */,
-				CDC9428C2C3B67E500EDF62C /* Costello.swift */,
-			);
-			path = Costello;
 			sourceTree = "<group>";
 		};
 		CDC37D492C606C16002D2709 /* IridescentHolo */ = {
@@ -549,13 +535,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */,
-				CDC942932C3B69BD00EDF62C /* Costello.metal in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
 				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
-				CDC9428D2C3B67E900EDF62C /* Costello.swift in Sources */,
 				CDDED7912C195B4B00958B39 /* DashView.swift in Sources */,
 				CDDED7932C195B6000958B39 /* CircleView.swift in Sources */,
 				CD75A2FB2C66A65900ED8A1A /* BottomBarView.swift in Sources */,

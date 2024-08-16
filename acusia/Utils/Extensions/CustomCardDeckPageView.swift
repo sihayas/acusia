@@ -11,6 +11,39 @@
 import SwiftUI
 import BigUIPaging
 
+struct CardDeck: View {
+    @Namespace private var namespace
+    let entry: APIEntry
+    @State private var selection: Int = 1
+    
+    var body: some View {
+        VStack {
+            // Use ForEach with a collection of identifiable data
+            PageView(selection: $selection) {
+                ForEach([1, 2], id: \.self) { index in
+                    if index == 1 {
+                        EmptyView()
+                    } else {
+                        EmptyView()
+                    }
+                }
+            }
+            .pageViewStyle(.customCardDeck)
+            .pageViewCardCornerRadius(45.0)
+            .pageViewCardShadow(.visible)
+        }
+        .frame(width: 240, height: 320)
+    }
+    
+    var indicatorSelection: Binding<Int> {
+        .init {
+            selection - 1
+        } set: { newValue in
+            selection = newValue + 1
+        }
+    }
+}
+
 @available(macOS, unavailable)
 @available(iOS 16.0, *)
 public struct CustomCardDeckPageViewStyle: PageViewStyle {
