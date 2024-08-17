@@ -142,58 +142,41 @@ struct Artifact: View {
                     .matchedTransitionSource(id: entry.id, in: namespace)
                 }
                     
-                VStack(alignment: .leading, spacing: -32) {
+                VStack(alignment: .leading, spacing: 12) {
                     // MARK: Sound Card View
-
-                    if expandedEntryID != entry.id {
-                        ZStack(alignment: .bottomLeading) {
-                            // Ambiance
-                            Circle()
-                                .fill(
-                                    RadialGradient(
-                                        gradient: Gradient(colors: [.white, .clear]),
-                                        center: .center,
-                                        startRadius: 0,
-                                        endRadius: 40
-                                    )
-                                )
-                                .frame(width: 80, height: 80)
-                            
-                            SoundCard(entry: entry, namespace: namespace)
-                                .overlay(
-                                    HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
-                                        .offset(x: 20, y: -20),
-                                    alignment: .topTrailing
-                                )
-                        }
-                        .rotationEffect(.degrees(2), anchor: .center)
-                    }
-                        
-                    // MARK: Text Card View
-
                     HStack {
-                        Spacer()
+//                        Spacer()
+                        
                         if expandedEntryID != entry.id {
-                            TextCard(entry: entry, namespace: namespace)
-                                .onTapGesture {
-                                    withAnimation(.spring()) {
-                                        expandedEntryID = entry.id
-                                        isSheetPresented = true
-                                    }
-                                }
-                                .contextMenu {
-                                    Menu {
-                                        Button {
-                                            // Flag functionality
-                                        } label: {
-                                            Label("Spam", systemImage: "exclamationmark.triangle")
-                                        }
-                                    } label: {
-                                        Label("Flag", systemImage: "flag.fill")
-                                    }
-                                }
+                            ZStack(alignment: .bottomLeading) {
+                                // Ambiance
+                                Circle()
+                                    .fill(
+                                        RadialGradient(
+                                            gradient: Gradient(colors: [.white, .clear]),
+                                            center: .center,
+                                            startRadius: 0,
+                                            endRadius: 40
+                                        )
+                                    )
+                                    .frame(width: 80, height: 80)
+                                
+                                SoundCard(entry: entry, namespace: namespace)
+                                    .overlay(
+                                        HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
+                                            .offset(x: 20, y: -20),
+                                        alignment: .topTrailing
+                                    )
+                            }
+                            .rotationEffect(.degrees(-2), anchor: .center)
                         }
+                        
                     }
+                    
+                    Text(entry.text)
+                        .foregroundColor(.white)
+                        .font(.system(size: 15, weight: .bold))
+                        .multilineTextAlignment(.leading)
                 }
             }
         }

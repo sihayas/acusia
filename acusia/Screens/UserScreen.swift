@@ -470,62 +470,6 @@ struct UserScreen: View {
     }
 }
 
-
-struct MeshTransform: ViewModifier, Animatable {
-    var animatableData: AnimatablePair<AnimatablePair<CGFloat, CGFloat>, CGFloat> {
-        get {
-            AnimatableData(AnimatablePair(squeezeProgressX, squeezeProgressY), squeezeTranslationY)
-        }
-        set {
-            squeezeProgressX = newValue.first.first
-            squeezeProgressY = newValue.first.second
-            squeezeTranslationY = newValue.second
-        }
-    }
-
-    var offset: CGSize
-    var currentRotation: Angle
-    var currentMagnification: CGFloat
-    var pinchMagnification: CGFloat
-    var twistAngle: Angle
-
-    var squeezeCenterX: CGFloat
-    var squeezeProgressX: CGFloat
-    var squeezeProgressY: CGFloat
-    var squeezeTranslationY: CGFloat
-
-    init(squeezeProgressX: CGFloat, squeezeProgressY: CGFloat, squeezeTranslationY: CGFloat, squeezeCenterX: CGFloat, offset: CGSize, currentRotation: Angle, currentMagnification: CGFloat, pinchMagnification: CGFloat, twistAngle: Angle) {
-        self.squeezeProgressX = squeezeProgressX
-        self.squeezeProgressY = squeezeProgressY
-        self.squeezeTranslationY = squeezeTranslationY
-        self.squeezeCenterX = squeezeCenterX
-        self.offset = offset
-        self.currentRotation = currentRotation
-        self.currentMagnification = currentMagnification
-        self.pinchMagnification = pinchMagnification
-        self.twistAngle = twistAngle
-    }
-
-    func shader() -> Shader {
-        Shader(function: .init(library: .default, name: "distortion"), arguments: [
-            .boundingRect,
-            .float(squeezeCenterX),
-            .float(squeezeProgressX),
-            .float(squeezeProgressY),
-            .float(squeezeTranslationY)
-        ])
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .distortionEffect(shader(), maxSampleOffset: CGSize(width: 500, height: 500))
-            .scaleEffect(currentMagnification * pinchMagnification)
-            .rotationEffect(currentRotation + twistAngle, anchor: .center)
-            .offset(offset)
-    }
-}
-
-
 class MotionManager: ObservableObject {
     static let shared = MotionManager()
     
