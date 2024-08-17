@@ -24,6 +24,7 @@ struct Home: View {
     let size: CGSize
     let safeArea: EdgeInsets
     let shareData = ShareData()
+    @StateObject private var auth = Auth.shared
     
     @Binding var homePath: NavigationPath
 
@@ -45,7 +46,7 @@ struct Home: View {
                                 .frame(minHeight: size.height)
                                 .offset(y: shareData.gestureProgress * 30)
                             
-                            FeedScreen(userId: "3f6a2219-8ea1-4ff1-9057-6578ae3252af")
+                            FeedScreen(userId: auth.user?.id ?? "")
                         }
                     }
                     .onScrollGeometryChange(for: CGFloat.self) { proxy in

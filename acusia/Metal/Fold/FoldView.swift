@@ -39,7 +39,7 @@ struct MeshTransform: ViewModifier, Animatable {
     }
 
     func shader() -> Shader {
-        Shader(function: .init(library: .default, name: "distortion"), arguments: [
+        Shader(function: .init(library: .default, name: "fold"), arguments: [
             .boundingRect,
             .float(squeezeCenterX),
             .float(squeezeProgressX),
@@ -158,11 +158,11 @@ struct FoldView: View {
             .simultaneously(with: rotationGesture)
         
         ZStack {
-            Color.black
+            Color.white
                 .edgesIgnoringSafeArea(.all)
             
             Rectangle()
-                .fill(Color.white)
+                .fill(Color.black)
                 .aspectRatio(9 / 19.5, contentMode: .fit)  // Aspect ratio for modern iPhones (19.5:9)
                 .overlay(
                     VStack(spacing: 0) {
@@ -197,7 +197,7 @@ struct FoldView: View {
                             }
                             .padding(24)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                            .background(Color(UIColor.systemGray6))
+                            .background(.black)
                         }
                         
                         AsyncImage(url: URL(string: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/76/96/d1/7696d110-c929-4908-8fa1-30aad2511c55/00602567485872.rgb.jpg/600x600bb.jpg")!) { image in

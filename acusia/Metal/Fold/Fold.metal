@@ -18,7 +18,7 @@ float mapRange(float value, float inMin, float inMax, float outMin, float outMax
 }
 
 
-[[ stitchable ]] float2 distortion(float2 position, float4 bounds, float centerX, float progressX, float progressY, float progressTranslationY) {
+[[ stitchable ]] float2 fold(float2 position, float4 bounds, float centerX, float progressX, float progressY, float progressTranslationY) {
 
     // Get the width and height of the view
     float2 size = float2(bounds[2], bounds[3]);

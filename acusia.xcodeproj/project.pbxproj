@@ -213,6 +213,7 @@
 		CD132AA42C6DE75800C16804 /* Loupe */ = {
 			isa = PBXGroup;
 			children = (
+				CD132AA82C6DE7B100C16804 /* Loupe.swift */,
 				CD132AA62C6DE76900C16804 /* Loupe.metal */,
 			);
 			path = Loupe;
@@ -232,6 +233,7 @@
 		CD5509522C6F54FF005852DB /* Fold */ = {
 			isa = PBXGroup;
 			children = (
+				CD5509502C6F5366005852DB /* FoldView.swift */,
 				CD5509542C6F551C005852DB /* Fold.metal */,
 			);
 			path = Fold;
@@ -240,7 +242,6 @@
 		CD8CFDA42C6F02AC00D7DEA7 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				CD5509502C6F5366005852DB /* FoldView.swift */,
 				CDDED7352C194C8400958B39 /* App.swift */,
 				CD8D197E2C24E3CD00FDC979 /* Auth.swift */,
 				CD8CFDA92C6F030100D7DEA7 /* BottomBarView.swift */,
@@ -391,7 +392,6 @@
 		CDDED7872C1955A500958B39 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				CD132AA82C6DE7B100C16804 /* Loupe.swift */,
 				CD06C26F2C69B10100FC010C /* SearchSheet.swift */,
 				CDD48E172C62C20B0001C4E8 /* UserScreen.swift */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
