@@ -17,27 +17,32 @@ float mapRange(float value, float inMin, float inMax, float outMin, float outMax
     return ((value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin);
 }
 
-float smoothStep(float edge0, float edge1, float x) {
-    x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-    return x*x*x*(x*(x*6.0-15.0)+10.0);
-}
 
 [[ stitchable ]] float2 distortion(float2 position, float4 bounds, float centerX, float progressX, float progressY, float progressTranslationY) {
 
+    // Get the width and height of the view
     float2 size = float2(bounds[2], bounds[3]);
 
-    // Start with no curve when progressY = 1.0 (i.e., no distortion)
+    // Find the vertical and horizontal centers of the view (where the fold happens)
     float centerY = size.y * 0.5;
     centerX = size.x * 0.5;
+    
+    // Calculate distance from the vertical center (used to determine fold amount)
     float distanceFromCenterY = position.y - centerY;
 
-    // Curvature, inverted logic
-    float curveFactor = mapRange(progressY, 1.0, 0.0, 0.0, -0.3);  // Ensure no distortion at 1.0, full distortion at 0.0
+    // Make the curve factor more sensitive (increase the effect for small progressY values)
+    float sensitivity = 0.15; // Increase this value for more sensitivity
+    float curveFactor = mapRange(progressY, 1.0, 0.0, 0.0, -0.3 * sensitivity);
 
+    // Apply curvature to the X position to simulate bending
     float curvedX = position.x + curveFactor * pow(abs(distanceFromCenterY) / size.y, 2.0) * (position.x - centerX);
     
-    float stretchFactor = mapRange(progressY, 1.0, 0.0, 1.0, 0.95);
+    // Make the stretch factor more sensitive (increase the compression for small progressY values)
+    float stretchFactor = mapRange(progressY, 1.0, 0.0, 1.0, 0.95 - (0.05 * (sensitivity - 1.0)));
+
+    // Apply the stretch to the Y position to simulate the vertical squeeze
     float stretchedY = centerY + (distanceFromCenterY * stretchFactor);
 
+    // Return the final adjusted position with the X curvature and Y stretch applied
     return float2(curvedX, stretchedY);
 }

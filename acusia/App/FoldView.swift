@@ -77,8 +77,8 @@ struct FoldView: View {
     var body: some View {
         let magnificationGesture = MagnificationGesture()
             .onChanged { value in
-                // Adjust squeeze progress based on pinch
-                let newSqueezeProgress = mapRange(value, 0.5, 1.5, 0.0, 1.0)
+                // Adjust the starting value to reflect a smooth transition from the current state
+                let newSqueezeProgress = mapRange(value, 1.0, 1.5, squeezeProgressX, 0.0)
                 
                 squeezeProgressX = newSqueezeProgress
                 squeezeProgressY = newSqueezeProgress
@@ -160,30 +160,57 @@ struct FoldView: View {
         ZStack {
             Color.black
                 .edgesIgnoringSafeArea(.all)
+            
             Rectangle()
                 .fill(Color.white)
-                .frame(width: .infinity, height: .infinity)
+                .aspectRatio(9 / 19.5, contentMode: .fit)  // Aspect ratio for modern iPhones (19.5:9)
                 .overlay(
-                    VStack {
-                        VStack {
-                            Text("FoldView")
-                                .font(.largeTitle)
-                                .foregroundColor(.black)
+                    VStack(spacing: 0) {
+                        ZStack(alignment: .topLeading) {
+                            VStack(alignment: .leading, spacing: 0) {
+                                Image("heartbreak")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.red)
+                                    .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 2)
+                                    .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
+                                    .padding(.bottom, 12)
+                                
+                                Text("Florence + The Machine")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(Color.secondary)
+                                    .lineLimit(1)
+                                    .multilineTextAlignment(.leading)
+                                Text("High As Hope")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(Color.white)
+                                    .lineLimit(1)
+                                    .multilineTextAlignment(.leading)
+                                    .padding(.bottom, 12)
+                                
+                                Text("I'm not really sure what I have to say about this other than that it's good. It's not nearly as bulletproof as RENAISSANCE was, but that's fine when you're making as sprawling and grand an artistic statement as this. It's probably more of an album that I respect rather than one that I just totally love listening to, but the extensive list of favorites I have for it suggests that it might actually just be that good. Excited for Act 3.")
+                                    .foregroundColor(Color.white)
+                                    .font(.system(size: 15, weight: .regular))
+                                    .multilineTextAlignment(.leading)
+                                
+                            }
+                            .padding(24)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                            .background(Color(UIColor.systemGray6))
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.red)
                         
-                        VStack {
-                            Text("FoldView")
-                                .font(.largeTitle)
-                                .foregroundColor(.black)
+                        AsyncImage(url: URL(string: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/76/96/d1/7696d110-c929-4908-8fa1-30aad2511c55/00602567485872.rgb.jpg/600x600bb.jpg")!) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        } placeholder: {
+                            ProgressView()
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.green)
                     }
                 )
-                .padding(32)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: 264)
+                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                 .modifier(MeshTransform(
                     squeezeProgressX: squeezeProgressX,
                     squeezeProgressY: squeezeProgressY,
