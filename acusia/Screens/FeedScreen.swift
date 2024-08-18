@@ -104,11 +104,6 @@ struct Entry: View {
                     // Render card if entry is an artifact.
                     if entry.rating != 2 {
                         ArtifactAttachment(entry: entry, namespace: namespace)
-                            .overlay(
-                                HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
-                                    .offset(x: -12, y: 0),
-                                alignment: .bottomLeading
-                            )
                             .padding(.bottom, 12)
                     } else {
                         WispAttachment(entry: entry, namespace: namespace)
@@ -159,56 +154,40 @@ struct Entry: View {
     }
 }
 
+
 struct ArtifactAttachment: View {
     let entry: APIEntry
     var namespace: Namespace.ID
     
     var body: some View {
-        ZStack(alignment: .top) {
-            VStack(spacing: 0) {
-                // Top artwork
-                AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 240, height: 240)
-                        .clipped() // Ensures it doesn't overflow
-                } placeholder: {
-                    ProgressView()
-                }
-                
-                // Flipped artwork
-                AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .rotationEffect(.degrees(180))
-                        .scaleEffect(x: -1, y: 1)
-                        .frame(width: 240, height: 240)
-                        .clipped()
-                } placeholder: {
-                    ProgressView()
-                }
-            }
-            
-            // Bottom blur
-            ZStack {
-                VariableBlurView(radius: 8, mask: Image(.gradient))
-                    .frame(width: 240, height: 124)
-                
-                Image("heartbreak")
+        ZStack(alignment: .bottomLeading) {
+            // Top artwork
+            AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
+                image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 32, height: 32)
-                    .foregroundColor(.pink)
-                    .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 2)
-                    .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
+                    .mask(
+                        Image("mask") // The mask image with a transparent cutout
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    )
+                    .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+            } placeholder: {
+                ProgressView()
             }
-            .frame(width: 240, height: 340, alignment: .bottom)
+            
+            Image("heartbreak")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 32, height: 32)
+                .foregroundColor(.black)
+                .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
+                .padding(8)
+                .rotationEffect(.degrees(6))
         }
-        .background(.thinMaterial)
-        .frame(width: 240, height: 320, alignment: .topLeading)
-        .clipped()
+        .padding(8)
+        .frame(width: 196, height: 196)
+        .background(.white)
         .clipShape(
             .rect(
                 topLeadingRadius: 32,
@@ -218,7 +197,6 @@ struct ArtifactAttachment: View {
                 style: .continuous
             )
         )
-        .rotationEffect(.degrees(2))
     }
 }
 
