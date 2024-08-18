@@ -2,7 +2,6 @@ import SwiftUI
 import Wave
 
 struct LoupeView: View {
-
     static let loupeRestingPosition = CGPoint(x: 0.15, y: 0.85)
 
     static let loupeRestingSize = 0.1

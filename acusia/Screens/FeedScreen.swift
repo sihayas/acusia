@@ -60,7 +60,6 @@ struct FeedScreen: View {
         )) {
             Text(deleteError?.localizedDescription ?? "Unknown error")
         }
-
     }
     
     func deleteEntry(id: String) async {
@@ -192,13 +191,20 @@ struct ArtifactAttachment: View {
                 }
             }
             
-           // Bottom blur
-            VStack {
-                VariableBlurView(radius: 32, mask: Image(.gradient))
-                  .frame(width: 240, height: 124)
+            // Bottom blur
+            ZStack {
+                VariableBlurView(radius: 8, mask: Image(.gradient))
+                    .frame(width: 240, height: 124)
+                
+                Image("heartbreak")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 32, height: 32)
+                    .foregroundColor(.pink)
+                    .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 2)
+                    .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
             }
             .frame(width: 240, height: 340, alignment: .bottom)
-            
         }
         .background(.thinMaterial)
         .frame(width: 240, height: 320, alignment: .topLeading)
@@ -237,7 +243,6 @@ struct WispAttachment: View {
                     }
                         
                     VStack(alignment: .leading) {
-
                         Text(entry.sound.appleData?.artistName ?? "")
                             .font(.system(size: 13, weight: .regular))
                             .foregroundColor(Color.secondary)
@@ -249,7 +254,6 @@ struct WispAttachment: View {
                             .foregroundColor(Color.white)
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
-                        
                     }
                         
                     Spacer()
