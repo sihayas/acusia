@@ -43,7 +43,6 @@ struct TopScrollView: View {
         }
         .frame(height: screenHeight)
         .frame(height: screenHeight - minimizedHeight + minimizedHeight * shareData.gestureProgress, alignment: .bottom)
-        .border(Color.green, width: 1)
         .overlay(alignment: .bottom) {
             BottomBarView {
                 Task {

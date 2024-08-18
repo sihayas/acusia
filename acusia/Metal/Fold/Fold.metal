@@ -13,7 +13,7 @@
 
 using namespace metal;
 
-float mapRange(float value, float inMin, float inMax, float outMin, float outMax) {
+float foldMapRange(float value, float inMin, float inMax, float outMin, float outMax) {
     return ((value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin);
 }
 
@@ -32,13 +32,13 @@ float mapRange(float value, float inMin, float inMax, float outMin, float outMax
 
     // Make the curve factor more sensitive (increase the effect for small progressY values)
     float sensitivity = 0.15; // Increase this value for more sensitivity
-    float curveFactor = mapRange(progressY, 1.0, 0.0, 0.0, -0.3 * sensitivity);
+    float curveFactor = foldMapRange(progressY, 1.0, 0.0, 0.0, -0.3 * sensitivity);
 
     // Apply curvature to the X position to simulate bending
     float curvedX = position.x + curveFactor * pow(abs(distanceFromCenterY) / size.y, 2.0) * (position.x - centerX);
     
     // Make the stretch factor more sensitive (increase the compression for small progressY values)
-    float stretchFactor = mapRange(progressY, 1.0, 0.0, 1.0, 0.95 - (0.05 * (sensitivity - 1.0)));
+    float stretchFactor = foldMapRange(progressY, 1.0, 0.0, 1.0, 0.95 - (0.05 * (sensitivity - 1.0)));
 
     // Apply the stretch to the Y position to simulate the vertical squeeze
     float stretchedY = centerY + (distanceFromCenterY * stretchFactor);

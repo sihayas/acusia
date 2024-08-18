@@ -239,7 +239,7 @@ struct UserScreen: View {
                 image
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 80, height: 80)
+                    .frame(width: 96, height: 96)
                     .clipShape(Circle())
             } placeholder: {
                 ProgressView()
@@ -247,55 +247,14 @@ struct UserScreen: View {
             
             // MARK: User data interface
             VStack {
-                VStack(alignment: .leading) {
+                Spacer()
+                
+                HStack {
+                    
                     Text("@dracarys")
                         .font(.system(size: 27, weight: .semibold))
                         .foregroundColor(.primary)
                     
-                    Divider()
-                        .background(Color.primary)
-                        .frame(width: UIScreen.main.bounds.width * 0.4)
-                    
-                    Group {
-                        HStack {
-                            Text("FOLLOW")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text("7643")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.bottom, 2)
-                        
-                        HStack {
-                            Text("REVERIE")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text("967")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.bottom, 2)
-                        
-                        HStack {
-                            Text("SOUND")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text("12.3K")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    .frame(width: UIScreen.main.bounds.width * 0.4, alignment: .leading)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Spacer()
-                
-                HStack {
                     Spacer()
                     
 //                    Button(action: {
