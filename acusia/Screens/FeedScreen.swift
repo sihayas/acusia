@@ -160,33 +160,52 @@ struct ArtifactAttachment: View {
     var namespace: Namespace.ID
     
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            // Top artwork
-            AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
-                image
+        VStack(alignment: .leading) {
+            ZStack(alignment: .bottomLeading) {
+                // Top artwork
+                AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .mask(
+                            Image("mask") // The mask image with a transparent cutout
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        )
+                        .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+                } placeholder: {
+                    ProgressView()
+                }
+                
+                Image("heartbreak")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .mask(
-                        Image("mask") // The mask image with a transparent cutout
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    )
-                    .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
-            } placeholder: {
-                ProgressView()
+                    .frame(width: 32, height: 32)
+                    .foregroundColor(.black)
+                    .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
+                    .padding(8)
+                    .rotationEffect(.degrees(6))
             }
+            .padding(8)
+            .frame(width: 196, height: 196)
             
-            Image("heartbreak")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 32, height: 32)
-                .foregroundColor(.black)
-                .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
-                .padding(8)
-                .rotationEffect(.degrees(6))
+            VStack(alignment: .leading) {
+                Text(entry.sound.appleData?.artistName ?? "")
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundColor(Color.black)
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                
+                Text(entry.sound.appleData?.name ?? "")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(Color.black)
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
         }
-        .padding(8)
-        .frame(width: 196, height: 196)
+        .frame(width: 196, height: 244, alignment: .topLeading)
         .background(.white)
         .clipShape(
             .rect(
