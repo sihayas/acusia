@@ -50,6 +50,9 @@ struct FeedScreen: View {
                 await musicPlayer.updateQueue(with: newEntries)
             }
         }
+        .onChange(of: scrolledEntryID) { id in
+            print("Scrolled entry ID: \(id)")
+        }
         .onAppear {
             Task {
                 await viewModel.fetchEntries()
@@ -83,67 +86,36 @@ struct Entry: View {
     let onDelete: (String) async -> Void
     
     @State private var isSheetPresented = false
+    @State private var isVisible: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: -8) {
-            HStack(alignment: .bottom, spacing: 12) {
-                NavigationLink {
-                    EmptyView()
-                } label: {
-                    AsyncImage(url: URL(string: entry.author.image)) { image in
-                        image
-                            .resizable()
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
-                    } placeholder: {
-                        EmptyView()
-                    }
-                    .matchedTransitionSource(id: entry.id, in: namespace)
+        HStack(alignment: .bottom) {
+            NavigationLink {
+                EmptyView()
+                    .frame(width: 40, height: 40)
+            } label: {
+                AsyncImage(url: URL(string: entry.author.image)) { image in
+                    image
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
+                } placeholder: {
+                    Circle()
+                        .fill(.gray)
+                        .frame(width: 40, height: 40)
                 }
-                    
-                VStack(alignment: .leading, spacing: 0) {
-                    // Render card if entry is an artifact.
-                    if entry.rating != 2 {
-                        ArtifactAttachment(entry: entry, namespace: namespace)
-                            .padding(.bottom, 12)
-                    } else {
-                        WispAttachment(entry: entry, namespace: namespace)
-                            .padding(.bottom, 8)
-                    }
-                    
-                    ZStack(alignment: .bottomLeading) {
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 12, height: 12)
-                            .offset(x: 0, y: 0)
-                        
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 6, height: 6)
-                            .offset(x: -6, y: 4)
-                        
-                        Text(entry.text)
-                            .foregroundColor(.white)
-                            .font(.system(size: 16, weight: .regular))
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 10)
-                            .background(Color(UIColor.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    }
-                }
-                .padding(.bottom, 12)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .matchedTransitionSource(id: entry.id, in: namespace)
             }
-            Text(entry.author.username)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.white)
-                .lineLimit(1)
-                .multilineTextAlignment(.leading)
-                .padding(.leading, 64)
+            GooeyView(animate: $isVisible, entry: entry)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black)
         }
         .padding(.vertical, 36)
         .padding(.horizontal, 24)
+        .onScrollVisibilityChange(threshold: 0.6) { visibility in
+            print("Entry \(entry.id) is visible: \(visibility)")
+            isVisible = visibility
+        }
         .sheet(isPresented: $isSheetPresented) {
             // Sheet content
             VStack {}
