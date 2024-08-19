@@ -3,8 +3,6 @@
 //  iOS18PhotosAppUI
 //
 //  Created by Xiaofu666 on 2024/7/21.
-
-
 import SwiftUI
 
 struct TopScrollView: View {
@@ -22,7 +20,7 @@ struct TopScrollView: View {
                 LazyVGrid(columns: Array(repeating: GridItem(spacing: 4), count: 2), spacing: 4) {
                     ForEach(1...50, id: \.self) { _ in
                         Rectangle()
-                            .fill(.gray)
+                            .fill(.black)
                             .opacity(0.5)
                             .frame(height: 120)
                     }

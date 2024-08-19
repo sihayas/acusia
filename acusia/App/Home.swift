@@ -42,10 +42,8 @@ struct Home: View {
                         ScrollView(.vertical) {
                             VStack(spacing: 0) {
                                 TopScrollView(size: size, safeArea: safeArea)
-                                    .border(Color.green, width: 1)
                                 
                                 UserScreen(homePath: $homePath, initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
-                                    .border(Color.purple, width: 1)
                                     .frame(minHeight: size.height)
                                     .offset(y: shareData.gestureProgress * 30)
                                 

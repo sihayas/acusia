@@ -1,6 +1,8 @@
 import SwiftUI
 import Vision
 
+/// Takes an input image, turns it black and white, and returns a
+/// path that can be used to trace the contours of the image
 struct MKSymbolShape: InsettableShape {
     var insetAmount = 0.0
     let imageName: String
@@ -33,7 +35,7 @@ struct MKSymbolShape: InsettableShape {
         // cgPath returned from Vision will be in rect 0,0 1.0,1.0 coordinates
         // so we want to scale the path to our view bounds
         
-        guard let cgPath = detectVisionContours(from: self.trimmedImage) else { return Path() }
+        guard let cgPath = detectVisionContours(from: trimmedImage) else { return Path() }
         
         let scW: CGFloat = (rect.width - CGFloat(insetAmount)) / cgPath.boundingBox.width
         let scH: CGFloat = (rect.height - CGFloat(insetAmount)) / cgPath.boundingBox.height
@@ -72,6 +74,4 @@ struct MKSymbolShape: InsettableShape {
         shape.insetAmount += amount
         return shape
     }
-    
 }
-

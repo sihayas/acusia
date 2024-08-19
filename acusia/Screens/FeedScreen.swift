@@ -4,6 +4,7 @@
 //
 //  Created by decoherence on 6/12/24.
 //
+
 import Combine
 import SwiftUI
 
@@ -112,12 +113,12 @@ struct Entry: View {
                     
                     ZStack(alignment: .bottomLeading) {
                         Circle()
-                            .fill(.thinMaterial)
+                            .fill(Color(UIColor.systemGray6))
                             .frame(width: 12, height: 12)
                             .offset(x: 0, y: 0)
                         
                         Circle()
-                            .fill(.thinMaterial)
+                            .fill(Color(UIColor.systemGray6))
                             .frame(width: 6, height: 6)
                             .offset(x: -6, y: 4)
                         
@@ -127,7 +128,7 @@ struct Entry: View {
                             .multilineTextAlignment(.leading)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)
-                            .background(.thinMaterial)
+                            .background(Color(UIColor.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
                 }
@@ -154,58 +155,38 @@ struct Entry: View {
     }
 }
 
-
 struct ArtifactAttachment: View {
     let entry: APIEntry
     var namespace: Namespace.ID
     
     var body: some View {
-        VStack(alignment: .leading) {
-            ZStack(alignment: .bottomLeading) {
-                // Top artwork
-                AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .mask(
-                            Image("mask") // The mask image with a transparent cutout
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        )
-                        .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
-                } placeholder: {
-                    ProgressView()
-                }
-                
-                Image("heartbreak")
+        ZStack(alignment: .bottomLeading) {
+            // Top artwork
+            AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
+                image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 32, height: 32)
-                    .foregroundColor(.black)
-                    .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
-                    .padding(8)
-                    .rotationEffect(.degrees(6))
+                    .mask(
+                        Image("mask")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    )
+                    .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+            } placeholder: {
+                ProgressView()
             }
-            .padding(8)
-            .frame(width: 196, height: 196)
             
-            VStack(alignment: .leading) {
-                Text(entry.sound.appleData?.artistName ?? "")
-                    .font(.system(size: 13, weight: .regular))
-                    .foregroundColor(Color.black)
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                
-                Text(entry.sound.appleData?.name ?? "")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(Color.black)
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-            }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 16)
+            Image("heartbreak")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 32, height: 32)
+                .foregroundColor(.black)
+                .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
+                .padding(8)
+                .rotationEffect(.degrees(6))
         }
-        .frame(width: 196, height: 244, alignment: .topLeading)
+        .padding(8)
+        .frame(width: 196, height: 196)
         .background(.white)
         .clipShape(
             .rect(
@@ -228,16 +209,21 @@ struct WispAttachment: View {
             .fill(.clear)
             .frame(width: .infinity, height: 72)
             .overlay(
-                HStack(spacing: 0) {
-                    AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
-                        image
-                            .resizable()
-                            .frame(width: 48, height: 48)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                            .padding(12)
-                    } placeholder: {
-                        ProgressView()
+                HStack(spacing: 12) {
+                    VStack {
+                        AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
+                            image
+                                .resizable()
+                                .frame(width: 64, height: 64)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+                        } placeholder: {
+                            ProgressView()
+                        }
                     }
+                    .padding(4)
+                    .background(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         
                     VStack(alignment: .leading) {
                         Text(entry.sound.appleData?.artistName ?? "")

@@ -1,5 +1,5 @@
 //
-//  MusicKit.swift
+//  MusicPlayer.swift
 //  acusia
 //
 //  Created by decoherence on 7/16/24.
@@ -38,7 +38,7 @@ class MusicPlayer: ObservableObject {
             print("Error fetching subscription status: \(error)")
         }
     }
-    
+
     func updateQueue(with entries: [APIEntry]) async {
         guard isAuthorized && canPlayCatalogContent else {
             print("Not authorized or cannot play catalog content")
@@ -51,7 +51,7 @@ class MusicPlayer: ObservableObject {
             guard let appleData = entry.sound.appleData else { continue }
 
             let musicItemID = MusicItemID(appleData.id)
-            
+
             do {
                 switch appleData.type {
                 case "songs":
@@ -64,7 +64,7 @@ class MusicPlayer: ObservableObject {
                     var albumRequest = MusicCatalogResourceRequest<Album>(matching: \.id, equalTo: musicItemID)
                     albumRequest.properties = [.tracks]
                     let albumResponse = try await albumRequest.response()
-                    
+
                     if let album = albumResponse.items.first, let tracks = album.tracks {
                         for track in tracks {
                             queueEntries.append(.init(track))
@@ -102,10 +102,10 @@ class MusicPlayer: ObservableObject {
         Task {
             do {
                 let musicItemID = MusicItemID(songId)
-                
+
                 let request = MusicCatalogResourceRequest<Song>(matching: \.id, equalTo: musicItemID)
                 let response = try await request.response()
-                
+
                 if let song = response.items.first {
                     applicationPlayer.queue = [song]
                     try await applicationPlayer.play()
@@ -121,7 +121,7 @@ class MusicPlayer: ObservableObject {
 
 struct PlayButtonView: View {
     @StateObject private var musicPlayer = MusicPlayer()
-    
+
     let songId: String
 
     var body: some View {
