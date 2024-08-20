@@ -46,12 +46,6 @@ struct FeedScreen: View {
             if let firstEntry = viewModel.entries.first {
                 scrolledEntryID = firstEntry.id
             }
-            Task {
-                await musicPlayer.updateQueue(with: newEntries)
-            }
-        }
-        .onChange(of: scrolledEntryID) { _, id in
-            print("Scrolled entry ID: \(id)")
         }
         .onAppear {
             Task {
@@ -94,7 +88,6 @@ struct Entry: View {
         HStack(alignment: .bottom, spacing: 0) {
             NavigationLink {
                 EmptyView()
-                    .frame(width: 40, height: 40)
             } label: {
                 AsyncImage(url: URL(string: entry.author.image)) { image in
                     image
@@ -109,35 +102,39 @@ struct Entry: View {
                 .matchedTransitionSource(id: entry.id, in: namespace)
             }
             
-            GooeyView(animate: $isVisible, entry: entry)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.black)
-                .overlay(
-                    ZStack(alignment: .bottomLeading) {
-                        Circle()
-                            .fill(Color.white)
-                            .frame(width: 12, height: 12)
-                            .offset(x: 12, y: -12)
-                            .scaleEffect(animateFirstCircle ? 1 : 0, anchor: .topTrailing)
-
-                        Circle()
-                            .fill(Color.white)
-                            .frame(width: 6, height: 6)
-                            .offset(x: 4, y: -6)
-                            .scaleEffect(animateSecondCircle ? 1 : 0, anchor: .topTrailing)
-                    },
-                    alignment: .bottomLeading
-                )
-                .onChange(of: isVisible) { _, newValue in
-                    if newValue {
-                        withAnimation(.spring().delay(0.7)) {
-                            animateFirstCircle = true
-                        }
-                        withAnimation(.spring().delay(0.8)) {
-                            animateSecondCircle = true
+            if entry.rating != 2 {
+                GooeyView(isVisible: $isVisible, entry: entry)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .overlay(
+                        ZStack(alignment: .bottomLeading) {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 10, height: 10)
+                                .offset(x: 12, y: -12)
+                                .scaleEffect(animateFirstCircle ? 1 : 0, anchor: .topTrailing)
+                            
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 4, height: 4)
+                                .offset(x: 6, y: -10)
+                                .scaleEffect(animateSecondCircle ? 1 : 0, anchor: .topTrailing)
+                        },
+                        alignment: .bottomLeading
+                    )
+                    .onChange(of: isVisible) { _, newValue in
+                        if newValue {
+                            print("isVisible: \(newValue)")
+                            withAnimation(.spring().delay(0.3)) {
+                                animateFirstCircle = true
+                            }
+                            withAnimation(.spring().delay(0.3)) {
+                                animateSecondCircle = true
+                            }
                         }
                     }
-                }
+            } else {
+                WispView(entry: entry, namespace: namespace)
+            }
         }
         .padding(.vertical, 36)
         .padding(.horizontal, 24)
@@ -155,92 +152,72 @@ struct Entry: View {
     }
 }
 
-struct ArtifactAttachment: View {
+struct WispView: View {
     let entry: APIEntry
     var namespace: Namespace.ID
     
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            // Top artwork
-            AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "")) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .mask(
-                        Image("mask")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    )
-                    .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
-            } placeholder: {
-                ProgressView()
-            }
-            
-            Image("heartbreak")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 32, height: 32)
-                .foregroundColor(.black)
-                .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
-                .padding(8)
-                .rotationEffect(.degrees(6))
-        }
-        .padding(8)
-        .frame(width: 196, height: 196)
-        .background(.white)
-        .clipShape(
-            .rect(
-                topLeadingRadius: 32,
-                bottomLeadingRadius: 32,
-                bottomTrailingRadius: 32,
-                topTrailingRadius: 32,
-                style: .continuous
-            )
-        )
-    }
-}
-
-struct WispAttachment: View {
-    let entry: APIEntry
-    var namespace: Namespace.ID
-    
-    var body: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .fill(.clear)
-            .frame(width: .infinity, height: 72)
-            .overlay(
-                HStack(spacing: 12) {
-                    VStack {
-                        AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
-                            image
-                                .resizable()
-                                .frame(width: 64, height: 64)
-                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
-                        } placeholder: {
-                            ProgressView()
+        VStack(alignment: .leading, spacing: 12) {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.clear)
+                .frame(width: .infinity, height: 72)
+                .overlay(
+                    HStack(spacing: 12) {
+                        VStack {
+                            AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: 64, height: 64)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+                            } placeholder: {
+                                ProgressView()
+                            }
                         }
-                    }
-                    .padding(4)
-                    .background(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .padding(4)
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         
-                    VStack(alignment: .leading) {
-                        Text(entry.sound.appleData?.artistName ?? "")
-                            .font(.system(size: 13, weight: .regular))
-                            .foregroundColor(Color.secondary)
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
+                        VStack(alignment: .leading) {
+                            Text(entry.sound.appleData?.artistName ?? "")
+                                .font(.system(size: 13, weight: .regular))
+                                .foregroundColor(Color.white)
+                                .lineLimit(1)
+                                .multilineTextAlignment(.leading)
                             
-                        Text(entry.sound.appleData?.name ?? "")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(Color.white)
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
-                    }
+                            Text(entry.sound.appleData?.name ?? "")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(Color.white)
+                                .lineLimit(1)
+                                .multilineTextAlignment(.leading)
+                        }
                         
-                    Spacer()
-                }
-            )
+                        Spacer()
+                    }
+                )
+            
+            ZStack(alignment: .bottomLeading) {
+                Circle()
+                    .fill(.thinMaterial)
+                    .frame(width: 12, height: 12)
+                    .offset(x: 0, y: 0)
+                
+                Circle()
+                    .fill(.thinMaterial)
+                    .frame(width: 6, height: 6)
+                    .offset(x: -6, y: 4)
+                
+                Text(entry.text)
+                    .foregroundColor(.white)
+                    .font(.system(size: 16, weight: .regular))
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(.thinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            }
+        }
+        .padding([.bottom, .leading], 12)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 }

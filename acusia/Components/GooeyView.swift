@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct GooeyView: View {
-    @State private var offset: CGSize = .zero
-    @State private var contentSize: CGSize = .zero // State to hold the measured size of the VStack
+    @Binding var isVisible: Bool
+    
+    // State to hold the measured size of the VStack
+    @State private var contentSize: CGSize = .zero
 
     @State private var animateScale = false
     @State private var animateOffset = false
-
-    @Binding var animate: Bool
 
     var entry: APIEntry? = nil
 
@@ -75,7 +75,7 @@ struct GooeyView: View {
             )
             .zIndex(1)
             .tag(0)
-            .onChange(of: animate) { _, newValue in
+            .onChange(of: isVisible) { _, newValue in
                 withAnimation(.spring(response: 0.7, dampingFraction: 0.8, blendDuration: 0)) {
                     animateScale = true
                 }

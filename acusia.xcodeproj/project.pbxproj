@@ -9,13 +9,13 @@
 /* Begin PBXBuildFile section */
 		CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* SearchSheet.swift */; };
 		CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */; };
-		CD0E47DB2C473BD000BBBB5F /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47DA2C473BCC00BBBB5F /* MusicPlayer.swift */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA62C6DE76900C16804 /* Loupe.metal */; };
 		CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA82C6DE7B100C16804 /* Loupe.swift */; };
 		CD18152E2C72C345004C9753 /* GooeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD18152D2C72C339004C9753 /* GooeyView.swift */; };
 		CD5509512C6F536E005852DB /* FoldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5509502C6F5366005852DB /* FoldView.swift */; };
 		CD5509552C6F551C005852DB /* Fold.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD5509542C6F551C005852DB /* Fold.metal */; };
+		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescence.metal */; };
 		CD8CFDA62C6F02E600D7DEA7 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* Home.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* TopScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */; };
@@ -104,12 +104,12 @@
 /* Begin PBXFileReference section */
 		CD06C26F2C69B10100FC010C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
 		CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactCard.swift; sourceTree = "<group>"; };
-		CD0E47DA2C473BCC00BBBB5F /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
 		CD18152D2C72C339004C9753 /* GooeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooeyView.swift; sourceTree = "<group>"; };
 		CD5509502C6F5366005852DB /* FoldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldView.swift; sourceTree = "<group>"; };
 		CD5509542C6F551C005852DB /* Fold.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Fold.metal; sourceTree = "<group>"; };
+		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescence.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescence.metal; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopScrollView.swift; sourceTree = "<group>"; };
@@ -209,7 +209,7 @@
 		CD0E47D92C473BC600BBBB5F /* MusicKit */ = {
 			isa = PBXGroup;
 			children = (
-				CD0E47DA2C473BCC00BBBB5F /* MusicPlayer.swift */,
+				CD614C3F2C7488FF0059C80F /* MusicKit.swift */,
 			);
 			path = MusicKit;
 			sourceTree = "<group>";
@@ -581,7 +581,6 @@
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CDDED78D2C1959FD00958B39 /* StarRatingView.swift in Sources */,
-				CD0E47DB2C473BD000BBBB5F /* MusicPlayer.swift in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* Home.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
@@ -589,6 +588,7 @@
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */,
+				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
 				CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
