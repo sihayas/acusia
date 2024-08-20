@@ -50,7 +50,7 @@ struct FeedScreen: View {
                 await musicPlayer.updateQueue(with: newEntries)
             }
         }
-        .onChange(of: scrolledEntryID) { id in
+        .onChange(of: scrolledEntryID) { _, id in
             print("Scrolled entry ID: \(id)")
         }
         .onAppear {
@@ -87,9 +87,11 @@ struct Entry: View {
     
     @State private var isSheetPresented = false
     @State private var isVisible: Bool = false
-    
+    @State private var animateFirstCircle = false
+    @State private var animateSecondCircle = false
+
     var body: some View {
-        HStack(alignment: .bottom) {
+        HStack(alignment: .bottom, spacing: 0) {
             NavigationLink {
                 EmptyView()
                     .frame(width: 40, height: 40)
@@ -106,14 +108,40 @@ struct Entry: View {
                 }
                 .matchedTransitionSource(id: entry.id, in: namespace)
             }
+            
             GooeyView(animate: $isVisible, entry: entry)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.black)
+                .overlay(
+                    ZStack(alignment: .bottomLeading) {
+                        Circle()
+                            .fill(Color.white)
+                            .frame(width: 12, height: 12)
+                            .offset(x: 12, y: -12)
+                            .scaleEffect(animateFirstCircle ? 1 : 0, anchor: .topTrailing)
+
+                        Circle()
+                            .fill(Color.white)
+                            .frame(width: 6, height: 6)
+                            .offset(x: 4, y: -6)
+                            .scaleEffect(animateSecondCircle ? 1 : 0, anchor: .topTrailing)
+                    },
+                    alignment: .bottomLeading
+                )
+                .onChange(of: isVisible) { _, newValue in
+                    if newValue {
+                        withAnimation(.spring().delay(0.7)) {
+                            animateFirstCircle = true
+                        }
+                        withAnimation(.spring().delay(0.8)) {
+                            animateSecondCircle = true
+                        }
+                    }
+                }
         }
         .padding(.vertical, 36)
         .padding(.horizontal, 24)
-        .onScrollVisibilityChange(threshold: 0.6) { visibility in
-            print("Entry \(entry.id) is visible: \(visibility)")
+        .onScrollVisibilityChange(threshold: 0.7) { visibility in
             isVisible = visibility
         }
         .sheet(isPresented: $isSheetPresented) {

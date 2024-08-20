@@ -23,7 +23,8 @@ struct GooeyView: View {
         let imageUrl = entry?.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? ""
 
         ZStack {
-            VStack(alignment: .leading, spacing: 4) {
+            // MARK: Content Overlay
+            VStack(alignment: .leading, spacing: 12) {
                 RoundedRectangle(cornerRadius: 32)
                     .fill(.clear)
                     .frame(width: 196, height: 196)
@@ -59,8 +60,8 @@ struct GooeyView: View {
                     .foregroundColor(.black)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
-                    .scaleEffect(animateScale ? 1.0 : 0, anchor: .topLeading)
-                    .offset(y: animateOffset ? 0 : -80)
+                    .scaleEffect(animateScale ? 1 : 0, anchor: .top)
+                    .offset(y: animateOffset ? 0 : -16)
             }
             .frame(maxWidth: .infinity, alignment: .bottomLeading)
             .padding(12)
@@ -72,20 +73,18 @@ struct GooeyView: View {
                     }
                 }
             )
-            .allowsHitTesting(false)
             .zIndex(1)
             .tag(0)
             .onChange(of: animate) { _, newValue in
-                if newValue {
-                    withAnimation(.spring(response: 0.7, dampingFraction: 0.8, blendDuration: 0)) {
-                        animateScale = true
-                    }
-                    withAnimation(.spring(response: 0.5, dampingFraction: 0.4, blendDuration: 0)) {
-                        animateOffset = true
-                    }
+                withAnimation(.spring(response: 0.7, dampingFraction: 0.8, blendDuration: 0)) {
+                    animateScale = true
+                }
+                withAnimation(.spring(response: 1.2, dampingFraction: 1,  blendDuration: 0)) {
+                    animateOffset = true
                 }
             }
 
+            // MARK: Gooey Effect Underlay
             if contentSize != .zero {
                 Canvas { context, _ in
                     let container = context.resolveSymbol(id: 0)!
@@ -97,7 +96,7 @@ struct GooeyView: View {
                         ctx.draw(container, at: CGPoint(x: contentSize.width / 2, y: contentSize.height / 2))
                     }
                 } symbols: {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 12) {
                         RoundedRectangle(cornerRadius: 32)
                             .fill(.black)
                             .frame(width: 196, height: 196)
@@ -107,8 +106,8 @@ struct GooeyView: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)
                             .background(.black, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .scaleEffect(animateScale ? 1.0 : 0, anchor: .topLeading)
-                            .offset(y: animateOffset ? 0 : -80)
+                            .scaleEffect(animateScale ? 1 : 0, anchor: .top)
+                            .offset(y: animateOffset ? 0 : -16)
                     }
                     .frame(maxWidth: .infinity, alignment: .bottomLeading)
                     .padding(12)
