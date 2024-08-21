@@ -16,6 +16,7 @@
 		CD5509512C6F536E005852DB /* FoldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5509502C6F5366005852DB /* FoldView.swift */; };
 		CD5509552C6F551C005852DB /* Fold.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD5509542C6F551C005852DB /* Fold.metal */; };
 		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
+		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescence.metal */; };
 		CD8CFDA62C6F02E600D7DEA7 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* Home.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* TopScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */; };
@@ -110,6 +111,7 @@
 		CD5509502C6F5366005852DB /* FoldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldView.swift; sourceTree = "<group>"; };
 		CD5509542C6F551C005852DB /* Fold.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Fold.metal; sourceTree = "<group>"; };
 		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
+		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescence.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescence.metal; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopScrollView.swift; sourceTree = "<group>"; };
@@ -376,6 +378,7 @@
 		CDDED77C2C19520300958B39 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				CD614C412C74BA150059C80F /* MusicKitModel.swift */,
 				CDDED7792C19520300958B39 /* FeedModel.swift */,
 				CD8D19822C27973800FDC979 /* NotificationModel.swift */,
 				CDDED77A2C19520300958B39 /* SearchModel.swift */,
@@ -570,6 +573,7 @@
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */,
+				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
 				CD8CFDA82C6F02F100D7DEA7 /* TopScrollView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,

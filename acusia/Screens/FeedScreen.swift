@@ -9,7 +9,6 @@ import Combine
 import SwiftUI
 
 struct FeedScreen: View {
-    @StateObject private var musicPlayer = MusicPlayer()
     @StateObject private var viewModel: FeedViewModel
     @Namespace var ns
     
@@ -27,7 +26,7 @@ struct FeedScreen: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            VStack(spacing: 24) {
                 ForEach(viewModel.entries) { entry in
                     Entry(
                         entry: entry,
@@ -42,7 +41,7 @@ struct FeedScreen: View {
         }
         .scrollPosition(id: $scrolledEntryID)
         .scrollClipDisabled(true)
-        .onChange(of: viewModel.entries) { _, newEntries in
+        .onChange(of: viewModel.entries) { _, _ in
             if let firstEntry = viewModel.entries.first {
                 scrolledEntryID = firstEntry.id
             }
@@ -121,22 +120,10 @@ struct Entry: View {
                         },
                         alignment: .bottomLeading
                     )
-                    .onChange(of: isVisible) { _, newValue in
-                        if newValue {
-                            print("isVisible: \(newValue)")
-                            withAnimation(.spring().delay(0.3)) {
-                                animateFirstCircle = true
-                            }
-                            withAnimation(.spring().delay(0.3)) {
-                                animateSecondCircle = true
-                            }
-                        }
-                    }
             } else {
                 WispView(entry: entry, namespace: namespace)
             }
         }
-        .padding(.vertical, 36)
         .padding(.horizontal, 24)
         .onScrollVisibilityChange(threshold: 0.7) { visibility in
             isVisible = visibility
@@ -148,6 +135,14 @@ struct Entry: View {
                 .presentationCornerRadius(32)
                 .presentationBackground(.thinMaterial)
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+        }
+        .onChange(of: isVisible) { _, newValue in
+            if newValue {
+                withAnimation(.spring().delay(0.3)) {
+                    animateFirstCircle = true
+                    animateSecondCircle = true
+                }
+            }
         }
     }
 }
@@ -209,7 +204,7 @@ struct WispView: View {
                 
                 Text(entry.text)
                     .foregroundColor(.white)
-                    .font(.system(size: 16, weight: .regular))
+                    .font(.system(size: 15, weight: .regular))
                     .multilineTextAlignment(.leading)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)

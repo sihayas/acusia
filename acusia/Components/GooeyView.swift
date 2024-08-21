@@ -39,7 +39,6 @@ struct GooeyView: View {
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
                                     )
-                                    .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
                             } placeholder: {
                                 ProgressView()
                             }
@@ -56,7 +55,7 @@ struct GooeyView: View {
                         .padding(8)
                     )
                 Text(text)
-                    .font(.system(size: 16, weight: .regular))
+                    .font(.system(size: 15, weight: .regular))
                     .foregroundColor(.black)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
@@ -101,7 +100,7 @@ struct GooeyView: View {
                             .fill(.black)
                             .frame(width: 196, height: 196)
                         Text(text)
-                            .font(.system(size: 16, weight: .regular))
+                            .font(.system(size: 15, weight: .regular))
                             .foregroundColor(.black)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)

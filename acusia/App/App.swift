@@ -6,19 +6,22 @@ let apiurl = "http://192.168.1.234:8000"
 @main
 struct AcusiaApp: App {
     let persistenceController = PersistenceController.shared
-    @StateObject private var auth = Auth.shared // Singleton
+    @StateObject private var auth = Auth.shared
+    @StateObject private var musicKitManager = MusicKitManager.shared
 
     var body: some Scene {
         WindowGroup {
             AcusiaAppView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(auth)
+                .environmentObject(musicKitManager)
         }
     }
 }
 
 struct AcusiaAppView: View {
-    @StateObject private var auth = Auth.shared
+    @EnvironmentObject private var auth: Auth
+    @EnvironmentObject private var musicKitManager: MusicKitManager
     @State private var homePath = NavigationPath()
 
     var body: some View {
@@ -37,10 +40,19 @@ struct AcusiaAppView: View {
         }
         .onAppear {
             setupNavigationBar()
-            Task { await auth.initSession() }
+            Task {
+                await auth.initSession()
+                await musicKitManager.requestMusicAuthorization()
+
+                // Load recently played songs if authorized
+                if musicKitManager.isAuthorizedForMusicKit {
+                    print("Loading recently played songs")
+                    await musicKitManager.loadRecentlyPlayedSongs()
+                }
+            }
         }
     }
-    
+
     private func setupNavigationBar() {
         var backButtonBackgroundImage = UIImage(systemName: "chevron.left.circle.fill")!
         backButtonBackgroundImage = backButtonBackgroundImage.applyingSymbolConfiguration(.init(paletteColors: [.white, .darkGray]))!

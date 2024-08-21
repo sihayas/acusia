@@ -7,8 +7,10 @@
 
 import CoreMotion
 import SwiftUI
+import MusicKit
 
 struct UserScreen: View {
+    @EnvironmentObject var musicKitManager: MusicKitManager
     // Data
     @StateObject private var viewModel = UserViewModel()
     
@@ -234,119 +236,124 @@ struct UserScreen: View {
             .padding(.leading, 16)
             .padding(.trailing, 16)
             .opacity(activeSticker != nil ? 1 : 0)
-            
-            AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 96, height: 96)
-                    .clipShape(Circle())
-            } placeholder: {
-                ProgressView()
-            }
-            
+
             // MARK: User data interface
-            VStack {
-                Spacer()
+            ZStack {
+                AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 96, height: 96)
+                        .clipShape(Circle())
+                } placeholder: {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 96, height: 96)
+                }
                 
-                HStack {
-                    
-                    Text("@dracarys")
-                        .font(.system(size: 27, weight: .semibold))
-                        .foregroundColor(.primary)
+                VStack {
+                    HStack {
+                        Text("@alia")
+                            .font(.system(size: 27, weight: .semibold, design: .rounded))
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                    }
                     
                     Spacer()
                     
-//                    Button(action: {
-//                        isFollowing.toggle()
-//                    }) {
-//                        Image(systemName: isFollowing ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.plus")
-//                            .contentTransition(
-//                                .symbolEffect(.replace)
-//                            )
-//                            .font(.system(size: 24))
-//                            .frame(width: 48, height: 48)
-//                            .background(.ultraThinMaterial, in: .circle)
-//                            .contentShape(.circle)
-//                            .foregroundColor(.primary)
-//                            .symbolRenderingMode(.multicolor)
-//                    }
-                    
-                    // Search
-                    Button {
-                        searchSheet.toggle()
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .symbolEffect(.scale, isActive: showSettings)
-                            .font(.system(size: 16))
-                            .frame(width: 32, height: 32)
-                            .background(.ultraThinMaterial, in: .circle)
-                            .contentShape(.circle)
-                            .foregroundColor(.white)
-                            .symbolRenderingMode(.multicolor)
-                    }
-                    
-                    Menu {
-                        Menu("Data") {
-                            Section("Permanently erase user data from the heavens.") {
-                                Button(role: .destructive) {
-                                    // Action for "Add to Favorites"
-                                } label: {
-                                    Label("Delete", systemImage: "xmark.icloud.fill")
-                                }
-                            }
-                            
-                            Section("Temporarily disable user in the heavens.") {
-                                Button {
-                                    // Action for "Add to Favorites"
-                                } label: {
-                                    Label("Archive", systemImage: "exclamationmark.icloud.fill")
-                                }
-                            }
-                            
-                            Section("Download user data from the heavens.") {
-                                Button {
-                                    // Action for "Add to Favorites"
-                                } label: {
-                                    Label("Export", systemImage: "icloud.and.arrow.down.fill")
+                    HStack(alignment: .bottom) {
+                        HStack(spacing: -8) {
+                            ForEach(Array(musicKitManager.recentlyPlayedSongs.prefix(3).enumerated()), id: \.offset) { index, song in
+                                if let artwork = song.artwork {
+                                    ArtworkImage(artwork, width: index == 1 ? 136 : 116, height: index == 1 ? 136 : 116)
+                                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                                        .rotationEffect(index == 0 ? .degrees(-8) : index == 2 ? .degrees(8) : .degrees(0), anchor: .center)
+                                        .zIndex(Double(index == 1 ? 1 : 0))
+                                        .offset(y: index == 1 ? -8 : 0)
+                                        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
                                 }
                             }
                         }
-                        Section("System") {
-                            Button {
-                                // Action for "Add to Bookmarks"
-                            } label: {
-                                Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
-                            }
-                        }
-                        Section("Identity") {
-                            Button {
-                                // Action for "Add to Favorites"
-                            } label: {
-                                Label("Name", systemImage: "questionmark.text.page.fill")
-                            }
-                            Button {
-                                // Action for "Add to Bookmarks"
-                            } label: {
-                                Label("Avatar", systemImage: "person.circle.fill")
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "gear")
-                            .symbolEffect(.scale, isActive: showSettings)
-                            .font(.system(size: 20))
-                            .frame(width: 32, height: 32)
-                            .background(.ultraThinMaterial, in: .circle)
-                            .contentShape(.circle)
-                            .foregroundColor(.white)
-                            .symbolRenderingMode(.multicolor)
+
+                        // Search Button
+//                        Button {
+//                            searchSheet.toggle()
+//                        } label: {
+//                            Image(systemName: "magnifyingglass")
+//                                .symbolEffect(.scale, isActive: showSettings)
+//                                .font(.system(size: 16))
+//                                .frame(width: 32, height: 32)
+//                                .background(.ultraThinMaterial, in: .circle)
+//                                .contentShape(.circle)
+//                                .foregroundColor(.white)
+//                                .symbolRenderingMode(.multicolor)
+//                        }
+                        
+                        // Settings Button
+//                        Menu {
+//                            Menu("Data") {
+//                                Section("Permanently erase user data from the heavens.") {
+//                                    Button(role: .destructive) {
+//                                        // Action for "Add to Favorites"
+//                                    } label: {
+//                                        Label("Delete", systemImage: "xmark.icloud.fill")
+//                                    }
+//                                }
+//                                
+//                                Section("Temporarily disable user in the heavens.") {
+//                                    Button {
+//                                        // Action for "Add to Favorites"
+//                                    } label: {
+//                                        Label("Archive", systemImage: "exclamationmark.icloud.fill")
+//                                    }
+//                                }
+//                                
+//                                Section("Download user data from the heavens.") {
+//                                    Button {
+//                                        // Action for "Add to Favorites"
+//                                    } label: {
+//                                        Label("Export", systemImage: "icloud.and.arrow.down.fill")
+//                                    }
+//                                }
+//                            }
+//                            Section("System") {
+//                                Button {
+//                                    // Action for "Add to Bookmarks"
+//                                } label: {
+//                                    Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
+//                                }
+//                            }
+//                            Section("Identity") {
+//                                Button {
+//                                    // Action for "Add to Favorites"
+//                                } label: {
+//                                    Label("Name", systemImage: "questionmark.text.page.fill")
+//                                }
+//                                Button {
+//                                    // Action for "Add to Bookmarks"
+//                                } label: {
+//                                    Label("Avatar", systemImage: "person.circle.fill")
+//                                }
+//                            }
+//                        } label: {
+//                            Image(systemName: "gear")
+//                                .symbolEffect(.scale, isActive: showSettings)
+//                                .font(.system(size: 20))
+//                                .frame(width: 32, height: 32)
+//                                .background(.ultraThinMaterial, in: .circle)
+//                                .contentShape(.circle)
+//                                .foregroundColor(.white)
+//                                .symbolRenderingMode(.multicolor)
+//                        }
                     }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .border(Color.red.opacity(0.5), width: 1)
             .padding(.horizontal, 24)
             
-            // Sticker Interface
+            // MARK: Sticker Interface
             ZStack {
                 HelloStickerView(zIndexMap: $zIndexMap,
                                  nextZIndex: $nextZIndex,
@@ -410,21 +417,6 @@ struct UserScreen: View {
                     keyboardOffset = 0
                 }
             }
-        }
-        .background(Color.black)
-        .onAppear {
-            searchSheet = false
-        }
-//        .onAppear {
-//            Task {
-//                await viewModel.fetchUserData(userId: "cba2086a-21e8-43d9-9c03-2bd5e9b651ff", pageUserId: pageUserId)
-//            }
-//        }
-        .alert(isPresented: Binding<Bool>(
-            get: { viewModel.errorMessage != nil },
-            set: { _ in viewModel.errorMessage = nil }
-        )) {
-            Alert(title: Text("Error"), message: Text(viewModel.errorMessage ?? ""), dismissButton: .default(Text("OK")))
         }
     }
 }
@@ -515,29 +507,6 @@ enum StickerViewType {
     case sticker_zero, sticker_one, sticker_two, sticker_three, sticker_four, sticker_five, sticker_six
 }
 
-enum TagColor: String, CaseIterable, Identifiable {
-    case blue
-    case brown
-    case green
-    case yellow
-    case indigo
-    case red
-    case cyan
-
-    var id: Self { self }
-
-    var color: Color {
-        switch self {
-        case .blue: return .blue
-        case .brown: return .brown
-        case .green: return .green
-        case .yellow: return .yellow
-        case .indigo: return .indigo
-        case .red: return .red
-        case .cyan: return .cyan
-        }
-    }
-}
 
 // #Preview {
 //    UserScreen(initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
