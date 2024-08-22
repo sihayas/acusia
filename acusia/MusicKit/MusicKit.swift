@@ -15,6 +15,7 @@ class MusicKitManager: ObservableObject {
     static let shared = MusicKitManager()
 
     // Authorize MusicKit
+    @MainActor
     func requestMusicAuthorization() async {
         let authorizationStatus = await MusicAuthorization.request()
         if authorizationStatus == .authorized {
@@ -30,7 +31,6 @@ class MusicKitManager: ObservableObject {
         do {
             let request = MusicRecentlyPlayedContainerRequest()
             let response = try await request.response()
-            print("\(response)")
         } catch {
             print("Failed to load recently played: \(error)")
         }
@@ -44,6 +44,7 @@ class MusicKitManager: ObservableObject {
             recentlyPlayedSongs = response.items.map { song in
                 SongModel(id: song.id.rawValue, title: song.title, artistName: song.artistName, artwork: song.artwork)
             }
+            print("\(recentlyPlayedSongs)")
         } catch {
             print("Failed to load recently played songs: \(error)")
         }

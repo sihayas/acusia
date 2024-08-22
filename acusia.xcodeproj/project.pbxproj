@@ -28,7 +28,7 @@
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* Blur.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
-		CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* UserScreen.swift */; };
+		CDD48E182C62C20F0001C4E8 /* UserWallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
 		CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */; };
 		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
@@ -124,7 +124,7 @@
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
-		CDD48E172C62C20B0001C4E8 /* UserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScreen.swift; sourceTree = "<group>"; };
+		CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWallScreen.swift; sourceTree = "<group>"; };
 		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -402,7 +402,7 @@
 			isa = PBXGroup;
 			children = (
 				CD06C26F2C69B10100FC010C /* SearchSheet.swift */,
-				CDD48E172C62C20B0001C4E8 /* UserScreen.swift */,
+				CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
 				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
 			);
@@ -575,7 +575,7 @@
 				CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */,
 				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
 				CD8CFDA82C6F02F100D7DEA7 /* TopScrollView.swift in Sources */,
-				CDD48E182C62C20F0001C4E8 /* UserScreen.swift in Sources */,
+				CDD48E182C62C20F0001C4E8 /* UserWallScreen.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
 				CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */,

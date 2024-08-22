@@ -9,25 +9,20 @@ import CoreMotion
 import SwiftUI
 import MusicKit
 
-struct UserScreen: View {
+struct UserWallScreen: View {
+    // MARK: - Global Properties
     @EnvironmentObject var musicKitManager: MusicKitManager
-    // Data
-    @StateObject private var viewModel = UserViewModel()
     
     @Binding var homePath: NavigationPath
     let initialUserData: APIUser?
     let userResult: UserResult?
     
-    private var pageUserId: String {
-        userResult?.id ?? initialUserData?.id ?? ""
-    }
-    
     @State private var keyboardOffset: CGFloat = 0
-    @State var isFollowing = false
-    @State var showSettings = false
-    @State var searchSheet = false
+    @State private var showSettings = false
+    @State private var searchSheet = false
     @State private var searchText = ""
     
+    //MARK: Sticker Wall Config
     // Load animation
     @State var viewVisible = false
     @State var triggerSensoryFeedback: Int = 0
@@ -46,6 +41,10 @@ struct UserScreen: View {
     
     // Resetting
     @State var resetStickerOffset = false
+    
+    //MARK: Animation States
+    @State var expandEssentialStates = [false, false, false]
+    @State var showRecents = false
     
     var body: some View {
         let tapReset = TapGesture(count: 1)
@@ -236,122 +235,6 @@ struct UserScreen: View {
             .padding(.leading, 16)
             .padding(.trailing, 16)
             .opacity(activeSticker != nil ? 1 : 0)
-
-            // MARK: User data interface
-            ZStack {
-                AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 96, height: 96)
-                        .clipShape(Circle())
-                } placeholder: {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .frame(width: 96, height: 96)
-                }
-                
-                VStack {
-                    HStack {
-                        Text("@alia")
-                            .font(.system(size: 27, weight: .semibold, design: .rounded))
-                            .foregroundColor(.primary)
-                        
-                        Spacer()
-                    }
-                    
-                    Spacer()
-                    
-                    HStack(alignment: .bottom) {
-                        HStack(spacing: -8) {
-                            ForEach(Array(musicKitManager.recentlyPlayedSongs.prefix(3).enumerated()), id: \.offset) { index, song in
-                                if let artwork = song.artwork {
-                                    ArtworkImage(artwork, width: index == 1 ? 136 : 116, height: index == 1 ? 136 : 116)
-                                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                                        .rotationEffect(index == 0 ? .degrees(-8) : index == 2 ? .degrees(8) : .degrees(0), anchor: .center)
-                                        .zIndex(Double(index == 1 ? 1 : 0))
-                                        .offset(y: index == 1 ? -8 : 0)
-                                        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
-                                }
-                            }
-                        }
-
-                        // Search Button
-//                        Button {
-//                            searchSheet.toggle()
-//                        } label: {
-//                            Image(systemName: "magnifyingglass")
-//                                .symbolEffect(.scale, isActive: showSettings)
-//                                .font(.system(size: 16))
-//                                .frame(width: 32, height: 32)
-//                                .background(.ultraThinMaterial, in: .circle)
-//                                .contentShape(.circle)
-//                                .foregroundColor(.white)
-//                                .symbolRenderingMode(.multicolor)
-//                        }
-                        
-                        // Settings Button
-//                        Menu {
-//                            Menu("Data") {
-//                                Section("Permanently erase user data from the heavens.") {
-//                                    Button(role: .destructive) {
-//                                        // Action for "Add to Favorites"
-//                                    } label: {
-//                                        Label("Delete", systemImage: "xmark.icloud.fill")
-//                                    }
-//                                }
-//                                
-//                                Section("Temporarily disable user in the heavens.") {
-//                                    Button {
-//                                        // Action for "Add to Favorites"
-//                                    } label: {
-//                                        Label("Archive", systemImage: "exclamationmark.icloud.fill")
-//                                    }
-//                                }
-//                                
-//                                Section("Download user data from the heavens.") {
-//                                    Button {
-//                                        // Action for "Add to Favorites"
-//                                    } label: {
-//                                        Label("Export", systemImage: "icloud.and.arrow.down.fill")
-//                                    }
-//                                }
-//                            }
-//                            Section("System") {
-//                                Button {
-//                                    // Action for "Add to Bookmarks"
-//                                } label: {
-//                                    Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
-//                                }
-//                            }
-//                            Section("Identity") {
-//                                Button {
-//                                    // Action for "Add to Favorites"
-//                                } label: {
-//                                    Label("Name", systemImage: "questionmark.text.page.fill")
-//                                }
-//                                Button {
-//                                    // Action for "Add to Bookmarks"
-//                                } label: {
-//                                    Label("Avatar", systemImage: "person.circle.fill")
-//                                }
-//                            }
-//                        } label: {
-//                            Image(systemName: "gear")
-//                                .symbolEffect(.scale, isActive: showSettings)
-//                                .font(.system(size: 20))
-//                                .frame(width: 32, height: 32)
-//                                .background(.ultraThinMaterial, in: .circle)
-//                                .contentShape(.circle)
-//                                .foregroundColor(.white)
-//                                .symbolRenderingMode(.multicolor)
-//                        }
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-            .border(Color.red.opacity(0.5), width: 1)
-            .padding(.horizontal, 24)
             
             // MARK: Sticker Interface
             ZStack {
@@ -376,9 +259,189 @@ struct UserScreen: View {
                     .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
                     .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
             }
-            .onAppear {
-                viewVisible.toggle()
+            .blur(radius: showRecents ? 12 : 0)
+            .animation(.spring(), value: showRecents)
+            
+            // MARK: User data interface
+            ZStack {
+                AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
+                    image
+                        .resizable()
+                        .frame(width: 112, height: 112)
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+                } placeholder: {
+                    ProgressView()
+                }
+                .padding(4)
+                .background(.white)
+                .clipShape(Circle())
+                .blur(radius: showRecents ? 12 : 0)
+                .animation(.spring(), value: showRecents)
+                
+                VStack {
+                    Text("Alia")
+                        .font(.system(size: 27, weight: .bold))
+                        .foregroundColor(.primary)
+                    
+                    Spacer()
+                    
+                    ZStack(alignment: .bottom) {
+                        // Buttons
+                        if expandEssentialStates.contains(true) {
+                            EmptyView()
+                        } else {
+                            HStack(alignment: .bottom) {
+                                // History Button
+                                Button {
+                                    showRecents.toggle()
+                                } label: {
+                                    Image(systemName: "timelapse")
+                                        .symbolEffect(.scale, isActive: showSettings)
+                                        .font(.system(size: 16))
+                                        .frame(width: 32, height: 32)
+                                        .background(.ultraThinMaterial, in: .circle)
+                                        .contentShape(.circle)
+                                        .foregroundColor(.white)
+                                        .symbolRenderingMode(.multicolor)
+                                }
+                                
+                                Spacer()
+                                
+                                // Search Button
+                                Button {
+                                    searchSheet.toggle()
+                                } label: {
+                                    Image(systemName: "magnifyingglass")
+                                        .symbolEffect(.scale, isActive: showSettings)
+                                        .font(.system(size: 16))
+                                        .frame(width: 32, height: 32)
+                                        .background(.ultraThinMaterial, in: .circle)
+                                        .contentShape(.circle)
+                                        .foregroundColor(.white)
+                                        .symbolRenderingMode(.multicolor)
+                                }
+                                
+                                // Settings Button
+                                Menu {
+                                    Menu("Data") {
+                                        Section("Permanently erase user data from the heavens.") {
+                                            Button(role: .destructive) {
+                                                // Action for "Add to Favorites"
+                                            } label: {
+                                                Label("Delete", systemImage: "xmark.icloud.fill")
+                                            }
+                                        }
+                                        
+                                        Section("Temporarily disable user in the heavens.") {
+                                            Button {
+                                                // Action for "Add to Favorites"
+                                            } label: {
+                                                Label("Archive", systemImage: "exclamationmark.icloud.fill")
+                                            }
+                                        }
+                                        
+                                        Section("Download user data from the heavens.") {
+                                            Button {
+                                                // Action for "Add to Favorites"
+                                            } label: {
+                                                Label("Export", systemImage: "icloud.and.arrow.down.fill")
+                                            }
+                                        }
+                                    }
+                                    Section("System") {
+                                        Button {
+                                            // Action for "Add to Bookmarks"
+                                        } label: {
+                                            Label("Disconnect", systemImage: "person.crop.circle.fill.badge.xmark")
+                                        }
+                                    }
+                                    Section("Identity") {
+                                        Button {
+                                            // Action for "Add to Favorites"
+                                        } label: {
+                                            Label("Name", systemImage: "questionmark.text.page.fill")
+                                        }
+                                        Button {
+                                            // Action for "Add to Bookmarks"
+                                        } label: {
+                                            Label("Avatar", systemImage: "person.circle.fill")
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: "gear")
+                                        .symbolEffect(.scale, isActive: showSettings)
+                                        .font(.system(size: 20))
+                                        .frame(width: 32, height: 32)
+                                        .background(.ultraThinMaterial, in: .circle)
+                                        .contentShape(.circle)
+                                        .foregroundColor(.white)
+                                        .symbolRenderingMode(.multicolor)
+                                }
+                            }
+                            .transition(.blurReplace)
+                        }
+                        
+                        // Essentials
+                        HStack(alignment: .bottom) {
+                            HStack(spacing: -18) {
+                                ForEach(Array(musicKitManager.recentlyPlayedSongs.prefix(3).enumerated()), id: \.offset) { index, song in
+                                    if let artwork = song.artwork {
+                                        ArtworkImage(artwork, width: 136, height: 136)
+                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                                                    .stroke(Color.white, lineWidth: 4)
+                                            )
+                                            .rotationEffect(index == 0 ? .degrees(-8) : index == 2 ? .degrees(8) : .degrees(0), anchor: .center)
+                                            .offset(y: index == 1 ? -8 : 0)
+                                            .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
+                                            .scaleEffect(expandEssentialStates[index] ? 1.0 : 0.2, anchor: index == 0 ? .bottomTrailing : index == 2 ? .bottomLeading : .bottom)
+                                            .offset(x: expandEssentialStates[index] ? 0 : index == 0 ? 48 : index == 2 ? -48 : 0)
+                                            .zIndex(Double(index * -1))
+                                    }
+                                }
+                            }
+                            .padding(.bottom, 8)
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        for index in 0..<3 {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.07) {
+                                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7, blendDuration: 0)) {
+                                                    expandEssentialStates[index] = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .onEnded { _ in
+                                        for index in 0..<3 {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.07) {
+                                                withAnimation(.spring()) {
+                                                    expandEssentialStates[index] = false
+                                                }
+                                            }
+                                        }
+                                    }
+                            )
+                            
+                        }
+                    }
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .padding(.horizontal, 24)
+            
+            // MARK: Recently Played
+            ZStack {
+                NotificationList(isVisible: $showRecents, songs: musicKitManager.recentlyPlayedSongs)
+                    .padding(24)
+                    .padding(.bottom, 24)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+            }
+        }
+        .onAppear {
+            viewVisible.toggle()
         }
         .sheet(isPresented: $searchSheet) {
             VStack(alignment: .leading) {
@@ -420,6 +483,67 @@ struct UserScreen: View {
         }
     }
 }
+
+struct NotificationList: View {
+    @Binding var isVisible: Bool
+    var songs: [SongModel]
+    
+    @Namespace private var animation
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            ForEach(songs.prefix(16).indices, id: \.self) { index in
+                if isVisible { // Only render the cell if isVisible is true
+                    NotificationCell(
+                        song: songs[index],
+                        isVisible: isVisible,
+                        index: index,
+                        totalItems: songs.count,
+                        animation: animation
+                    )
+                }
+            }
+        }
+        .background(Color.clear)
+        .edgesIgnoringSafeArea(.all)
+        .onChange(of: isVisible) { _, newValue in
+            withAnimation {
+                isVisible = newValue
+            }
+        }
+    }
+}
+
+// MARK: Notification Cell
+struct NotificationCell: View {
+    let song: SongModel
+    let isVisible: Bool
+    let index: Int
+    let totalItems: Int
+    
+    var animation: Namespace.ID
+    
+    var body: some View {
+        HStack {
+            if let artwork = song.artwork {
+                ArtworkImage(artwork, width: 32, height: 32)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+            
+            Text(song.title) // Display the song title
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(.white)
+            
+            Spacer()
+        }
+        .matchedGeometryEffect(id: index, in: animation)
+        .transition(.blurReplace.animation(
+            .spring(response: 0.4, dampingFraction: 0.7)
+                .delay(Double(totalItems - index - 1) * 0.01)
+        ))
+    }
+}
+
 
 class MotionManager: ObservableObject {
     static let shared = MotionManager()
@@ -506,9 +630,3 @@ class MotionManager: ObservableObject {
 enum StickerViewType {
     case sticker_zero, sticker_one, sticker_two, sticker_three, sticker_four, sticker_five, sticker_six
 }
-
-
-// #Preview {
-//    UserScreen(initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
-// }
-//

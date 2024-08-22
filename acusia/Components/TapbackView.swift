@@ -12,33 +12,34 @@ struct HeartTap: View {
     
     var body: some View {
         ZStack {
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 36, height: 36)
-                .overlay(
-                    Text(String(count))
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(Color.secondary)
+            Text("99")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(Color.secondary)
+                .padding(6)
+                .background(
+                    Capsule()
+                        .fill(Color(UIColor.systemGray6))
                 )
-                .offset(x: -22, y: -22)
-            Circle()
-                .fill(Color.black)
-                .frame(width: 37, height: 37)
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 8, height: 8)
-                .offset(x: -13, y: 13)
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 4, height: 4)
-                .offset(x: -18, y: 18)
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 36, height: 36)
-            Image(systemName: "heart.fill")
-                .foregroundColor(isTapped ? .pink : .gray)
-                .font(.system(size: 16))
-                .shadow(radius: 1)
+                .overlay(
+                    Capsule()
+                        .stroke(Color.black, lineWidth: 1)
+                )
+                .offset(x: -20, y: -18)
+            Image(systemName: "heart.circle.fill")
+                .font(.system(size: 28))
+                .overlay(
+                    ZStack {
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 8, height: 8)
+                            .offset(x: -2, y: -2)
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 4, height: 4)
+                            .offset(x: 4, y: 4)
+                    },
+                    alignment: .bottomTrailing
+                )
         }
     }
 }
@@ -49,37 +50,34 @@ struct FlameTap: View {
     
     var body: some View {
         ZStack {
-            Circle()
-                .fill(.black)
-                .frame(width: 37, height: 37)
-                .offset(x: 22, y: -22)
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 36, height: 36)
-                .overlay(
-                    Text(String(count))
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(Color.secondary)
+            Text("99")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(Color.secondary)
+                .padding(6)
+                .background(
+                    Capsule()
+                        .fill(Color(UIColor.systemGray6))
                 )
-                .offset(x: 22, y: -22)
-            Circle()
-                .fill(Color.black)
-                .frame(width: 37, height: 37)
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 36, height: 36)
-            Image(systemName: "flame.fill")
-                .foregroundColor(isTapped ? .orange : .gray)
-                .font(.system(size: 16))
-                .shadow(radius: 1)
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 8, height: 8)
-                .offset(x: 13, y: 13)
-            Circle()
-                .fill(Color(UIColor.systemGray6))
-                .frame(width: 4, height: 4)
-                .offset(x: 20, y: 20)
+                .overlay(
+                    Capsule()
+                        .stroke(Color.black, lineWidth: 1)
+                )
+                .offset(x: -20, y: -18)
+            Image(systemName: "flame.circle.fill")
+                .font(.system(size: 28))
+                .overlay(
+                    ZStack {
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 8, height: 8)
+                            .offset(x: -2, y: -2)
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 4, height: 4)
+                            .offset(x: 4, y: 4)
+                    },
+                    alignment: .bottomTrailing
+                )
         }
     }
 }

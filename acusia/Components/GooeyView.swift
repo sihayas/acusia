@@ -48,12 +48,12 @@ struct GooeyView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 32, height: 32)
                                 .foregroundColor(.black)
-                                .shadow(color: .black.opacity(0.4), radius: 16, x: 0, y: 4)
                                 .padding(8)
                                 .rotationEffect(.degrees(6))
                         }
                         .padding(8)
                     )
+                
                 Text(text)
                     .font(.system(size: 15, weight: .regular))
                     .foregroundColor(.black)
@@ -68,7 +68,6 @@ struct GooeyView: View {
                 GeometryReader { geometry in
                     Color.clear.onAppear {
                         contentSize = geometry.size
-                        print("contentSize: \(contentSize)")
                     }
                 }
             )
@@ -88,7 +87,7 @@ struct GooeyView: View {
                 Canvas { context, _ in
                     let container = context.resolveSymbol(id: 0)!
 
-                    context.addFilter(.alphaThreshold(min: 0.5, color: .white))
+                    context.addFilter(.alphaThreshold(min: 0.5, color: Color(red: 236/255, green: 236/255, blue: 236/255)))
                     context.addFilter(.blur(radius: 6))
 
                     context.drawLayer { ctx in
@@ -121,12 +120,8 @@ struct GooeyView: View {
     }
 }
 
-// #Preview {
-//    HStack {
-//        Circle()
-//            .frame(width: 80, height: 80)
-//        GooeyView()
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .background(Color.black)
-//    }
-// }
+ #Preview {
+    GooeyView(isVisible: .constant(true))
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black)
+ }

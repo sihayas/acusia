@@ -82,46 +82,100 @@ struct Entry: View {
     @State private var isVisible: Bool = false
     @State private var animateFirstCircle = false
     @State private var animateSecondCircle = false
+    
+    let imageURLs = [
+        URL(string: "https://picsum.photos/200/300")!,
+        URL(string: "https://picsum.photos/200/300")!,
+        URL(string: "https://picsum.photos/200/300")!
+    ]
+    
+    // Helper function to calculate balanced offsets
+    func tricornOffset(for index: Int) -> CGSize {
+        let radius: CGFloat = 9 // Adjusted radius for better spacing
+        switch index {
+        case 0: // Top Center
+            return CGSize(width: 0, height: -radius)
+        case 1: // Bottom Left
+            return CGSize(width: -radius * cos(.pi / 6), height: radius * sin(.pi / 6))
+        case 2: // Bottom Right
+            return CGSize(width: radius * cos(.pi / 6), height: radius * sin(.pi / 6))
+        default:
+            return .zero
+        }
+    }
 
     var body: some View {
-        HStack(alignment: .bottom, spacing: 0) {
-            NavigationLink {
-                EmptyView()
-            } label: {
-                AsyncImage(url: URL(string: entry.author.image)) { image in
-                    image
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .clipShape(Circle())
-                } placeholder: {
-                    Circle()
-                        .fill(.gray)
-                        .frame(width: 40, height: 40)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .bottom, spacing: 0) {
+                NavigationLink {
+                    EmptyView()
+                } label: {
+                    AsyncImage(url: URL(string: entry.author.image)) { image in
+                        image
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .clipShape(Circle())
+                    } placeholder: {
+                        Circle()
+                            .fill(.gray)
+                            .frame(width: 40, height: 40)
+                    }
+                    .matchedTransitionSource(id: entry.id, in: namespace)
                 }
-                .matchedTransitionSource(id: entry.id, in: namespace)
+                
+                if entry.rating != 2 {
+                    GooeyView(isVisible: $isVisible, entry: entry)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .overlay(
+                            ZStack(alignment: .bottomLeading) {
+                                Circle()
+                                    .fill(Color(red: 236/255, green: 236/255, blue: 236/255))
+                                    .frame(width: 10, height: 10)
+                                    .offset(x: 12, y: -12)
+                                    .scaleEffect(animateFirstCircle ? 1 : 0, anchor: .topTrailing)
+                                
+                                Circle()
+                                    .fill(Color(red: 236/255, green: 236/255, blue: 236/255))
+                                    .frame(width: 4, height: 4)
+                                    .offset(x: 6, y: -10)
+                                    .scaleEffect(animateSecondCircle ? 1 : 0, anchor: .topTrailing)
+                            },
+                            alignment: .bottomLeading
+                        )
+                } else {
+                    WispView(entry: entry, namespace: namespace)
+                }
             }
             
-            if entry.rating != 2 {
-                GooeyView(isVisible: $isVisible, entry: entry)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            HStack {
+                RoundedCornerPath()
+                    .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .frame(width: 40, height: 40)
+                
+                Circle()
+                    .fill(Color(UIColor.systemGray6))
+                    .frame(width: 40, height: 40)
                     .overlay(
-                        ZStack(alignment: .bottomLeading) {
-                            Circle()
-                                .fill(Color.white)
-                                .frame(width: 10, height: 10)
-                                .offset(x: 12, y: -12)
-                                .scaleEffect(animateFirstCircle ? 1 : 0, anchor: .topTrailing)
-                            
-                            Circle()
-                                .fill(Color.white)
-                                .frame(width: 4, height: 4)
-                                .offset(x: 6, y: -10)
-                                .scaleEffect(animateSecondCircle ? 1 : 0, anchor: .topTrailing)
-                        },
-                        alignment: .bottomLeading
+                        ZStack {
+                            ForEach(0..<3) { index in
+                                AsyncImage(url: imageURLs[index]) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 12, height: 12)
+                                        .clipShape(Circle())
+                                        .offset(tricornOffset(for: index))
+                                } placeholder: {
+                                    EmptyView()
+                                        .frame(width: 12, height: 12)
+                                }
+                            }
+                        }
                     )
-            } else {
-                WispView(entry: entry, namespace: namespace)
+                
+                Text("33 Chains")
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundColor(.secondary)
             }
         }
         .padding(.horizontal, 24)
@@ -153,52 +207,52 @@ struct WispView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(.clear)
-                .frame(width: .infinity, height: 72)
-                .overlay(
-                    HStack(spacing: 12) {
-                        VStack {
-                            AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
-                                image
-                                    .resizable()
-                                    .frame(width: 64, height: 64)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                    .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
-                            } placeholder: {
-                                ProgressView()
-                            }
-                        }
-                        .padding(4)
-                        .background(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        
-                        VStack(alignment: .leading) {
-                            Text(entry.sound.appleData?.artistName ?? "")
-                                .font(.system(size: 13, weight: .regular))
-                                .foregroundColor(Color.white)
-                                .lineLimit(1)
-                                .multilineTextAlignment(.leading)
-                            
-                            Text(entry.sound.appleData?.name ?? "")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(Color.white)
-                                .lineLimit(1)
-                                .multilineTextAlignment(.leading)
-                        }
-                        
-                        Spacer()
+            // Sound attachment
+            HStack(spacing: 12) {
+                VStack {
+                    AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
+                        image
+                            .resizable()
+                            .frame(width: 64, height: 64)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+                    } placeholder: {
+                        ProgressView()
                     }
-                )
+                }
+                .padding(4)
+                .background(Color(UIColor.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             
+                Text(entry.sound.appleData?.name ?? "")
+                    .lineLimit(1)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color.secondary)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 12)
+                    .background(
+                        Capsule()
+                            .fill(Color(UIColor.systemGray6))
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(Color.black, lineWidth: 1)
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+            
+            // Text bubble
             ZStack(alignment: .bottomLeading) {
                 Circle()
-                    .fill(.thinMaterial)
+                    .fill(Color(UIColor.systemGray6))
                     .frame(width: 12, height: 12)
                     .offset(x: 0, y: 0)
                 
                 Circle()
-                    .fill(.thinMaterial)
+                    .fill(Color(UIColor.systemGray6))
                     .frame(width: 6, height: 6)
                     .offset(x: -6, y: 4)
                 
@@ -208,11 +262,35 @@ struct WispView: View {
                     .multilineTextAlignment(.leading)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
-                    .background(.thinMaterial)
+                    .background(Color(UIColor.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
+            .overlay(
+                ZStack {
+                    HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
+                        .offset(x: 0, y: -22)
+                    FlameTap(isTapped: entry.isFlameTapped, count: entry.flameCount)
+                        .offset(x: -52, y: -22)
+                },
+                alignment: .topTrailing
+            )
         }
         .padding([.bottom, .leading], 12)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+}
+
+struct RoundedCornerPath: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        
+        // Start at the top center
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        
+        // Draw the rounded corner curve to the right center
+        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.midY),
+                          control: CGPoint(x: rect.midX, y: rect.midY))
+        
+        return path
     }
 }

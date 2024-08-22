@@ -43,12 +43,13 @@ struct Home: View {
                             VStack(spacing: 0) {
                                 TopScrollView(size: size, safeArea: safeArea)
                                 
-                                UserScreen(homePath: $homePath, initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
+                                UserWallScreen(homePath: $homePath, initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
                                     .frame(minHeight: size.height)
                                     .offset(y: shareData.gestureProgress * 30)
                                 
                                 FeedScreen(userId: auth.user?.id ?? "")
                                     .padding(.top, safeArea.bottom)
+                                    .padding(.bottom, safeArea.bottom)
                             }
                         }
                         .onScrollGeometryChange(for: CGFloat.self) { proxy in
