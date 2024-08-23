@@ -126,22 +126,6 @@ struct Entry: View {
                 if entry.rating != 2 {
                     GooeyView(isVisible: $isVisible, entry: entry)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .overlay(
-                            ZStack(alignment: .bottomLeading) {
-                                Circle()
-                                    .fill(Color(red: 236/255, green: 236/255, blue: 236/255))
-                                    .frame(width: 10, height: 10)
-                                    .offset(x: 12, y: -12)
-                                    .scaleEffect(animateFirstCircle ? 1 : 0, anchor: .topTrailing)
-                                
-                                Circle()
-                                    .fill(Color(red: 236/255, green: 236/255, blue: 236/255))
-                                    .frame(width: 4, height: 4)
-                                    .offset(x: 6, y: -10)
-                                    .scaleEffect(animateSecondCircle ? 1 : 0, anchor: .topTrailing)
-                            },
-                            alignment: .bottomLeading
-                        )
                 } else {
                     WispView(entry: entry, namespace: namespace)
                 }

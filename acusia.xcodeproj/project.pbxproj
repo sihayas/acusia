@@ -13,8 +13,6 @@
 		CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA62C6DE76900C16804 /* Loupe.metal */; };
 		CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA82C6DE7B100C16804 /* Loupe.swift */; };
 		CD18152E2C72C345004C9753 /* GooeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD18152D2C72C339004C9753 /* GooeyView.swift */; };
-		CD5509512C6F536E005852DB /* FoldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5509502C6F5366005852DB /* FoldView.swift */; };
-		CD5509552C6F551C005852DB /* Fold.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD5509542C6F551C005852DB /* Fold.metal */; };
 		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
 		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescence.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescence.metal */; };
@@ -51,6 +49,7 @@
 		CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* FeedScreen.swift */; };
 		CDDED7912C195B4B00958B39 /* DashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7902C195B4B00958B39 /* DashView.swift */; };
 		CDDED7932C195B6000958B39 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7922C195B6000958B39 /* CircleView.swift */; };
+		CDE879012C778EA700052193 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* TestView.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 		CDF9D9AA2C3084C4001CEC02 /* AnimatedGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */; };
@@ -108,8 +107,6 @@
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
 		CD18152D2C72C339004C9753 /* GooeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooeyView.swift; sourceTree = "<group>"; };
-		CD5509502C6F5366005852DB /* FoldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldView.swift; sourceTree = "<group>"; };
-		CD5509542C6F551C005852DB /* Fold.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Fold.metal; sourceTree = "<group>"; };
 		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescence.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescence.metal; sourceTree = "<group>"; };
@@ -150,6 +147,7 @@
 		CDDED7902C195B4B00958B39 /* DashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashView.swift; sourceTree = "<group>"; };
 		CDDED7922C195B6000958B39 /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
+		CDE879002C778E9F00052193 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 		CDF9D9A92C3084BF001CEC02 /* AnimatedGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedGradient.swift; sourceTree = "<group>"; };
@@ -228,21 +226,11 @@
 		CD13D5252C3FAD84007E3120 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				CD5509522C6F54FF005852DB /* Fold */,
+				CDC37D442C6067FA002D2709 /* Iridescent */,
 				CD132AA42C6DE75800C16804 /* Loupe */,
 				CDC37D492C606C16002D2709 /* IridescentHolo */,
-				CDC37D442C6067FA002D2709 /* IridescentLight */,
 			);
 			path = Metal;
-			sourceTree = "<group>";
-		};
-		CD5509522C6F54FF005852DB /* Fold */ = {
-			isa = PBXGroup;
-			children = (
-				CD5509502C6F5366005852DB /* FoldView.swift */,
-				CD5509542C6F551C005852DB /* Fold.metal */,
-			);
-			path = Fold;
 			sourceTree = "<group>";
 		};
 		CD8CFDA42C6F02AC00D7DEA7 /* App */ = {
@@ -259,13 +247,14 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		CDC37D442C6067FA002D2709 /* IridescentLight */ = {
+		CDC37D442C6067FA002D2709 /* Iridescent */ = {
 			isa = PBXGroup;
 			children = (
-				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
+				CDE879002C778E9F00052193 /* TestView.swift */,
 				CD69761E2C51B9EA003E4481 /* Iridescence.metal */,
+				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
 			);
-			path = IridescentLight;
+			path = Iridescent;
 			sourceTree = "<group>";
 		};
 		CDC37D492C606C16002D2709 /* IridescentHolo */ = {
@@ -558,13 +547,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */,
-				CD5509512C6F536E005852DB /* FoldView.swift in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
 				CD8CFDAA2C6F030100D7DEA7 /* BottomBarView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
 				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
-				CD5509552C6F551C005852DB /* Fold.metal in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
 				CDDED7912C195B4B00958B39 /* DashView.swift in Sources */,
 				CDDED7932C195B6000958B39 /* CircleView.swift in Sources */,
@@ -594,6 +581,7 @@
 				CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
+				CDE879012C778EA700052193 /* TestView.swift in Sources */,
 				CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
 				CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */,
