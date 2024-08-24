@@ -12,38 +12,23 @@ struct AuthScreen: View {
     @StateObject private var viewModel = AuthViewModel()
     
     var body: some View {
-        ScrollView {
+        ZStack {
+            Color.black
+                .edgesIgnoringSafeArea(.all)
+            
             VStack {
-                Spacer()
-                
-                Spacer()
                 
                 Button(action: {
                     viewModel.handleAppleSignIn()
                 }) {
                     Image(systemName: "applelogo")
                         .resizable()
-                        .frame(width: 32, height: 32)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100, height: 100) // Adjusted size for visibility
                         .foregroundColor(.white)
                 }
-                .frame(height: 64)
-                .background(Color.black)
-                .cornerRadius(32)
-                .padding(.bottom)
             }
         }
-        .background(
-            ZStack {
-                Color.black
-                
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 760, height: 760)
-                    .offset(y: UIScreen.main.bounds.height / 2)
-                    .blur(radius: 200)
-            }
-            .edgesIgnoringSafeArea(.all)
-        )
         .alert(item: $viewModel.alertItem) { alertItem in
             Alert(title: alertItem.title, message: alertItem.message, primaryButton: alertItem.primaryButton, secondaryButton: alertItem.secondaryButton)
         }
