@@ -155,6 +155,7 @@
 				UIColor.swift,
 				UIImage.swift,
 				UIImageView.swift,
+				VisionColor.swift,
 			);
 			target = CDDED7312C194C8400958B39 /* acusia */;
 		};

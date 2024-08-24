@@ -27,7 +27,7 @@ struct AuthScreen: View {
                         .foregroundColor(.white)
                 }
                 .frame(height: 64)
-                .background(Color(hex: "#1C1C1E"))
+                .background(Color.black)
                 .cornerRadius(32)
                 .padding(.bottom)
             }
