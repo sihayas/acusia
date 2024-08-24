@@ -1,7 +1,7 @@
 import CoreData
 import SwiftUI
 
-let apiurl = "http://192.168.1.25:8000"
+let apiurl = "http://192.168.1.234:8000"
 
 @main
 struct AcusiaApp: App {
@@ -40,6 +40,7 @@ struct AcusiaAppView: View {
         }
         .onAppear {
             setupNavigationBar()
+            
             Task {
                 await auth.initSession()
                 await musicKitManager.requestMusicAuthorization()

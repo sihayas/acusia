@@ -333,11 +333,11 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */,
 				CD8CFDA92C6F030100D7DEA7 /* BottomBarView.swift */,
 				CD18152D2C72C339004C9753 /* GooeyArtifactView.swift */,
 				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
 				CDA330AD2C39EFEE00622779 /* TapbackView.swift */,
+				CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";

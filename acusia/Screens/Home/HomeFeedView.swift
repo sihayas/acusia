@@ -26,7 +26,7 @@ struct HomeFeedView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            LazyVStack(spacing: 24) {
                 ForEach(viewModel.entries) { entry in
                     Entry(
                         entry: entry,
@@ -89,9 +89,9 @@ struct Entry: View {
         URL(string: "https://picsum.photos/200/300")!
     ]
     
-    // Helper function to calculate balanced offsets
+    // Helper function to calculate avatar offsets
     func tricornOffset(for index: Int) -> CGSize {
-        let radius: CGFloat = 9 // Adjusted radius for better spacing
+        let radius: CGFloat = 12
         switch index {
         case 0: // Top Center
             return CGSize(width: 0, height: -radius)
@@ -124,7 +124,7 @@ struct Entry: View {
                 }
                 
                 if entry.rating != 2 {
-                    GooeyView(isVisible: $isVisible, entry: entry)
+                    GooeyArtifactView(isVisible: $isVisible, entry: entry)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     WispView(entry: entry, namespace: namespace)
@@ -137,7 +137,7 @@ struct Entry: View {
                     .frame(width: 40, height: 40)
                 
                 Circle()
-                    .fill(Color(UIColor.systemGray6))
+                    .fill(.clear)
                     .frame(width: 40, height: 40)
                     .overlay(
                         ZStack {
@@ -146,8 +146,9 @@ struct Entry: View {
                                     image
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: 12, height: 12)
+                                        .frame(width: 16, height: 16)
                                         .clipShape(Circle())
+                                        .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
                                         .offset(tricornOffset(for: index))
                                 } placeholder: {
                                     EmptyView()
@@ -192,7 +193,7 @@ struct WispView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Sound attachment
-            HStack(spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
                 VStack {
                     AsyncImage(url: URL(string: entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "600").replacingOccurrences(of: "{h}", with: "600") ?? "")) { image in
                         image
@@ -207,22 +208,18 @@ struct WispView: View {
                 .padding(4)
                 .background(Color(UIColor.systemGray6))
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            
-                Text(entry.sound.appleData?.name ?? "")
-                    .lineLimit(1)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color.secondary)
-                    .padding(.vertical, 6)
-                    .padding(.horizontal, 12)
-                    .background(
-                        Capsule()
-                            .fill(Color(UIColor.systemGray6))
-                    )
-                    .overlay(
-                        Capsule()
-                            .stroke(Color.black, lineWidth: 1)
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                VStack(alignment: .leading) {
+                    Text(entry.sound.appleData?.artistName ?? "")
+                        .lineLimit(1)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(Color.white)
+                    Text(entry.sound.appleData?.name ?? "")
+                        .lineLimit(1)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(.vertical, 8)
                 
                 Spacer()
             }
@@ -251,10 +248,10 @@ struct WispView: View {
             }
             .overlay(
                 ZStack {
-                    HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
-                        .offset(x: 0, y: -22)
                     FlameTap(isTapped: entry.isFlameTapped, count: entry.flameCount)
-                        .offset(x: -52, y: -22)
+                        .offset(x: -20, y: -26)
+                    HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
+                        .offset(x: 12, y: -26)
                 },
                 alignment: .topTrailing
             )
