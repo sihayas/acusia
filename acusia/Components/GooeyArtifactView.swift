@@ -10,6 +10,8 @@ struct GooeyArtifactView: View {
     @State private var animateScale = false
     @State private var animateOffset = false
     @State private var randomOffset: Float = .random(in: 0 ..< 2 * .pi)
+    
+    @State private var isContextMenuOpen = false
 
     var entry: APIEntry? = nil
 
@@ -34,10 +36,16 @@ struct GooeyArtifactView: View {
                     .background(.white, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .scaleEffect(animateScale ? 1 : 0, anchor: .topLeading)
                     .offset(y: animateOffset ? 0 : -16)
-
+                    .overlay(
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 56, height: 56)
+                            .offset(x: 0, y: isContextMenuOpen ? -48 : 0),
+                        alignment: .topTrailing
+                    )
             }
             .frame(maxWidth: .infinity, alignment: .bottomLeading)
-            .padding(12)
+            .padding([.leading, .bottom], 12)
 
             ZStack {
                 // MARK: Measure size of the view.
@@ -143,7 +151,7 @@ struct GooeyArtifactView: View {
                                     .offset(y: animateOffset ? 0 : -16)
                             }
                             .frame(maxWidth: .infinity, alignment: .bottomLeading)
-                            .padding(12)
+                            .padding([.leading, .bottom], 12)
                         )
                         .contextMenu {
                             Button {
@@ -151,13 +159,13 @@ struct GooeyArtifactView: View {
                             } label: {
                                 Label("Choose Country", systemImage: "globe")
                             }
-                            
-                            Button {
-                                print("Enable geolocation")
-                            } label: {
-                                Label("Detect Location", systemImage: "location.circle")
-                            }
                         }
+                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in
+                            withAnimation {
+                                isContextMenuOpen.toggle()
+                            }
+                            print("Opened")
+                        })
 
                 }
             }
@@ -174,10 +182,7 @@ struct GooeyArtifactView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        GooeyArtifactView(isVisible: .constant(true))
-            .background(Color.black)
-//            .background(Color.black)
-    }
+#Preview {
+    GooeyArtifactView(isVisible: .constant(true))
+        .background(Color.black)
 }
