@@ -26,7 +26,7 @@ struct GooeyView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     RoundedRectangle(cornerRadius: 32)
                         .fill(.clear)
-                        .frame(width: 196, height: 196)
+                        .frame(width: 232, height: 232)
                         .overlay(
                             ZStack(alignment: .bottomLeading) {
                                 AsyncImage(url: URL(string: imageUrl)) { image in
@@ -46,7 +46,7 @@ struct GooeyView: View {
                                 Image("heartbreak")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(width: 32, height: 32)
+                                    .frame(width: 36, height: 36)
                                     .foregroundColor(.white)
                                     .padding(16)
                                     .rotationEffect(.degrees(6))
@@ -78,7 +78,7 @@ struct GooeyView: View {
                     let gooeyView = VStack(alignment: .leading, spacing: 12) {
                                         RoundedRectangle(cornerRadius: 32)
                                             .fill(.white)
-                                            .frame(width: 196, height: 196)
+                                            .frame(width: 232, height: 232)
 
                                     
                                         Text(text)
@@ -90,7 +90,6 @@ struct GooeyView: View {
                                             .offset(y: animateOffset ? 0 : -16)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .bottomLeading)
- 
                                     .padding(12)
 
 

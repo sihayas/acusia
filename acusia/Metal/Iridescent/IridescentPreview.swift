@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct IridescenceView: View {
+struct IridescentPreview: View {
     @State private var start = Date()
 
     var body: some View {
         TimelineView(.animation) { tl in
             let time = start.distance(to: tl.date)
-            
+
             RoundedRectangle(cornerRadius: 32)
                 .frame(width: 400, height: 200)
                 .shadow(radius: 10)
@@ -30,7 +30,7 @@ struct IridescenceView: View {
 struct IridescenceView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            IridescenceView()
+            IridescentPreview()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)

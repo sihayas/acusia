@@ -44,6 +44,6 @@ float noise(float2 st) {
     // Blend the iridescence with the base color, creating smoother transitions
     half3 finalColor = mix(baseColor.rgb, baseColor.rgb + iridescenceColor.rgb, iridescenceMask) * color.a;
 
-    // Return the final color with the alpha channel intact
+    // Return the final color with the alpha channel intact (necessary as without this anything black inside the view where the shader is applied gets the shader's effects)
     return half4(finalColor, color.a);
 }
