@@ -24,7 +24,7 @@
 		CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
-		CDAE7D0F2C718CA900254E56 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* Blur.swift */; };
+		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
 		CDD48E182C62C20F0001C4E8 /* UserWallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
@@ -43,10 +43,9 @@
 		CDDED77F2C19520300958B39 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED77B2C19520300958B39 /* UserModel.swift */; };
 		CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7812C1953A700958B39 /* FeedAPI.swift */; };
 		CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7832C1953F400958B39 /* UserAPI.swift */; };
-		CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7852C19543D00958B39 /* CoreDataStack.swift */; };
+		CDDED7862C19543D00958B39 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7852C19543D00958B39 /* CoreData.swift */; };
 		CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7882C1955BD00958B39 /* AuthScreen.swift */; };
 		CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* FeedScreen.swift */; };
-		CDDED7912C195B4B00958B39 /* DashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7902C195B4B00958B39 /* DashView.swift */; };
 		CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* IridescentPreview.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
@@ -116,7 +115,7 @@
 		CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
-		CDAE7D0E2C718CA700254E56 /* Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
+		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWallScreen.swift; sourceTree = "<group>"; };
 		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
@@ -137,10 +136,9 @@
 		CDDED77B2C19520300958B39 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		CDDED7812C1953A700958B39 /* FeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedAPI.swift; sourceTree = "<group>"; };
 		CDDED7832C1953F400958B39 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
-		CDDED7852C19543D00958B39 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		CDDED7852C19543D00958B39 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		CDDED7882C1955BD00958B39 /* AuthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthScreen.swift; sourceTree = "<group>"; };
 		CDDED78E2C195B2400958B39 /* FeedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedScreen.swift; sourceTree = "<group>"; };
-		CDDED7902C195B4B00958B39 /* DashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashView.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
@@ -232,6 +230,7 @@
 			children = (
 				CD8CFDA52C6F02E600D7DEA7 /* Home.swift */,
 				CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */,
+				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -241,7 +240,7 @@
 			children = (
 				CDDED7352C194C8400958B39 /* App.swift */,
 				CD8D197E2C24E3CD00FDC979 /* Auth.swift */,
-				CDDED7852C19543D00958B39 /* CoreDataStack.swift */,
+				CDDED7852C19543D00958B39 /* CoreData.swift */,
 				CDDED73E2C194C8500958B39 /* Persistence.swift */,
 			);
 			path = App;
@@ -352,11 +351,9 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				CDAE7D0E2C718CA700254E56 /* Blur.swift */,
+				CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */,
 				CD8CFDA92C6F030100D7DEA7 /* BottomBarView.swift */,
-				CDDED7902C195B4B00958B39 /* DashView.swift */,
 				CD18152D2C72C339004C9753 /* GooeyArtifactView.swift */,
-				CD2E1ABD2C7A011100922C1B /* Home */,
 				CDD48E1C2C62C28A0001C4E8 /* StickerViews */,
 				CDA330AD2C39EFEE00622779 /* TapbackView.swift */,
 			);
@@ -389,8 +386,8 @@
 		CDDED7872C1955A500958B39 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				CD2E1ABD2C7A011100922C1B /* Home */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
-				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
 				CD06C26F2C69B10100FC010C /* SearchSheet.swift */,
 				CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */,
 			);
@@ -541,10 +538,9 @@
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
 				CD8CFDAA2C6F030100D7DEA7 /* BottomBarView.swift in Sources */,
-				CDDED7862C19543D00958B39 /* CoreDataStack.swift in Sources */,
+				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,
 				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
-				CDDED7912C195B4B00958B39 /* DashView.swift in Sources */,
 				CDDED77D2C19520300958B39 /* FeedModel.swift in Sources */,
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
@@ -556,7 +552,7 @@
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
 				CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,
-				CDAE7D0F2C718CA900254E56 /* Blur.swift in Sources */,
+				CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */,
 				CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */,
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
