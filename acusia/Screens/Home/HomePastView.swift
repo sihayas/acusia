@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TopScrollView: View {
+struct HomePastView: View {
     let size: CGSize
     let safeArea: EdgeInsets
     @Environment(ShareData.self) private var shareData

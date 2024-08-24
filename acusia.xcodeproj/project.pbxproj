@@ -17,7 +17,7 @@
 		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
 		CD8CFDA62C6F02E600D7DEA7 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* Home.swift */; };
-		CD8CFDA82C6F02F100D7DEA7 /* TopScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */; };
+		CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */; };
 		CD8CFDAA2C6F030100D7DEA7 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA92C6F030100D7DEA7 /* BottomBarView.swift */; };
 		CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D197E2C24E3CD00FDC979 /* Auth.swift */; };
 		CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D19822C27973800FDC979 /* NotificationModel.swift */; };
@@ -26,7 +26,7 @@
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
-		CDD48E182C62C20F0001C4E8 /* UserWallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */; };
+		CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
 		CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */; };
 		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
@@ -45,7 +45,7 @@
 		CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7832C1953F400958B39 /* UserAPI.swift */; };
 		CDDED7862C19543D00958B39 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7852C19543D00958B39 /* CoreData.swift */; };
 		CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7882C1955BD00958B39 /* AuthScreen.swift */; };
-		CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* FeedScreen.swift */; };
+		CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* HomeFeedView.swift */; };
 		CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* IridescentPreview.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
@@ -107,7 +107,7 @@
 		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
-		CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopScrollView.swift; sourceTree = "<group>"; };
+		CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePastView.swift; sourceTree = "<group>"; };
 		CD8CFDA92C6F030100D7DEA7 /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		CD8D197E2C24E3CD00FDC979 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		CD8D19822C27973800FDC979 /* NotificationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModel.swift; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
-		CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWallScreen.swift; sourceTree = "<group>"; };
+		CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWallView.swift; sourceTree = "<group>"; };
 		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,7 +138,7 @@
 		CDDED7832C1953F400958B39 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		CDDED7852C19543D00958B39 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		CDDED7882C1955BD00958B39 /* AuthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthScreen.swift; sourceTree = "<group>"; };
-		CDDED78E2C195B2400958B39 /* FeedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedScreen.swift; sourceTree = "<group>"; };
+		CDDED78E2C195B2400958B39 /* HomeFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedView.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
@@ -229,8 +229,9 @@
 			isa = PBXGroup;
 			children = (
 				CD8CFDA52C6F02E600D7DEA7 /* Home.swift */,
-				CD8CFDA72C6F02F100D7DEA7 /* TopScrollView.swift */,
-				CDDED78E2C195B2400958B39 /* FeedScreen.swift */,
+				CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */,
+				CDDED78E2C195B2400958B39 /* HomeFeedView.swift */,
+				CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -261,15 +262,6 @@
 				CDC37D4B2C606C2A002D2709 /* Iridescent.metal */,
 			);
 			path = IridescentHolo;
-			sourceTree = "<group>";
-		};
-		CDD48E1C2C62C28A0001C4E8 /* StickerViews */ = {
-			isa = PBXGroup;
-			children = (
-				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
-				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
-			);
-			path = StickerViews;
 			sourceTree = "<group>";
 		};
 		CDDED7292C194C8400958B39 = {
@@ -341,6 +333,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
 				CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */,
 				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
 				CDDED78A2C1959C600958B39 /* UIKit */,
@@ -354,7 +347,7 @@
 				CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */,
 				CD8CFDA92C6F030100D7DEA7 /* BottomBarView.swift */,
 				CD18152D2C72C339004C9753 /* GooeyArtifactView.swift */,
-				CDD48E1C2C62C28A0001C4E8 /* StickerViews */,
+				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
 				CDA330AD2C39EFEE00622779 /* TapbackView.swift */,
 			);
 			path = Components;
@@ -389,7 +382,6 @@
 				CD2E1ABD2C7A011100922C1B /* Home */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
 				CD06C26F2C69B10100FC010C /* SearchSheet.swift */,
-				CDD48E172C62C20B0001C4E8 /* UserWallScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -546,9 +538,9 @@
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */,
 				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
-				CD8CFDA82C6F02F100D7DEA7 /* TopScrollView.swift in Sources */,
-				CDD48E182C62C20F0001C4E8 /* UserWallScreen.swift in Sources */,
-				CDDED78F2C195B2700958B39 /* FeedScreen.swift in Sources */,
+				CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */,
+				CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */,
+				CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
 				CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,

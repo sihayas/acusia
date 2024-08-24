@@ -9,7 +9,7 @@ import CoreMotion
 import SwiftUI
 import MusicKit
 
-struct UserWallScreen: View {
+struct HomeWallView: View {
     // MARK: - Global Properties
     @EnvironmentObject var musicKitManager: MusicKitManager
     

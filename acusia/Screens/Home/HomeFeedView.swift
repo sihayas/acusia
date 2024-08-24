@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-struct FeedScreen: View {
+struct HomeFeedView: View {
     @StateObject private var viewModel: FeedViewModel
     @Namespace var ns
     
