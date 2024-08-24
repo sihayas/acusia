@@ -53,6 +53,7 @@ struct AcusiaAppView: View {
         }
     }
 
+    // Remove the ugly default nav.
     private func setupNavigationBar() {
         var backButtonBackgroundImage = UIImage(systemName: "chevron.left.circle.fill")!
         backButtonBackgroundImage = backButtonBackgroundImage.applyingSymbolConfiguration(.init(paletteColors: [.white, .darkGray]))!

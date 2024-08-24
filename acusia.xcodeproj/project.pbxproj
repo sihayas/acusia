@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* SearchSheet.swift */; };
-		CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA62C6DE76900C16804 /* Loupe.metal */; };
 		CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA82C6DE7B100C16804 /* Loupe.swift */; };
@@ -99,7 +98,6 @@
 
 /* Begin PBXFileReference section */
 		CD06C26F2C69B10100FC010C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
-		CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactCard.swift; sourceTree = "<group>"; };
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
 		CD18152D2C72C339004C9753 /* GooeyArtifactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooeyArtifactView.swift; sourceTree = "<group>"; };
@@ -190,14 +188,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CD0E47D62C47361C00BBBB5F /* SceneKit */ = {
-			isa = PBXGroup;
-			children = (
-				CD0E47D72C47362200BBBB5F /* ArtifactCard.swift */,
-			);
-			path = SceneKit;
-			sourceTree = "<group>";
-		};
 		CD0E47D92C473BC600BBBB5F /* MusicKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,8 +220,8 @@
 			children = (
 				CD8CFDA52C6F02E600D7DEA7 /* Home.swift */,
 				CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */,
-				CDDED78E2C195B2400958B39 /* HomeFeedView.swift */,
 				CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */,
+				CDDED78E2C195B2400958B39 /* HomeFeedView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -298,7 +288,6 @@
 				CD0E47D92C473BC600BBBB5F /* MusicKit */,
 				CDDED7802C1953A000958B39 /* Networking */,
 				CDDED73B2C194C8500958B39 /* Preview Content */,
-				CD0E47D62C47361C00BBBB5F /* SceneKit */,
 				CDDED7872C1955A500958B39 /* Screens */,
 				CDDED76A2C19516B00958B39 /* Utils */,
 			);
@@ -558,7 +547,6 @@
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
 				CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */,
-				CD0E47D82C47362800BBBB5F /* ArtifactCard.swift in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
 				CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */,
 			);
