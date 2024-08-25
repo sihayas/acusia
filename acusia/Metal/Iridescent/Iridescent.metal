@@ -7,8 +7,8 @@ using namespace metal;
     float2 pos, half4 color, float t, float randomOffset) {
     
     // Parameters for the iridescence effect
-    float thickness = mix(100.0, 400.0, sin(t * 0.5)); // Vary thickness over time
-    float iridescenceIor = 1.7;  // Index of refraction for the thin-film layer
+    float thickness = mix(100.0, 300.0, sin(t * 0.5)); // Vary thickness over time
+    float iridescenceIor = 1.9;  // Index of refraction for the thin-film layer
     float outsideIor = 1.0;      // IOR of air
     
     // Calculate angles
@@ -16,7 +16,7 @@ using namespace metal;
     
     // Slow down the animation by multiplying t by 0.2
     float phaseShift = (2.0 * M_PI_F * thickness / 550.0) *
-                       (iridescenceIor - outsideIor) * cos(angle + t * 0.2 + randomOffset);
+                       (iridescenceIor - outsideIor) * cos(angle + t * 0.1 + randomOffset);
 
     // Adjust the frequency of the cosine modulation for the slower animation
     float iridescenceMask = 0.5 + 0.5 * cos(phaseShift * 2.0); // Reduced frequency
@@ -24,11 +24,11 @@ using namespace metal;
     // Base dark gray color (unchanged)
     half4 baseColor = half4(0.11, 0.11, 0.12, color.a);
 
-    // Subtle iridescent effect overlay
+    // Less intense iridescent effect overlay
     half4 iridescenceColor = half4(
-        0.1 * sin(phaseShift),
-        0.1 * sin(phaseShift + 2.0),
-        0.1 * sin(phaseShift + 4.0),
+        0.05 * sin(phaseShift),         // Reduced intensity
+        0.05 * sin(phaseShift + 2.0),   // Reduced intensity
+        0.05 * sin(phaseShift + 4.0),   // Reduced intensity
         0.0
     );
 
