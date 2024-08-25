@@ -11,6 +11,7 @@
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA62C6DE76900C16804 /* Loupe.metal */; };
 		CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA82C6DE7B100C16804 /* Loupe.swift */; };
+		CD13A3D12C7A7BA400569CAE /* CtxMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD13A3D02C7A7B9B00569CAE /* CtxMenu.swift */; };
 		CD18152E2C72C345004C9753 /* GooeyArtifactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD18152D2C72C339004C9753 /* GooeyArtifactView.swift */; };
 		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
 		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
@@ -100,6 +101,7 @@
 		CD06C26F2C69B10100FC010C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
+		CD13A3D02C7A7B9B00569CAE /* CtxMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CtxMenu.swift; sourceTree = "<group>"; };
 		CD18152D2C72C339004C9753 /* GooeyArtifactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooeyArtifactView.swift; sourceTree = "<group>"; };
 		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CD13A3D02C7A7B9B00569CAE /* CtxMenu.swift */,
 				CD8CFDA92C6F030100D7DEA7 /* BottomBarView.swift */,
 				CD18152D2C72C339004C9753 /* GooeyArtifactView.swift */,
 				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
@@ -530,6 +533,7 @@
 				CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */,
+				CD13A3D12C7A7BA400569CAE /* CtxMenu.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
 				CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,
