@@ -1,29 +1,28 @@
 import SwiftUI
 
-@Observable
-class ShareData {
+class ShareData: ObservableObject {
     // This is true when the TopScrollView is Expanded
-    var isExpanded: Bool = false
+    @Published var isExpanded: Bool = false
     
     // MainScrollView Properties
-    var mainScrollValue: CGFloat = 0
-    var topScrollViewValue: CGFloat = 0
+    @Published var mainScrollValue: CGFloat = 0
+    @Published var topScrollViewValue: CGFloat = 0
     
     // Selected category for the photos
-    var selectedCategory: String = "年"
+    @Published var selectedCategory: String = "年"
     
     // These properties will be used to evaluate the drag conditions,
     // whether the scroll view can either be pulled up or down for expanding/minimizing the photos scrollview
-    var canPullUp: Bool = false
-    var canPullDown: Bool = false
+    @Published var canPullUp: Bool = false
+    @Published var canPullDown: Bool = false
     
-    var gestureProgress: CGFloat = 0
+    @Published var gestureProgress: CGFloat = 0
 }
 
 struct Home: View {
     let size: CGSize
     let safeArea: EdgeInsets
-    let shareData = ShareData()
+    @EnvironmentObject private var shareData: ShareData
     @StateObject private var auth = Auth.shared
     
     @Binding var homePath: NavigationPath
@@ -35,90 +34,90 @@ struct Home: View {
         let sidebarWidth = size.width * 0.9
         
         GeometryReader { geometry in
-            ZStack {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 0) {
-                        // Main Feed + User + User History View
-                        ScrollView(.vertical) {
-                            VStack(spacing: 0) {
-                                HomePastView(size: size, safeArea: safeArea)
-                                
-                                HomeWallView(homePath: $homePath, initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
-                                    .frame(minHeight: size.height)
-                                    .offset(y: shareData.gestureProgress * 30)
-                                
-                                HomeFeedView(userId: auth.user?.id ?? "")
-                                    .padding(.top, safeArea.bottom)
-                                    .padding(.bottom, safeArea.bottom)
-                            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 0) {
+                    // Main Feed + User + User History View
+                    ScrollView(.vertical) {
+                        VStack(spacing: 0) {
+                            HomePastView(size: size, safeArea: safeArea)
+                            
+                            HomeWallView(homePath: $homePath, initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
+                                .frame(minHeight: size.height)
+                                .offset(y: shareData.gestureProgress * 30)
+                            
+                            HomeFeedView(userId: auth.user?.id ?? "")
+                                .padding(.top, safeArea.bottom + 40)
+                                .padding(.bottom, safeArea.bottom)
                         }
-                        .onScrollGeometryChange(for: CGFloat.self) { proxy in
-                            proxy.contentOffset.y
-                        } action: { oldValue, newValue in
-                            shareData.mainScrollValue = newValue
-                        }
-                        .scrollDisabled(shareData.isExpanded)
-                        .environment(shareData)
-                        .simultaneousGesture(
-                            DragGesture()
-                                .onChanged { value in
-                                    let translation = value.translation.height * 0.1 // Friction
-                                    let draggingUp = translation < 0
-                                    let draggingDown = translation > 0
-                                    
-                                    if draggingDown && shareData.mainScrollValue <= 0 && !shareData.isExpanded {
-                                        shareData.canPullDown = true
-                                        let progress = max(min(translation / (size.height + safeArea.top + safeArea.bottom) * 0.2, 1.0), 0.0)
-                                        shareData.gestureProgress = progress
-                                    } else if draggingUp && shareData.topScrollViewValue >= 0 && shareData.isExpanded {
-                                        shareData.canPullUp = true
-                                        let progress = max(min(-translation / (size.height + safeArea.top + safeArea.bottom) * 0.2, 1.0), 0.0)
-                                        shareData.gestureProgress = 1 - progress
-                                    } else {
-                                        // Conditions not met for progress calculation
-                                    }
-                                }
-                                .onEnded { value in
-                                    withAnimation(.snappy(duration: 0.6, extraBounce: 0)) {
-                                        if shareData.canPullDown && value.translation.height > 0 && !shareData.isExpanded {
-                                            shareData.isExpanded = true
-                                            shareData.gestureProgress = 1
-                                        } else if shareData.canPullUp && value.translation.height < 0 && shareData.isExpanded {
-                                            shareData.isExpanded = false
-                                            shareData.gestureProgress = 0
-                                        }
-                                    }
-                                    shareData.canPullDown = false
-                                    shareData.canPullUp = false
-                                }
-                        )
-                        .frame(width: size.width)
-                        .id("mainView")
-                        
-                        // Notifications View
-                        VStack {
-                            Text("Notifications")
-                                .font(.largeTitle)
-                                .padding()
-                            Spacer()
-                        }
-                        .frame(width: sidebarWidth)
-                        .background(Color.black)
-                        .border(Color.cyan, width: 1)
-                        .id("sidebar")
                     }
-                    .scrollTargetLayout()
-                }
-                .scrollTargetBehavior(.paging)
-                .onScrollTargetVisibilityChange(idType: String.self) { visibleTargets in
-                    if let visibleTarget = visibleTargets.first, visibleTarget != currentView {
-                        currentView = visibleTarget
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+//                    .onScrollGeometryChange(for: CGFloat.self) { proxy in
+//                        proxy.contentOffset.y
+//                    } action: { oldValue, newValue in
+//                        shareData.mainScrollValue = newValue
+//                        print("Main Scroll Value: \(newValue)")
+//                    }
+                    .scrollDisabled(shareData.isExpanded)
+//                    .simultaneousGesture(
+//                        DragGesture()
+//                            .onChanged { value in
+//                                let translation = value.translation.height * 0.1 // Friction
+//                                let draggingUp = translation < 0
+//                                let draggingDown = translation > 0
+//                                
+//                                if draggingDown && shareData.mainScrollValue <= 0 && !shareData.isExpanded {
+//                                    shareData.canPullDown = true
+//                                    let progress = max(min(translation / (size.height + safeArea.top + safeArea.bottom) * 0.2, 1.0), 0.0)
+//                                    shareData.gestureProgress = progress
+//                                } else if draggingUp && shareData.topScrollViewValue >= 0 && shareData.isExpanded {
+//                                    shareData.canPullUp = true
+//                                    let progress = max(min(-translation / (size.height + safeArea.top + safeArea.bottom) * 0.2, 1.0), 0.0)
+//                                    shareData.gestureProgress = 1 - progress
+//                                } else {
+//                                    // Conditions not met for progress calculation
+//                                }
+//                            }
+//                            .onEnded { value in
+//                                withAnimation(.snappy(duration: 0.6, extraBounce: 0)) {
+//                                    if shareData.canPullDown && value.translation.height > 0 && !shareData.isExpanded {
+//                                        shareData.isExpanded = true
+//                                        shareData.gestureProgress = 1
+//                                    } else if shareData.canPullUp && value.translation.height < 0 && shareData.isExpanded {
+//                                        shareData.isExpanded = false
+//                                        shareData.gestureProgress = 0
+//                                    }
+//                                }
+//                                shareData.canPullDown = false
+//                                shareData.canPullUp = false
+//                            }
+//                    )
+                    .frame(width: size.width)
+                    .id("mainView")
+                    
+                    // Notifications View
+                    VStack {
+                        Text("Notifications")
+                            .font(.largeTitle)
+                            .padding()
+                        Spacer()
                     }
+                    .frame(width: sidebarWidth)
+                    .background(Color.black)
+                    .border(Color.cyan, width: 1)
+                    .id("sidebar")
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                
-                // TODO: Add a button to toggle going to top
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.paging)
+            .onScrollTargetVisibilityChange(idType: String.self) { visibleTargets in
+                // Haptic feedback when switching to notifications.
+                if let visibleTarget = visibleTargets.first, visibleTarget != currentView {
+                    currentView = visibleTarget
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .overlay(alignment: .bottom) {
+                FeedBarView(safeArea: safeArea)
             }
         }
         .background(.black)

@@ -17,7 +17,7 @@ struct HeartTap: View {
             .overlay(
                 Image(systemName: "heart.fill")
                     .font(.system(size: 18))
-                    .foregroundColor(Color(UIColor.blue))
+                    .foregroundColor(Color(UIColor.systemPink))
             )
             .overlay(
                 Circle()

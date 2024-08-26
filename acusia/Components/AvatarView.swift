@@ -18,6 +18,7 @@ struct AvatarView: View {
                     .resizable()
                     .frame(width: size, height: size)
                     .clipShape(Circle())
+                    .overlay(Circle().stroke(.white.opacity(0.1), lineWidth: 1))
             } placeholder: {
                 Circle()
                     .fill(Color.gray)

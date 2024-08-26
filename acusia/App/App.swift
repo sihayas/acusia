@@ -8,6 +8,7 @@ struct AcusiaApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject private var auth = Auth.shared
     @StateObject private var musicKitManager = MusicKitManager.shared
+    @StateObject private var shareData = ShareData()
 
     var body: some Scene {
         WindowGroup {
@@ -15,6 +16,7 @@ struct AcusiaApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(auth)
                 .environmentObject(musicKitManager)
+                .environmentObject(shareData) 
         }
     }
 }
@@ -40,7 +42,7 @@ struct AcusiaAppView: View {
         }
         .onAppear {
             setupNavigationBar()
-            
+
             Task {
                 await auth.initSession()
                 await musicKitManager.requestMusicAuthorization()

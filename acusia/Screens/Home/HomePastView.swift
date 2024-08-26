@@ -3,7 +3,7 @@ import SwiftUI
 struct HomePastView: View {
     let size: CGSize
     let safeArea: EdgeInsets
-    @Environment(ShareData.self) private var shareData
+    @EnvironmentObject private var shareData: ShareData
     @State private var position: ScrollPosition  = .init()
     
     var body: some View {
@@ -36,16 +36,5 @@ struct HomePastView: View {
         }
         .frame(height: screenHeight)
         .frame(height: screenHeight - minimizedHeight + minimizedHeight * shareData.gestureProgress, alignment: .bottom)
-        .overlay(alignment: .bottom) {
-            BottomBarView {
-                Task {
-                    try? await Task.sleep(for: .seconds(0.13))
-                    withAnimation(.snappy(duration: 0.6, extraBounce: 0)) {
-                        shareData.gestureProgress = 0
-                        shareData.isExpanded = false
-                    }
-                }
-            }
-        }
     }
 }

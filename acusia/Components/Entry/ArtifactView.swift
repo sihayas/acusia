@@ -10,9 +10,8 @@ struct ArtifactView: View {
     @State private var animateScale = false
     @State private var animateOffset = false
     @State private var randomOffset: Float = .random(in: 0 ..< 2 * .pi)
-    
-    @State private var isPresented = false
 
+    @State private var isPresented = false
 
     var entry: APIEntry? = nil
 
@@ -21,37 +20,40 @@ struct ArtifactView: View {
             let text = entry?.text ?? "Hello, world"
             let imageUrl = entry?.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
             let time = start.distance(to: timeline.date)
-            
+
             // White fill for the mask/canvas effect to work.
             let gooeyView =
-            VStack(alignment: .leading, spacing: 12) {
-                RoundedRectangle(cornerRadius: 30)
-                    .fill(.black)
-                    .frame(width: 216, height: 216)
+                VStack(alignment: .leading, spacing: 8) {
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(.black)
+                        .frame(width: 220, height: 272)
 
-                Text(text)
-                    .font(.system(size: 15, weight: .semibold))
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(.black, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .scaleEffect(animateScale ? 1 : 0, anchor: .topLeading)
-                    .offset(y: animateOffset ? 0 : -48)
-            }
-            .frame(maxWidth: .infinity, alignment: .bottomLeading)
-            .padding([.leading, .bottom], 12)
-            
+                    Text(text)
+                        .font(.system(size: 15, weight: .semibold))
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .scaleEffect(animateScale ? 1 : 0, anchor: .top)
+                        .offset(y: animateOffset ? 0 : -48)
+                }
+                .frame(maxWidth: .infinity, alignment: .bottomLeading)
+                .padding([.leading], 12)
+                .padding([.bottom], 4)
+
             ZStack {
                 // MARK: Measure size of the view.
+
                 gooeyView
-                .background(
-                    GeometryReader { geometry in
-                        Color.clear.onAppear {
-                            contentSize = geometry.size
+                    .background(
+                        GeometryReader { geometry in
+                            Color.clear.onAppear {
+                                contentSize = geometry.size
+                            }
                         }
-                    }
-                )
+                    )
 
                 // MARK: Gooey Effect Underlay
+
                 if contentSize != .zero {
                     // First draw the shapes. The canvas/symbols are overlayed and used as a mask
                     // because the iridescent shader + the alpha threshold wouldnt work otherwise.
@@ -64,7 +66,7 @@ struct ArtifactView: View {
                                 // Alpha filter will make the view black, so we use it as a mask and fill bounds with foreground style
                                 ctx.clipToLayer { ctx in
                                     ctx.addFilter(.alphaThreshold(min: 0.5))
-                                    ctx.addFilter(.blur(radius: 6))
+                                    ctx.addFilter(.blur(radius: 4))
 
                                     ctx.drawLayer { ctx in
                                         ctx.draw(ctx.resolveSymbol(id: 0)!, in: bounds)
@@ -82,13 +84,13 @@ struct ArtifactView: View {
                             ZStack(alignment: .bottomLeading) {
                                 Circle()
                                     .fill(Color.white)
-                                    .frame(width: 10, height: 10)
-                                    .offset(x: 12, y: -12)
+                                    .frame(width: 12, height: 12)
+                                    .offset(x: 12, y: -4)
 
                                 Circle()
                                     .fill(Color.white)
-                                    .frame(width: 4, height: 4)
-                                    .offset(x: 6, y: -10)
+                                    .frame(width: 6, height: 6)
+                                    .offset(x: 4, y: -2)
                             },
                             alignment: .bottomLeading
                         )
@@ -99,14 +101,14 @@ struct ArtifactView: View {
                                 .float(randomOffset)
                             )
                         )
-                        .overlay (
+                        .overlay(
                             // Content itself
-                            VStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 8) {
                                 RoundedRectangle(cornerRadius: 0)
                                     .fill(.clear)
-                                    .frame(width: 216, height: 216)
+                                    .frame(width: 220, height: 272)
                                     .overlay(
-                                        ZStack(alignment: .bottomLeading) {
+                                        VStack(alignment: .leading) {
                                             AsyncImage(url: URL(string: imageUrl)) { image in
                                                 image
                                                     .resizable()
@@ -116,37 +118,55 @@ struct ArtifactView: View {
                                                             .resizable()
                                                             .aspectRatio(contentMode: .fill)
                                                     )
-                                                    .padding(1)
+                                                    .overlay(
+                                                        Image("heartbreak")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                            .frame(width: 36, height: 36)
+                                                            .foregroundColor(.white.opacity(0.8))
+                                                            .rotationEffect(.degrees(6))
+                                                            .padding(8)
+                                                        ,
+                                                        alignment: .topLeading
+                                                    )
+                                                    .shadow(radius: 8)
                                             } placeholder: {
-                                                ProgressView()
+                                                RoundedRectangle(cornerRadius: 24)
+                                                    .fill(.gray)
+                                                    .aspectRatio(contentMode: .fit)
                                             }
+                                            
+                                            Spacer()
 
-                                            Image("heartbreak")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 32, height: 32)
-                                                .foregroundColor(.white)
-                                                .padding(16)
-                                                .rotationEffect(.degrees(6))
-                                                .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 4)
+                                            VStack(alignment: .leading) {
+                                                Text(entry?.sound.appleData?.artistName ?? "")
+                                                    .lineLimit(1)
+                                                    .font(.system(size: 13, weight: .regular))
+                                                    .foregroundColor(Color.white.opacity(0.8))
+                                                Text(entry?.sound.appleData?.name ?? "")
+                                                    .lineLimit(1)
+                                                    .font(.system(size: 15, weight: .bold))
+                                                    .foregroundColor(Color.white.opacity(0.8))
+                                            }
+                                            .frame(alignment: .leading)
                                         }
+                                            .padding(16)
+                                            .frame(width: 220, height: 272, alignment: .topLeading)
+                                        ,
+                                        alignment: .topLeading
                                     )
-                                    .contextMenu {
-                                        Button("Copy") {
-                                            UIPasteboard.general.string = text
-                                        }
-                                    }
-
+                                
                                 Text(text)
                                     .font(.system(size: 15, weight: .semibold))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 14)
                                     .padding(.vertical, 10)
-                                    .scaleEffect(animateScale ? 1 : 0, anchor: .topLeading)
+                                    .scaleEffect(animateScale ? 1 : 0, anchor: .top)
                                     .offset(y: animateOffset ? 0 : -48)
                             }
                             .frame(maxWidth: .infinity, alignment: .bottomLeading)
-                            .padding([.leading, .bottom], 12)
+                            .padding([.leading], 12)
+                            .padding([.bottom], 4)
                         )
                 }
             }
@@ -155,7 +175,7 @@ struct ArtifactView: View {
                 withAnimation(.spring(response: 0.7, dampingFraction: 0.8, blendDuration: 0)) {
                     animateScale = true
                 }
-                withAnimation(.spring(response: 1.2, dampingFraction: 1, blendDuration: 0)) {
+                withAnimation(.spring(response: 0.7, dampingFraction: 0.8, blendDuration: 0)) {
                     animateOffset = true
                 }
             }

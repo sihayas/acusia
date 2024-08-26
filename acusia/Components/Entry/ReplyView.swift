@@ -6,7 +6,26 @@
 //
 import SwiftUI
 
-struct RoundedCornerPath: Shape {
+struct RoundedVerticalLinePath: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        // Define the line's start and end points
+        let startPoint = CGPoint(x: rect.midX, y: rect.minY + rect.width / 2)
+        let endPoint = CGPoint(x: rect.midX, y: rect.maxY - rect.width / 2)
+
+        // Draw the vertical line with rounded ends
+        path.addRoundedRect(in: CGRect(x: rect.midX - rect.width / 4,
+                                       y: rect.minY,
+                                       width: rect.width / 2,
+                                       height: rect.height),
+                            cornerSize: CGSize(width: rect.width / 2, height: rect.width / 2))
+
+        return path
+    }
+}
+
+struct BottomCurvePath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
@@ -24,7 +43,7 @@ struct RoundedCornerPath: Shape {
     }
 }
 
-struct RoundedCornerPathWithTopCurve: Shape {
+struct TopBottomCurvePath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
@@ -80,7 +99,7 @@ struct CommentView: View {
 
     var body: some View {
         HStack {
-            VStack(alignment: .trailing, spacing: 8) {
+            VStack(alignment: .leading, spacing: 8) {
                 if let parent = comment.parent {
                     ZStack(alignment: .bottomTrailing) {
                         Circle()
@@ -133,12 +152,6 @@ struct CommentView: View {
                     .padding([.leading, .bottom], 12)
                 }
             }
-            
-//            if comment.parent != nil {
-//                RoundedCornerPathWithTopCurve()
-//                    .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-//                    .frame(width: 40)
-//            }
         }
         
     }

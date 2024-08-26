@@ -22,6 +22,7 @@ struct Entry: View {
             // Entry
             HStack(alignment: .bottom, spacing: 0) {
                 AvatarView(size: 40, imageURL: entry.author.image)
+                
 
                 if entry.rating != 2 {
                     ArtifactView(isVisible: $isVisible, entry: entry)
@@ -34,10 +35,10 @@ struct Entry: View {
             // Replies
             if !sampleComments.isEmpty {
                 HStack(alignment: .top) {
-                    RoundedCornerPath()
+                    BottomCurvePath()
                         .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                         .frame(width: 40, height: showComments ? nil : 20)
-                        .padding(.bottom, showComments ? -16 : 0)
+                        .border(Color(UIColor.systemGray6), width: 2)
 
                     if !showComments {
                         ZStack {
@@ -50,7 +51,7 @@ struct Entry: View {
                         }
                         .frame(width: 40, height: 40)
                     } else {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 0) {
                             ForEach(sampleComments) { comment in
                                 CommentView(comment: comment)
                                     .transition(.blurReplace)
