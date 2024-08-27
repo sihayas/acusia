@@ -6,25 +6,6 @@
 //
 import SwiftUI
 
-struct RoundedVerticalLinePath: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-
-        // Define the line's start and end points
-        let startPoint = CGPoint(x: rect.midX, y: rect.minY + rect.width / 2)
-        let endPoint = CGPoint(x: rect.midX, y: rect.maxY - rect.width / 2)
-
-        // Draw the vertical line with rounded ends
-        path.addRoundedRect(in: CGRect(x: rect.midX - rect.width / 4,
-                                       y: rect.minY,
-                                       width: rect.width / 2,
-                                       height: rect.height),
-                            cornerSize: CGSize(width: rect.width / 2, height: rect.width / 2))
-
-        return path
-    }
-}
-
 struct BottomCurvePath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -64,6 +45,7 @@ struct TopBottomCurvePath: Shape {
         return path
     }
 }
+
 // Helper function to calculate avatar offsets
 func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
     switch index {
@@ -78,18 +60,19 @@ func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
     }
 }
 
-class Comment: Identifiable {
-    let id = UUID()
-    let username: String
-    let text: String?
-    let avatarURL: String
-    var parent: Comment?
-
-    init(username:String, text: String? = nil, avatarURL: String, parent: Comment? = nil) {
-        self.username = username
-        self.text = text
-        self.avatarURL = avatarURL
-        self.parent = parent
+struct MyIcon: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let width = rect.size.width
+        let height = rect.size.height
+        path.move(to: CGPoint(x: 0.5*width, y: 0.95*height))
+        path.addLine(to: CGPoint(x: 0.5*width, y: 0.75*height))
+        path.addCurve(to: CGPoint(x: 0.20953*width, y: 0.26027*height), control1: CGPoint(x: 0.5*width, y: 0.51429*height), control2: CGPoint(x: 0.36032*width, y: 0.26027*height))
+        path.addCurve(to: CGPoint(x: 0.03333*width, y: 0.50961*height), control1: CGPoint(x: 0.05874*width, y: 0.26027*height), control2: CGPoint(x: 0.03333*width, y: 0.41697*height))
+        path.addCurve(to: CGPoint(x: 0.20956*width, y: 0.74652*height), control1: CGPoint(x: 0.03333*width, y: 0.60226*height), control2: CGPoint(x: 0.06435*width, y: 0.74652*height))
+        path.addCurve(to: CGPoint(x: 0.5*width, y: 0.25*height), control1: CGPoint(x: 0.3771*width, y: 0.74652*height), control2: CGPoint(x: 0.5*width, y: 0.50267*height))
+        path.addLine(to: CGPoint(x: 0.5*width, y: 0.05*height))
+        return path
     }
 }
 
@@ -98,78 +81,153 @@ struct CommentView: View {
     @State private var showReplies: Bool = false
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
-                if let parent = comment.parent {
-                    ZStack(alignment: .bottomTrailing) {
-                        Circle()
-                            .stroke(Color(UIColor.systemGray5), lineWidth: 1)
-                            .frame(width: 8, height: 8)
-                            .offset(x: 2, y: 2)
-                        
-                        Circle()
-                            .stroke(Color(UIColor.systemGray5), lineWidth: 1)
-                            .frame(width: 4, height: 4)
-                            .offset(x: 8, y: 4)
-                        HStack {
-                            AvatarView(size: 16, imageURL: parent.avatarURL)
-                            Text(parent.username)
-                                .foregroundColor(.white)
-                                .font(.system(size: 13, weight: .regular))
-                                .multilineTextAlignment(.leading)
-                        }
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 5)
-                        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Color(UIColor.systemGray5), lineWidth: 1))
-                        .frame(alignment: .trailing)
-                        .background(Color.black)
-                    }
-                }
-                
-                HStack(alignment: .bottom, spacing: 0) {
-                    AvatarView(size: 32, imageURL: comment.avatarURL)
+        VStack(alignment: .leading, spacing: 0) {
+            if let parent = comment.parent {
+                Capsule()
+                    .fill(Color(UIColor.systemGray6))
+                    .frame(width: 4, height: 12)
+                    .frame(width: 40)
+                // Loop + context
+                HStack(spacing: -8) {
+                    MyIcon()
+                        .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                        .frame(width: 30, height: 20)
+                        .frame(width: 40)
                     
-                    ZStack(alignment: .bottomLeading) {
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 12, height: 12)
-                            .offset(x: 0, y: 0)
+                    HStack {
+                        AvatarView(size: 12, imageURL: parent.avatarURL)
                         
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 6, height: 6)
-                            .offset(x: -6, y: 4)
-                        
-                        Text(comment.text ?? "")
-                            .foregroundColor(.white)
-                            .font(.system(size: 15, weight: .regular))
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 10)
-                            .background(Color(UIColor.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        Text(parent.username)
+                            .font(.system(size: 11, weight: .regular))
+                            .foregroundColor(.secondary)
                     }
-                    .padding([.leading, .bottom], 12)
                 }
             }
+            
+            HStack(alignment: .bottom, spacing: 0) {
+                // Thread
+                VStack() {
+                    Capsule()
+                        .fill(Color(UIColor.systemGray6))
+                        .frame(width: 4, height: .infinity)
+                    
+                    AvatarView(size: 32, imageURL: comment.avatarURL)
+                        .padding(.horizontal, 4)
+                }
+                
+                // Text bubble
+                ZStack(alignment: .bottomLeading) {
+                    Circle()
+                        .fill(Color(UIColor.systemGray6))
+                        .frame(width: 12, height: 12)
+                        .offset(x: 0, y: 0)
+                    
+                    Circle()
+                        .fill(Color(UIColor.systemGray6))
+                        .frame(width: 6, height: 6)
+                        .offset(x: -8, y: 2)
+                    
+                    Text(comment.text ?? "")
+                        .foregroundColor(.white)
+                        .font(.system(size: 15, weight: .regular))
+                        .multilineTextAlignment(.leading)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(Color(UIColor.systemGray6))
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding([.leading], 12)
+                .padding([.bottom], 4)
+            }
         }
-        
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+
+class Comment: Identifiable {
+    let id = UUID()
+    let username: String
+    let text: String?
+    let avatarURL: String
+    var parent: Comment?
+
+    init(username: String, text: String? = nil, avatarURL: String, parent: Comment? = nil) {
+        self.username = username
+        self.text = text
+        self.avatarURL = avatarURL
+        self.parent = parent
     }
 }
 
 let sampleComments: [Comment] = [
     Comment(
-        username: "user_one",
-        text: "This is a reply.",
+        username: "johnnyD",
+        text: "fr this is facts",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Comment(
-        username: "user_two",
-        text: "This is a reply.",
+        username: "janey",
+        text: "omg thank u johnny lol we gotta talk about this more",
         avatarURL: "https://picsum.photos/200/200",
         parent: Comment(
-            username: "user_one",
+            username: "johnnyD",
             avatarURL: "https://picsum.photos/200/200"
         )
     ),
+    Comment(
+        username: "mikez",
+        text: "idk janey i feel like it’s different tho can u explain more",
+        avatarURL: "https://picsum.photos/200/200",
+        parent: Comment(
+            username: "janey",
+            avatarURL: "https://picsum.photos/200/200"
+        )
+    ),
+    Comment(
+        username: "janey",
+        text: "mike i get u but it’s like the bigger picture ykmike i get u but it’s like the bigger picture ykmike i get u but it’s like the bigger picture yk",
+        avatarURL: "https://picsum.photos/200/200",
+        parent: Comment(
+            username: "mikez",
+            avatarURL: "https://picsum.photos/200/200"
+        )
+    ),
+    Comment(
+        username: "sarah_123",
+        text: "yeah janey got a point tho",
+        avatarURL: "https://picsum.photos/200/200",
+        parent: Comment(
+            username: "janey",
+            avatarURL: "https://picsum.photos/200/200"
+        )
+    ),
+    Comment(
+        username: "johnnyD",
+        text: "lowkey agree with sarah",
+        avatarURL: "https://picsum.photos/200/200",
+        parent: Comment(
+            username: "sarah_123",
+            avatarURL: "https://picsum.photos/200/200"
+        )
+    ),
+    Comment(
+        username: "mikez",
+        text: "ok i see it now",
+        avatarURL: "https://picsum.photos/200/200",
+        parent: Comment(
+            username: "johnnyD",
+            avatarURL: "https://picsum.photos/200/200"
+        )
+    ),
+    Comment(
+        username: "janey",
+        text: "glad we’re all on the same page now lol",
+        avatarURL: "https://picsum.photos/200/200",
+        parent: Comment(
+            username: "mikez",
+            avatarURL: "https://picsum.photos/200/200"
+        )
+    )
 ]

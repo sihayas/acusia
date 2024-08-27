@@ -275,13 +275,10 @@ struct HomeWallView: View {
                         .resizable()
                         .frame(width: 112, height: 112)
                         .clipShape(Circle())
-                        .shadow(color: .black.opacity(0.7), radius: 16, x: 0, y: 4)
+                        .overlay(Circle().stroke(.thinMaterial, lineWidth: 1))
                 } placeholder: {
                     ProgressView()
                 }
-                .padding(4)
-                .background(.white)
-                .clipShape(Circle())
                 .blur(radius: showRecents ? 12 : 0)
                 .animation(.spring(), value: showRecents)
                 

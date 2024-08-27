@@ -35,12 +35,11 @@ struct Entry: View {
             // Replies
             if !sampleComments.isEmpty {
                 HStack(alignment: .top) {
-                    BottomCurvePath()
-                        .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                        .frame(width: 40, height: showComments ? nil : 20)
-                        .border(Color(UIColor.systemGray6), width: 2)
-
                     if !showComments {
+                        BottomCurvePath()
+                            .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                            .frame(width: 40, height: showComments ? nil : 20)
+                        
                         ZStack {
                             ForEach(0 ..< 3) { index in
                                 AvatarView(size: 16, imageURL: "https://picsum.photos/200/300")
@@ -51,16 +50,16 @@ struct Entry: View {
                         }
                         .frame(width: 40, height: 40)
                     } else {
-                        VStack(alignment: .leading, spacing: 0) {
+                        LazyVStack(alignment: .leading) {
                             ForEach(sampleComments) { comment in
                                 CommentView(comment: comment)
                                     .transition(.blurReplace)
+                                    .border(.red)
                             }
                         }
                         .transition(.blurReplace)
                     }
                 }
-                .frame(width: .infinity)
                 .onTapGesture {
                     withAnimation {
                         showComments.toggle()
