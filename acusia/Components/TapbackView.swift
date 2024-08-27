@@ -45,6 +45,45 @@ struct HeartTap: View {
     }
 }
 
+struct HeartTapSmall: View {
+    let isTapped: Bool
+    let count: Int
+
+    var body: some View {
+        Circle()
+            .fill(Color(UIColor.systemGray6))
+            .frame(width: 28, height: 28)
+            .overlay(
+                Image(systemName: "heart.fill")
+                    .font(.system(size: 14))
+                    .foregroundColor(Color(UIColor.systemPink))
+            )
+            .overlay(
+                Circle()
+                    .stroke(Color.black, lineWidth: 1)
+            )
+            .overlay(
+                ZStack {
+                    Circle()
+                        .fill(Color(UIColor.systemGray6))
+                        .frame(width: 6, height: 6)
+                        .offset(x: 0, y: 0)
+                    Circle()
+                        .fill(Color(UIColor.systemGray6))
+                        .frame(width: 3, height: 3)
+                        .offset(x: 4, y: 4)
+                },
+                alignment: .bottomTrailing
+            )
+            .overlay(
+                Text("999")
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .foregroundColor(.secondary)
+                    .offset(x: 0, y: -22)
+            )
+    }
+}
+
 struct FlameTap: View {
     let isTapped: Bool
     let count: Int

@@ -6,6 +6,338 @@
 //
 import SwiftUI
 
+struct CommentsListView: View {
+    @State private var showReplyChildren: Reply? = nil
+
+    var replies: [Reply]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            ForEach(replies) { reply in
+                if showReplyChildren == nil || showReplyChildren == reply {
+                    ReplyView(reply: reply, showReplyChildren: $showReplyChildren)
+                        .transition(.blurReplace)
+                        .animation(.easeInOut, value: showReplyChildren)
+                }
+            }
+        }
+    }
+}
+
+struct ReplyView: View {
+    let reply: Reply
+    @Binding var showReplyChildren: Reply?
+
+    var body: some View {
+        var isExpanded: Bool {
+            showReplyChildren == reply
+        }
+        
+        var childrenCount: Int {
+            reply.children.count
+        }
+
+        VStack(alignment: .leading) {
+            // Comment
+            HStack(alignment: .bottom, spacing: 0) {
+                // Thread
+                VStack {
+                    Capsule()
+                        .fill(Color(UIColor.systemGray6))
+                        .frame(width: 4, height: .infinity)
+
+                    AvatarView(size: 32, imageURL: reply.avatarURL)
+                        .padding(.horizontal, 4)
+                }
+
+                // Text bubble
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(reply.username)
+                        .font(.system(size: 13, weight: .regular))
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 26)
+
+                    ZStack(alignment: .bottomLeading) {
+                        Circle()
+                            .fill(Color(UIColor.systemGray6))
+                            .frame(width: 12, height: 12)
+                            .offset(x: 0, y: 0)
+
+                        Circle()
+                            .fill(Color(UIColor.systemGray6))
+                            .frame(width: 6, height: 6)
+                            .offset(x: -8, y: 2)
+
+                        Text(reply.text ?? "")
+                            .foregroundColor(.white)
+                            .font(.system(size: 15, weight: .regular))
+                            .multilineTextAlignment(.leading)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 10)
+                            .background(Color(UIColor.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding([.leading], 12)
+                    .padding([.bottom], 4)
+                    .overlay(
+                        ZStack {
+                            HeartTapSmall(isTapped: false, count: 0)
+                                .offset(x: 12, y: -14)
+                        },
+                        alignment: .topTrailing
+                    )
+                }
+            }
+
+            // Children
+            if !reply.children.isEmpty {
+                // Expand thread capsule
+                VStack(alignment: .leading, spacing: -2) {
+                    HStack(spacing: -12) {
+                        if !isExpanded {
+                            Capsule()
+                                .fill(Color(UIColor.systemGray6))
+                                .frame(width: 4, height: 12)
+                                .frame(width: 40)
+                        } else {
+                            LoopPath()
+                                .stroke(Color(UIColor.systemGray6),
+                                        style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                                .frame(width: 30, height: 20)
+                                .frame(width: 40)
+                                .transition(.scale)
+                        }
+                        
+                        Text("\(childrenCount) threads")
+                            .font(.system(size: 11, weight: .medium, design: .rounded ))
+                            .foregroundColor(.secondary)
+                    }
+
+                }
+                .onTapGesture {
+                    withAnimation {
+                        if isExpanded {
+                            showReplyChildren = nil
+                        } else {
+                            showReplyChildren = reply
+                        }
+                    }
+                }
+
+                if showReplyChildren == reply {
+                    CommentsListView(replies: reply.children)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+class Reply: Identifiable, Equatable {
+    let id = UUID()
+    let username: String
+    let text: String?
+    let avatarURL: String
+    var children: [Reply] = []
+
+    init(username: String, text: String? = nil, avatarURL: String, children: [Reply] = []) {
+        self.username = username
+        self.text = text
+        self.avatarURL = avatarURL
+        self.children = children
+    }
+
+    // Conform to Equatable
+    static func == (lhs: Reply, rhs: Reply) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
+// Sample comments with nesting
+let sampleComments: [Reply] = [
+    Reply(
+        username: "johnnyD",
+        text: "fr this is facts",
+        avatarURL: "https://picsum.photos/200/200",
+        children: [
+            Reply(
+                username: "janey",
+                text: "omg thank u johnny lol we gotta talk about this more",
+                avatarURL: "https://picsum.photos/200/200",
+                children: [
+                    Reply(
+                        username: "mikez",
+                        text: "idk janey i feel like it’s different tho can u explain more",
+                        avatarURL: "https://picsum.photos/200/200",
+                        children: [
+                            Reply(
+                                username: "janey",
+                                text: "mike i get u but it’s like the bigger picture yk",
+                                avatarURL: "https://picsum.photos/200/200",
+                                children: [
+                                    Reply(
+                                        username: "sarah_123",
+                                        text: "yeah janey got a point tho",
+                                        avatarURL: "https://picsum.photos/200/200",
+                                        children: [
+                                            Reply(
+                                                username: "johnnyD",
+                                                text: "lowkey agree with sarah",
+                                                avatarURL: "https://picsum.photos/200/200",
+                                                children: [
+                                                    Reply(
+                                                        username: "mikez",
+                                                        text: "ok i see it now",
+                                                        avatarURL: "https://picsum.photos/200/200",
+                                                        children: [
+                                                            Reply(
+                                                                username: "janey",
+                                                                text: "glad we’re all on the same page now lol",
+                                                                avatarURL: "https://picsum.photos/200/200"
+                                                            )
+                                                        ]
+                                                    )
+                                                ]
+                                            )
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            Reply(
+                username: "sarah_123",
+                text: "i think it’s a bit more complicated than that",
+                avatarURL: "https://picsum.photos/200/200",
+                children: [
+                    Reply(
+                        username: "johnnyD",
+                        text: "yeah i see what u mean",
+                        avatarURL: "https://picsum.photos/200/200",
+                        children: [
+                            Reply(
+                                username: "sarah_123",
+                                text: "exactly johnny",
+                                avatarURL: "https://picsum.photos/200/200"
+                            )
+                        ]
+                    ),
+                    Reply(
+                        username: "janey",
+                        text: "i disagree",
+                        avatarURL: "https://picsum.photos/200/200"
+                    ),
+                    Reply(
+                        username: "mikez",
+                        text: "i don’t think it’s that simple",
+                        avatarURL: "https://picsum.photos/200/200"
+                    )
+                ]
+            )
+        ]
+    ),
+    Reply(
+        username: "sarah_123",
+        text: "i think it’s a bit more complicated than that",
+        avatarURL: "https://picsum.photos/200/200",
+        children: [
+            Reply(
+                username: "johnnyD",
+                text: "yeah i see what u mean",
+                avatarURL: "https://picsum.photos/200/200",
+                children: [
+                    Reply(
+                        username: "sarah_123",
+                        text: "exactly johnny",
+                        avatarURL: "https://picsum.photos/200/200"
+                    )
+                ]
+            ),
+            Reply(
+                username: "janey",
+                text: "i disagree",
+                avatarURL: "https://picsum.photos/200/200"
+            ),
+            Reply(
+                username: "mikez",
+                text: "i don’t think it’s that simple",
+                avatarURL: "https://picsum.photos/200/200"
+            )
+        ]
+    ),
+    Reply(
+        username: "mike",
+        text: "i don’t think it’s that simple",
+        avatarURL: "https://picsum.photos/200/200",
+        children: [
+            Reply(
+                username: "sarah_123",
+                text: "mike i think you’re missing the point",
+                avatarURL: "https://picsum.photos/200/200",
+                children: [
+                    Reply(
+                        username: "mike",
+                        text: "sarah i get it but it’s not that black and white",
+                        avatarURL: "https://picsum.photos/200/200"
+                    )
+                ]
+            ),
+            Reply(
+                username: "johnnyD",
+                text: "mike i think you’re right",
+                avatarURL: "https://picsum.photos/200/200"
+            ),
+            Reply(
+                username: "janey",
+                text: "mike i think you’re wrong",
+                avatarURL: "https://picsum.photos/200/200"
+            )
+        ]
+    ),
+    Reply(
+        username: "johnnyD",
+        text: "mike i think you’re right",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "janey",
+        text: "mike i think you’re wrong",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "mike",
+        text: "i don’t think it’s that simple",
+        avatarURL: "https://picsum.photos/200/200",
+        children: [
+            Reply(
+                username: "sarah_123",
+                text: "mike i think you’re missing the point",
+                avatarURL: "https://picsum.photos/200/200",
+                children: [
+                    Reply(
+                        username: "mike",
+                        text: "sarah i get it but it’s not that black and white",
+                        avatarURL: "https://picsum.photos/200/200"
+                    )
+                ]
+            ),
+            Reply(
+                username: "johnnyD",
+                text: "mike i think you’re right",
+                avatarURL: "https://picsum.photos/200/200"
+            ),
+            Reply(
+                username: "janey",
+                text: "mike i think you’re wrong",
+                avatarURL: "https://picsum.photos/200/200"
+            )
+        ]
+    )
+]
+
 struct BottomCurvePath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -46,21 +378,8 @@ struct TopBottomCurvePath: Shape {
     }
 }
 
-// Helper function to calculate avatar offsets
-func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
-    switch index {
-    case 0: // Top Center
-        return CGSize(width: 0, height: -radius)
-    case 1: // Bottom Left
-        return CGSize(width: -radius * cos(.pi / 6), height: radius * sin(.pi / 6))
-    case 2: // Bottom Right
-        return CGSize(width: radius * cos(.pi / 6), height: radius * sin(.pi / 6))
-    default:
-        return .zero
-    }
-}
 
-struct MyIcon: Shape {
+struct LoopPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         let width = rect.size.width
@@ -76,158 +395,16 @@ struct MyIcon: Shape {
     }
 }
 
-struct CommentView: View {
-    let comment: Comment
-    @State private var showReplies: Bool = false
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            if let parent = comment.parent {
-                Capsule()
-                    .fill(Color(UIColor.systemGray6))
-                    .frame(width: 4, height: 12)
-                    .frame(width: 40)
-                // Loop + context
-                HStack(spacing: -8) {
-                    MyIcon()
-                        .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                        .frame(width: 30, height: 20)
-                        .frame(width: 40)
-                    
-                    HStack {
-                        AvatarView(size: 12, imageURL: parent.avatarURL)
-                        
-                        Text(parent.username)
-                            .font(.system(size: 11, weight: .regular))
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            
-            HStack(alignment: .bottom, spacing: 0) {
-                // Thread
-                VStack() {
-                    Capsule()
-                        .fill(Color(UIColor.systemGray6))
-                        .frame(width: 4, height: .infinity)
-                    
-                    AvatarView(size: 32, imageURL: comment.avatarURL)
-                        .padding(.horizontal, 4)
-                }
-                
-                // Text bubble
-                ZStack(alignment: .bottomLeading) {
-                    Circle()
-                        .fill(Color(UIColor.systemGray6))
-                        .frame(width: 12, height: 12)
-                        .offset(x: 0, y: 0)
-                    
-                    Circle()
-                        .fill(Color(UIColor.systemGray6))
-                        .frame(width: 6, height: 6)
-                        .offset(x: -8, y: 2)
-                    
-                    Text(comment.text ?? "")
-                        .foregroundColor(.white)
-                        .font(.system(size: 15, weight: .regular))
-                        .multilineTextAlignment(.leading)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(Color(UIColor.systemGray6))
-                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .padding([.leading], 12)
-                .padding([.bottom], 4)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+// Helper function to calculate avatar offsets
+func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
+    switch index {
+    case 0: // Top Center
+        return CGSize(width: 0, height: -radius)
+    case 1: // Bottom Left
+        return CGSize(width: -radius*cos(.pi / 6), height: radius*sin(.pi / 6))
+    case 2: // Bottom Right
+        return CGSize(width: radius*cos(.pi / 6), height: radius*sin(.pi / 6))
+    default:
+        return .zero
     }
 }
-
-
-class Comment: Identifiable {
-    let id = UUID()
-    let username: String
-    let text: String?
-    let avatarURL: String
-    var parent: Comment?
-
-    init(username: String, text: String? = nil, avatarURL: String, parent: Comment? = nil) {
-        self.username = username
-        self.text = text
-        self.avatarURL = avatarURL
-        self.parent = parent
-    }
-}
-
-let sampleComments: [Comment] = [
-    Comment(
-        username: "johnnyD",
-        text: "fr this is facts",
-        avatarURL: "https://picsum.photos/200/200"
-    ),
-    Comment(
-        username: "janey",
-        text: "omg thank u johnny lol we gotta talk about this more",
-        avatarURL: "https://picsum.photos/200/200",
-        parent: Comment(
-            username: "johnnyD",
-            avatarURL: "https://picsum.photos/200/200"
-        )
-    ),
-    Comment(
-        username: "mikez",
-        text: "idk janey i feel like it’s different tho can u explain more",
-        avatarURL: "https://picsum.photos/200/200",
-        parent: Comment(
-            username: "janey",
-            avatarURL: "https://picsum.photos/200/200"
-        )
-    ),
-    Comment(
-        username: "janey",
-        text: "mike i get u but it’s like the bigger picture ykmike i get u but it’s like the bigger picture ykmike i get u but it’s like the bigger picture yk",
-        avatarURL: "https://picsum.photos/200/200",
-        parent: Comment(
-            username: "mikez",
-            avatarURL: "https://picsum.photos/200/200"
-        )
-    ),
-    Comment(
-        username: "sarah_123",
-        text: "yeah janey got a point tho",
-        avatarURL: "https://picsum.photos/200/200",
-        parent: Comment(
-            username: "janey",
-            avatarURL: "https://picsum.photos/200/200"
-        )
-    ),
-    Comment(
-        username: "johnnyD",
-        text: "lowkey agree with sarah",
-        avatarURL: "https://picsum.photos/200/200",
-        parent: Comment(
-            username: "sarah_123",
-            avatarURL: "https://picsum.photos/200/200"
-        )
-    ),
-    Comment(
-        username: "mikez",
-        text: "ok i see it now",
-        avatarURL: "https://picsum.photos/200/200",
-        parent: Comment(
-            username: "johnnyD",
-            avatarURL: "https://picsum.photos/200/200"
-        )
-    ),
-    Comment(
-        username: "janey",
-        text: "glad we’re all on the same page now lol",
-        avatarURL: "https://picsum.photos/200/200",
-        parent: Comment(
-            username: "mikez",
-            avatarURL: "https://picsum.photos/200/200"
-        )
-    )
-]

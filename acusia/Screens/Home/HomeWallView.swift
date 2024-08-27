@@ -242,30 +242,30 @@ struct HomeWallView: View {
             
             // MARK: Sticker Interface
 
-            ZStack {
-                HelloStickerView(zIndexMap: $zIndexMap,
-                                 nextZIndex: $nextZIndex,
-                                 resetStickerOffset: $resetStickerOffset,
-                                 xAxisSliderValue: $xAxisSliderValueHello,
-                                 zAxisSliderValue: $zAxisSliderValueHello,
-                                 offsetSliderValue: $offsetSliderValueHello,
-                                 activeSticker: $activeSticker)
-                    .offset(x: 0, y: -160)
-                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            self.triggerSensoryFeedback += 1
-                        }
-                    }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
-            }
-            .blur(radius: showRecents ? 12 : 0)
-            .animation(.spring(), value: showRecents)
+//            ZStack {
+//                HelloStickerView(zIndexMap: $zIndexMap,
+//                                 nextZIndex: $nextZIndex,
+//                                 resetStickerOffset: $resetStickerOffset,
+//                                 xAxisSliderValue: $xAxisSliderValueHello,
+//                                 zAxisSliderValue: $zAxisSliderValueHello,
+//                                 offsetSliderValue: $offsetSliderValueHello,
+//                                 activeSticker: $activeSticker)
+//                    .offset(x: 0, y: -160)
+//                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
+//                    .scaleEffect(viewVisible ? 1 : 2)
+//                    .blur(radius: viewVisible ? 0.0 : 30.0)
+//                    .opacity(viewVisible ? 1.0 : 0.0)
+//                    .animation(.spring().delay(0), value: viewVisible)
+//                    .onAppear {
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//                            self.triggerSensoryFeedback += 1
+//                        }
+//                    }
+//                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
+//                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
+//            }
+//            .blur(radius: showRecents ? 12 : 0)
+//            .animation(.spring(), value: showRecents)
             
             // MARK: User data interface
 
@@ -569,7 +569,7 @@ class MotionManager: ObservableObject {
     
     private init() {
         startMotionUpdates()
-        startTimer()
+//        startTimer()
     }
     
     private func startMotionUpdates() {
@@ -595,39 +595,39 @@ class MotionManager: ObservableObject {
         }
     }
     
-    private func startTimer() {
-        var lastUpdate = Date()
-
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
-
-            let now = Date()
-            let timeSinceLastUpdate = now.timeIntervalSince(lastUpdate)
-
-            if timeSinceLastUpdate >= 2.0 {
-                if self.shouldUpdatePitch {
-                    if abs(self.pitchChangeSnapshot - self.relativePitch) < 0.02 {
-                        self.initialPitch = self.pitch
-                    }
-                    self.pitchChangeSnapshot = self.relativePitch
-                    self.shouldUpdatePitch = false
-                }
-
-                if self.shouldUpdateRoll {
-                    if abs(self.rollChangeSnapshot - self.relativeRoll) < 0.02 {
-                        self.initialRoll = self.roll
-                    }
-                    self.rollChangeSnapshot = self.relativeRoll
-                    self.shouldUpdateRoll = false
-                }
-
-                self.shouldUpdatePitch = true
-                self.shouldUpdateRoll = true
-
-                lastUpdate = now
-            }
-        }
-    }
+//    private func startTimer() {
+//        var lastUpdate = Date()
+//
+//        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+//            guard let self = self else { return }
+//
+//            let now = Date()
+//            let timeSinceLastUpdate = now.timeIntervalSince(lastUpdate)
+//
+//            if timeSinceLastUpdate >= 2.0 {
+//                if self.shouldUpdatePitch {
+//                    if abs(self.pitchChangeSnapshot - self.relativePitch) < 0.02 {
+//                        self.initialPitch = self.pitch
+//                    }
+//                    self.pitchChangeSnapshot = self.relativePitch
+//                    self.shouldUpdatePitch = false
+//                }
+//
+//                if self.shouldUpdateRoll {
+//                    if abs(self.rollChangeSnapshot - self.relativeRoll) < 0.02 {
+//                        self.initialRoll = self.roll
+//                    }
+//                    self.rollChangeSnapshot = self.relativeRoll
+//                    self.shouldUpdateRoll = false
+//                }
+//
+//                self.shouldUpdatePitch = true
+//                self.shouldUpdateRoll = true
+//
+//                lastUpdate = now
+//            }
+//        }
+//    }
 }
 
 enum StickerViewType {

@@ -10,19 +10,18 @@ import SwiftUI
 struct Entry: View {
     let entry: APIEntry
     var namespace: Namespace.ID
-    let scrolledEntryID: APIEntry.ID?
     let onDelete: (String) async -> Void
 
-    @State private var isSheetPresented = false
+    // Detected using scroll visibility change
     @State private var isVisible: Bool = false
-    @State private var showComments = false
+    @State private var showReplies = false
+    @State private var entryHeight: CGFloat = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Entry
             HStack(alignment: .bottom, spacing: 0) {
                 AvatarView(size: 40, imageURL: entry.author.image)
-                
 
                 if entry.rating != 2 {
                     ArtifactView(isVisible: $isVisible, entry: entry)
@@ -35,11 +34,10 @@ struct Entry: View {
             // Replies
             if !sampleComments.isEmpty {
                 HStack(alignment: .top) {
-                    if !showComments {
                         BottomCurvePath()
                             .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                            .frame(width: 40, height: showComments ? nil : 20)
-                        
+                            .frame(width: 40, height: showReplies ? nil : 20)
+
                         ZStack {
                             ForEach(0 ..< 3) { index in
                                 AvatarView(size: 16, imageURL: "https://picsum.photos/200/300")
@@ -49,21 +47,14 @@ struct Entry: View {
                             }
                         }
                         .frame(width: 40, height: 40)
-                    } else {
-                        LazyVStack(alignment: .leading) {
-                            ForEach(sampleComments) { comment in
-                                CommentView(comment: comment)
-                                    .transition(.blurReplace)
-                                    .border(.red)
-                            }
-                        }
-                        .transition(.blurReplace)
-                    }
                 }
+                .opacity(showReplies ? 0.5 : 1)
+                .frame(height: showReplies ? UIScreen.main.bounds.height : nil,
+                       alignment: .leading
+                )
+                .border(.blue)
                 .onTapGesture {
-                    withAnimation {
-                        showComments.toggle()
-                    }
+                    showReplies.toggle()
                 }
             }
         }
@@ -71,13 +62,30 @@ struct Entry: View {
         .onScrollVisibilityChange(threshold: 0.7) { visibility in
             isVisible = visibility
         }
-        .sheet(isPresented: $isSheetPresented) {
-            // Sheet content
-            VStack {}
-                .presentationDetents([.medium, .large])
-                .presentationCornerRadius(32)
-                .presentationBackground(.thinMaterial)
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-        }
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        entryHeight = geometry.size.height
+                    }
+            }
+        )
+        .overlay(
+            showReplies ?
+                AnyView(
+                    LazyVStack(alignment: .leading) {
+                        CommentsListView(replies: sampleComments)
+                    }
+                    .transition(.blurReplace)
+                    .padding(.top, 8)
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .topLeading)
+                    .border(.red)
+                    .offset(y: entryHeight)  // Offset by the height of the Entry view
+                ) :
+                AnyView(EmptyView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                ),
+            alignment: .topLeading
+        )
     }
 }
