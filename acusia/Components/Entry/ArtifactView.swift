@@ -21,19 +21,19 @@ struct ArtifactView: View {
             let imageUrl = entry?.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
             let time = start.distance(to: timeline.date)
             
-            let width: CGFloat = 200
-            let height: CGFloat = 252
+            let width: CGFloat = 164
+            let height: CGFloat = 164
 
 
             // White fill for the mask/canvas effect to work.
             let gooeyView =
                 VStack(alignment: .leading, spacing: 8) {
                     RoundedRectangle(cornerRadius: 24)
-                        .fill(.black)
+                        .fill(.clear)
                         .frame(width: width, height: height)
 
                     Text(text)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
                         .background(.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
@@ -108,6 +108,7 @@ struct ArtifactView: View {
                         .overlay(
                             // Content itself
                             VStack(alignment: .leading, spacing: 8) {
+                                // Art
                                 RoundedRectangle(cornerRadius: 0)
                                     .fill(.clear)
                                     .frame(width: width, height: height)
@@ -126,41 +127,26 @@ struct ArtifactView: View {
                                                         Image("heartbreak")
                                                             .resizable()
                                                             .aspectRatio(contentMode: .fit)
-                                                            .frame(width: 32, height: 32)
+                                                            .frame(width: 24, height: 24)
                                                             .foregroundColor(.white)
                                                             .rotationEffect(.degrees(6))
                                                             .padding(8)
                                                         ,
-                                                        alignment: .topLeading
+                                                        alignment: .bottomLeading
                                                     )
                                             } placeholder: {
                                                 RoundedRectangle(cornerRadius: 24)
                                                     .fill(.gray)
                                                     .aspectRatio(contentMode: .fit)
                                             }
-                                            
-                                            Spacer()
-
-                                            VStack(alignment: .leading) {
-                                                Text(entry?.sound.appleData?.artistName ?? "")
-                                                    .lineLimit(1)
-                                                    .font(.system(size: 13, weight: .regular))
-                                                    .foregroundColor(Color.white.opacity(0.8))
-                                                Text(entry?.sound.appleData?.name ?? "")
-                                                    .lineLimit(1)
-                                                    .font(.system(size: 15, weight: .bold))
-                                                    .foregroundColor(Color.white.opacity(0.8))
-                                            }
-                                            .frame(alignment: .leading)
                                         }
-                                            .padding(12)
-                                            .frame(width: width, height: height, alignment: .topLeading)
+                                        .frame(width: width, height: height, alignment: .topLeading)
                                         ,
                                         alignment: .topLeading
                                     )
                                 
                                 Text(text)
-                                    .font(.system(size: 15, weight: .semibold))
+                                    .font(.system(size: 17, weight: .semibold))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 14)
                                     .padding(.vertical, 10)
