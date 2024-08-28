@@ -20,13 +20,17 @@ struct ArtifactView: View {
             let text = entry?.text ?? "Hello, world"
             let imageUrl = entry?.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
             let time = start.distance(to: timeline.date)
+            
+            let width: CGFloat = 200
+            let height: CGFloat = 252
+
 
             // White fill for the mask/canvas effect to work.
             let gooeyView =
                 VStack(alignment: .leading, spacing: 8) {
                     RoundedRectangle(cornerRadius: 24)
                         .fill(.black)
-                        .frame(width: 220, height: 272)
+                        .frame(width: width, height: height)
 
                     Text(text)
                         .font(.system(size: 15, weight: .semibold))
@@ -106,7 +110,7 @@ struct ArtifactView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 RoundedRectangle(cornerRadius: 0)
                                     .fill(.clear)
-                                    .frame(width: 220, height: 272)
+                                    .frame(width: width, height: height)
                                     .overlay(
                                         VStack(alignment: .leading) {
                                             AsyncImage(url: URL(string: imageUrl)) { image in
@@ -122,14 +126,13 @@ struct ArtifactView: View {
                                                         Image("heartbreak")
                                                             .resizable()
                                                             .aspectRatio(contentMode: .fit)
-                                                            .frame(width: 36, height: 36)
-                                                            .foregroundColor(.white.opacity(0.8))
+                                                            .frame(width: 32, height: 32)
+                                                            .foregroundColor(.white)
                                                             .rotationEffect(.degrees(6))
                                                             .padding(8)
                                                         ,
                                                         alignment: .topLeading
                                                     )
-                                                    .shadow(radius: 8)
                                             } placeholder: {
                                                 RoundedRectangle(cornerRadius: 24)
                                                     .fill(.gray)
@@ -150,8 +153,8 @@ struct ArtifactView: View {
                                             }
                                             .frame(alignment: .leading)
                                         }
-                                            .padding(16)
-                                            .frame(width: 220, height: 272, alignment: .topLeading)
+                                            .padding(12)
+                                            .frame(width: width, height: height, alignment: .topLeading)
                                         ,
                                         alignment: .topLeading
                                     )

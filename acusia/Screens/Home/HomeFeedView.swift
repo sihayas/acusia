@@ -32,7 +32,6 @@ struct HomeFeedView: View {
                         namespace: ns,
                         onDelete: deleteEntry
                     )
-                    .zIndex(Double(viewModel.entries.count - index))
                 }
             }
             .frame(maxWidth: .infinity)
