@@ -9,6 +9,7 @@ struct AcusiaApp: App {
     @StateObject private var auth = Auth.shared
     @StateObject private var musicKitManager = MusicKitManager.shared
     @StateObject private var shareData = ShareData()
+    @StateObject private var safeAreaInsetsManager = SafeAreaInsetsManager()
 
     var body: some Scene {
         WindowGroup {
@@ -16,7 +17,8 @@ struct AcusiaApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(auth)
                 .environmentObject(musicKitManager)
-                .environmentObject(shareData) 
+                .environmentObject(shareData)
+                .environmentObject(safeAreaInsetsManager)
         }
     }
 }
@@ -24,6 +26,7 @@ struct AcusiaApp: App {
 struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKitManager
+    @EnvironmentObject private var safeAreaInsetsManager: SafeAreaInsetsManager
     @State private var homePath = NavigationPath()
 
     var body: some View {
@@ -35,6 +38,9 @@ struct AcusiaAppView: View {
                     Home(size: size, safeArea: safeArea, homePath: $homePath)
                         .ignoresSafeArea(.all)
                         .background(Color.black)
+                        .onAppear {
+                            safeAreaInsetsManager.insets = safeArea
+                        }
                 }
             } else {
                 AuthScreen()
@@ -72,4 +78,8 @@ struct AcusiaAppView: View {
 
 extension Notification.Name {
     static let authenticationSucceeded = Notification.Name("AuthenticationSucceeded")
+}
+
+class SafeAreaInsetsManager: ObservableObject {
+    @Published var insets: EdgeInsets = .init()
 }

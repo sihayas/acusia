@@ -4,19 +4,19 @@ class ShareData: ObservableObject {
     // This is true when the TopScrollView is Expanded
     @Published var isExpanded: Bool = false
     
-    // MainScrollView Properties
+    // ScrollView Properties
     @Published var mainScrollValue: CGFloat = 0
     @Published var topScrollViewValue: CGFloat = 0
     
-    // Selected category for the photos
-    @Published var selectedCategory: String = "年"
-    
     // These properties will be used to evaluate the drag conditions,
     // whether the scroll view can either be pulled up or down for expanding/minimizing the photos scrollview
-    @Published var canPullUp: Bool = false
     @Published var canPullDown: Bool = false
+    @Published var canPullUp: Bool = false
     
     @Published var gestureProgress: CGFloat = 0
+    
+    @Published var showReplies: Bool = false
+    @Published var repliesOffset: CGFloat = 0
 }
 
 struct Home: View {
@@ -50,13 +50,14 @@ struct Home: View {
                                 .padding(.bottom, safeArea.bottom)
                         }
                     }
+                    .scrollDisabled(shareData.isExpanded)
+                    .opacity(shareData.showReplies ? 0.25 : 1)
 //                    .onScrollGeometryChange(for: CGFloat.self) { proxy in
 //                        proxy.contentOffset.y
 //                    } action: { oldValue, newValue in
 //                        shareData.mainScrollValue = newValue
 //                        print("Main Scroll Value: \(newValue)")
 //                    }
-                    .scrollDisabled(shareData.isExpanded)
 //                    .simultaneousGesture(
 //                        DragGesture()
 //                            .onChanged { value in
@@ -116,6 +117,31 @@ struct Home: View {
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
+            .overlay(
+                ZStack(alignment: .top) {
+                    VariableBlurView(radius: 16, mask: Image(.gradient))
+                        .ignoresSafeArea()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .scaleEffect(x: shareData.showReplies ? 1 : 0,
+                                     y: shareData.showReplies ? 1 : 0, anchor: .bottom)
+                        .animation(.spring(duration: 0.7), value: shareData.showReplies)
+
+                    if shareData.showReplies {
+                        ScrollView {
+                            LazyVStack(alignment: .leading) {
+                                CommentsListView(replies: sampleComments)
+                                    .padding(.top, shareData.repliesOffset)
+                            }
+                        }
+                        .padding(.horizontal, 24)
+                    }
+                }
+                .frame(width: geometry.size.width,
+                       height: geometry.size.height,
+                       alignment: .topLeading)
+                ,
+                alignment: .top
+            )
             .overlay(alignment: .bottom) {
                 FeedBarView(safeArea: safeArea)
             }

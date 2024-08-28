@@ -16,7 +16,7 @@ struct CommentsListView: View {
             ForEach(replies) { reply in
                 if showReplyChildren == nil || showReplyChildren == reply {
                     ReplyView(reply: reply, showReplyChildren: $showReplyChildren)
-                        .transition(.blurReplace)
+                        .transition(.opacity)
                         .animation(.easeInOut, value: showReplyChildren)
                 }
             }

@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct Entry: View {
+    @EnvironmentObject private var shareData: ShareData
+    @State private var blurRadius: CGFloat = 0
+    
     let entry: APIEntry
     var namespace: Namespace.ID
     let onDelete: (String) async -> Void
@@ -36,7 +39,7 @@ struct Entry: View {
                 HStack(alignment: .top) {
                         BottomCurvePath()
                             .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                            .frame(width: 40, height: showReplies ? nil : 20)
+                            .frame(width: 40, height: 20)
 
                         ZStack {
                             ForEach(0 ..< 3) { index in
@@ -48,18 +51,16 @@ struct Entry: View {
                         }
                         .frame(width: 40, height: 40)
                 }
-                .opacity(showReplies ? 0.5 : 1)
-                .frame(height: showReplies ? UIScreen.main.bounds.height : nil,
-                       alignment: .leading
-                )
-                .border(.blue)
+                .opacity(showReplies ? 0 : 1)
                 .onTapGesture {
-                    showReplies.toggle()
+                    withAnimation {
+                        showReplies.toggle()
+                    }
                 }
             }
         }
         .padding(.horizontal, 24)
-        .onScrollVisibilityChange(threshold: 0.7) { visibility in
+        .onScrollVisibilityChange(threshold: 0.5) { visibility in
             isVisible = visibility
         }
         .background(
@@ -68,24 +69,15 @@ struct Entry: View {
                     .onAppear {
                         entryHeight = geometry.size.height
                     }
-            }
-        )
-        .overlay(
-            showReplies ?
-                AnyView(
-                    LazyVStack(alignment: .leading) {
-                        CommentsListView(replies: sampleComments)
+                    .onChange(of: showReplies) { _, _ in
+                        if showReplies {
+                            // Measure the top of the entry from the top of the screen, then subtract the height and subtract the thread line to align/render the replies offset below the avatar.
+                            shareData.repliesOffset = geometry.frame(in: .global).minY + entryHeight
+                            shareData.showReplies = true
+                            print("Scroll offset captured: \(shareData.repliesOffset)")
+                        }
                     }
-                    .transition(.blurReplace)
-                    .padding(.top, 8)
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .topLeading)
-                    .border(.red)
-                    .offset(y: entryHeight)  // Offset by the height of the Entry view
-                ) :
-                AnyView(EmptyView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                ),
-            alignment: .topLeading
+            }
         )
     }
 }
