@@ -7,8 +7,8 @@ struct ArtifactView: View {
     var body: some View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
         
-        let width: CGFloat = animateReplySheet ? 24 : 164
-        let height: CGFloat = animateReplySheet ? 24 : 164
+        let width: CGFloat = animateReplySheet ? 56 : 164
+        let height: CGFloat = animateReplySheet ? 56 : 164
         
         HStack(alignment: .bottom, spacing: 0) {
             AvatarView(size: animateReplySheet ? 24 : 32, imageURL: entry.author.image)
@@ -38,7 +38,7 @@ struct ArtifactView: View {
                                     .foregroundColor(.white)
                                     .rotationEffect(.degrees(-6))
                                     .padding(8)
-                                    .scaleEffect(animateReplySheet ? 0.25 : 1)
+                                    .scaleEffect(animateReplySheet ? 0.3 : 1, anchor: .bottomLeading)
                                 ,
                                 alignment: .bottomLeading
                             )
@@ -71,7 +71,7 @@ struct ArtifactView: View {
                             .font(.system(size: animateReplySheet ? 11 : 15, weight: .regular))
                             .multilineTextAlignment(.leading)
                             .transition(.blurReplace)
-                            .lineLimit(animateReplySheet ? 4 : nil)
+                            .lineLimit(animateReplySheet ? 3 : nil)
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)

@@ -7,19 +7,21 @@
 
 import SwiftUI
 
-struct Entry: View {    
+struct Entry: View {
+    @EnvironmentObject private var safeAreaInsetsManager: SafeAreaInsetsManager
+    
     let entry: APIEntry
     let onDelete: (String) async -> Void
-    
+
     @Binding var expandedEntryId: String?
 
     // Entry is halfway past scrollview.
     @State private var isVisible: Bool = false
-    
+
     // First controls the sheet visibility. Second controls animation.
     @State private var showReplySheet = false
     @State private var animateReplySheet = false
-    
+
     @State private var repliesOffset: CGFloat = 0
     @State private var entryHeight: CGFloat = 0
 
@@ -65,7 +67,7 @@ struct Entry: View {
                     .onAppear {
                         entryHeight = geometry.size.height
                     }
-                    .onChange(of: showReplySheet) { old, new in
+                    .onChange(of: showReplySheet) { _, new in
                         withAnimation {
                             if new {
                                 // Measure the top of the entry from the top of the screen.
@@ -84,25 +86,28 @@ struct Entry: View {
         /// Move the entry view to the top of the screen.
         .offset(y: animateReplySheet ? 32 - repliesOffset : 0)
         .sheet(isPresented: $showReplySheet) {
-            // Sheet content
-            VStack(alignment: .leading) {
-                // Content
-                LazyVStack(alignment: .leading) {
-                    CommentsListView(replies: sampleComments)
+            ZStack {
+                UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
+                    .stroke(.white.opacity(0.1), lineWidth: 1)
+                    .fill(Color.black)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .padding(1)
+                    .ignoresSafeArea()
+                
+                // Sheet content
+                ScrollView() {
+                    // Content
+                    LazyVStack(alignment: .leading) {
+                        CommentsListView(replies: sampleComments)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 48)
+                    
+                    Spacer()
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 48)
             }
-            .background(
-                Color.black
-                    .clipShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 45, style: .continuous)
-                            .stroke(Color.white.opacity(0.2), lineWidth: 1) // Define the outline color and width
-                    )
-            )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .presentationDetents([.fraction(0.85)])
+            .presentationDetents([.fraction(0.85), .large])
             .presentationCornerRadius(45)
             .presentationBackground(.black)
             .presentationDragIndicator(.visible)
