@@ -47,7 +47,7 @@ struct Home: View {
                             
                             HomeFeedView(userId: auth.user?.id ?? "")
                                 .padding(.top, safeArea.bottom + 40)
-                                .padding(.bottom, safeArea.bottom)
+                                .padding(.bottom, size.height)
                         }
                     }
 //                    .onScrollGeometryChange(for: CGFloat.self) { proxy in

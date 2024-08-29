@@ -10,9 +10,8 @@ import SwiftUI
 
 struct HomeFeedView: View {
     @StateObject private var viewModel: FeedViewModel
-    @Namespace var ns
-
     @State private var deleteError: Error?
+    @State private var expandedEntryId: String?
 
     private let userId: String
     private let entryAPI = EntryAPI()
@@ -29,8 +28,10 @@ struct HomeFeedView: View {
                     let entry = viewModel.entries[index]
                     Entry(
                         entry: entry,
-                        onDelete: deleteEntry
+                        onDelete: deleteEntry,
+                        expandedEntryId: $expandedEntryId
                     )
+                    .opacity(expandedEntryId == nil || expandedEntryId == entry.id ? 1 : 0)
                 }
             }
             .frame(maxWidth: .infinity)

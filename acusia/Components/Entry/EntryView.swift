@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct Entry: View {
+struct Entry: View {    
     let entry: APIEntry
     let onDelete: (String) async -> Void
+    
+    @Binding var expandedEntryId: String?
 
     // Entry is halfway past scrollview.
     @State private var isVisible: Bool = false
@@ -24,13 +26,10 @@ struct Entry: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Entry
-            HStack(alignment: .bottom, spacing: 0) {
-                AvatarView(size: animateReplySheet ? 24 : 40, imageURL: entry.author.image)
-                if entry.rating != 2 {
-                    ArtifactView(entry: entry, showReplies: animateReplySheet)
-                } else {
-                    WispView(entry: entry, showReplies: animateReplySheet)
-                }
+            if entry.rating != 2 {
+                ArtifactView(entry: entry, animateReplySheet: animateReplySheet)
+            } else {
+                WispView(entry: entry, animateReplySheet: animateReplySheet)
             }
 
             // Replies
@@ -50,7 +49,7 @@ struct Entry: View {
                     }
                     .frame(width: 40, height: 40)
                 }
-                .opacity(showReplySheet ? 0 : 1)
+                .opacity(animateReplySheet ? 0 : 1)
                 .onTapGesture {
                     showReplySheet = true
                 }
@@ -72,9 +71,11 @@ struct Entry: View {
                                 // Measure the top of the entry from the top of the screen.
                                 repliesOffset = geometry.frame(in: .global).minY - 32
                                 animateReplySheet = true
+                                expandedEntryId = entry.id
                             } else {
                                 repliesOffset = 0
                                 animateReplySheet = false
+                                expandedEntryId = nil
                             }
                         }
                     }
@@ -92,14 +93,15 @@ struct Entry: View {
                 .padding(.horizontal, 24)
                 .padding(.top, 48)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(
                 Color.black
+                    .clipShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 45, style: .continuous)
                             .stroke(Color.white.opacity(0.2), lineWidth: 1) // Define the outline color and width
                     )
             )
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .presentationDetents([.fraction(0.85)])
             .presentationCornerRadius(45)
             .presentationBackground(.black)
