@@ -38,3 +38,16 @@ using namespace metal;
     // Return the final color with the alpha channel intact
     return half4(finalColor, color.a);
 }
+
+[[stitchable]] half4 gray(
+    float2 pos, half4 color, float t, float randomOffset) {
+    
+    // UIColor.systemGray6 equivalent in RGB
+    half3 systemGray6Color = half3(0.11, 0.11, 0.12);
+    
+    // Instead of iridescent effect, we set the finalColor to systemGray6
+    half3 finalColor = systemGray6Color * color.a;
+    
+    // Return the final color with the alpha channel intact
+    return half4(finalColor, color.a);
+}

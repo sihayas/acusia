@@ -29,7 +29,6 @@ struct HomeFeedView: View {
                     let entry = viewModel.entries[index]
                     Entry(
                         entry: entry,
-                        namespace: ns,
                         onDelete: deleteEntry
                     )
                 }

@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct Entry: View {
-    @State private var blurRadius: CGFloat = 0
-    
     let entry: APIEntry
-    var namespace: Namespace.ID
     let onDelete: (String) async -> Void
 
+    // Entry is halfway past scrollview.
     @State private var isVisible: Bool = false
-    @State private var showReplies = false
+    
+    // First controls the sheet visibility. Second controls animation.
+    @State private var showReplySheet = false
+    @State private var animateReplySheet = false
+    
     @State private var repliesOffset: CGFloat = 0
     @State private var entryHeight: CGFloat = 0
 
@@ -23,13 +25,11 @@ struct Entry: View {
         VStack(alignment: .leading, spacing: 8) {
             // Entry
             HStack(alignment: .bottom, spacing: 0) {
-                AvatarView(size: 40, imageURL: entry.author.image)
-
+                AvatarView(size: animateReplySheet ? 24 : 40, imageURL: entry.author.image)
                 if entry.rating != 2 {
-                    ArtifactView(isVisible: $isVisible, entry: entry)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    ArtifactView(entry: entry, showReplies: animateReplySheet)
                 } else {
-                    WispView(entry: entry, namespace: namespace)
+                    WispView(entry: entry, showReplies: animateReplySheet)
                 }
             }
 
@@ -50,11 +50,9 @@ struct Entry: View {
                     }
                     .frame(width: 40, height: 40)
                 }
-                .opacity(showReplies ? 0 : 1)
+                .opacity(showReplySheet ? 0 : 1)
                 .onTapGesture {
-                    withAnimation {
-                        showReplies.toggle()
-                    }
+                    showReplySheet = true
                 }
             }
         }
@@ -68,38 +66,44 @@ struct Entry: View {
                     .onAppear {
                         entryHeight = geometry.size.height
                     }
-                    .onChange(of: showReplies) { old, new in
-                        if new {
-                            // Measure the top of the entry from the top of the screen.
-                            repliesOffset = geometry.frame(in: .global).minY
-                            withAnimation {
-                                showReplies = new
+                    .onChange(of: showReplySheet) { old, new in
+                        withAnimation {
+                            if new {
+                                // Measure the top of the entry from the top of the screen.
+                                repliesOffset = geometry.frame(in: .global).minY - 32
+                                animateReplySheet = true
+                            } else {
+                                repliesOffset = 0
+                                animateReplySheet = false
                             }
                         }
                     }
             }
         )
-        .offset(y: showReplies ? 32 - repliesOffset : 0)
-        .zIndex(showReplies ? 1 : 0)
-        .sheet(isPresented: $showReplies) {
+        /// Move the entry view to the top of the screen.
+        .offset(y: animateReplySheet ? 32 - repliesOffset : 0)
+        .sheet(isPresented: $showReplySheet) {
             // Sheet content
             VStack(alignment: .leading) {
+                // Content
                 LazyVStack(alignment: .leading) {
                     CommentsListView(replies: sampleComments)
                 }
                 .padding(.horizontal, 24)
+                .padding(.top, 48)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .presentationDetents([.medium, .large])
+            .background(
+                Color.black
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 45, style: .continuous)
+                            .stroke(Color.white.opacity(0.2), lineWidth: 1) // Define the outline color and width
+                    )
+            )
+            .presentationDetents([.fraction(0.85)])
             .presentationCornerRadius(45)
-            .presentationBackground(.ultraThickMaterial)
-            .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-            .onDisappear {
-                repliesOffset = 0
-                withAnimation {
-                    showReplies = false
-                }
-            }
+            .presentationBackground(.black)
+            .presentationDragIndicator(.visible)
         }
     }
 }

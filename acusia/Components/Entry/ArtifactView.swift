@@ -1,178 +1,96 @@
 import SwiftUI
 
 struct ArtifactView: View {
-    @State private var start = Date()
-    @Binding var isVisible: Bool
-
-    // State to hold the measured size of the VStack
-    @State private var contentSize: CGSize = .zero
-
-    @State private var animateScale = false
-    @State private var animateOffset = false
-    @State private var randomOffset: Float = .random(in: 0 ..< 2 * .pi)
-
-    @State private var isPresented = false
-
-    var entry: APIEntry? = nil
-
+    let entry: APIEntry
+    let showReplies: Bool
+    
     var body: some View {
-        TimelineView(.animation) { timeline in
-            let text = entry?.text ?? "Hello, world"
-            let imageUrl = entry?.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
-            let time = start.distance(to: timeline.date)
-            
-            let width: CGFloat = 164
-            let height: CGFloat = 164
-
-
-            // White fill for the mask/canvas effect to work.
-            let gooeyView =
-                VStack(alignment: .leading, spacing: 8) {
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(.clear)
-                        .frame(width: width, height: height)
-
-                    Text(text)
-                        .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .scaleEffect(animateScale ? 1 : 0, anchor: .top)
-                        .offset(y: animateOffset ? 0 : -48)
-                }
-                .frame(maxWidth: .infinity, alignment: .bottomLeading)
-                .padding([.leading], 12)
-                .padding([.bottom], 4)
-
-            ZStack {
-                // MARK: Measure size of the view.
-
-                gooeyView
-                    .background(
-                        GeometryReader { geometry in
-                            Color.clear.onAppear {
-                                contentSize = geometry.size
-                            }
-                        }
-                    )
-
-                // MARK: Gooey Effect Underlay
-
-                if contentSize != .zero {
-                    // First draw the shapes. The canvas/symbols are overlayed and used as a mask
-                    // because the iridescent shader + the alpha threshold wouldnt work otherwise.
-                    gooeyView
-                        .hidden()
-                        .overlay(
-                            Canvas(opaque: false, colorMode: .nonLinear, rendersAsynchronously: false) { ctx, size in
-                                let bounds = CGRect(origin: .zero, size: size)
-                                // Drawing the symbol: apply blur and alpha threshold filters
-                                // Alpha filter will make the view black, so we use it as a mask and fill bounds with foreground style
-                                ctx.clipToLayer { ctx in
-                                    ctx.addFilter(.alphaThreshold(min: 0.5))
-                                    ctx.addFilter(.blur(radius: 4))
-
-                                    ctx.drawLayer { ctx in
-                                        ctx.draw(ctx.resolveSymbol(id: 0)!, in: bounds)
-                                    }
-                                }
-                                ctx.fill(.init(.init(origin: .zero, size: size)), with: .foreground)
-                            } symbols: {
-                                gooeyView
-                                    .tag(0)
-                            }
-                            .frame(maxWidth: contentSize.width, maxHeight: contentSize.height)
-                        )
-                        .overlay(
-                            // Bubble tail
-                            ZStack(alignment: .bottomLeading) {
-                                Circle()
-                                    .fill(Color.white)
-                                    .frame(width: 12, height: 12)
-                                    .offset(x: 12, y: -4)
-
-                                Circle()
-                                    .fill(Color.white)
-                                    .frame(width: 6, height: 6)
-                                    .offset(x: 4, y: -2)
-                            },
-                            alignment: .bottomLeading
-                        )
-                        .colorEffect(
-                            // Iridescent effect
-                            ShaderLibrary.iridescent(
-                                .float(time),
-                                .float(randomOffset)
+        let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
+        
+        let width: CGFloat = showReplies ? 24 : 164
+        let height: CGFloat = showReplies ? 24 : 164
+        
+        VStack(alignment: .leading, spacing: 8) {
+            // Sound attachment
+                VStack(alignment: .leading) {
+                    AsyncImage(url: URL(string: imageUrl)) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .mask(
+                                Image("mask")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
                             )
-                        )
-                        .overlay(
-                            // Content itself
-                            VStack(alignment: .leading, spacing: 8) {
-                                // Art
-                                RoundedRectangle(cornerRadius: 0)
-                                    .fill(.clear)
+                            .overlay(
+                                MyIcon()
+                                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
                                     .frame(width: width, height: height)
-                                    .overlay(
-                                        VStack(alignment: .leading) {
-                                            AsyncImage(url: URL(string: imageUrl)) { image in
-                                                image
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .mask(
-                                                        Image("mask")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                    )
-                                                    .overlay(
-                                                        Image("heartbreak")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fit)
-                                                            .frame(width: 24, height: 24)
-                                                            .foregroundColor(.white)
-                                                            .rotationEffect(.degrees(6))
-                                                            .padding(8)
-                                                        ,
-                                                        alignment: .bottomLeading
-                                                    )
-                                            } placeholder: {
-                                                RoundedRectangle(cornerRadius: 24)
-                                                    .fill(.gray)
-                                                    .aspectRatio(contentMode: .fit)
-                                            }
-                                        }
-                                        .frame(width: width, height: height, alignment: .topLeading)
-                                        ,
-                                        alignment: .topLeading
-                                    )
-                                
-                                Text(text)
-                                    .font(.system(size: 17, weight: .semibold))
+                            )
+                            .overlay(
+                                Image("heartbreak")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 28, height: 28)
                                     .foregroundColor(.white)
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 10)
-                                    .scaleEffect(animateScale ? 1 : 0, anchor: .top)
-                                    .offset(y: animateOffset ? 0 : -48)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .bottomLeading)
-                            .padding([.leading], 12)
-                            .padding([.bottom], 4)
-                        )
+                                    .rotationEffect(.degrees(-6))
+                                    .padding(8)
+                                    .scaleEffect(showReplies ? 0.25 : 1)
+                                ,
+                                alignment: .bottomLeading
+                            )
+                    } placeholder: {
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(.gray)
+                            .aspectRatio(contentMode: .fit)
+                    }
                 }
+                .frame(width: width, height: height, alignment: .topLeading)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+            
+            // Text bubble
+            ZStack(alignment: .bottomLeading) {
+                Circle()
+                    .stroke(showReplies ? .white.opacity(0.1): .clear , lineWidth: 1)
+                    .fill(showReplies ? .clear : Color(UIColor.systemGray6))
+                    .frame(width: 12, height: 12)
+                    .offset(x: 0, y: 0)
+                        
+                Circle()
+                    .stroke(showReplies ? .white.opacity(0.1): .clear , lineWidth: 1)
+                    .fill(showReplies ? .clear : Color(UIColor.systemGray6))
+                    .frame(width: 6, height: 6)
+                    .offset(x: -8, y: 2)
+                
+                VStack {
+                    Text(entry.text)
+                        .foregroundColor(.white)
+                        .font(.system(size: showReplies ? 11 : 15, weight: .regular))
+                        .multilineTextAlignment(.leading)
+                        .transition(.blurReplace)
+                        .lineLimit(showReplies ? 3 : nil)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(showReplies ? .black : Color(UIColor.systemGray6),
+                            in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(.white.opacity(showReplies ? 0.1 : 0), lineWidth: 1)
+                )
+                .overlay(
+                    ZStack {
+                        HeartTap(isTapped: entry.isHeartTapped, count: entry.heartCount)
+                            .offset(x: 12, y: -26)
+                            .scaleEffect(showReplies ? 0.75 : 1)
+                    },
+                    alignment: .topTrailing
+                )
             }
-            .frame(maxWidth: .infinity)
-            .onChange(of: isVisible) { _, _ in
-                withAnimation(.spring(response: 0.7, dampingFraction: 0.8, blendDuration: 0)) {
-                    animateScale = true
-                }
-                withAnimation(.spring(response: 0.7, dampingFraction: 0.8, blendDuration: 0)) {
-                    animateOffset = true
-                }
-            }
-        }
-    }
-}
 
-#Preview {
-    ArtifactView(isVisible: .constant(true))
-        .background(Color.black)
+        }
+        .padding([.leading], 12)
+        .padding([.bottom], 4)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
 }
