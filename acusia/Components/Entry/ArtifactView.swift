@@ -11,7 +11,7 @@ struct ArtifactView: View {
         let height: CGFloat = animateReplySheet ? 56 : 164
         
         HStack(alignment: .bottom, spacing: 0) {
-            AvatarView(size: animateReplySheet ? 24 : 32, imageURL: entry.author.image)
+            AvatarView(size: 32, imageURL: entry.author.image)
             
             VStack(alignment: .leading, spacing: 8) {
                 // Sound attachment

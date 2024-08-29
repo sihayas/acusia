@@ -15,7 +15,7 @@ struct WispView: View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
         
         HStack(alignment: .bottom, spacing: 0) {
-            AvatarView(size: animateReplySheet ? 24 : 32, imageURL: entry.author.image)
+            AvatarView(size: 32, imageURL: entry.author.image)
             
             VStack(alignment: .leading, spacing: 8) {
                 // Sound attachment

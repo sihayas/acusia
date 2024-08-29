@@ -47,7 +47,6 @@ struct ReplyView: View {
                         .frame(width: 4, height: .infinity)
 
                     AvatarView(size: 32, imageURL: reply.avatarURL)
-                        .padding(.horizontal, 4)
                 }
 
                 // Text bubble
@@ -94,18 +93,18 @@ struct ReplyView: View {
             if !reply.children.isEmpty {
                 // Expand thread capsule
                 VStack(alignment: .leading, spacing: -2) {
-                    HStack(spacing: -12) {
+                    HStack(spacing: -4) {
                         if !isExpanded {
                             Capsule()
                                 .fill(Color(UIColor.systemGray6))
                                 .frame(width: 4, height: 12)
-                                .frame(width: 40)
+                                .frame(width: 32)
                         } else {
                             LoopPath()
                                 .stroke(Color(UIColor.systemGray6),
                                         style: StrokeStyle(lineWidth: 4, lineCap: .round))
                                 .frame(width: 30, height: 20)
-                                .frame(width: 40)
+                                .frame(width: 32)
                                 .transition(.scale)
                         }
                         

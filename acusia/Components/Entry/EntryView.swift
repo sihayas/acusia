@@ -101,7 +101,7 @@ struct Entry: View {
                         CommentsListView(replies: sampleComments)
                     }
                     .padding(.horizontal, 24)
-                    .padding(.top, 48)
+                    .padding(.top, 32)
                     
                     Spacer()
                 }
