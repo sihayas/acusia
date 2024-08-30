@@ -32,7 +32,7 @@ struct ReplyView: View {
         var isExpanded: Bool {
             showReplyChildren == reply
         }
-        
+
         var childrenCount: Int {
             reply.children.count
         }
@@ -44,7 +44,7 @@ struct ReplyView: View {
                 VStack {
                     Capsule()
                         .fill(Color(UIColor.systemGray6))
-                        .frame(width: 4, height: .infinity)
+                        .frame(width: 3, height: .infinity)
 
                     AvatarView(size: 32, imageURL: reply.avatarURL)
                 }
@@ -92,27 +92,28 @@ struct ReplyView: View {
             // Children
             if !reply.children.isEmpty {
                 // Expand thread capsule
-                VStack(alignment: .leading, spacing: -2) {
-                    HStack(spacing: -4) {
-                        if !isExpanded {
-                            Capsule()
-                                .fill(Color(UIColor.systemGray6))
-                                .frame(width: 4, height: 12)
-                                .frame(width: 32)
-                        } else {
-                            LoopPath()
-                                .stroke(Color(UIColor.systemGray6),
-                                        style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                                .frame(width: 30, height: 20)
-                                .frame(width: 32)
-                                .transition(.scale)
-                        }
-                        
+                HStack(spacing: -4) {
+                    if !isExpanded {
+                        Capsule()
+                            .fill(Color(UIColor.systemGray6))
+                            .frame(width: 3, height: 16)
+                            .frame(width: 32)
+
                         Text("\(childrenCount) threads")
-                            .font(.system(size: 11, weight: .medium, design: .rounded ))
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundColor(.secondary)
+                    } else {
+                        LoopPath()
+                            .stroke(Color(UIColor.systemGray6),
+                                    style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                            .frame(width: 30, height: 20)
+                            .frame(width: 32)
+                            .transition(.scale)
+
+                        Text("Hide threads")
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
                             .foregroundColor(.secondary)
                     }
-
                 }
                 .onTapGesture {
                     withAnimation {
@@ -376,7 +377,6 @@ struct TopBottomCurvePath: Shape {
         return path
     }
 }
-
 
 struct LoopPath: Shape {
     func path(in rect: CGRect) -> Path {

@@ -36,12 +36,6 @@ struct HeartTap: View {
                 },
                 alignment: .bottomTrailing
             )
-            .overlay(
-                Text("999")
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .foregroundColor(.secondary)
-                    .offset(x: 0, y: -26)
-            )
     }
 }
 
@@ -74,12 +68,6 @@ struct HeartTapSmall: View {
                         .offset(x: 4, y: 4)
                 },
                 alignment: .bottomTrailing
-            )
-            .overlay(
-                Text("999")
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .foregroundColor(.secondary)
-                    .offset(x: 0, y: -22)
             )
     }
 }

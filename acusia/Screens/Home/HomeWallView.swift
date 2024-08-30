@@ -242,30 +242,30 @@ struct HomeWallView: View {
             
             // MARK: Sticker Interface
 
-//            ZStack {
-//                HelloStickerView(zIndexMap: $zIndexMap,
-//                                 nextZIndex: $nextZIndex,
-//                                 resetStickerOffset: $resetStickerOffset,
-//                                 xAxisSliderValue: $xAxisSliderValueHello,
-//                                 zAxisSliderValue: $zAxisSliderValueHello,
-//                                 offsetSliderValue: $offsetSliderValueHello,
-//                                 activeSticker: $activeSticker)
-//                    .offset(x: 0, y: -160)
-//                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
-//                    .scaleEffect(viewVisible ? 1 : 2)
-//                    .blur(radius: viewVisible ? 0.0 : 30.0)
-//                    .opacity(viewVisible ? 1.0 : 0.0)
-//                    .animation(.spring().delay(0), value: viewVisible)
-//                    .onAppear {
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-//                            self.triggerSensoryFeedback += 1
-//                        }
-//                    }
-//                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-//                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
-//            }
-//            .blur(radius: showRecents ? 12 : 0)
-//            .animation(.spring(), value: showRecents)
+            ZStack {
+                HelloStickerView(zIndexMap: $zIndexMap,
+                                 nextZIndex: $nextZIndex,
+                                 resetStickerOffset: $resetStickerOffset,
+                                 xAxisSliderValue: $xAxisSliderValueHello,
+                                 zAxisSliderValue: $zAxisSliderValueHello,
+                                 offsetSliderValue: $offsetSliderValueHello,
+                                 activeSticker: $activeSticker)
+                    .offset(x: 0, y: -160)
+                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
+                    .scaleEffect(viewVisible ? 1 : 2)
+                    .blur(radius: viewVisible ? 0.0 : 30.0)
+                    .opacity(viewVisible ? 1.0 : 0.0)
+                    .animation(.spring().delay(0), value: viewVisible)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            self.triggerSensoryFeedback += 1
+                        }
+                    }
+                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
+                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
+            }
+            .blur(radius: showRecents ? 12 : 0)
+            .animation(.spring(), value: showRecents)
             
             // MARK: User data interface
 

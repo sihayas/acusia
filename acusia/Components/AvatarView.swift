@@ -17,8 +17,16 @@ struct AvatarView: View {
                 image
                     .resizable()
                     .frame(width: size, height: size)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(.white.opacity(0.1), lineWidth: 1))
+                    .mask(
+                        Image("mask_avatar")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    )
+                    .overlay(
+                        AvatarPath()
+                            .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                            .frame(width: size, height: size)
+                    )
             } placeholder: {
                 Circle()
                     .fill(Color.gray)
