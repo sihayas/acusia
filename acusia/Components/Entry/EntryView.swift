@@ -133,7 +133,6 @@ struct Entry: View {
         }
 
         .padding(.horizontal, 24)
-        .padding(.vertical, 24)
         .onScrollVisibilityChange(threshold: 0.5) { visibility in
             isVisible = visibility
         }

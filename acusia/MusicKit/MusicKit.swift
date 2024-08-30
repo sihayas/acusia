@@ -49,4 +49,23 @@ class MusicKitManager: ObservableObject {
             print("Failed to load recently played songs: \(error)")
         }
     }
+    
+    // Load catalog search top results
+    func loadCatalogSearchTopResults(searchTerm: String) async {
+        var searchRequest = MusicCatalogSearchRequest(
+          term: searchTerm,
+          types: [
+            Artist.self,
+            Album.self,
+            Song.self
+          ]
+        )
+        
+        do {
+            let searchResponse = try await searchRequest.response()
+            print(searchResponse)
+        } catch {
+            print("Failed to load catalog search top results: \(error)")
+        }
+    }
 }

@@ -35,73 +35,55 @@ struct SearchBar: View {
     }
 }
 
-
 struct SearchSheet: View {
     @Binding var path: NavigationPath
     @Binding var searchText: String
-    @StateObject private var viewModel = SearchViewModel()
+    @StateObject private var musicKitManager = MusicKitManager.shared
     @State private var activeResult: String?
-    @State private var visibleResults: [String] = []
+    @State private var searchResults: [SearchResultItem] = []
     @State var rotation: Double = 45
 
     var body: some View {
-        let cardHeight: CGFloat = 64
-        
-        GeometryReader {
-            let size = $0.size
-            
+        GeometryReader { geometry in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
-                    ForEach(Array(viewModel.searchResults.enumerated()), id: \.element.id) { index, result in
+                    ForEach(Array(searchResults.enumerated()), id: \.element.id) { index, result in
                         SearchResultCell(
                             result: result,
                             index: index,
-                            totalCount: viewModel.searchResults.count,
+                            totalCount: searchResults.count,
                             activeResult: activeResult,
-                            size: size,
-                            cardHeight: cardHeight
+                            size: geometry.size
                         )
                         .padding(.bottom, 12)
                     }
                 }
-                .scrollTargetLayout()
-
             }
             .padding(.horizontal, 24)
-            .scrollClipDisabled()
-//            .scrollTargetBehavior(.viewAligned)
-            .scrollPosition(id: $activeResult)
-            .onScrollTargetVisibilityChange(idType: String.self, threshold: 0.5) { visibleIds in
-                 // Filter and map only the IDs above the threshold
-                 visibleResults = visibleIds.compactMap { id in
-                     viewModel.searchResults.first { $0.id == id }?.title
-                 }
-                 print("Visible results (names): \(visibleResults)")
-             }
             .onChange(of: searchText) { _, newValue in
                 Task {
-                    await viewModel.performSearch(query: newValue)
-                    activeResult = viewModel.searchResults.first?.id
+                    await performSearch(query: newValue)
+                    activeResult = searchResults.first?.id
                 }
             }
-            .onChange(of: activeResult) { _, newValue in
-//                print("Active result: \(newValue ?? "nil")")
-            }
         }
+    }
+
+    private func performSearch(query: String) async {
+        await musicKitManager.loadCatalogSearchTopResults(searchTerm: query)
+        // Here you should map the response to `SearchResultItem` to update `searchResults`
+        // This assumes you will have a mapping logic for the items returned by MusicKit
     }
 }
 
 // MARK: Search Result Cell
 struct SearchResultCell: View {
-    @State private var isVisible = false
-    @State private var scale: CGFloat = 1
-
     let result: SearchResultItem
     let index: Int
     let totalCount: Int
     let activeResult: String?
     let size: CGSize
-    let cardHeight: CGFloat
+    let cardHeight: CGFloat = 64
 
     var body: some View {
         ZStack {
