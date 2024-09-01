@@ -20,8 +20,8 @@ struct HomeWallView: View {
     
     @State private var keyboardOffset: CGFloat = 0
     @State private var showSettings = false
-    @State private var searchSheet = false
-    @State private var searchText = ""
+    @State private var searchSheet = true
+    @State private var searchText = "joji"
     
     // MARK: Sticker Wall Config
 
@@ -267,8 +267,7 @@ struct HomeWallView: View {
             .blur(radius: showRecents ? 12 : 0)
             .animation(.spring(), value: showRecents)
             
-            // MARK: User data interface
-
+            // MARK: User Data Buttons
             ZStack {
                 AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
                     image
@@ -437,7 +436,7 @@ struct HomeWallView: View {
             // MARK: Recently Played
 
             ZStack {
-                NotificationList(isVisible: $showRecents, songs: musicKitManager.recentlyPlayedSongs)
+                RecentlyPlayedList(isVisible: $showRecents, songs: musicKitManager.recentlyPlayedSongs)
                     .padding(24)
                     .padding(.bottom, 24)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
@@ -446,105 +445,10 @@ struct HomeWallView: View {
         .onAppear {
             viewVisible.toggle()
         }
+        // MARK: - Search Sheet
         .sheet(isPresented: $searchSheet) {
-            VStack(alignment: .leading) {
-                HStack(alignment: .bottom) {
-                    // search text preview
-                    Text(searchText.isEmpty ? "Index" : "Indexing \"\(searchText)\"")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.white)
-                }
-                .padding([.top, .horizontal], 24)
-                
-                SearchSheet(path: $homePath, searchText: $searchText)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .presentationDetents([.large])
-            .presentationDragIndicator(.hidden)
-            .presentationBackground(.black)
-            .presentationCornerRadius(32)
-            .overlay(
-                VStack {
-                    Spacer()
-                    SearchBar(searchText: $searchText)
-                        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
-                        .padding(.horizontal, 24)
-                        .offset(y: -keyboardOffset)
-                }
-                .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
-            )
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-                withAnimation(.spring()) {
-                    keyboardOffset = 32
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-                withAnimation {
-                    keyboardOffset = 0
-                }
-            }
+            SearchSheet()
         }
-    }
-}
-
-struct NotificationList: View {
-    @Binding var isVisible: Bool
-    var songs: [SongModel]
-    
-    @Namespace private var animation
-    
-    var body: some View {
-        VStack(spacing: 8) {
-            ForEach(songs.prefix(16).indices, id: \.self) { index in
-                if isVisible { // Only render the cell if isVisible is true
-                    NotificationCell(
-                        song: songs[index],
-                        isVisible: isVisible,
-                        index: index,
-                        totalItems: songs.count,
-                        animation: animation
-                    )
-                }
-            }
-        }
-        .background(Color.clear)
-        .edgesIgnoringSafeArea(.all)
-        .onChange(of: isVisible) { _, newValue in
-            withAnimation {
-                isVisible = newValue
-            }
-        }
-    }
-}
-
-// MARK: Notification Cell
-
-struct NotificationCell: View {
-    let song: SongModel
-    let isVisible: Bool
-    let index: Int
-    let totalItems: Int
-    
-    var animation: Namespace.ID
-    
-    var body: some View {
-        HStack {
-            if let artwork = song.artwork {
-                ArtworkImage(artwork, width: 32, height: 32)
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            }
-            
-            Text(song.title) // Display the song title
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.white)
-            
-            Spacer()
-        }
-        .matchedGeometryEffect(id: index, in: animation)
-        .transition(.blurReplace.animation(
-            .spring(response: 0.4, dampingFraction: 0.7)
-                .delay(Double(totalItems - index - 1) * 0.01)
-        ))
     }
 }
 

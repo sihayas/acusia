@@ -1,6 +1,33 @@
+//
+//  TailPath.swift
+//  acusia
+//
+//  Created by decoherence on 8/29/24.
+//
+
 import SwiftUI
 
-struct MyIcon: Shape {
+// A way to mask/clip the avatar so I can tuck a song underneath it.
+struct AvatarPath: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let width = rect.size.width
+        let height = rect.size.height
+        path.move(to: CGPoint(x: 0.89526*width, y: 0.66388*height))
+        path.addCurve(to: CGPoint(x: 0.999*width, y: 0.54548*height), control1: CGPoint(x: 0.94935*width, y: 0.64615*height), control2: CGPoint(x: 0.99544*width, y: 0.6036*height))
+        path.addCurve(to: CGPoint(x: width, y: 0.51282*height), control1: CGPoint(x: 0.99967*width, y: 0.53468*height), control2: CGPoint(x: width, y: 0.52379*height))
+        path.addCurve(to: CGPoint(x: 0.5*width, y: 0), control1: CGPoint(x: width, y: 0.2296*height), control2: CGPoint(x: 0.77614*width, y: 0))
+        path.addCurve(to: CGPoint(x: 0, y: 0.51282*height), control1: CGPoint(x: 0.22386*width, y: 0), control2: CGPoint(x: 0, y: 0.2296*height))
+        path.addCurve(to: CGPoint(x: 0.31802*width, y: 0.99062*height), control1: CGPoint(x: 0, y: 0.73019*height), control2: CGPoint(x: 0.13186*width, y: 0.91598*height))
+        path.addCurve(to: CGPoint(x: 0.46601*width, y: 0.94444*height), control1: CGPoint(x: 0.37071*width, y: 1.01174*height), control2: CGPoint(x: 0.42759*width, y: 0.98701*height))
+        path.addCurve(to: CGPoint(x: 0.89526*width, y: 0.66388*height), control1: CGPoint(x: 0.58177*width, y: 0.8162*height), control2: CGPoint(x: 0.72906*width, y: 0.71836*height))
+        path.closeSubpath()
+        return path
+    }
+}
+
+// A way to mask/clip artwork so I can tuck a rating underneath it.
+struct ArtifactPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         let width = rect.size.width

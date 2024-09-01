@@ -30,106 +30,114 @@ struct Entry: View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
 
         // Entry
-        HStack(alignment:.bottom) {
-            VStack(alignment: .leading, spacing: -12) {
-                HStack(alignment: .bottom, spacing: 12) {
-                    AvatarView(size: animateReplySheet ? 24 : 40, imageURL: entry.author.image)
-                    
-                    Text(entry.text)
-                        .foregroundColor(.white)
-                        .font(.system(size: animateReplySheet ? 11 : 15, weight: .regular))
-                        .multilineTextAlignment(.leading)
-                        .transition(.blurReplace)
-                        .lineLimit(animateReplySheet ? 3 : nil)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(animateReplySheet ? .black : Color(UIColor.systemGray6),
-                                    in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .stroke(Color(UIColor.systemGray6).opacity(animateReplySheet ? 1 : 0), lineWidth: 1)
-                        )
-                        .overlay(
-                            ZStack {
-                                Circle()
-                                    .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
-                                    .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
-                                    .frame(width: 12, height: 12)
-                                    .offset(x: 0, y: 0)
-                                
-                                Circle()
-                                    .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
-                                    .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
-                                    .frame(width: 6, height: 6)
-                                    .offset(x: -10, y: 6)
-                            },
-                            alignment: .bottomLeading
-                        )
-                        .padding(.bottom, 20)
-                }
-                
-                HStack {
-                    ZStack(alignment: .bottomTrailing) {
-                        AsyncImage(url: URL(string: imageUrl)) { image in
-                            image
-                                .resizable()
-                                .frame(width: animateReplySheet ? 24 : 40, height: animateReplySheet ? 24 : 40)
-                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        VStack(alignment: .leading, spacing: -12) {
+            // Avatar, Text, and Thread Line
+            HStack(alignment: .bottom, spacing: 12) {
+                AvatarView(size: animateReplySheet ? 24 : 40, imageURL: entry.author.image)
+
+                Text(entry.text)
+                    .foregroundColor(.white)
+                    .font(.system(size: animateReplySheet ? 11 : 15, weight: .regular))
+                    .multilineTextAlignment(.leading)
+                    .transition(.blurReplace)
+                    .lineLimit(animateReplySheet ? 3 : nil)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(animateReplySheet ? .black : Color(UIColor.systemGray6),
+                                in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .stroke(Color(UIColor.systemGray6).opacity(animateReplySheet ? 1 : 0), lineWidth: 1)
+                    )
+                    .overlay(
+                        ZStack {
+                            Circle()
+                                .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
+                                .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
+                                .frame(width: 12, height: 12)
+                                .offset(x: 0, y: 0)
+
+                            Circle()
+                                .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
+                                .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
+                                .frame(width: 6, height: 6)
+                                .offset(x: -10, y: 4)
+                        },
+                        alignment: .bottomLeading
+                    )
+                    .padding(.bottom, 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                if !sampleComments.isEmpty {
+                    GeometryReader { geometry in
+                        VStack {
+                            Spacer()
+
+                            BottomCurvePath()
+                                .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                .frame(width: 40, height: geometry.size.height / 2)
+                                .rotationEffect(.degrees(180))
+                                .padding(.bottom, 8)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                                    ZStack {
+                                        ForEach(0 ..< 3) { index in
+                                            AvatarView(size: 16, imageURL: "https://picsum.photos/200/300")
+                                                .clipShape(Circle())
+                                                .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
+                                                .offset(tricornOffset(for: index))
+                                        }
+                                    }
+                                    .frame(width: 40, height: 40)
+                                    .offset(x: 0, y: 48),
+                                    alignment: .bottom
                                 )
-                        } placeholder: {
-                            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                                .frame(width: 40, height: 40)
+                        }
+                        .opacity(animateReplySheet ? 0 : 1)
+                        .onTapGesture {
+                            showReplySheet = true
                         }
                     }
-                    
-                    VStack(alignment: .leading) {
-                        Text(entry.sound.appleData?.artistName ?? "Unknown")
-                            .font(.system(size: 11, weight: .regular))
-                            .foregroundColor(.white)
-                        
-                        Text(entry.sound.appleData?.name ?? "Unknown")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundColor(.white)
+                    .frame(width: 40)
+                }
+            }
+
+            // Sound
+            HStack {
+                HStack {
+                    AsyncImage(url: URL(string: imageUrl)) { image in
+                        image
+                            .resizable()
+                            .frame(width: animateReplySheet ? 24 : 56, height: animateReplySheet ? 24 : 56)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                    } placeholder: {
+                        RoundedRectangle(cornerRadius: 28, style: .continuous)
+                            .frame(width: 40, height: 40)
                     }
                 }
-                .offset(x: animateReplySheet ? 14 : 28)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            
-            if !sampleComments.isEmpty {
-                GeometryReader { geometry in
-                    VStack {
-                        Spacer()
-                        BottomCurvePath()
-                            .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                            .frame(width: 40, height: geometry.size.height / 2)
-                            .rotationEffect(.degrees(180))
-                            .overlay(
-                                ZStack {
-                                    ForEach(0 ..< 3) { index in
-                                        AvatarView(size: 16, imageURL: "https://picsum.photos/200/300")
-                                            .clipShape(Circle())
-                                            .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
-                                            .offset(tricornOffset(for: index))
-                                    }
-                                }
-                                    .frame(width: 40, height: 40)
-                                    .offset(x: 0, y: 48)
-                                ,alignment: .bottom
-                            )
-                            .offset(y: -16)
-                    }
-                    .opacity(animateReplySheet ? 0 : 1)
-                    .onTapGesture {
-                        showReplySheet = true
-                    }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 12)
+                .background(.black, in: RoundedRectangle(cornerRadius: 40, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 40, style: .continuous)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 2)
+                )
+
+                VStack {
+                    Text(entry.sound.appleData?.artistName ?? "Unknown")
+                        .font(.system(size: animateReplySheet ? 11 : 11, weight: .regular))
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(entry.sound.appleData?.name ?? "Unknown")
+                        .font(.system(size: animateReplySheet ? 11 : 13, weight: .medium))
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(width: 40)
             }
+            .padding(.leading, 12)
+            .padding(.trailing, 64)
         }
 
         .padding(.horizontal, 24)
