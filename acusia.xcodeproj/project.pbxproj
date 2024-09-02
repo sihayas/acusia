@@ -50,6 +50,7 @@
 		CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7882C1955BD00958B39 /* AuthScreen.swift */; };
 		CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* HomeFeedView.swift */; };
 		CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE14A442C8118C400D0F172 /* PathViews.swift */; };
+		CDE43C0D2C854DF60009CB87 /* VGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C0C2C854DF10009CB87 /* VGrid.swift */; };
 		CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* IridescentPreview.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
@@ -148,6 +149,7 @@
 		CDDED78E2C195B2400958B39 /* HomeFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedView.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
 		CDE14A442C8118C400D0F172 /* PathViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathViews.swift; sourceTree = "<group>"; };
+		CDE43C0C2C854DF10009CB87 /* VGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VGrid.swift; sourceTree = "<group>"; };
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CDE43C0C2C854DF10009CB87 /* VGrid.swift */,
 				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
 				CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */,
 				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
@@ -560,6 +563,7 @@
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */,
 				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
+				CDE43C0D2C854DF60009CB87 /* VGrid.swift in Sources */,
 				CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */,

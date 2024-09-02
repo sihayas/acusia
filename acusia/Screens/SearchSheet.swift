@@ -10,137 +10,169 @@ import SwiftUI
 
 struct SearchSheet: View {
     @State private var keyboardOffset: CGFloat = 0
-    @State private var searchText = "billie"
+    @State private var searchText = "clairo"
+    @State private var selectedResult: SearchResult?
+
+    @Namespace private var animationNamespace
 
     var body: some View {
-        VStack {
-            SearchList(searchText: $searchText)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .presentationDetents([.large])
-        .presentationDragIndicator(.hidden)
-        .presentationBackground(.thinMaterial)
-        .presentationCornerRadius(32)
-        // Search Bar, Apple Music and Acusia buttons
-        .overlay(
-            VStack {
-                Spacer()
+        ScrollViewReader { value in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 0) {
+                    SearchList(searchText: $searchText, animationNamespace: animationNamespace, selectedResult: $selectedResult)
+                        .frame(width: UIScreen.main.bounds.width)
+                        .id(0)
 
-                HStack {
-                    Button {} label: {
-                        Text("Apple Music")
-                            .font(.system(size: 13, weight: .medium))
-                            .frame(height: 42)
-                            .padding(.horizontal, 12)
-                            .background(
-                                ZStack {
-                                    Color.clear.background(.thinMaterial)
-                                        .clipShape(Capsule())
-                                    Color.white.opacity(0.1)
-                                        .clipShape(Capsule())
-                                }
-                            )
-                            .foregroundColor(.white)
-                            .overlay(
-                                Capsule()
-                                    .stroke(Color.white.opacity(0.05), lineWidth: 1)
-                            )
+                    VStack {
+                        if let result = selectedResult {
+                            DetailedSearchResult(result: result, animationNamespace: animationNamespace, selectedResult: $selectedResult)
+                        }
                     }
-
-                    Button {} label: {
-                        Text("Acusia")
-                            .font(.system(size: 13, weight: .medium))
-                            .frame(height: 42)
-                            .padding(.horizontal, 12)
-                            .background(
-                                ZStack {
-                                    Color.clear.background(.thinMaterial)
-                                        .clipShape(Capsule())
-                                    Color.white.opacity(0.1)
-                                        .clipShape(Capsule())
-                                }
-                            )
-                            .foregroundColor(.white)
-                            .overlay(
-                                Capsule()
-                                    .stroke(Color.white.opacity(0.05), lineWidth: 1)
-                            )
+                    .id(1)
+                    .frame(minWidth: UIScreen.main.bounds.width, minHeight: UIScreen.main.bounds.height)
+                }
+            }
+            .scrollClipDisabled()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .presentationDetents([.large])
+            .presentationDragIndicator(.hidden)
+            .presentationBackground(.black)
+            .presentationCornerRadius(32)
+            .onChange(of: selectedResult) { _, _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    withAnimation(.spring()) {
+                        if selectedResult != nil {
+                            value.scrollTo(1)
+                        } else {
+                            value.scrollTo(0)
+                        }
                     }
                 }
+            }
+            // Search Bar, Apple Music and Acusia buttons
+            .overlay(
+                VStack {
+                    Spacer()
 
-                SearchBar(searchText: $searchText)
-                    .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
-                    .padding(.horizontal, 24)
-                    .offset(y: -keyboardOffset)
+                    HStack {
+                        Button {} label: {
+                            Text("Apple Music")
+                                .font(.system(size: 13, weight: .medium))
+                                .frame(height: 42)
+                                .padding(.horizontal, 12)
+                                .background(
+                                    ZStack {
+                                        Color.clear.background(.thinMaterial)
+                                            .clipShape(Capsule())
+                                        Color.white.opacity(0.1)
+                                            .clipShape(Capsule())
+                                    }
+                                )
+                                .foregroundColor(.white)
+                                .overlay(
+                                    Capsule()
+                                        .stroke(Color.white.opacity(0.05), lineWidth: 1)
+                                )
+                        }
+
+                        Button {} label: {
+                            Text("Acusia")
+                                .font(.system(size: 13, weight: .medium))
+                                .frame(height: 42)
+                                .padding(.horizontal, 12)
+                                .background(
+                                    ZStack {
+                                        Color.clear.background(.thinMaterial)
+                                            .clipShape(Capsule())
+                                        Color.white.opacity(0.1)
+                                            .clipShape(Capsule())
+                                    }
+                                )
+                                .foregroundColor(.white)
+                                .overlay(
+                                    Capsule()
+                                        .stroke(Color.white.opacity(0.05), lineWidth: 1)
+                                )
+                        }
+                    }
+
+                    SearchBar(searchText: $searchText)
+                        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
+                        .padding(.horizontal, 24)
+                        .offset(y: -keyboardOffset)
+                }
+                .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
+            )
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                withAnimation(.spring()) {
+                    keyboardOffset = 32
+                }
             }
-            .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
-        )
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-            withAnimation(.spring()) {
-                keyboardOffset = 32
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-            withAnimation {
-                keyboardOffset = 0
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                withAnimation {
+                    keyboardOffset = 0
+                }
             }
         }
     }
 }
 
-// Important: Match Geometry is heavily dependent on where it is on the view hierearchy. For an AsyncImage for example it has be on the outer most. For a shape it has to be above the frame.
+// Important: Match Geometry is heavily dependent on where it is on the view hierearchy. For an AsyncImage for example it has be on the outer most. For a shape it has to be above the frame. ScrollClipDisabled was necessary to prevent the cell from being clipped as it went from one part of the parent HStack scrollview to the other. Also, I had to use a custom non-lazy v grid because as soon as the lazy v grid moved away from the view, it un-rendered the cells so match geometry broke.
 struct SearchList: View {
     @StateObject private var musicKitManager = MusicKitManager.shared
     @EnvironmentObject private var safeAreaInsetsManager: SafeAreaInsetsManager
 
     @Binding var searchText: String
-    @Namespace private var animationNamespace
+    var animationNamespace: Namespace.ID
 
-    @State private var selectedResult: SearchResult?
+    @Binding var selectedResult: SearchResult?
     @State private var searchResults: [SearchResult] = []
 
     // Shift geometry sizing helpers
     @State private var artworkSize: CGFloat = 56
-
-    let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
-    ]
+    @State private var maxRowHeight: CGFloat = 0.0
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            ZStack {
-                // Search Results
-                LazyVGrid(columns: columns, spacing: 12) {
-                    ForEach(Array(searchResults.enumerated()), id: \.element.id) { _, result in
-                        if selectedResult?.id != result.id {
-                            if let artwork = result.artwork {
-                                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                    .fill(Color(artwork.backgroundColor.map { Color($0) } ?? .clear))
-                                    .matchedGeometryEffect(id: result.id, in: animationNamespace)
-                                    .transition(.offset())
-                                    .frame(width: 186, height: 116)
+            VGrid(VGridConfiguration(
+                numberOfColumns: 2,
+                itemsCount: searchResults.count,
+                alignment: .leading,
+                hSpacing: 12,
+                vSpacing: 12)
+            ) { index in
+                // Ensure each case returns a valid View
+                Group {
+                    if let artwork = searchResults[index].artwork {
+                        let color = artwork.backgroundColor.map { Color($0).opacity(0.25) } ?? .clear
+                        ZStack {
+                            if selectedResult?.id != searchResults[index].id {
+                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                    .stroke(color)
+                                    .fill(.black)
+                                    .matchedGeometryEffect(id: "result-\(searchResults[index].id)", in: animationNamespace)
+                                    .frame(width: 186, height: 124)
                                     .overlay(
                                         VStack(alignment: .leading) {
-                                            AsyncImage(url: artwork.url(width: 600, height: 600)) { image in
+                                            AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
                                                 image
                                                     .resizable()
                                             } placeholder: {
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                                                     .fill(Color.gray.opacity(0.25))
                                             }
-                                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                            .matchedGeometryEffect(id: "\(result.id)-artwork", in: animationNamespace)
-                                            .transition(.offset())
+                                            .matchedGeometryEffect(id: "\(searchResults[index].id)-artwork", in: animationNamespace)
                                             .frame(width: 56, height: 56)
-
+                                            
+                                            Spacer()
+                                            
                                             VStack(alignment: .leading) {
-                                                Text(result.artistName)
+                                                Text(searchResults[index].artistName)
                                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
                                                     .truncationMode(.tail)
                                                     .foregroundColor(.white.opacity(0.6))
-                                                Text(result.title)
+                                                Text(searchResults[index].title)
                                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
                                                     .truncationMode(.tail)
@@ -150,46 +182,31 @@ struct SearchList: View {
                                         }
                                         .padding(12)
                                     )
-                                    .onTapGesture {
-                                        withAnimation(.spring()) {
-                                            selectedResult = result
-                                        }
+                                    .readSize { size in
+                                        maxRowHeight = max(size.height, maxRowHeight)
                                     }
+                            } else {
+                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                    .stroke(.secondary)
+                                    .fill(.black)
+                                    .frame(width: 186, height: 124)
                             }
                         }
-                    }
-                }
-                .padding(.top, safeAreaInsetsManager.insets.top)
-                .padding(.horizontal, 24)
-
-                // Selected Result
-                if let result = selectedResult, let artwork = result.artwork {
-                    RoundedRectangle(cornerRadius: 32, style: .continuous)
-                        .fill(Color(artwork.backgroundColor.map { Color($0) } ?? .clear))
-                        .matchedGeometryEffect(id: result.id, in: animationNamespace)
-                        .transition(.offset())
-                        .frame(width: 300, height: 300)
-                        .overlay(
-                            AsyncImage(url: artwork.url(width: 600, height: 600)) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .fill(Color.gray.opacity(0.25))
-                            }
-                            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                            .matchedGeometryEffect(id: "\(result.id)-artwork", in: animationNamespace)
-                            .transition(.offset())
-                            .frame(width: 284, height: 284)
-                        )
                         .onTapGesture {
                             withAnimation(.spring()) {
-                                selectedResult = nil
+                                selectedResult = searchResults[index]
                             }
                         }
+                        .transition(.scale(scale: 1))
+                    } else {
+                        EmptyView()
+                    }
                 }
             }
+            .padding(.top, safeAreaInsetsManager.insets.top)
+            .padding(.horizontal, 24)
         }
+        .scrollClipDisabled()
         .overlay(
             HStack(alignment: .bottom) {
                 Text(searchText.isEmpty ? "Index" : "Indexing \"\(searchText)\"")
@@ -218,69 +235,39 @@ struct SearchList: View {
     }
 }
 
-// struct SearchResultCell: View {
-//    let result: SearchResult
-//    var animationNamespace: Namespace.ID
-//
-//    // 192x116
-//    var body: some View {
-//        if let artwork = result.artwork {
-//            RoundedRectangle(cornerRadius: 18, style: .continuous)
-//                .fill(Color(artwork.backgroundColor.map { Color($0).opacity(0.25) } ?? .clear))
-//                .frame(width: 192, height: 116)
-//                .overlay(
-//                    VStack(alignment: .leading) {
-//                        ArtworkImage(artwork, width: 56, height: 56)
-//                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-//
-//                        VStack(alignment: .leading) {
-//                            Text(result.artistName)
-//                                .font(.system(size: 13, weight: .regular, design: .rounded))
-//                                .lineLimit(1)
-//                                .truncationMode(.tail)
-//                                .foregroundColor(.white.opacity(0.6))
-//                            Text(result.title)
-//                                .font(.system(size: 13, weight: .regular, design: .rounded))
-//                                .lineLimit(1)
-//                                .truncationMode(.tail)
-//                                .foregroundColor(.white)
-//                        }
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                    }
-//                    .padding(12)
-//                )
-//                .matchedGeometryEffect(id: result.id, in: animationNamespace)
-//                .transition(.scale(scale: 1))
-//        }
-//    }
-// }
+struct DetailedSearchResult: View {
+    let result: SearchResult
+    var animationNamespace: Namespace.ID
+    @Binding var selectedResult: SearchResult?
 
-// if let result = selectedResult, let artwork = result.artwork {
-//    VStack(alignment: .leading) {
-//        ArtworkImage(artwork, width: 56, height: 56)
-//            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-//
-//        VStack(alignment: .leading) {
-//            Text(result.artistName)
-//                .font(.system(size: 13, weight: .regular, design: .rounded))
-//                .lineLimit(1)
-//                .truncationMode(.tail)
-//                .foregroundColor(.white.opacity(0.6))
-//            Text(result.title)
-//                .font(.system(size: 13, weight: .regular, design: .rounded))
-//                .lineLimit(1)
-//                .truncationMode(.tail)
-//                .foregroundColor(.white)
-//        }
-//        .frame(maxWidth: .infinity, alignment: .leading)
-//    }
-//    .padding(12)
-//    .background(Color(artwork.backgroundColor.map { Color($0).opacity(0.25) } ?? .clear), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-//    .matchedGeometryEffect(id: result.id, in: animationNamespace)
-//    .transition(.scale(scale: 1))
-//    .onTapGesture {
-//        withAnimation(.spring()) {
-//            selectedResult = nil
-//        }
-//    }
-// }
+    var body: some View {
+        if let artwork = result.artwork {
+            let color = artwork.backgroundColor.map { Color($0).opacity(0.25) } ?? .clear
+            
+            ZStack {
+                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    .stroke(color)
+                    .fill(.black)
+                    .matchedGeometryEffect(id: "result-\(result.id)", in: animationNamespace)
+                    .frame(width: 300, height: 300)
+                    .overlay(
+                        AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
+                            image
+                                .resizable()
+                        } placeholder: {
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color.gray.opacity(0.25))
+                        }
+                        .matchedGeometryEffect(id: "\(result.id)-artwork", in: animationNamespace)
+                        .frame(width: 284, height: 284)
+                    )
+            }
+            .onTapGesture {
+                withAnimation(.spring()) {
+                    selectedResult = nil
+                }
+            }
+            .transition(.scale(scale: 1))
+        }
+    }
+}
