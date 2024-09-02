@@ -29,23 +29,22 @@ struct SearchSheet: View {
                         }
                     }
                     .id(1)
-                    .frame(minWidth: UIScreen.main.bounds.width, minHeight: UIScreen.main.bounds.height)
+                    .frame(minWidth: UIScreen.main.bounds.width)
                 }
             }
             .scrollClipDisabled()
+            .scrollTargetBehavior(.paging)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
             .presentationBackground(.black)
             .presentationCornerRadius(32)
             .onChange(of: selectedResult) { _, _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                    withAnimation(.spring()) {
-                        if selectedResult != nil {
-                            value.scrollTo(1)
-                        } else {
-                            value.scrollTo(0)
-                        }
+                withAnimation(.spring()) {
+                    if selectedResult != nil {
+                        value.scrollTo(1)
+                    } else {
+                        value.scrollTo(0)
                     }
                 }
             }
@@ -139,19 +138,19 @@ struct SearchList: View {
                 itemsCount: searchResults.count,
                 alignment: .leading,
                 hSpacing: 12,
-                vSpacing: 12)
+                vSpacing: 12
+            )
             ) { index in
                 // Ensure each case returns a valid View
                 Group {
                     if let artwork = searchResults[index].artwork {
-                        let color = artwork.backgroundColor.map { Color($0).opacity(0.25) } ?? .clear
+                        let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
                         ZStack {
                             if selectedResult?.id != searchResults[index].id {
                                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .stroke(color)
-                                    .fill(.black)
+                                    .fill(backgroundColor.mix(with: .black, by: 0.5))
                                     .matchedGeometryEffect(id: "result-\(searchResults[index].id)", in: animationNamespace)
-                                    .frame(width: 186, height: 124)
+                                    .frame(width: 186, height: 112)
                                     .overlay(
                                         VStack(alignment: .leading) {
                                             AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
@@ -161,11 +160,10 @@ struct SearchList: View {
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                                                     .fill(Color.gray.opacity(0.25))
                                             }
+                                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                                             .matchedGeometryEffect(id: "\(searchResults[index].id)-artwork", in: animationNamespace)
                                             .frame(width: 56, height: 56)
-                                            
-                                            Spacer()
-                                            
+
                                             VStack(alignment: .leading) {
                                                 Text(searchResults[index].artistName)
                                                     .font(.system(size: 13, weight: .regular, design: .rounded))
@@ -200,6 +198,7 @@ struct SearchList: View {
                         .transition(.scale(scale: 1))
                     } else {
                         EmptyView()
+                            .frame(width: 186, height: 124)
                     }
                 }
             }
@@ -242,12 +241,11 @@ struct DetailedSearchResult: View {
 
     var body: some View {
         if let artwork = result.artwork {
-            let color = artwork.backgroundColor.map { Color($0).opacity(0.25) } ?? .clear
-            
+            let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
+
             ZStack {
                 RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .stroke(color)
-                    .fill(.black)
+                    .fill(backgroundColor.mix(with: .black, by: 0.5))
                     .matchedGeometryEffect(id: "result-\(result.id)", in: animationNamespace)
                     .frame(width: 300, height: 300)
                     .overlay(
@@ -258,6 +256,7 @@ struct DetailedSearchResult: View {
                             RoundedRectangle(cornerRadius: 12, style: .continuous)
                                 .fill(Color.gray.opacity(0.25))
                         }
+                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                         .matchedGeometryEffect(id: "\(result.id)-artwork", in: animationNamespace)
                         .frame(width: 284, height: 284)
                     )
