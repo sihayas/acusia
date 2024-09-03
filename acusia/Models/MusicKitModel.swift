@@ -32,7 +32,7 @@ struct AlbumModel: Identifiable {
     let upc: String?
 }
 
-enum SearchResult: Identifiable, Equatable {
+enum SearchResult: Identifiable, Equatable, Hashable {
     case song(SongModel)
     case album(AlbumModel)
     
@@ -83,5 +83,9 @@ enum SearchResult: Identifiable, Equatable {
     
     static func ==(lhs: SearchResult, rhs: SearchResult) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

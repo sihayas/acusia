@@ -11,6 +11,7 @@ import SwiftUI
 struct SearchSheet: View {
     @State private var keyboardOffset: CGFloat = 0
     @State private var searchText = "clairo"
+    @State private var entryText = ""
     @State private var selectedResult: SearchResult?
 
     @Namespace private var animationNamespace
@@ -40,11 +41,14 @@ struct SearchSheet: View {
             .presentationBackground(.black)
             .presentationCornerRadius(32)
             .onChange(of: selectedResult) { _, _ in
-                withAnimation(.spring()) {
-                    if selectedResult != nil {
-                        value.scrollTo(1)
-                    } else {
-                        value.scrollTo(0)
+                // Scroll to respective page when user (un)selects a result.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    withAnimation(.spring()) {
+                        if selectedResult != nil {
+                            value.scrollTo(1)
+                        } else {
+                            value.scrollTo(0)
+                        }
                     }
                 }
             }
@@ -53,50 +57,7 @@ struct SearchSheet: View {
                 VStack {
                     Spacer()
 
-                    HStack {
-                        Button {} label: {
-                            Text("Apple Music")
-                                .font(.system(size: 13, weight: .medium))
-                                .frame(height: 42)
-                                .padding(.horizontal, 12)
-                                .background(
-                                    ZStack {
-                                        Color.clear.background(.thinMaterial)
-                                            .clipShape(Capsule())
-                                        Color.white.opacity(0.1)
-                                            .clipShape(Capsule())
-                                    }
-                                )
-                                .foregroundColor(.white)
-                                .overlay(
-                                    Capsule()
-                                        .stroke(Color.white.opacity(0.05), lineWidth: 1)
-                                )
-                        }
-
-                        Button {} label: {
-                            Text("Acusia")
-                                .font(.system(size: 13, weight: .medium))
-                                .frame(height: 42)
-                                .padding(.horizontal, 12)
-                                .background(
-                                    ZStack {
-                                        Color.clear.background(.thinMaterial)
-                                            .clipShape(Capsule())
-                                        Color.white.opacity(0.1)
-                                            .clipShape(Capsule())
-                                    }
-                                )
-                                .foregroundColor(.white)
-                                .overlay(
-                                    Capsule()
-                                        .stroke(Color.white.opacity(0.05), lineWidth: 1)
-                                )
-                        }
-                    }
-
-                    SearchBar(searchText: $searchText)
-                        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 4)
+                    SearchBar(searchText: $searchText, entryText: $entryText, selectedResult: $selectedResult, animationNamespace: animationNamespace)
                         .padding(.horizontal, 24)
                         .offset(y: -keyboardOffset)
                 }
@@ -104,7 +65,7 @@ struct SearchSheet: View {
             )
             .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
                 withAnimation(.spring()) {
-                    keyboardOffset = 32
+                    keyboardOffset = 8
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
@@ -127,8 +88,6 @@ struct SearchList: View {
     @Binding var selectedResult: SearchResult?
     @State private var searchResults: [SearchResult] = []
 
-    // Shift geometry sizing helpers
-    @State private var artworkSize: CGFloat = 56
     @State private var maxRowHeight: CGFloat = 0.0
 
     var body: some View {
@@ -145,6 +104,7 @@ struct SearchList: View {
                 Group {
                     if let artwork = searchResults[index].artwork {
                         let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
+
                         ZStack {
                             if selectedResult?.id != searchResults[index].id {
                                 RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -162,19 +122,20 @@ struct SearchList: View {
                                             }
                                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                                             .matchedGeometryEffect(id: "\(searchResults[index].id)-artwork", in: animationNamespace)
-                                            .frame(width: 56, height: 56)
+                                            .aspectRatio(contentMode: .fit)
 
                                             VStack(alignment: .leading) {
                                                 Text(searchResults[index].artistName)
                                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
-                                                    .truncationMode(.tail)
                                                     .foregroundColor(.white.opacity(0.6))
+                                                    .matchedGeometryEffect(id: "artistName-\(searchResults[index].id)", in: animationNamespace)
+
                                                 Text(searchResults[index].title)
                                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
-                                                    .truncationMode(.tail)
                                                     .foregroundColor(.white)
+                                                    .matchedGeometryEffect(id: "title-\(searchResults[index].id)", in: animationNamespace)
                                             }
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         }
@@ -235,6 +196,8 @@ struct SearchList: View {
 }
 
 struct DetailedSearchResult: View {
+    @EnvironmentObject private var safeAreaInsetsManager: SafeAreaInsetsManager
+
     let result: SearchResult
     var animationNamespace: Namespace.ID
     @Binding var selectedResult: SearchResult?
@@ -243,12 +206,32 @@ struct DetailedSearchResult: View {
         if let artwork = result.artwork {
             let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
 
-            ZStack {
-                RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .fill(backgroundColor.mix(with: .black, by: 0.5))
-                    .matchedGeometryEffect(id: "result-\(result.id)", in: animationNamespace)
-                    .frame(width: 300, height: 300)
-                    .overlay(
+            VStack(spacing: 0) {
+                HStack {
+                    // Writing symbol
+                    Image(systemName: "pencil.and.outline")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+
+                    VStack {
+                        Text(result.artistName)
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
+                            .matchedGeometryEffect(id: "artistName-\(result.id)", in: animationNamespace)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Text(result.title)
+                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                            .matchedGeometryEffect(id: "title-\(result.id)", in: animationNamespace)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
+                    Spacer()
+                }
+                .padding(24)
+
+                ZStack {
+                    VStack {
                         AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
                             image
                                 .resizable()
@@ -258,8 +241,19 @@ struct DetailedSearchResult: View {
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                         .matchedGeometryEffect(id: "\(result.id)-artwork", in: animationNamespace)
-                        .frame(width: 284, height: 284)
-                    )
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 196, height: 196)
+                    }
+                    
+                    VStack {
+                        Spacer()
+                        
+                        MorphView()
+                    }
+                }
+                .frame(width: UIScreen.current?.bounds.size.width, height: UIScreen.current?.bounds.size.width)
+
+                Spacer()
             }
             .onTapGesture {
                 withAnimation(.spring()) {

@@ -51,6 +51,9 @@
 		CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* HomeFeedView.swift */; };
 		CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE14A442C8118C400D0F172 /* PathViews.swift */; };
 		CDE43C0D2C854DF60009CB87 /* VGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C0C2C854DF10009CB87 /* VGrid.swift */; };
+		CDE43C0F2C865B120009CB87 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C0E2C865B0F0009CB87 /* UIScreen.swift */; };
+		CDE43C112C8671280009CB87 /* ReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C102C8671250009CB87 /* ReactionView.swift */; };
+		CDE43C132C8684FF0009CB87 /* MorphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C122C8684FD0009CB87 /* MorphView.swift */; };
 		CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* IridescentPreview.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
@@ -150,6 +153,9 @@
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
 		CDE14A442C8118C400D0F172 /* PathViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathViews.swift; sourceTree = "<group>"; };
 		CDE43C0C2C854DF10009CB87 /* VGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VGrid.swift; sourceTree = "<group>"; };
+		CDE43C0E2C865B0F0009CB87 /* UIScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreen.swift; sourceTree = "<group>"; };
+		CDE43C102C8671250009CB87 /* ReactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionView.swift; sourceTree = "<group>"; };
+		CDE43C122C8684FD0009CB87 /* MorphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphView.swift; sourceTree = "<group>"; };
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
@@ -310,8 +316,8 @@
 				CD8CFDA42C6F02AC00D7DEA7 /* App */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
 				CD8D19842C29C5FF00FDC979 /* Info.plist */,
-				CDDED7392C194C8500958B39 /* Assets.xcassets */,
 				CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */,
+				CDDED7392C194C8500958B39 /* Assets.xcassets */,
 				CDDED7712C1951BE00958B39 /* Components */,
 				CD13D5252C3FAD84007E3120 /* Metal */,
 				CDDED77C2C19520300958B39 /* Models */,
@@ -352,6 +358,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CDE43C0E2C865B0F0009CB87 /* UIScreen.swift */,
 				CDE43C0C2C854DF10009CB87 /* VGrid.swift */,
 				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
 				CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */,
@@ -364,6 +371,8 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CDE43C122C8684FD0009CB87 /* MorphView.swift */,
+				CDE43C102C8671250009CB87 /* ReactionView.swift */,
 				CD4332522C82B205009ADBF0 /* Entry */,
 				CD4332532C82B216009ADBF0 /* Home */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
@@ -559,6 +568,8 @@
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
 				CDDED77D2C19520300958B39 /* FeedModel.swift in Sources */,
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
+				CDE43C112C8671280009CB87 /* ReactionView.swift in Sources */,
+				CDE43C132C8684FF0009CB87 /* MorphView.swift in Sources */,
 				CD0EEB822C7BB11600DB9896 /* ReplyView.swift in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */,
@@ -580,6 +591,7 @@
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
+				CDE43C0F2C865B120009CB87 /* UIScreen.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */,

@@ -116,8 +116,15 @@ struct Home: View {
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .overlay(alignment: .bottom) {
-                FeedBarView(safeArea: safeArea)
+            .overlay(alignment: .top) {
+                VStack {
+                    VariableBlurView(radius: 1, mask: Image(.gradient))
+                        .scaleEffect(x: 1, y: -1)
+                        .ignoresSafeArea()
+                        .frame(maxWidth: .infinity, maxHeight: safeArea.top * 1.5)
+                    Spacer()
+                    FeedBarView(safeArea: safeArea)
+                }
             }
         }
         .background(.black)

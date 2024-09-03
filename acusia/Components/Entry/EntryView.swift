@@ -33,7 +33,7 @@ struct Entry: View {
         VStack(alignment: .leading, spacing: -12) {
             // Avatar, Text, and Thread Line
             HStack(alignment: .bottom, spacing: 12) {
-                AvatarView(size: animateReplySheet ? 24 : 40, imageURL: entry.author.image)
+                AvatarView(size: animateReplySheet ? 24 : 36, imageURL: entry.author.image)
 
                 Text(entry.text)
                     .foregroundColor(.white)
