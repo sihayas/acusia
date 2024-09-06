@@ -5,6 +5,7 @@
 //  Created by decoherence on 8/25/24.
 //
 
+import BigUIPaging
 import SwiftUI
 
 struct Entry: View {
@@ -30,118 +31,46 @@ struct Entry: View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
 
         // Entry
-        VStack(alignment: .leading) {
-            // Sound
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .foregroundStyle(.thinMaterial)
-                .background(
-                    AsyncImage(url: URL(string: imageUrl)) { image in
-                        image
-                            .resizable()
-                    } placeholder: {
-                        Rectangle()
-                    }
-                )
-                .overlay(alignment: .topLeading) {
-                    VStack(alignment: .leading) {
-                        AsyncImage(url: URL(string: imageUrl)) { image in
-                            image
-                                .resizable()
-                        } placeholder: {
-                            Rectangle()
-                        }
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 8)
-                        
-                        Spacer()
-                        
-                        VStack(alignment: .leading) {
-                            Text(entry.sound.appleData?.artistName ?? "")
-                                .foregroundColor(.secondary)
-                                .font(.system(size: 13, weight: .medium, design: .rounded))
-                                .lineLimit(1)
-                            
-                            Text(entry.sound.appleData?.name ?? "")
-                                .foregroundColor(.secondary)
-                                .font(.system(size: 13, weight: .bold, design: .rounded))
-                                .lineLimit(1)
-                        }
-                        .padding([.horizontal, .bottom], 12)
-                    }
-                }
-                .frame(width: 224, height: 280, alignment: .top)
-                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-                .padding(.leading, 48)
+        // Avatar, Text, and Thread Line
+        HStack(alignment: .bottom, spacing: 12) {
+            AvatarView(size: animateReplySheet ? 24 : 36, imageURL: entry.author.image)
 
-            // Avatar, Text, and Thread Line
-            HStack(alignment: .bottom, spacing: 12) {
-                AvatarView(size: animateReplySheet ? 24 : 36, imageURL: entry.author.image)
+            CardDeck(entry: entry)
+                .frame(width: 204, height: 280)
 
-                ZStack(alignment: .bottomLeading) {
-                    Circle()
-                        .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
-                        .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
-                        .frame(width: 6, height: 6)
-                        .offset(x: -8, y: 3)
-
-                    Circle()
-                        .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
-                        .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
-                        .frame(width: 12, height: 12)
-
-                    Text(entry.text)
-                        .foregroundColor(.white)
-                        .font(.system(size: animateReplySheet ? 11 : 15, weight: .regular))
-                        .multilineTextAlignment(.leading)
-                        .transition(.blurReplace)
-                        .lineLimit(animateReplySheet ? 3 : nil)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(animateReplySheet ? .black : Color(UIColor.systemGray6),
-                                    in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .stroke(Color(UIColor.systemGray6).opacity(animateReplySheet ? 1 : 0), lineWidth: 1)
-                        )
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(.bottom, 3)
-
-                if !sampleComments.isEmpty {
-                    GeometryReader { geometry in
-                        VStack {
-                            Spacer()
-
-                            BottomCurvePath()
-                                .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                                .frame(width: 40, height: geometry.size.height / 2)
-                                .rotationEffect(.degrees(180))
-                                .padding(.bottom, 8)
-                                .overlay(
-                                    ZStack {
-                                        ForEach(0 ..< 3) { index in
-                                            AvatarView(size: 16, imageURL: "https://picsum.photos/200/300")
-                                                .clipShape(Circle())
-                                                .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
-                                                .offset(tricornOffset(for: index))
-                                        }
-                                    }
-                                    .frame(width: 40, height: 40)
-                                    .offset(x: 0, y: 48),
-                                    alignment: .bottom
-                                )
-                        }
-                        .opacity(animateReplySheet ? 0 : 1)
-                        .onTapGesture {
-                            showReplySheet = true
-                        }
-                    }
-                    .frame(width: 40)
-                }
-            }
+//                if !sampleComments.isEmpty {
+//                    GeometryReader { geometry in
+//                        VStack {
+//                            Spacer()
+//
+//                            BottomCurvePath()
+//                                .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+//                                .frame(width: 40, height: geometry.size.height / 2)
+//                                .rotationEffect(.degrees(180))
+//                                .padding(.bottom, 8)
+//                                .overlay(
+//                                    ZStack {
+//                                        ForEach(0 ..< 3) { index in
+//                                            AvatarView(size: 16, imageURL: "https://picsum.photos/200/300")
+//                                                .clipShape(Circle())
+//                                                .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
+//                                                .offset(tricornOffset(for: index))
+//                                        }
+//                                    }
+//                                    .frame(width: 40, height: 40)
+//                                    .offset(x: 0, y: 48),
+//                                    alignment: .bottom
+//                                )
+//                        }
+//                        .opacity(animateReplySheet ? 0 : 1)
+//                        .onTapGesture {
+//                            showReplySheet = true
+//                        }
+//                    }
+//                    .frame(width: 40)
+//                }
         }
-
+        .frame(maxWidth: .infinity, alignment: .bottomLeading)
         .padding(.horizontal, 24)
         .onScrollVisibilityChange(threshold: 0.5) { visibility in
             isVisible = visibility
@@ -196,6 +125,83 @@ struct Entry: View {
             .presentationCornerRadius(45)
             .presentationBackground(.black)
             .presentationDragIndicator(.visible)
+        }
+    }
+}
+
+struct CardDeck: View {
+    @Namespace private var namespace
+    let entry: APIEntry
+    @State private var selection: Int = 1
+
+    var body: some View {
+        let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
+
+        // Use ForEach with a collection of identifiable data
+        PageView(selection: $selection) {
+            ForEach([1, 2], id: \.self) { index in
+                if index == 1 {
+                    RoundedRectangle(cornerRadius: 32, style: .continuous)
+                        .foregroundStyle(
+                            .ultraThickMaterial
+                        )
+                        .background(
+                            AsyncImage(url: URL(string: imageUrl)) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .overlay(alignment: .topLeading) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(entry.text)
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .multilineTextAlignment(.leading)
+
+                                Spacer()
+                                VStack(alignment: .leading) {
+                                    Text(entry.sound.appleData?.artistName ?? "Unknown")
+                                        .foregroundColor(.secondary)
+                                        .font(.system(size: 11, weight: .regular))
+                                        .lineLimit(1)
+
+                                    Text(entry.sound.appleData?.name ?? "Unknown")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 11, weight: .regular))
+                                        .lineLimit(1)
+                                }
+                            }
+                            .padding(20)
+                        }
+                } else {
+                    Rectangle()
+                        .foregroundStyle(.clear)
+                        .background(.clear)
+                        .overlay(alignment: .bottom) {
+                            AsyncImage(url: URL(string: imageUrl)) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .clipShape(RoundedRectangle(cornerRadius: 32))
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        }
+                }
+            }
+        }
+        .pageViewStyle(.customCardDeck)
+        .pageViewCardCornerRadius(32.0)
+        .pageViewCardShadow(.visible)
+    }
+
+    var indicatorSelection: Binding<Int> {
+        .init {
+            selection - 1
+        } set: { newValue in
+            selection = newValue + 1
         }
     }
 }
