@@ -10,6 +10,7 @@ import SwiftUI
 struct SongModel: Identifiable {
     let id: String
     let artwork: Artwork?
+    let customArtwork: CustomArtwork?
     let artistName: String
     let lastPlayedDate: Date?
     let libraryAddedDate: Date?

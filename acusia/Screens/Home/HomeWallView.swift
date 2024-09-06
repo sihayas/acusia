@@ -20,7 +20,7 @@ struct HomeWallView: View {
     
     @State private var keyboardOffset: CGFloat = 0
     @State private var showSettings = false
-    @State private var searchSheet = true
+    @State private var searchSheet = false
     @State private var searchText = "joji"
     
     // MARK: Sticker Wall Config

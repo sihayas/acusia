@@ -30,43 +30,83 @@ struct Entry: View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
 
         // Entry
-        VStack(alignment: .leading, spacing: -12) {
+        VStack(alignment: .leading) {
+            // Sound
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .foregroundStyle(.thinMaterial)
+                .background(
+                    AsyncImage(url: URL(string: imageUrl)) { image in
+                        image
+                            .resizable()
+                    } placeholder: {
+                        Rectangle()
+                    }
+                )
+                .overlay(alignment: .topLeading) {
+                    VStack(alignment: .leading) {
+                        AsyncImage(url: URL(string: imageUrl)) { image in
+                            image
+                                .resizable()
+                        } placeholder: {
+                            Rectangle()
+                        }
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 8)
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .leading) {
+                            Text(entry.sound.appleData?.artistName ?? "")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 13, weight: .medium, design: .rounded))
+                                .lineLimit(1)
+                            
+                            Text(entry.sound.appleData?.name ?? "")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 13, weight: .bold, design: .rounded))
+                                .lineLimit(1)
+                        }
+                        .padding([.horizontal, .bottom], 12)
+                    }
+                }
+                .frame(width: 224, height: 280, alignment: .top)
+                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .padding(.leading, 48)
+
             // Avatar, Text, and Thread Line
             HStack(alignment: .bottom, spacing: 12) {
                 AvatarView(size: animateReplySheet ? 24 : 36, imageURL: entry.author.image)
 
-                Text(entry.text)
-                    .foregroundColor(.white)
-                    .font(.system(size: animateReplySheet ? 11 : 15, weight: .regular))
-                    .multilineTextAlignment(.leading)
-                    .transition(.blurReplace)
-                    .lineLimit(animateReplySheet ? 3 : nil)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(animateReplySheet ? .black : Color(UIColor.systemGray6),
-                                in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(Color(UIColor.systemGray6).opacity(animateReplySheet ? 1 : 0), lineWidth: 1)
-                    )
-                    .overlay(
-                        ZStack {
-                            Circle()
-                                .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
-                                .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
-                                .frame(width: 12, height: 12)
-                                .offset(x: 0, y: 0)
+                ZStack(alignment: .bottomLeading) {
+                    Circle()
+                        .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
+                        .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
+                        .frame(width: 6, height: 6)
+                        .offset(x: -8, y: 3)
 
-                            Circle()
-                                .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
-                                .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
-                                .frame(width: 6, height: 6)
-                                .offset(x: -10, y: 4)
-                        },
-                        alignment: .bottomLeading
-                    )
-                    .padding(.bottom, 20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Circle()
+                        .stroke(animateReplySheet ? .white.opacity(0.1) : .clear, lineWidth: 1)
+                        .fill(animateReplySheet ? .clear : Color(UIColor.systemGray6))
+                        .frame(width: 12, height: 12)
+
+                    Text(entry.text)
+                        .foregroundColor(.white)
+                        .font(.system(size: animateReplySheet ? 11 : 15, weight: .regular))
+                        .multilineTextAlignment(.leading)
+                        .transition(.blurReplace)
+                        .lineLimit(animateReplySheet ? 3 : nil)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(animateReplySheet ? .black : Color(UIColor.systemGray6),
+                                    in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                .stroke(Color(UIColor.systemGray6).opacity(animateReplySheet ? 1 : 0), lineWidth: 1)
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.bottom, 3)
 
                 if !sampleComments.isEmpty {
                     GeometryReader { geometry in
@@ -100,44 +140,6 @@ struct Entry: View {
                     .frame(width: 40)
                 }
             }
-
-            // Sound
-            HStack {
-                HStack {
-                    AsyncImage(url: URL(string: imageUrl)) { image in
-                        image
-                            .resizable()
-                            .frame(width: animateReplySheet ? 24 : 56, height: animateReplySheet ? 24 : 56)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-
-                    } placeholder: {
-                        RoundedRectangle(cornerRadius: 28, style: .continuous)
-                            .frame(width: 40, height: 40)
-                    }
-                }
-                .padding(.horizontal, 18)
-                .padding(.vertical, 12)
-                .background(.black, in: RoundedRectangle(cornerRadius: 40, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 40, style: .continuous)
-                        .stroke(Color.white.opacity(0.1), lineWidth: 2)
-                )
-
-                VStack {
-                    Text(entry.sound.appleData?.artistName ?? "Unknown")
-                        .font(.system(size: animateReplySheet ? 11 : 11, weight: .regular))
-                        .foregroundColor(.white)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(entry.sound.appleData?.name ?? "Unknown")
-                        .font(.system(size: animateReplySheet ? 11 : 13, weight: .medium))
-                        .foregroundColor(.white)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-            .padding(.leading, 12)
-            .padding(.trailing, 64)
         }
 
         .padding(.horizontal, 24)
@@ -198,4 +200,27 @@ struct Entry: View {
     }
 }
 
-// Replies
+struct VerticalSquigglyLineShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let amplitude: CGFloat = 5 // Lower amplitude for less squiggle
+        let wavelength: CGFloat = 40 // Higher wavelength for gentler squiggle
+
+        // Start straight
+        path.move(to: CGPoint(x: rect.midX, y: 0))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.height * 0.1)) // 10% of the height as straight
+
+        // Draw squiggly part
+        var y: CGFloat = rect.height * 0.1
+        while y < rect.height * 0.9 {
+            let x = sin(y / wavelength * .pi * 2) * amplitude + rect.midX
+            path.addLine(to: CGPoint(x: x, y: y))
+            y += 1
+        }
+
+        // End straight
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.height))
+
+        return path
+    }
+}

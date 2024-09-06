@@ -47,6 +47,7 @@ class MusicKitManager: ObservableObject {
                 SongModel(
                     id: song.id.rawValue,
                     artwork: song.artwork,
+                    customArtwork: nil,
                     artistName: song.artistName,
                     lastPlayedDate: song.lastPlayedDate,
                     libraryAddedDate: song.libraryAddedDate,
@@ -101,6 +102,7 @@ class MusicKitManager: ObservableObject {
                     SongModel(
                         id: song.id.rawValue,
                         artwork: song.artwork,
+                        customArtwork: nil,
                         artistName: song.artistName,
                         lastPlayedDate: song.lastPlayedDate,
                         libraryAddedDate: song.libraryAddedDate,

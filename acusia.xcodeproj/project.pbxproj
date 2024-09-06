@@ -24,6 +24,7 @@
 		CD85AB0F2C8922AA00A61FBB /* PathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB0E2C8922A800A61FBB /* PathView.swift */; };
 		CD85AB112C8922D700A61FBB /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */; };
 		CD85AB132C89230200A61FBB /* InstantPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */; };
+		CD85AB152C8950D600A61FBB /* entrypreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB142C8950D200A61FBB /* entrypreview.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */; };
 		CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA92C6F030100D7DEA7 /* FeedBarView.swift */; };
@@ -127,6 +128,7 @@
 		CD85AB0E2C8922A800A61FBB /* PathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathView.swift; sourceTree = "<group>"; };
 		CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPanGestureRecognizer.swift; sourceTree = "<group>"; };
+		CD85AB142C8950D200A61FBB /* entrypreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = entrypreview.swift; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePastView.swift; sourceTree = "<group>"; };
 		CD8CFDA92C6F030100D7DEA7 /* FeedBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBarView.swift; sourceTree = "<group>"; };
@@ -175,11 +177,11 @@
 		CDDED78B2C1959D000958B39 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				DominantColors.swift,
 				KeychainHelper.swift,
 				UIColor.swift,
 				UIImage.swift,
 				UIImageView.swift,
-				VisionColor.swift,
 			);
 			target = CDDED7312C194C8400958B39 /* acusia */;
 		};
@@ -257,6 +259,7 @@
 		CD4332522C82B205009ADBF0 /* Entry */ = {
 			isa = PBXGroup;
 			children = (
+				CD85AB142C8950D200A61FBB /* entrypreview.swift */,
 				CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */,
 				CD0EEB812C7BB11200DB9896 /* ReplyView.swift */,
 			);
@@ -604,6 +607,7 @@
 				CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */,
+				CD85AB152C8950D600A61FBB /* entrypreview.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
 				CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,

@@ -23,7 +23,7 @@ struct HomeFeedView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            VStack(spacing: 64) {
                 ForEach(viewModel.entries.indices, id: \.self) { index in
                     let entry = viewModel.entries[index]
                     Entry(
