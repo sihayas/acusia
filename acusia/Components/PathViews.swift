@@ -220,3 +220,40 @@ struct NoodleIcon: Shape {
         return path
     }
 }
+
+struct ArtimaskPath: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let width = rect.size.width
+        let height = rect.size.height
+        path.move(to: CGPoint(x: 0.0171*width, y: 0.0624*height))
+        path.addCurve(to: CGPoint(x: 0, y: 0.18286*height), control1: CGPoint(x: 0, y: 0.08685*height), control2: CGPoint(x: 0, y: 0.11885*height))
+        path.addLine(to: CGPoint(x: 0, y: 0.81714*height))
+        path.addCurve(to: CGPoint(x: 0.0171*width, y: 0.9376*height), control1: CGPoint(x: 0, y: 0.88115*height), control2: CGPoint(x: 0, y: 0.91315*height))
+        path.addCurve(to: CGPoint(x: 0.02714*width, y: 0.94997*height), control1: CGPoint(x: 0.0201*width, y: 0.94189*height), control2: CGPoint(x: 0.02345*width, y: 0.94602*height))
+        path.addCurve(to: CGPoint(x: 0.01961*width, y: 0.96429*height), control1: CGPoint(x: 0.02246*width, y: 0.95376*height), control2: CGPoint(x: 0.01961*width, y: 0.95878*height))
+        path.addCurve(to: CGPoint(x: 0.04902*width, y: 0.98571*height), control1: CGPoint(x: 0.01961*width, y: 0.97612*height), control2: CGPoint(x: 0.03278*width, y: 0.98571*height))
+        path.addCurve(to: CGPoint(x: 0.06867*width, y: 0.98023*height), control1: CGPoint(x: 0.05657*width, y: 0.98571*height), control2: CGPoint(x: 0.06346*width, y: 0.98364*height))
+        path.addCurve(to: CGPoint(x: 0.08565*width, y: 0.98754*height), control1: CGPoint(x: 0.07409*width, y: 0.98291*height), control2: CGPoint(x: 0.07976*width, y: 0.98536*height))
+        path.addCurve(to: CGPoint(x: 0.25098*width, y: height), control1: CGPoint(x: 0.1192*width, y: height), control2: CGPoint(x: 0.16313*width, y: height))
+        path.addLine(to: CGPoint(x: 0.74902*width, y: height))
+        path.addCurve(to: CGPoint(x: 0.91435*width, y: 0.98754*height), control1: CGPoint(x: 0.83687*width, y: height), control2: CGPoint(x: 0.8808*width, y: height))
+        path.addCurve(to: CGPoint(x: 0.9829*width, y: 0.9376*height), control1: CGPoint(x: 0.94387*width, y: 0.97659*height), control2: CGPoint(x: 0.96786*width, y: 0.9591*height))
+        path.addCurve(to: CGPoint(x: width, y: 0.81714*height), control1: CGPoint(x: width, y: 0.91315*height), control2: CGPoint(x: width, y: 0.88115*height))
+        path.addLine(to: CGPoint(x: width, y: 0.18286*height))
+        path.addCurve(to: CGPoint(x: 0.9829*width, y: 0.0624*height), control1: CGPoint(x: width, y: 0.11885*height), control2: CGPoint(x: width, y: 0.08685*height))
+        path.addCurve(to: CGPoint(x: 0.91435*width, y: 0.01246*height), control1: CGPoint(x: 0.96786*width, y: 0.0409*height), control2: CGPoint(x: 0.94387*width, y: 0.02341*height))
+        path.addCurve(to: CGPoint(x: 0.74902*width, y: 0), control1: CGPoint(x: 0.8808*width, y: 0), control2: CGPoint(x: 0.83687*width, y: 0))
+        path.addLine(to: CGPoint(x: 0.25098*width, y: 0))
+        path.addCurve(to: CGPoint(x: 0.08565*width, y: 0.01246*height), control1: CGPoint(x: 0.16313*width, y: 0), control2: CGPoint(x: 0.1192*width, y: 0))
+        path.addCurve(to: CGPoint(x: 0.0171*width, y: 0.0624*height), control1: CGPoint(x: 0.05613*width, y: 0.02341*height), control2: CGPoint(x: 0.03214*width, y: 0.0409*height))
+        path.closeSubpath()
+        path.move(to: CGPoint(x: 0.01961*width, y: 0.99286*height))
+        path.addCurve(to: CGPoint(x: 0.0098*width, y: height), control1: CGPoint(x: 0.01961*width, y: 0.9968*height), control2: CGPoint(x: 0.01522*width, y: height))
+        path.addCurve(to: CGPoint(x: 0, y: 0.99286*height), control1: CGPoint(x: 0.00439*width, y: height), control2: CGPoint(x: 0, y: 0.9968*height))
+        path.addCurve(to: CGPoint(x: 0.0098*width, y: 0.98571*height), control1: CGPoint(x: 0, y: 0.98891*height), control2: CGPoint(x: 0.00439*width, y: 0.98571*height))
+        path.addCurve(to: CGPoint(x: 0.01961*width, y: 0.99286*height), control1: CGPoint(x: 0.01522*width, y: 0.98571*height), control2: CGPoint(x: 0.01961*width, y: 0.98891*height))
+        path.closeSubpath()
+        return path
+    }
+}

@@ -5,26 +5,30 @@
 //  Created by decoherence on 9/4/24.
 //
 
+import BigUIPaging
 import MusicKit
 import SwiftUI
-import BigUIPaging
 
 struct EntryPreview: View {
     var body: some View {
-        let imageUrl = "https://is1-ssl.mzstatic.com/image/thumb/Music4/v4/6a/54/13/6a54138c-e296-88d5-0449-96647323b873/cover.jpg/600x600bb.jpg"
-
         ScrollView {
-            VStack(spacing: 24) {
-                // Entry
-                VStack(alignment: .leading) {
+            VStack(spacing: 64) {
+                // Avatar, Text, and Thread Line
+                HStack(alignment: .bottom, spacing: 4) {
+                    AvatarView(size: 36, imageURL: "https://i.pinimg.com/474x/98/85/c1/9885c1779846521a9e7aad8de50ac015.jpg")
 
-                    // Avatar, Text, and Thread Line
-                    HStack(alignment: .bottom, spacing: 12) {
-                        AvatarView(size: 36, imageURL: "https://i.pinimg.com/474x/98/85/c1/9885c1779846521a9e7aad8de50ac015.jpg")
-                        
-                        CardPreview()
-                            .frame(width: 204, height: 280)
-                    }
+                    CardPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/6a/0c/2e/6a0c2e21-e649-0ea3-07ff-b2a66daf7ac5/24UMGIM24898.rgb.jpg/600x600bb.jpg", name: "In A Landscape", artistName: "Max Richter", text: "VISCERAL!!!")
+                        .frame(width: 204, height: 280)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.horizontal, 24)
+
+                // Avatar, Text, and Thread Line
+                HStack(alignment: .bottom, spacing: 4) {
+                    AvatarView(size: 36, imageURL: "https://i.pinimg.com/474x/9d/8e/db/9d8edbcad90d577b5856725c2867eeed.jpg")
+
+                    CardPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/ba/1e/05/ba1e058e-5637-e53c-563c-f5b9a1a6c344/20UM1IM18331.rgb.jpg/600x600bb.jpg", name: "Whole Lotta Red", artistName: "Playboi Carti", text: "dont get the big deal with this one tbh")
+                        .frame(width: 204, height: 280)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(.horizontal, 24)
@@ -35,18 +39,22 @@ struct EntryPreview: View {
 
 struct CardPreview: View {
     @Namespace private var namespace
-//    let entry: APIEntry
     @State private var selection: Int = 1
-    let imageUrl = "https://is1-ssl.mzstatic.com/image/thumb/Music4/v4/6a/54/13/6a54138c-e296-88d5-0449-96647323b873/cover.jpg/600x600bb.jpg"
-    
+    let imageUrl: String
+    let name: String
+    let artistName: String
+    let text: String
+
     var body: some View {
         VStack {
             // Use ForEach with a collection of identifiable data
             PageView(selection: $selection) {
                 ForEach([1, 2], id: \.self) { index in
                     if index == 1 {
-                        Rectangle()
-                            .foregroundStyle(.ultraThickMaterial)
+                        RoundedRectangle(cornerRadius: 0, style: .continuous)
+                            .foregroundStyle(
+                                .ultraThickMaterial
+                            )
                             .background(
                                 AsyncImage(url: URL(string: imageUrl)) { image in
                                     image
@@ -55,23 +63,28 @@ struct CardPreview: View {
                                     Rectangle()
                                 }
                             )
+                            .mask(
+                                ArtimaskPath()
+                                    .stroke(.white.opacity(0.5), lineWidth: 1)
+                                    .fill(.black)
+                            )
                             .overlay(alignment: .topLeading) {
                                 VStack(alignment: .leading) {
-                                    Text("It's such an abstract and off-kilter sound that I could hardly see having produced widespread ripples at the time of its release. ")
+                                    Text(text)
                                         .foregroundColor(.white)
                                         .font(.system(size: 15, weight: .semibold))
                                         .multilineTextAlignment(.leading)
-                                    
+
                                     Spacer()
-                                    
+
                                     VStack(alignment: .leading) {
-                                        Text("Women")
+                                        Text(artistName)
                                             .foregroundColor(.secondary)
-                                            .font(.system(size: 11, weight: .semibold))
-                                        
-                                        Text("Public Strain")
-                                            .foregroundColor(.secondary)
-                                            .font(.system(size: 11, weight: .semibold))
+                                            .font(.system(size: 11, weight: .regular))
+
+                                        Text(name)
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 11, weight: .regular))
                                     }
                                 }
                                 .padding(20)
@@ -79,14 +92,17 @@ struct CardPreview: View {
                     } else {
                         Rectangle()
                             .foregroundStyle(.clear)
-                            .background(
+                            .background(.clear)
+                            .overlay(alignment: .bottom) {
                                 AsyncImage(url: URL(string: imageUrl)) { image in
                                     image
                                         .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .clipShape(RoundedRectangle(cornerRadius: 32))
                                 } placeholder: {
                                     Rectangle()
                                 }
-                            )
+                            }
                     }
                 }
             }
@@ -95,7 +111,7 @@ struct CardPreview: View {
             .pageViewCardShadow(.visible)
         }
     }
-    
+
     var indicatorSelection: Binding<Int> {
         .init {
             selection - 1
@@ -104,7 +120,6 @@ struct CardPreview: View {
         }
     }
 }
-
 
 #Preview {
     EntryPreview()

@@ -238,7 +238,7 @@ extension View {
     func cardStyle(cornerRadius: Double? = nil) -> some View {
         mask(
             RoundedRectangle(
-                cornerRadius: cornerRadius ?? 32.0,
+                cornerRadius: cornerRadius ?? 0.0, // Was 45
                 style: .continuous
             )
         )

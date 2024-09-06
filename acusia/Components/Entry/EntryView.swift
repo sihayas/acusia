@@ -32,7 +32,7 @@ struct Entry: View {
 
         // Entry
         // Avatar, Text, and Thread Line
-        HStack(alignment: .bottom, spacing: 12) {
+        HStack(alignment: .bottom, spacing: 4) {
             AvatarView(size: animateReplySheet ? 24 : 36, imageURL: entry.author.image)
 
             CardDeck(entry: entry)
@@ -141,7 +141,7 @@ struct CardDeck: View {
         PageView(selection: $selection) {
             ForEach([1, 2], id: \.self) { index in
                 if index == 1 {
-                    RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    Rectangle()
                         .foregroundStyle(
                             .ultraThickMaterial
                         )
@@ -153,8 +153,13 @@ struct CardDeck: View {
                                 Rectangle()
                             }
                         )
+                        .mask(
+                            ArtimaskPath()
+                                .stroke(.white.opacity(0.5), lineWidth: 1)
+                                .fill(.black)
+                        )
                         .overlay(alignment: .topLeading) {
-                            VStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading) {
                                 Text(entry.text)
                                     .foregroundColor(.white)
                                     .font(.system(size: 15, weight: .semibold))
