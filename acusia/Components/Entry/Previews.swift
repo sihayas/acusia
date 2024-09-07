@@ -172,7 +172,7 @@ struct ReactionPreview: View {
 
                 HStack {
                     // Audiowave image in white
-                    Image(systemName: "ear.badge.waveform")
+                    Image(systemName: "waveform")
                         .symbolEffect(.variableColor.iterative, options: .repeating)
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
@@ -188,16 +188,19 @@ struct ReactionPreview: View {
                     .frame(width: 32, height: 32)
 
                     VStack(alignment: .leading) {
+                        Text(artistName)
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
                         Text(name)
                             .foregroundColor(.white)
-                            .font(.system(size: 15, weight: .regular, design: .rounded))
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
                     }
                     .lineLimit(1) // Restrict to a single line
                     .truncationMode(.tail) // Truncate if it's too long
 
                     Spacer()
 
-                    Image(systemName: "play.fill")
+                    Image(systemName: "ellipsis")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
                 }
@@ -205,19 +208,19 @@ struct ReactionPreview: View {
 
             ZStack(alignment: .bottomTrailing) {
                 Circle()
-                    .fill(Color(UIColor.systemGray6))
+                    .fill(Color.pink)
                     .frame(width: 5, height: 5)
                     .offset(x: -8, y: 6)
                 Circle()
-                    .fill(Color(UIColor.systemGray6))
+                    .fill(Color.pink)
                     .frame(width: 12, height: 12)
                     .offset(x: 2, y: 2)
                 Circle()
-                    .fill(Color(UIColor.systemGray6))
+                    .fill(Color.pink)
                     .frame(width: 32, height: 32)
                     .overlay(
-                        Image(systemName: "flame")
-                            .font(.system(size: 12, weight: .bold))
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 15))
                             .foregroundColor(.white)
                     )
             }
@@ -260,16 +263,19 @@ struct WispPreview: View {
                     .frame(width: 32, height: 32)
 
                     VStack(alignment: .leading) {
+                        Text(artistName)
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
                         Text(name)
                             .foregroundColor(.white)
-                            .font(.system(size: 15, weight: .regular, design: .rounded))
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
                     }
                     .lineLimit(1) // Restrict to a single line
                     .truncationMode(.tail) // Truncate if it's too long
 
                     Spacer()
 
-                    Image(systemName: "play.fill")
+                    Image(systemName: "ellipsis")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
                 }
@@ -295,6 +301,7 @@ struct WispPreview: View {
             }
             .padding(.bottom, 40)
             .padding(.leading, 28)
+            .padding(.trailing, 64)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.horizontal, 24)
