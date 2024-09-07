@@ -97,7 +97,7 @@ struct Entry: View {
 struct ArtifactCardView: View {
     @Namespace private var namespace
     let entry: APIEntry
-    @State private var selection: Int = 2
+    @State private var selection: Int = 1
 
     var body: some View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
@@ -105,6 +105,7 @@ struct ArtifactCardView: View {
         VStack(alignment: .leading) {
             HStack(alignment: .bottom, spacing: 8) {
                 AvatarView(size: 36, imageURL: entry.author.image)
+                    .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
                     .zIndex(1)
 
                 // Card stack
@@ -112,9 +113,7 @@ struct ArtifactCardView: View {
                     ForEach([1, 2], id: \.self) { index in
                         if index == 1 {
                             RoundedRectangle(cornerRadius: 0, style: .continuous)
-                                .foregroundStyle(
-                                    .thickMaterial
-                                )
+                                .foregroundStyle(.thickMaterial)
                                 .background(
                                     AsyncImage(url: URL(string: imageUrl)) { image in
                                         image
@@ -127,28 +126,40 @@ struct ArtifactCardView: View {
                                     ArtimaskPath()
                                         .stroke(.white.opacity(0.5), lineWidth: 1)
                                         .fill(.black)
-                                    
                                 )
                                 .overlay(alignment: .topLeading) {
-                                    VStack(alignment: .leading) {
-                                        Text(entry.text)
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 15, weight: .semibold))
-                                            .multilineTextAlignment(.leading)
-
-                                        Spacer()
-
+                                    ZStack(alignment: .bottomTrailing) {
                                         VStack(alignment: .leading) {
-                                            Text(entry.sound.appleData?.artistName ?? "Unknown")
-                                                .foregroundColor(.secondary)
-                                                .font(.system(size: 11, weight: .regular, design: .rounded))
+                                            Text(entry.text)
+                                                .foregroundColor(.white)
+                                                .font(.system(size: 15, weight: .semibold))
+                                                .multilineTextAlignment(.leading)
 
-                                            Text(entry.sound.appleData?.name ?? "Unknown")
-                                                .foregroundColor(.secondary)
-                                                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                            Spacer()
+
+                                            VStack(alignment: .leading) {
+                                                Text(entry.sound.appleData?.artistName ?? "Unknown")
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .regular, design: .rounded))
+                                                    .lineLimit(1)
+
+                                                Text(entry.sound.appleData?.name ?? "Unknown")
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                                    .lineLimit(1)
+                                            }
                                         }
+                                        .padding(20)
+
+                                        HeartPath()
+                                            .fill(.black)
+                                            .frame(width: 32, height: 30)
+                                            .frame(width: 32, height: 32)
+                                            .padding(8)
+                                            .shadow(radius: 4)
+                                            .rotationEffect(.degrees(8))
                                     }
-                                    .padding(20)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
                         } else {
                             Rectangle()
@@ -171,6 +182,30 @@ struct ArtifactCardView: View {
                 .pageViewCardCornerRadius(32.0)
                 .pageViewCardShadow(.visible)
                 .frame(width: 204, height: 280)
+
+                VStack {
+                    if selection == 2 {
+                        Button {
+                            // Play the sound
+                        } label: {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(width: 36, height: 36)
+                                .background(
+                                    ZStack {
+                                        // Blur effect
+                                        Color.clear.background(.thinMaterial)
+                                            .clipShape(Circle())
+                                        Color.white.opacity(0.1)
+                                            .clipShape(Circle())
+                                    }
+                                )
+                        }
+                        .transition(.blurReplace)
+                    }
+                }
+                .animation(.spring(), value: selection)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
@@ -227,7 +262,7 @@ struct WispView: View {
                         .symbolEffect(.variableColor.iterative, options: .repeating)
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
-                    
+
                     AsyncImage(url: URL(string: imageUrl)) { image in
                         image
                             .resizable()
@@ -239,9 +274,9 @@ struct WispView: View {
                     .frame(width: 32, height: 32)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(.white.opacity(0.1), lineWidth: 1)
+                            .stroke(.white.opacity(0.1), lineWidth: 1)
                     )
-                    
+
                     VStack(alignment: .leading) {
                         Text(entry.sound.appleData?.name ?? "Unknown")
                             .foregroundColor(.white)
@@ -249,10 +284,9 @@ struct WispView: View {
                     }
                     .lineLimit(1) // Restrict to a single line
                     .truncationMode(.tail) // Truncate if it's too long
-                    
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "play.fill")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)

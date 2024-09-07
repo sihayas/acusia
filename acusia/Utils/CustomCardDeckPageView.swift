@@ -12,6 +12,7 @@
 // - Removed the scaleEffect modifier from the CustomCardDeckPageView
 // - Changed the swingOutMultiplier and subsequent xOffset padding multiplier.
 // - Changed default corner radius.
+// - Added a 3D rotation tilt.
 
 import BigUIPaging
 import SwiftUI
@@ -182,9 +183,11 @@ struct CustomCardDeckPageView: View {
         return -abs(position)
     }
     
-    // So originally, the padding wasa set to containerSize.width / 10. But to show more of the cards "behind", decrease the value. Subsequently, you have to change the swingOutMultiplier to multiply by double the new value.
+    // Originally, the padding wasa set to containerSize.width / 10. But to show more of the cards "behind",
+    // decrease the value. Subsequently, you have to change the swingOutMultiplier to multiply by double the new value.
     func xOffset(for index: Int) -> Double {
-        let padding = containerSize.width / 10 // Was 10
+        let cardPaddingFactor = 2.0 // Adjust the value to show more cards "behind"
+        let padding = containerSize.width / cardPaddingFactor
         let x = (Double(index) - progressIndex) * padding
         let maxIndex = pages.count - 1
         if index == selectedIndex && progressIndex < Double(maxIndex) && progressIndex > 0 {
@@ -194,7 +197,7 @@ struct CustomCardDeckPageView: View {
     }
     
     var swingOutMultiplier: Double {
-        return abs(sin(Double.pi * progressIndex) * 20) // Was 20
+        return abs(sin(Double.pi * progressIndex) * 3.5) // Double the padding factor ^
     }
     
     func scale(for index: Int) -> CGFloat {
@@ -206,7 +209,7 @@ struct CustomCardDeckPageView: View {
     }
     
     func tiltAngle(for index: Int) -> Angle {
-        let maxTilt: Double = -45
+        let maxTilt: Double = -30 // 45 is best with the default padding/swing out multiplier.
         return .degrees(dragProgress * maxTilt)
     }
     

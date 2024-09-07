@@ -91,15 +91,24 @@ struct CardPreview: View {
                                 .foregroundStyle(.clear)
                                 .background(.clear)
                                 .overlay(alignment: .bottom) {
-                                    AsyncImage(url: URL(string: imageUrl)) { image in
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                                    } placeholder: {
-                                        Rectangle()
+                                    ZStack(alignment: .bottomTrailing) {
+                                        AsyncImage(url: URL(string: imageUrl)) { image in
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                                        } placeholder: {
+                                            Rectangle()
+                                        }
+                                        
+                                        HeartPath()
+                                            .fill(.black)
+                                            .frame(width: 32, height: 30)
+                                            .padding(24)
+                                            .shadow(radius: 4)
                                     }
                                 }
+                                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                         }
                     }
                 }
