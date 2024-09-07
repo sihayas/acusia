@@ -149,6 +149,7 @@ struct ArtifactCardView: View {
                                                     .lineLimit(1)
                                             }
                                         }
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                                         .padding(20)
 
                                         HeartPath()

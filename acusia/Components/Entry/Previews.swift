@@ -49,9 +49,7 @@ struct CardPreview: View {
                     ForEach([1, 2], id: \.self) { index in
                         if index == 1 {
                             RoundedRectangle(cornerRadius: 0, style: .continuous)
-                                .foregroundStyle(
-                                    .ultraThickMaterial
-                                )
+                                .foregroundStyle(.thickMaterial)
                                 .background(
                                     AsyncImage(url: URL(string: imageUrl)) { image in
                                         image
@@ -66,49 +64,54 @@ struct CardPreview: View {
                                         .fill(.black)
                                 )
                                 .overlay(alignment: .topLeading) {
-                                    VStack(alignment: .leading) {
-                                        Text(text)
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 15, weight: .semibold))
-                                            .multilineTextAlignment(.leading)
-
-                                        Spacer()
-
+                                    ZStack(alignment: .bottomTrailing) {
                                         VStack(alignment: .leading) {
-                                            Text(artistName)
-                                                .foregroundColor(.secondary)
-                                                .font(.system(size: 11, weight: .regular, design: .rounded))
+                                            Text(text)
+                                                .foregroundColor(.white)
+                                                .font(.system(size: 15, weight: .semibold))
+                                                .multilineTextAlignment(.leading)
 
-                                            Text(name)
-                                                .foregroundColor(.secondary)
-                                                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                            Spacer()
+
+                                            VStack(alignment: .leading) {
+                                                Text(name)
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .regular, design: .rounded))
+                                                    .lineLimit(1)
+
+                                                Text(artistName)
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                                    .lineLimit(1)
+                                            }
                                         }
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                                        .padding(20)
+
+                                        HeartPath()
+                                            .fill(.black)
+                                            .frame(width: 32, height: 30)
+                                            .frame(width: 32, height: 32)
+                                            .padding(8)
+                                            .shadow(radius: 4)
+                                            .rotationEffect(.degrees(8))
                                     }
-                                    .padding(20)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
                                 .background(.clear)
                                 .overlay(alignment: .bottom) {
-                                    ZStack(alignment: .bottomTrailing) {
-                                        AsyncImage(url: URL(string: imageUrl)) { image in
-                                            image
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                                        } placeholder: {
-                                            Rectangle()
-                                        }
-                                        
-                                        HeartPath()
-                                            .fill(.black)
-                                            .frame(width: 32, height: 30)
-                                            .padding(24)
-                                            .shadow(radius: 4)
+                                    AsyncImage(url: URL(string: imageUrl)) { image in
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                                    } placeholder: {
+                                        Rectangle()
                                     }
                                 }
-                                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                         }
                     }
                 }
@@ -161,7 +164,7 @@ struct ReactionPreview: View {
     let name: String
     let artistName: String
     let text: String
-    
+
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             HStack(alignment: .bottom) {
@@ -173,7 +176,7 @@ struct ReactionPreview: View {
                         .symbolEffect(.variableColor.iterative, options: .repeating)
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
-                    
+
                     AsyncImage(url: URL(string: imageUrl)) { image in
                         image
                             .resizable()
@@ -183,7 +186,7 @@ struct ReactionPreview: View {
                     .aspectRatio(contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .frame(width: 32, height: 32)
-                    
+
                     VStack(alignment: .leading) {
                         Text(name)
                             .foregroundColor(.white)
@@ -191,25 +194,24 @@ struct ReactionPreview: View {
                     }
                     .lineLimit(1) // Restrict to a single line
                     .truncationMode(.tail) // Truncate if it's too long
-                    
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "play.fill")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
                 }
             }
 
-            ZStack(alignment: .bottomLeading) {
+            ZStack(alignment: .bottomTrailing) {
                 Circle()
                     .fill(Color(UIColor.systemGray6))
                     .frame(width: 5, height: 5)
-                    .offset(x: 8, y: 6)
+                    .offset(x: -8, y: 6)
                 Circle()
                     .fill(Color(UIColor.systemGray6))
                     .frame(width: 12, height: 12)
-                    .offset(x: -2, y: 2)
+                    .offset(x: 2, y: 2)
                 Circle()
                     .fill(Color(UIColor.systemGray6))
                     .frame(width: 32, height: 32)
@@ -219,9 +221,8 @@ struct ReactionPreview: View {
                             .foregroundColor(.white)
                     )
             }
-            .padding(.bottom, 28)
-            .padding(.leading, 16)
-            .shadow(color: .black.opacity(0.5), radius: 4, x: 0, y: 4)
+            .padding(.bottom, 36)
+            .padding(.leading, 20)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.horizontal, 24)
@@ -243,11 +244,11 @@ struct WispPreview: View {
 
                 HStack {
                     // Audiowave image in white
-                    Image(systemName: "ear.badge.waveform")
+                    Image(systemName: "waveform")
                         .symbolEffect(.variableColor.iterative, options: .repeating)
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
-                    
+
                     AsyncImage(url: URL(string: imageUrl)) { image in
                         image
                             .resizable()
@@ -257,7 +258,7 @@ struct WispPreview: View {
                     .aspectRatio(contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .frame(width: 32, height: 32)
-                    
+
                     VStack(alignment: .leading) {
                         Text(name)
                             .foregroundColor(.white)
@@ -265,10 +266,9 @@ struct WispPreview: View {
                     }
                     .lineLimit(1) // Restrict to a single line
                     .truncationMode(.tail) // Truncate if it's too long
-                    
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "play.fill")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundColor(.secondary)
