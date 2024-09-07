@@ -97,13 +97,13 @@ struct Entry: View {
 struct ArtifactCardView: View {
     @Namespace private var namespace
     let entry: APIEntry
-    @State private var selection: Int = 1
+    @State private var selection: Int = 2
 
     var body: some View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
 
         VStack(alignment: .leading) {
-            HStack(alignment: .bottom, spacing: 4) {
+            HStack(alignment: .bottom, spacing: 8) {
                 AvatarView(size: 36, imageURL: entry.author.image)
                     .zIndex(1)
 
@@ -212,7 +212,6 @@ struct ArtifactCardView: View {
 struct WispView: View {
     @Namespace private var namespace
     let entry: APIEntry
-    @State private var selection: Int = 1
 
     var body: some View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"

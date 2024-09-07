@@ -88,31 +88,18 @@ struct CardPreview: View {
                                 }
                         } else {
                             Rectangle()
-                                .foregroundStyle(
-                                    .clear
-                                )
-                                .background(
+                                .foregroundStyle(.clear)
+                                .background(.clear)
+                                .overlay(alignment: .bottom) {
                                     AsyncImage(url: URL(string: imageUrl)) { image in
                                         image
                                             .resizable()
-                                            .aspectRatio(contentMode: .fill)
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                                     } placeholder: {
                                         Rectangle()
                                     }
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-//                                .foregroundStyle(.clear)
-//                                .background(.clear)
-//                                .overlay(alignment: .bottom) {
-//                                    AsyncImage(url: URL(string: imageUrl)) { image in
-//                                        image
-//                                            .resizable()
-//                                            .aspectRatio(contentMode: .fit)
-//                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-//                                    } placeholder: {
-//                                        Rectangle()
-//                                    }
-//                                }
+                                }
                         }
                     }
                 }
