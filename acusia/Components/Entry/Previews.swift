@@ -1,110 +1,47 @@
 //
-//  EntryView.swift
+//  entrypreview.swift
 //  acusia
 //
-//  Created by decoherence on 8/25/24.
+//  Created by decoherence on 9/4/24.
 //
 
 import BigUIPaging
+import MusicKit
 import SwiftUI
 
-struct Entry: View {
-    @EnvironmentObject private var safeAreaInsetsManager: SafeAreaInsetsManager
-
-    let entry: APIEntry
-    let onDelete: (String) async -> Void
-
-    @Binding var expandedEntryId: String?
-
-    // Entry is halfway past scrollview.
-    @State private var isVisible: Bool = false
-
-    // First controls the sheet visibility. Second controls animation.
-    @State private var showReplySheet = false
-    @State private var animateReplySheet = false
-
-    // Helps to offset the selected entry to the top of the screen.
-    @State private var repliesOffset: CGFloat = 0
-    @State private var entryHeight: CGFloat = 0
-
+struct EntryPreview: View {
     var body: some View {
-        // Entry
-        VStack {
-            if entry.rating == 2 {
-                WispView(entry: entry)
-            } else {
-                ArtifactCardView(entry: entry)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .bottomLeading)
-        .onScrollVisibilityChange(threshold: 0.5) { visibility in
-            isVisible = visibility
-        }
-        .background(
-            GeometryReader { geometry in
-                Color.clear
-                    .onAppear {
-                        entryHeight = geometry.size.height
-                    }
-                    .onChange(of: showReplySheet) { _, new in
-                        withAnimation {
-                            if new {
-                                // Measure the top of the entry from the top of the screen.
-                                repliesOffset = geometry.frame(in: .global).minY - 32
-                                animateReplySheet = true
-                                expandedEntryId = entry.id
-                            } else {
-                                repliesOffset = 0
-                                animateReplySheet = false
-                                expandedEntryId = nil
-                            }
-                        }
-                    }
-            }
-        )
-        /// Move the entry view to the top of the screen.
-        .offset(y: animateReplySheet ? 32 - repliesOffset : 0)
-        .sheet(isPresented: $showReplySheet) {
-            ZStack {
-                UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
-                    .stroke(.white.opacity(0.1), lineWidth: 1)
-                    .fill(Color.black)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .padding(1)
-                    .ignoresSafeArea()
+        ScrollView {
+            VStack(spacing: 32) {
+                CardPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/6a/0c/2e/6a0c2e21-e649-0ea3-07ff-b2a66daf7ac5/24UMGIM24898.rgb.jpg/600x600bb.jpg", name: "In A Landscape", artistName: "Max Richter", text: "Strikes a pleasing equilibrium between music to admire and music to enjoy")
 
-                // Sheet content
-                ScrollView {
-                    // Content
-                    LazyVStack(alignment: .leading) {
-                        CommentsListView(replies: sampleComments)
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.top, 32)
+                ReactionPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/df/8d/f1/df8df1a2-34b2-9588-b059-ff81d1525dd5/656605144269.jpg/600x600bb.jpg", name: "Stranger In The Alps", artistName: "Phoebe Bridgers", text: "dont get the big deal with this one tbh")
 
-                    Spacer()
-                }
+                WispPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/76/96/d1/7696d110-c929-4908-8fa1-30aad2511c55/00602567485872.rgb.jpg/600x600bb.jpg", name: "High as Hope", artistName: "Florence + The Machine", text: "florance is a queen. i can go on and on about what she means to me but i wont")
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .presentationDetents([.fraction(0.85), .large])
-            .presentationCornerRadius(45)
-            .presentationBackground(.black)
-            .presentationDragIndicator(.visible)
         }
     }
 }
 
-struct ArtifactCardView: View {
+struct CardPreview: View {
     @Namespace private var namespace
-    let entry: APIEntry
     @State private var selection: Int = 1
+    let imageUrl: String
+    let name: String
+    let artistName: String
+    let text: String
 
     var body: some View {
-        let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
-
         VStack(alignment: .leading) {
-            HStack(alignment: .bottom, spacing: 4) {
-                AvatarView(size: 36, imageURL: entry.author.image)
+            Text("juna")
+                .foregroundColor(.secondary)
+                .font(.system(size: 13, weight: .regular))
+                .multilineTextAlignment(.leading)
+                .padding(.leading, 64)
+                .padding(.bottom, -2)
+
+            HStack(alignment: .bottom, spacing: 8) {
+                AvatarView(size: 36, imageURL: "https://i.pinimg.com/474x/98/85/c1/9885c1779846521a9e7aad8de50ac015.jpg")
                     .zIndex(1)
 
                 // Card stack
@@ -113,7 +50,7 @@ struct ArtifactCardView: View {
                         if index == 1 {
                             RoundedRectangle(cornerRadius: 0, style: .continuous)
                                 .foregroundStyle(
-                                    .thickMaterial
+                                    .ultraThickMaterial
                                 )
                                 .background(
                                     AsyncImage(url: URL(string: imageUrl)) { image in
@@ -127,11 +64,10 @@ struct ArtifactCardView: View {
                                     ArtimaskPath()
                                         .stroke(.white.opacity(0.5), lineWidth: 1)
                                         .fill(.black)
-                                    
                                 )
                                 .overlay(alignment: .topLeading) {
                                     VStack(alignment: .leading) {
-                                        Text(entry.text)
+                                        Text(text)
                                             .foregroundColor(.white)
                                             .font(.system(size: 15, weight: .semibold))
                                             .multilineTextAlignment(.leading)
@@ -139,11 +75,11 @@ struct ArtifactCardView: View {
                                         Spacer()
 
                                         VStack(alignment: .leading) {
-                                            Text(entry.sound.appleData?.artistName ?? "Unknown")
+                                            Text(artistName)
                                                 .foregroundColor(.secondary)
                                                 .font(.system(size: 11, weight: .regular, design: .rounded))
 
-                                            Text(entry.sound.appleData?.name ?? "Unknown")
+                                            Text(name)
                                                 .foregroundColor(.secondary)
                                                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                                         }
@@ -152,18 +88,31 @@ struct ArtifactCardView: View {
                                 }
                         } else {
                             Rectangle()
-                                .foregroundStyle(.clear)
-                                .background(.clear)
-                                .overlay(alignment: .bottom) {
+                                .foregroundStyle(
+                                    .clear
+                                )
+                                .background(
                                     AsyncImage(url: URL(string: imageUrl)) { image in
                                         image
                                             .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                                            .aspectRatio(contentMode: .fill)
                                     } placeholder: {
                                         Rectangle()
                                     }
-                                }
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+//                                .foregroundStyle(.clear)
+//                                .background(.clear)
+//                                .overlay(alignment: .bottom) {
+//                                    AsyncImage(url: URL(string: imageUrl)) { image in
+//                                        image
+//                                            .resizable()
+//                                            .aspectRatio(contentMode: .fit)
+//                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+//                                    } placeholder: {
+//                                        Rectangle()
+//                                    }
+//                                }
                         }
                     }
                 }
@@ -209,18 +158,18 @@ struct ArtifactCardView: View {
     }
 }
 
-struct WispView: View {
+struct ReactionPreview: View {
     @Namespace private var namespace
-    let entry: APIEntry
     @State private var selection: Int = 1
-
+    let imageUrl: String
+    let name: String
+    let artistName: String
+    let text: String
+    
     var body: some View {
-        let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
-
         ZStack(alignment: .bottomLeading) {
             HStack(alignment: .bottom) {
-                AvatarView(size: 36, imageURL: entry.author.image)
-                    .shadow(radius: 4)
+                AvatarView(size: 36, imageURL: "https://i.pinimg.com/474x/98/85/c1/9885c1779846521a9e7aad8de50ac015.jpg")
 
                 HStack {
                     // Audiowave image in white
@@ -238,13 +187,9 @@ struct WispView: View {
                     .aspectRatio(contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .frame(width: 32, height: 32)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(.white.opacity(0.1), lineWidth: 1)
-                    )
                     
                     VStack(alignment: .leading) {
-                        Text(entry.sound.appleData?.name ?? "Unknown")
+                        Text(name)
                             .foregroundColor(.white)
                             .font(.system(size: 15, weight: .regular, design: .rounded))
                     }
@@ -269,7 +214,81 @@ struct WispView: View {
                     .fill(Color(UIColor.systemGray6))
                     .frame(width: 12, height: 12)
                     .offset(x: -2, y: 2)
-                Text(entry.text)
+                Circle()
+                    .fill(Color(UIColor.systemGray6))
+                    .frame(width: 32, height: 32)
+                    .overlay(
+                        Image(systemName: "flame")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    )
+            }
+            .padding(.bottom, 28)
+            .padding(.leading, 16)
+            .shadow(color: .black.opacity(0.5), radius: 4, x: 0, y: 4)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.horizontal, 24)
+    }
+}
+
+struct WispPreview: View {
+    @Namespace private var namespace
+    @State private var selection: Int = 1
+    let imageUrl: String
+    let name: String
+    let artistName: String
+    let text: String
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            HStack(alignment: .bottom) {
+                AvatarView(size: 36, imageURL: "https://i.pinimg.com/474x/98/85/c1/9885c1779846521a9e7aad8de50ac015.jpg")
+
+                HStack {
+                    // Audiowave image in white
+                    Image(systemName: "ear.badge.waveform")
+                        .symbolEffect(.variableColor.iterative, options: .repeating)
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(.secondary)
+                    
+                    AsyncImage(url: URL(string: imageUrl)) { image in
+                        image
+                            .resizable()
+                    } placeholder: {
+                        Rectangle()
+                    }
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .frame(width: 32, height: 32)
+                    
+                    VStack(alignment: .leading) {
+                        Text(name)
+                            .foregroundColor(.white)
+                            .font(.system(size: 15, weight: .regular, design: .rounded))
+                    }
+                    .lineLimit(1) // Restrict to a single line
+                    .truncationMode(.tail) // Truncate if it's too long
+                    
+                    
+                    Spacer()
+                    
+                    Image(systemName: "play.fill")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            ZStack(alignment: .bottomLeading) {
+                Circle()
+                    .fill(Color(UIColor.systemGray6))
+                    .frame(width: 5, height: 5)
+                    .offset(x: 8, y: 6)
+                Circle()
+                    .fill(Color(UIColor.systemGray6))
+                    .frame(width: 12, height: 12)
+                    .offset(x: -2, y: 2)
+                Text(text)
                     .foregroundColor(.white)
                     .font(.system(size: 15, weight: .regular))
                     .multilineTextAlignment(.leading)
@@ -286,27 +305,18 @@ struct WispView: View {
     }
 }
 
-struct VerticalSquigglyLineShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let amplitude: CGFloat = 5 // Lower amplitude for less squiggle
-        let wavelength: CGFloat = 40 // Higher wavelength for gentler squiggle
+#Preview {
+    EntryPreview()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+}
 
-        // Start straight
-        path.move(to: CGPoint(x: rect.midX, y: 0))
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.height * 0.1)) // 10% of the height as straight
-
-        // Draw squiggly part
-        var y: CGFloat = rect.height * 0.1
-        while y < rect.height * 0.9 {
-            let x = sin(y / wavelength * .pi * 2) * amplitude + rect.midX
-            path.addLine(to: CGPoint(x: x, y: y))
-            y += 1
-        }
-
-        // End straight
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.height))
-
-        return path
-    }
+struct CustomArtwork {
+    let urlFormat: String
+    let maximumWidth: Int
+    let maximumHeight: Int
+    let backgroundColor: CGColor
+    let primaryTextColor: CGColor
+    let secondaryTextColor: CGColor
+    let tertiaryTextColor: CGColor
+    let quaternaryTextColor: CGColor
 }

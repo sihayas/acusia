@@ -221,6 +221,7 @@ struct NoodleIcon: Shape {
     }
 }
 
+// Creates a card with a bubble tail
 struct ArtimaskPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -248,11 +249,31 @@ struct ArtimaskPath: Shape {
         path.addCurve(to: CGPoint(x: 0.08565*width, y: 0.01246*height), control1: CGPoint(x: 0.16313*width, y: 0), control2: CGPoint(x: 0.1192*width, y: 0))
         path.addCurve(to: CGPoint(x: 0.0171*width, y: 0.0624*height), control1: CGPoint(x: 0.05613*width, y: 0.02341*height), control2: CGPoint(x: 0.03214*width, y: 0.0409*height))
         path.closeSubpath()
-        path.move(to: CGPoint(x: 0.01961*width, y: 0.99286*height))
-        path.addCurve(to: CGPoint(x: 0.0098*width, y: height), control1: CGPoint(x: 0.01961*width, y: 0.9968*height), control2: CGPoint(x: 0.01522*width, y: height))
-        path.addCurve(to: CGPoint(x: 0, y: 0.99286*height), control1: CGPoint(x: 0.00439*width, y: height), control2: CGPoint(x: 0, y: 0.9968*height))
-        path.addCurve(to: CGPoint(x: 0.0098*width, y: 0.98571*height), control1: CGPoint(x: 0, y: 0.98891*height), control2: CGPoint(x: 0.00439*width, y: 0.98571*height))
-        path.addCurve(to: CGPoint(x: 0.01961*width, y: 0.99286*height), control1: CGPoint(x: 0.01522*width, y: 0.98571*height), control2: CGPoint(x: 0.01961*width, y: 0.98891*height))
+        path.move(to: CGPoint(x: 0.02451*width, y: 0.99107*height))
+        path.addCurve(to: CGPoint(x: 0.01225*width, y: height), control1: CGPoint(x: 0.02451*width, y: 0.996*height), control2: CGPoint(x: 0.01902*width, y: height))
+        path.addCurve(to: CGPoint(x: 0, y: 0.99107*height), control1: CGPoint(x: 0.00549*width, y: height), control2: CGPoint(x: 0, y: 0.996*height))
+        path.addCurve(to: CGPoint(x: 0.01225*width, y: 0.98214*height), control1: CGPoint(x: 0, y: 0.98614*height), control2: CGPoint(x: 0.00549*width, y: 0.98214*height))
+        path.addCurve(to: CGPoint(x: 0.02451*width, y: 0.99107*height), control1: CGPoint(x: 0.01902*width, y: 0.98214*height), control2: CGPoint(x: 0.02451*width, y: 0.98614*height))
+        path.closeSubpath()
+        return path
+    }
+}
+
+// Creates a circle with a bubble tail
+struct BubblePath: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let width = rect.size.width
+        let height = rect.size.height
+        path.move(to: CGPoint(x: 0.53448*width, y: 0))
+        path.addCurve(to: CGPoint(x: 0.06897*width, y: 0.46552*height), control1: CGPoint(x: 0.27738*width, y: 0), control2: CGPoint(x: 0.06897*width, y: 0.20842*height))
+        path.addCurve(to: CGPoint(x: 0.11392*width, y: 0.66535*height), control1: CGPoint(x: 0.06897*width, y: 0.53704*height), control2: CGPoint(x: 0.0851*width, y: 0.6048*height))
+        path.addCurve(to: CGPoint(x: 0, y: 0.82759*height), control1: CGPoint(x: 0.04749*width, y: 0.6893*height), control2: CGPoint(x: 0, y: 0.7529*height))
+        path.addCurve(to: CGPoint(x: 0.17241*width, y: height), control1: CGPoint(x: 0, y: 0.92281*height), control2: CGPoint(x: 0.07719*width, y: height))
+        path.addCurve(to: CGPoint(x: 0.33465*width, y: 0.88608*height), control1: CGPoint(x: 0.2471*width, y: height), control2: CGPoint(x: 0.3107*width, y: 0.95251*height))
+        path.addCurve(to: CGPoint(x: 0.53448*width, y: 0.93103*height), control1: CGPoint(x: 0.3952*width, y: 0.9149*height), control2: CGPoint(x: 0.46296*width, y: 0.93103*height))
+        path.addCurve(to: CGPoint(x: width, y: 0.46552*height), control1: CGPoint(x: 0.79158*width, y: 0.93103*height), control2: CGPoint(x: width, y: 0.72261*height))
+        path.addCurve(to: CGPoint(x: 0.53448*width, y: 0), control1: CGPoint(x: width, y: 0.20842*height), control2: CGPoint(x: 0.79158*width, y: 0))
         path.closeSubpath()
         return path
     }

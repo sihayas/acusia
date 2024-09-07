@@ -100,6 +100,11 @@ struct CustomCardDeckPageView: View {
                     .offset(x: xOffset(for: page.index))
                     .scaleEffect(scale(for: page.index)) // Keep the scale effect for individual cards
                     .rotationEffect(.degrees(rotation(for: page.index)))
+                    .rotation3DEffect(
+                        tiltAngle(for: page.index), // Tilt angle based on drag progress
+                        axis: (x: 0, y: 1, z: 0), // Y-axis tilt
+                        perspective: 0.5 // Adjust perspective for depth
+                    )
                     .shadow(color: shadow(for: page.index), radius: 30, y: 20)
             }
         }
@@ -179,7 +184,7 @@ struct CustomCardDeckPageView: View {
     
     // So originally, the padding wasa set to containerSize.width / 10. But to show more of the cards "behind", decrease the value. Subsequently, you have to change the swingOutMultiplier to multiply by double the new value.
     func xOffset(for index: Int) -> Double {
-        let padding = containerSize.width / 1.5 // Was 10
+        let padding = containerSize.width / 10 // Was 10
         let x = (Double(index) - progressIndex) * padding
         let maxIndex = pages.count - 1
         if index == selectedIndex && progressIndex < Double(maxIndex) && progressIndex > 0 {
@@ -189,7 +194,7 @@ struct CustomCardDeckPageView: View {
     }
     
     var swingOutMultiplier: Double {
-        return abs(sin(Double.pi * progressIndex) * 3) // Was 20
+        return abs(sin(Double.pi * progressIndex) * 20) // Was 20
     }
     
     func scale(for index: Int) -> CGFloat {
@@ -198,6 +203,11 @@ struct CustomCardDeckPageView: View {
     
     func rotation(for index: Int) -> Double {
         return -currentPosition(for: index) * 8
+    }
+    
+    func tiltAngle(for index: Int) -> Angle {
+        let maxTilt: Double = -45
+        return .degrees(dragProgress * maxTilt)
     }
     
     func shadow(for index: Int) -> Color {
