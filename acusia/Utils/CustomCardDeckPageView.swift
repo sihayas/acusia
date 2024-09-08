@@ -18,11 +18,11 @@
 import BigUIPaging
 import SwiftUI
 
+// Example
 #Preview {
     CardDeckPreview()
         .frame(width: 240, height: 320)
 }
-
 struct CardDeckPreview: View {
     @Namespace private var namespace
     @State private var selection: Int = 1
@@ -93,7 +93,7 @@ struct CustomCardDeckPageView: View {
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             ForEach(pages) { page in
                 configuration.content(page.value)
                     .zIndex(zIndex(for: page.index))

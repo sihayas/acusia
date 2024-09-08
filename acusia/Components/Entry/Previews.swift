@@ -30,6 +30,9 @@ struct EntryPreview: View {
 struct CardPreview: View {
     @Namespace private var namespace
     @State private var selection: Int = 1
+    @State private var showPopover = false
+    @State private var showPopoverAnimate = false
+
     let imageUrl: String
     let name: String
     let artistName: String
@@ -53,31 +56,32 @@ struct CardPreview: View {
                 PageView(selection: $selection) {
                     ForEach([1, 2], id: \.self) { index in
                         if index == 1 {
-                            RoundedRectangle(cornerRadius: 0, style: .continuous)
+                            RoundedRectangle(cornerRadius: 32, style: .continuous)
                                 .foregroundStyle(.ultraThickMaterial)
                                 .background(
                                     AsyncImage(url: URL(string: imageUrl)) { image in
                                         image
                                             .resizable()
+                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                                     } placeholder: {
                                         Rectangle()
                                     }
                                 )
-                                .mask(
-                                    ArtimaskPath()
-                                        .stroke(.white.opacity(0.5), lineWidth: 1)
-                                        .fill(.black)
-                                )
-                                .overlay(alignment: .topLeading) {
+                                .overlay {
                                     ZStack(alignment: .bottomTrailing) {
-                                        VStack(alignment: .leading) {
-                                            Text(text)
-                                                .foregroundColor(.white)
-                                                .font(.system(size: 15, weight: .semibold))
-                                                .multilineTextAlignment(.leading)
+                                        if !showPopover {
+                                            VStack {
+                                                Text(text)
+                                                    .foregroundColor(.white)
+                                                    .font(.system(size: 15, weight: .semibold))
+                                                    .multilineTextAlignment(.leading)
+                                                    .lineLimit(11)
+                                            }
+                                            .padding(20)
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                        }
 
-                                            Spacer()
-
+                                        HStack {
                                             VStack(alignment: .leading) {
                                                 Text(artistName)
                                                     .foregroundColor(.secondary)
@@ -88,34 +92,40 @@ struct CardPreview: View {
                                                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                                                     .lineLimit(1)
                                             }
-                                        }
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                                        .padding(20)
 
-                                        HeartPath()
-                                            .fill(.black)
-                                            .frame(width: 32, height: 30)
-                                            .frame(width: 32, height: 32)
-                                            .padding(8)
-                                            .shadow(radius: 4)
-                                            .rotationEffect(.degrees(8))
+                                            Spacer()
+
+                                            HeartPath()
+                                                .fill(.pink)
+                                                .frame(width: 28, height: 26)
+                                                .frame(height: 28)
+                                                .shadow(radius: 4)
+                                                .rotationEffect(.degrees(8))
+                                        }
+                                        .padding(20)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                     }
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
-                                .contextMenu {
-                                     Button(action: {
-                                         // Action 1
-                                     }) {
-                                         Text("Action 1")
-                                         Image(systemName: "heart")
-                                     }
-                                     Button(action: {
-                                         // Action 2
-                                     }) {
-                                         Text("Action 2")
-                                         Image(systemName: "square.and.arrow.up")
-                                     }
-                                 }
+                                .popover(isPresented: $showPopover, attachmentAnchor: .point(.topLeading), arrowEdge: .bottom) {
+                                    ScrollView {
+                                        Text(text)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .font(.system(size: 15, weight: .regular))
+                                            .padding(10)
+                                    }
+                                    .frame(width: 272)
+                                    .presentationCompactAdaptation(.popover)
+                                    .presentationBackground(.clear)
+                                }
+                                .onTapGesture {
+                                    showPopover.toggle()
+                                }
+                                .onChange(of: showPopover) { _, value in
+                                    withAnimation(.spring()) {
+                                        showPopoverAnimate = value
+                                    }
+                                }
+                                .frame(height: showPopoverAnimate ? 68 : 280)
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
@@ -134,7 +144,6 @@ struct CardPreview: View {
                     }
                 }
                 .pageViewStyle(.customCardDeck)
-                .pageViewCardCornerRadius(32.0)
                 .pageViewCardShadow(.visible)
                 .frame(width: 204, height: 280)
             }

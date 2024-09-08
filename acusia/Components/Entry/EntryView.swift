@@ -72,6 +72,8 @@ struct ArtifactView: View {
     @Namespace private var namespace
     let entry: APIEntry
     @Binding var showReplySheet: Bool
+    @State private var showPopover = false
+    @State private var showPopoverAnimate = false
     @State private var selection: Int = 1
 
     var body: some View {
@@ -95,58 +97,76 @@ struct ArtifactView: View {
                 PageView(selection: $selection) {
                     ForEach([1, 2], id: \.self) { index in
                         if index == 1 {
-                            RoundedRectangle(cornerRadius: 0, style: .continuous)
+                            RoundedRectangle(cornerRadius: 32, style: .continuous)
                                 .foregroundStyle(.ultraThickMaterial)
                                 .background(
                                     AsyncImage(url: URL(string: imageUrl)) { image in
                                         image
                                             .resizable()
+                                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                                     } placeholder: {
                                         Rectangle()
                                     }
                                 )
-                                .mask(
-                                    ArtimaskPath()
-                                        .stroke(.white.opacity(0.5), lineWidth: 1)
-                                        .fill(.black)
-                                )
-                                .overlay(alignment: .topLeading) {
+                                .overlay {
                                     ZStack(alignment: .bottomTrailing) {
-                                        VStack(alignment: .leading) {
-                                            Text(entry.text)
-                                                .foregroundColor(.white)
-                                                .font(.system(size: 15, weight: .semibold))
-                                                .multilineTextAlignment(.leading)
+                                        if !showPopover {
+                                            VStack {
+                                                Text(entry.text)
+                                                    .foregroundColor(.white)
+                                                    .font(.system(size: 15, weight: .semibold))
+                                                    .multilineTextAlignment(.leading)
+                                                    .lineLimit(11)
+                                            }
+                                            .padding(20)
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                        }
 
-                                            Spacer()
-
+                                        HStack {
                                             VStack(alignment: .leading) {
                                                 Text(entry.sound.appleData?.artistName ?? "Unknown")
                                                     .foregroundColor(.secondary)
                                                     .font(.system(size: 11, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
-
                                                 Text(entry.sound.appleData?.name ?? "Unknown")
                                                     .foregroundColor(.secondary)
                                                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                                                     .lineLimit(1)
                                             }
-                                            .padding(.trailing, 12)
-                                        }
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                                        .padding(20)
 
-                                        HeartPath()
-                                            .fill(.black)
-                                            .frame(width: 32, height: 30)
-                                            .frame(width: 32, height: 32)
-                                            .padding(18)
-                                            .shadow(radius: 4)
-                                            .rotationEffect(.degrees(8))
+                                            Spacer()
+
+                                            HeartPath()
+                                                .fill(.pink)
+                                                .frame(width: 28, height: 26)
+                                                .frame(height: 28)
+                                                .shadow(radius: 4)
+                                                .rotationEffect(.degrees(8))
+                                        }
+                                        .padding(20)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                     }
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
-                                
+                                .popover(isPresented: $showPopover, attachmentAnchor: .point(.topLeading), arrowEdge: .bottom) {
+                                    ScrollView {
+                                        Text(entry.text)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .font(.system(size: 15, weight: .regular))
+                                            .padding(10)
+                                    }
+                                    .frame(width: 272)
+                                    .presentationCompactAdaptation(.popover)
+                                    .presentationBackground(.clear)
+                                }
+                                .onTapGesture {
+                                    showPopover.toggle()
+                                }
+                                .onChange(of: showPopover) { _, value in
+                                    withAnimation(.spring()) {
+                                        showPopoverAnimate = value
+                                    }
+                                }
+                                .frame(height: showPopoverAnimate ? 68 : 280)
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
