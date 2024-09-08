@@ -13,6 +13,7 @@
 /// - Changed the swingOutMultiplier and subsequent xOffset padding multiplier.
 /// - Changed default corner radius.
 /// - Added a 3D rotation tilt.
+/// - Removed the ".CardStyle" property which added a Mask/RoundedRectangle to each card.
 
 import BigUIPaging
 import SwiftUI
@@ -41,7 +42,6 @@ struct CardDeckPreview: View {
                 }
             }
             .pageViewStyle(.customCardDeck)
-            .pageViewCardCornerRadius(32.0)
             .pageViewCardShadow(.visible)
         }
     }
@@ -96,7 +96,6 @@ struct CustomCardDeckPageView: View {
         ZStack {
             ForEach(pages) { page in
                 configuration.content(page.value)
-                    .cardStyle(cornerRadius: cornerRadius)
                     .zIndex(zIndex(for: page.index))
                     .offset(x: xOffset(for: page.index))
                     .scaleEffect(scale(for: page.index)) // Keep the scale effect for individual cards
@@ -243,18 +242,6 @@ extension EnvironmentValues {
     var cardShadowDisabled: Bool {
         get { self[CardShadowDisabled.self] }
         set { self[CardShadowDisabled.self] = newValue }
-    }
-}
-
-extension View {
-    @ViewBuilder
-    func cardStyle(cornerRadius: Double? = nil) -> some View {
-        mask(
-            RoundedRectangle(
-                cornerRadius: cornerRadius ?? 0.0, // Was 45
-                style: .continuous
-            )
-        )
     }
 }
 

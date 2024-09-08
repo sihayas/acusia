@@ -34,6 +34,7 @@ struct Entry: View {
                 WispView(entry: entry)
             } else {
                 ArtifactView(entry: entry, showReplySheet: $showReplySheet)
+                    .scaleEffect(animateReplySheet ? 0.4 : 1, anchor: .topLeading)
             }
         }
         .frame(maxWidth: .infinity, alignment: .bottomLeading)
@@ -130,6 +131,7 @@ struct ArtifactView: View {
                                                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                                                     .lineLimit(1)
                                             }
+                                            .padding(.trailing, 12)
                                         }
                                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                                         .padding(20)
@@ -144,6 +146,7 @@ struct ArtifactView: View {
                                     }
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
+                                
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)

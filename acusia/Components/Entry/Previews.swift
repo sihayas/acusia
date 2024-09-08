@@ -102,6 +102,20 @@ struct CardPreview: View {
                                     }
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
+                                .contextMenu {
+                                     Button(action: {
+                                         // Action 1
+                                     }) {
+                                         Text("Action 1")
+                                         Image(systemName: "heart")
+                                     }
+                                     Button(action: {
+                                         // Action 2
+                                     }) {
+                                         Text("Action 2")
+                                         Image(systemName: "square.and.arrow.up")
+                                     }
+                                 }
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
