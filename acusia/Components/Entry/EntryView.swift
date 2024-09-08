@@ -33,7 +33,7 @@ struct Entry: View {
             if entry.rating == 2 {
                 WispView(entry: entry)
             } else {
-                ArtifactCardView(entry: entry)
+                ArtifactView(entry: entry)
             }
         }
         .frame(maxWidth: .infinity, alignment: .bottomLeading)
@@ -94,18 +94,60 @@ struct Entry: View {
     }
 }
 
-struct ArtifactCardView: View {
+struct SheetHeightModifier: ViewModifier {
+    @Binding var height: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .fixedSize(horizontal: false, vertical: true)
+            .background(
+            GeometryReader { reader -> Color in
+                height = reader.size.height
+                print(height)
+                return Color.clear
+            }
+        )
+    }
+}
+
+struct PresentationDetentModifier: ViewModifier {
+    @Binding var height: CGFloat
+    
+    func body(content: Content) -> some View {
+        content
+            .modifier(SheetHeightModifier(height: $height))
+            .presentationDetents([.height(height)])
+    }
+}
+
+extension View {
+    func flexiblePresentationDetents(height: Binding<CGFloat>) -> some View {
+        self.modifier(PresentationDetentModifier(height: height))
+    }
+}
+
+struct ArtifactView: View {
     @Namespace private var namespace
     let entry: APIEntry
     @State private var selection: Int = 1
+    @State private var showSheet = false
+    @State var sheetHeight: CGFloat = 0
 
     var body: some View {
-        let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
-
+        let imageUrl = entry.sound.appleData?.artworkUrl
+            .replacingOccurrences(of: "{w}", with: "720")
+            .replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
+        
         VStack(alignment: .leading) {
+            Text(entry.author.username)
+                .foregroundColor(.secondary)
+                .font(.system(size: 13, weight: .regular))
+                .multilineTextAlignment(.leading)
+                .padding(.leading, 64)
+                .padding(.bottom, -2)
+
             HStack(alignment: .bottom, spacing: 8) {
                 AvatarView(size: 36, imageURL: entry.author.image)
-                    .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
                     .zIndex(1)
 
                 // Card stack
@@ -113,7 +155,7 @@ struct ArtifactCardView: View {
                     ForEach([1, 2], id: \.self) { index in
                         if index == 1 {
                             RoundedRectangle(cornerRadius: 0, style: .continuous)
-                                .foregroundStyle(.thickMaterial)
+                                .foregroundStyle(.ultraThickMaterial)
                                 .background(
                                     AsyncImage(url: URL(string: imageUrl)) { image in
                                         image
@@ -162,6 +204,9 @@ struct ArtifactCardView: View {
                                     }
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
+                                .onTapGesture {
+                                    showSheet.toggle()
+                                }
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
@@ -183,30 +228,6 @@ struct ArtifactCardView: View {
                 .pageViewCardCornerRadius(32.0)
                 .pageViewCardShadow(.visible)
                 .frame(width: 204, height: 280)
-
-                VStack {
-                    if selection == 2 {
-                        Button {
-                            // Play the sound
-                        } label: {
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 15, weight: .bold))
-                                .foregroundColor(.white)
-                                .frame(width: 36, height: 36)
-                                .background(
-                                    ZStack {
-                                        // Blur effect
-                                        Color.clear.background(.thinMaterial)
-                                            .clipShape(Circle())
-                                        Color.white.opacity(0.1)
-                                            .clipShape(Circle())
-                                    }
-                                )
-                        }
-                        .transition(.blurReplace)
-                    }
-                }
-                .animation(.spring(), value: selection)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
@@ -234,6 +255,64 @@ struct ArtifactCardView: View {
             }
         }
         .padding(.horizontal, 24)
+        .fittedSheet(isPresented: $showSheet) {
+            VStack(spacing: 32) {
+                VStack {
+                    HStack {
+                        AsyncImage(url: URL(string: entry.author.image)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            Rectangle()
+                        }
+                        .frame(width: 36, height: 36)
+                        .clipShape(Circle())
+                        
+                        
+                        HeartPath()
+                            .fill(.black)
+                            .frame(width: 32, height: 30)
+                            .frame(width: 32, height: 32)
+                            .rotationEffect(.degrees(8))
+                    }
+                    .shadow(radius: 4)
+                    
+                    Text("Rinzler")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.secondary)
+                }
+
+                Text(entry.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .font(.system(size: 15, weight: .regular))
+
+                    AsyncImage(url: URL(string: imageUrl)) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    } placeholder: {
+                        Rectangle()
+                    }
+                    .frame(width: 204, height: 204)
+                    .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                    .shadow(color: Color.black.opacity(0.5), radius: 32, x: 0, y: 16)
+                    .padding(.bottom, 24)
+                    
+                VStack {
+                    Text(entry.sound.appleData?.artistName ?? "Unknown")
+                        .font(.system(size: 17, weight: .regular))
+                        .foregroundColor(.secondary)
+
+                    Text(entry.sound.appleData?.name ?? "Unknown")
+                        .font(.system(size: 21, weight: .bold))
+                        .foregroundColor(.primary)
+                }
+            }
+            .padding([.horizontal], 24)
+            .padding([.top], 32)
+            .frame(alignment: .top)
+        }
     }
 
     var indicatorSelection: Binding<Int> {
@@ -248,72 +327,136 @@ struct ArtifactCardView: View {
 struct WispView: View {
     @Namespace private var namespace
     let entry: APIEntry
+    let type: String = "none"
 
     var body: some View {
         let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
 
-        ZStack(alignment: .bottomLeading) {
-            HStack(alignment: .bottom) {
-                AvatarView(size: 36, imageURL: entry.author.image)
-                    .shadow(radius: 4)
-
-                HStack {
-                    // Audiowave image in white
-                    Image(systemName: "ear.badge.waveform")
-                        .symbolEffect(.variableColor.iterative, options: .repeating)
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.secondary)
-
-                    AsyncImage(url: URL(string: imageUrl)) { image in
-                        image
-                            .resizable()
-                    } placeholder: {
-                        Rectangle()
+        VStack(alignment: .leading) {
+            Text(entry.author.username)
+                .foregroundColor(.secondary)
+                .font(.system(size: 13, weight: .regular))
+                .multilineTextAlignment(.leading)
+                .padding(.leading, 40)
+                .padding(.bottom, -2)
+            
+            ZStack(alignment: .bottomLeading) {
+                HStack(alignment: .bottom) {
+                    AvatarView(size: 36, imageURL: entry.author.image)
+                    
+                    HStack {
+                        // Audiowave image in white
+                        Image(systemName: "waveform")
+                            .symbolEffect(.variableColor.iterative, options: .repeating)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(.secondary)
+                        
+                        AsyncImage(url: URL(string: imageUrl)) { image in
+                            image
+                                .resizable()
+                        } placeholder: {
+                            Rectangle()
+                        }
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .frame(width: 32, height: 32)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                        )
+                        
+                        VStack(alignment: .leading) {
+                            Text(entry.sound.appleData?.artistName ?? "Unknown")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 13, weight: .regular, design: .rounded))
+                            Text(entry.sound.appleData?.name ?? "Unknown")
+                                .foregroundColor(.white)
+                                .font(.system(size: 13, weight: .regular, design: .rounded))
+                        }
+                        .lineLimit(1) // Restrict to a single line
+                        .truncationMode(.tail) // Truncate if it's too long
+                        
+                        Spacer()
+                        
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(.secondary)
                     }
-                    .aspectRatio(contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .frame(width: 32, height: 32)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(.white.opacity(0.1), lineWidth: 1)
-                    )
-
-                    VStack(alignment: .leading) {
-                        Text(entry.sound.appleData?.name ?? "Unknown")
+                }
+                
+                if type == "reaction" {
+                    ZStack(alignment: .bottomTrailing) {
+                        Circle()
+                            .fill(Color.pink)
+                            .frame(width: 5, height: 5)
+                            .offset(x: -8, y: 6)
+                        Circle()
+                            .fill(Color.pink)
+                            .frame(width: 12, height: 12)
+                            .offset(x: 2, y: 2)
+                        Circle()
+                            .fill(Color.pink)
+                            .frame(width: 32, height: 32)
+                            .overlay(
+                                Image(systemName: "heart.fill")
+                                    .font(.system(size: 15))
+                                    .foregroundColor(.white)
+                            )
+                    }
+                    .padding(.bottom, 36)
+                    .padding(.leading, 20)
+                } else {
+                    ZStack(alignment: .bottomLeading) {
+                        Circle()
+                            .fill(Color(UIColor.systemGray6))
+                            .frame(width: 5, height: 5)
+                            .offset(x: 8, y: 6)
+                        Circle()
+                            .fill(Color(UIColor.systemGray6))
+                            .frame(width: 12, height: 12)
+                            .offset(x: -2, y: 2)
+                        Text(entry.text)
                             .foregroundColor(.white)
-                            .font(.system(size: 15, weight: .regular, design: .rounded))
+                            .font(.system(size: 15, weight: .regular))
+                            .multilineTextAlignment(.leading)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 10)
+                            .background(Color(UIColor.systemGray6),
+                                        in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
-                    .lineLimit(1) // Restrict to a single line
-                    .truncationMode(.tail) // Truncate if it's too long
+                    .padding(.bottom, 40)
+                    .padding(.leading, 28)
+                    .padding(.trailing, 64)
+                }
+                
+            }
+            
+            if !sampleComments.isEmpty {
+                HStack(spacing: 4) {
+                    VStack {
+                        BottomCurvePath()
+                            .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                            .frame(maxWidth: 36, maxHeight: 18)
 
-                    Spacer()
+                        Spacer()
+                    }
+                    .frame(width: 36, height: 36)
 
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 15, weight: .bold))
+                    ZStack {
+                        ForEach(0 ..< 3) { index in
+                            AvatarView(size: 14, imageURL: "https://picsum.photos/200/300")
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
+                                .offset(tricornOffset(for: index, radius: 10))
+                        }
+                    }
+                    .frame(width: 36, height: 36)
+                    
+                    Text("33")
                         .foregroundColor(.secondary)
+                        .font(.system(size: 13, weight: .semibold))
                 }
             }
-
-            ZStack(alignment: .bottomLeading) {
-                Circle()
-                    .fill(Color(UIColor.systemGray6))
-                    .frame(width: 5, height: 5)
-                    .offset(x: 8, y: 6)
-                Circle()
-                    .fill(Color(UIColor.systemGray6))
-                    .frame(width: 12, height: 12)
-                    .offset(x: -2, y: 2)
-                Text(entry.text)
-                    .foregroundColor(.white)
-                    .font(.system(size: 15, weight: .regular))
-                    .multilineTextAlignment(.leading)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(Color(UIColor.systemGray6),
-                                in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            }
-            .padding(.bottom, 40)
-            .padding(.leading, 28)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.horizontal, 24)

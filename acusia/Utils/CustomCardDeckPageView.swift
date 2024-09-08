@@ -8,11 +8,11 @@
 // The original code had a default scaleEffect applied to it. This
 // remedies that.
 //
-// Changes:
-// - Removed the scaleEffect modifier from the CustomCardDeckPageView
-// - Changed the swingOutMultiplier and subsequent xOffset padding multiplier.
-// - Changed default corner radius.
-// - Added a 3D rotation tilt.
+/// Changes:
+/// - Removed the scaleEffect modifier from the CustomCardDeckPageView
+/// - Changed the swingOutMultiplier and subsequent xOffset padding multiplier.
+/// - Changed default corner radius.
+/// - Added a 3D rotation tilt.
 
 import BigUIPaging
 import SwiftUI
