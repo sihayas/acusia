@@ -1,10 +1,42 @@
 //
-//  Reply.swift
+//  ReplySheet.swift
 //  acusia
 //
-//  Created by decoherence on 8/25/24.
+//  Created by decoherence on 9/8/24.
 //
 import SwiftUI
+
+struct ReplySheetView: View {
+    var body: some View {
+        ZStack {
+            UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
+                .stroke(.white.opacity(0.1), lineWidth: 1)
+                .foregroundStyle(.clear)
+                .background(
+                    BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
+                        .edgesIgnoringSafeArea(.all)
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .padding(1)
+                .ignoresSafeArea()
+
+            ScrollView {
+                LazyVStack(alignment: .leading) {
+                    RepliesView(replies: sampleComments) // The content you want to display
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 32)
+
+                Spacer()
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .presentationDetents([.fraction(0.85), .large])
+        .presentationCornerRadius(45)
+        .presentationBackground(.clear)
+        .presentationDragIndicator(.visible)
+    }
+}
 
 struct RepliesView: View {
     @State private var showReplyChildren: Reply? = nil

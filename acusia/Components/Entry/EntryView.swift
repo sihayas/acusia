@@ -72,7 +72,6 @@ struct ArtifactView: View {
     let entry: APIEntry
     @Binding var showReplySheet: Bool
     @State private var selection: Int = 1
-    @State private var showSheet = false
 
     var body: some View {
         let imageUrl = entry.sound.appleData?.artworkUrl
@@ -145,9 +144,6 @@ struct ArtifactView: View {
                                     }
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
-                                .onTapGesture {
-                                    showSheet.toggle()
-                                }
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
@@ -198,39 +194,8 @@ struct ArtifactView: View {
             }
         }
         .padding(.horizontal, 24)
-        .fittedSheet(isPresented: $showSheet) {
-            DetailedEntrySheet(entry: entry, imageUrl: imageUrl)
-        }
         .sheet(isPresented: $showReplySheet) {
-            ZStack {
-                UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
-                    .stroke(.white.opacity(0.1), lineWidth: 1)
-                    .foregroundStyle(.clear)
-                    .background(
-                        BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
-                            .edgesIgnoringSafeArea(.all)
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .padding(1)
-                    .ignoresSafeArea()
-
-                // Sheet content
-                ScrollView {
-                    // Content
-                    LazyVStack(alignment: .leading) {
-                        RepliesView(replies: sampleComments)
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.top, 32)
-
-                    Spacer()
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .presentationDetents([.fraction(0.85), .large])
-            .presentationCornerRadius(45)
-            .presentationBackground(.clear)
-            .presentationDragIndicator(.visible)
+            ReplySheetView()
         }
     }
 
