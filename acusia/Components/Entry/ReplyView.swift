@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct CommentsListView: View {
+struct RepliesView: View {
     @State private var showReplyChildren: Reply? = nil
 
     var replies: [Reply]
@@ -126,7 +126,7 @@ struct ReplyView: View {
                 }
 
                 if showReplyChildren == reply {
-                    CommentsListView(replies: reply.children)
+                    RepliesView(replies: reply.children)
                 }
             }
         }

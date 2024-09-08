@@ -44,6 +44,10 @@ struct DetailedEntrySheet: View {
             .frame(width: 204, height: 204)
             .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
             .shadow(color: Color.black.opacity(0.5), radius: 32, x: 0, y: 16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    .stroke(.white.opacity(0.1), lineWidth: 1)
+            )
             .overlay(alignment: .bottomTrailing) {
                 HeartPath()
                     .stroke(.white.opacity(0.1), lineWidth: 1)
