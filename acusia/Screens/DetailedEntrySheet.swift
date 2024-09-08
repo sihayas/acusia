@@ -25,14 +25,15 @@ struct DetailedEntrySheet: View {
                 .clipShape(Circle())
                 .shadow(radius: 4)
 
-                Text("Rinzler")
-                    .font(.system(size: 15, weight: .semibold))
+                Text(entry.author.username)
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(.secondary)
             }
 
             Text(entry.text)
                 .fixedSize(horizontal: false, vertical: true)
-                .font(.system(size: 15, weight: .regular))
+                .font(.system(size: 15, weight: .semibold))
+                .multilineTextAlignment(.center)
 
             AsyncImage(url: URL(string: imageUrl)) { image in
                 image
@@ -57,7 +58,6 @@ struct DetailedEntrySheet: View {
                     .padding(24)
                     .rotationEffect(.degrees(8))
             }
-            .padding(.bottom, 12)
 
             VStack {
                 Text(entry.sound.appleData?.artistName ?? "Unknown")

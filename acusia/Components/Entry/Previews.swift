@@ -13,7 +13,7 @@ struct EntryPreview: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                CardPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/26/24/07/2624075e-51b9-60a4-bc11-93bbdde0f36c/103097.jpg/600x600bb.jpg", name: "Why Bonnie?", artistName: "Wish on the Bone", text: "‘Wish On The Bone’ is out now ⛓️‍💥🌱 I’m truly at a loss for words — so much love, change, & passion went into this album. My hope is that you can feel some of that love when listening to these songs & that it gives you strength to take on the day. Or at least, bop along🦋", avatar: "https://i.pinimg.com/474x/2d/49/3c/2d493ca53e6fee2a0a9017bc2cdb22f3.jpg")
+                CardPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/26/24/07/2624075e-51b9-60a4-bc11-93bbdde0f36c/103097.jpg/600x600bb.jpg", name: "Why Bonnie?", artistName: "Wish on the Bone", text: "‘Wish On The Bone’ is out now ⛓️‍💥🌱 I’m truly at a loss for words — so much love, change, & passion went into this album. My hope is that you can feel some of that love when listening to these songs & that it gives you strength to take on the day. Or at least, bop along🦋", avatar: "https://i.pinimg.com/474x/8d/7f/a7/8d7fa70fa5ec7919737e3868afa96675.jpg")
 
                 CardPreview(imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f7/8c/19/f78c1951-ced5-fea6-251b-50914d96fd62/00196922948305_Cover.jpg/600x600bb.jpg", name: "Charm", artistName: "Clairo", text: "It's a shame because this album is almost pretty good, but it's so flat and uninteresting that I can't recommend it. The whole album is just begging to be sampled, and that feels like a compliment but really it just means that it's inoffensive enough that somebody could rap over it and it wouldn't clash. The mix is sort of nice, but the high end is completely lacking, and I feel like they were going for a warm fuzzy vibe but it doesn't quite hit that either. The vocals are so understated that they may as well not be there at all. Maybe it would be a better album if they weren't.", avatar: "https://i.pinimg.com/474x/2d/49/3c/2d493ca53e6fee2a0a9017bc2cdb22f3.jpg")
 
@@ -170,13 +170,14 @@ struct CardPreview: View {
                     .shadow(radius: 4)
 
                     Text("Rinzler")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.system(size: 15, weight: .medium))
                         .foregroundColor(.secondary)
                 }
 
                 Text(text)
                     .fixedSize(horizontal: false, vertical: true)
-                    .font(.system(size: 15, weight: .regular))
+                    .font(.system(size: 15, weight: .semibold))
+                    .multilineTextAlignment(.center)
 
                 AsyncImage(url: URL(string: imageUrl)) { image in
                     image
@@ -188,6 +189,10 @@ struct CardPreview: View {
                 .frame(width: 204, height: 204)
                 .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                 .shadow(color: Color.black.opacity(0.5), radius: 32, x: 0, y: 16)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 32, style: .continuous)
+                        .stroke(.white.opacity(0.1), lineWidth: 1)
+                )
                 .overlay(alignment: .bottomTrailing) {
                     HeartPath()
                         .stroke(.white.opacity(0.1), lineWidth: 1)
@@ -197,7 +202,6 @@ struct CardPreview: View {
                         .padding(24)
                         .rotationEffect(.degrees(8))
                 }
-                .padding(.bottom, 12)
 
                 VStack {
                     Text(artistName)

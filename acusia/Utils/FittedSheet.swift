@@ -25,17 +25,6 @@ struct FittedSheetModifier<SheetContent: View>: ViewModifier {
         content
             .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
                 ZStack {
-                    UnevenRoundedRectangle(topLeadingRadius: 32, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 32, style: .continuous)
-                        .stroke(.white.opacity(0.1), lineWidth: 1)
-                        .foregroundStyle(.clear)
-                        .background(
-                            BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
-                                .edgesIgnoringSafeArea(.all)
-                        )
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        .padding(1)
-                        .ignoresSafeArea()
-
                     // Sheet content
                     sheetContent()
                         .overlay(
@@ -49,9 +38,9 @@ struct FittedSheetModifier<SheetContent: View>: ViewModifier {
                         }
                 }
                 .presentationDetents([.height(size.height), .large])
-                .presentationDragIndicator(.hidden)
+                .presentationDragIndicator(.visible)
                 .presentationCornerRadius(32)
-                .presentationBackground(.clear)
+                .presentationBackground(.regularMaterial)
             }
     }
 }

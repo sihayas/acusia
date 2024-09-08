@@ -139,7 +139,7 @@ struct ArtifactView: View {
                                             .fill(.black)
                                             .frame(width: 32, height: 30)
                                             .frame(width: 32, height: 32)
-                                            .padding(8)
+                                            .padding(18)
                                             .shadow(radius: 4)
                                             .rotationEffect(.degrees(8))
                                     }
