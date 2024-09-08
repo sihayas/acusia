@@ -19,10 +19,10 @@ struct FittedSheetModifier<SheetContent: View>: ViewModifier {
     let onDismiss: () -> Void
     let sheetContent: () -> SheetContent
     
-    @State private var size: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 600) // Initial size
+    @State private var size: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 600)
     
     func body(content: Content) -> some View {
-        content // The original view that this modifier is applied to
+        content
             .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
                 sheetContent()
                     .overlay(
@@ -34,10 +34,48 @@ struct FittedSheetModifier<SheetContent: View>: ViewModifier {
                     .onPreferenceChange(SizePreferenceKey.self) { newSize in
                         size = newSize
                     }
+                    .background(
+                        BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
+                            .edgesIgnoringSafeArea(.all)
+                    )
                     .presentationDetents([.height(size.height), .large])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(32)
-                    .presentationBackground(.thinMaterial)
+                    .presentationBackground(.clear)
             }
     }
 }
+
+
+//
+//struct SheetHeightModifier: ViewModifier {
+//    @Binding var height: CGFloat
+//
+//    func body(content: Content) -> some View {
+//        content
+//            .fixedSize(horizontal: false, vertical: true)
+//            .background(
+//            GeometryReader { reader -> Color in
+//                height = reader.size.height
+//                print(height)
+//                return Color.clear
+//            }
+//        )
+//    }
+//}
+//
+//struct PresentationDetentModifier: ViewModifier {
+//    @Binding var height: CGFloat
+//    
+//    func body(content: Content) -> some View {
+//        content
+//            .modifier(SheetHeightModifier(height: $height))
+//            .presentationDetents([.height(height)])
+//    }
+//}
+//
+//extension View {
+//    func flexiblePresentationDetents(height: Binding<CGFloat>) -> some View {
+//        self.modifier(PresentationDetentModifier(height: height))
+//    }
+//}

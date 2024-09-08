@@ -94,50 +94,17 @@ struct Entry: View {
     }
 }
 
-struct SheetHeightModifier: ViewModifier {
-    @Binding var height: CGFloat
-
-    func body(content: Content) -> some View {
-        content
-            .fixedSize(horizontal: false, vertical: true)
-            .background(
-            GeometryReader { reader -> Color in
-                height = reader.size.height
-                print(height)
-                return Color.clear
-            }
-        )
-    }
-}
-
-struct PresentationDetentModifier: ViewModifier {
-    @Binding var height: CGFloat
-    
-    func body(content: Content) -> some View {
-        content
-            .modifier(SheetHeightModifier(height: $height))
-            .presentationDetents([.height(height)])
-    }
-}
-
-extension View {
-    func flexiblePresentationDetents(height: Binding<CGFloat>) -> some View {
-        self.modifier(PresentationDetentModifier(height: height))
-    }
-}
-
 struct ArtifactView: View {
     @Namespace private var namespace
     let entry: APIEntry
     @State private var selection: Int = 1
     @State private var showSheet = false
-    @State var sheetHeight: CGFloat = 0
 
     var body: some View {
         let imageUrl = entry.sound.appleData?.artworkUrl
             .replacingOccurrences(of: "{w}", with: "720")
             .replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
-        
+
         VStack(alignment: .leading) {
             Text(entry.author.username)
                 .foregroundColor(.secondary)
@@ -256,62 +223,7 @@ struct ArtifactView: View {
         }
         .padding(.horizontal, 24)
         .fittedSheet(isPresented: $showSheet) {
-            VStack(spacing: 32) {
-                VStack {
-                    HStack {
-                        AsyncImage(url: URL(string: entry.author.image)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            Rectangle()
-                        }
-                        .frame(width: 36, height: 36)
-                        .clipShape(Circle())
-                        
-                        
-                        HeartPath()
-                            .fill(.black)
-                            .frame(width: 32, height: 30)
-                            .frame(width: 32, height: 32)
-                            .rotationEffect(.degrees(8))
-                    }
-                    .shadow(radius: 4)
-                    
-                    Text("Rinzler")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundColor(.secondary)
-                }
-
-                Text(entry.text)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .font(.system(size: 15, weight: .regular))
-
-                    AsyncImage(url: URL(string: imageUrl)) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-                        Rectangle()
-                    }
-                    .frame(width: 204, height: 204)
-                    .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                    .shadow(color: Color.black.opacity(0.5), radius: 32, x: 0, y: 16)
-                    .padding(.bottom, 24)
-                    
-                VStack {
-                    Text(entry.sound.appleData?.artistName ?? "Unknown")
-                        .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.secondary)
-
-                    Text(entry.sound.appleData?.name ?? "Unknown")
-                        .font(.system(size: 21, weight: .bold))
-                        .foregroundColor(.primary)
-                }
-            }
-            .padding([.horizontal], 24)
-            .padding([.top], 32)
-            .frame(alignment: .top)
+            DetailedEntrySheet(entry: entry, imageUrl: imageUrl)
         }
     }
 
@@ -339,18 +251,18 @@ struct WispView: View {
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 40)
                 .padding(.bottom, -2)
-            
+
             ZStack(alignment: .bottomLeading) {
                 HStack(alignment: .bottom) {
                     AvatarView(size: 36, imageURL: entry.author.image)
-                    
+
                     HStack {
                         // Audiowave image in white
                         Image(systemName: "waveform")
                             .symbolEffect(.variableColor.iterative, options: .repeating)
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(.secondary)
-                        
+
                         AsyncImage(url: URL(string: imageUrl)) { image in
                             image
                                 .resizable()
@@ -364,7 +276,7 @@ struct WispView: View {
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
                                 .stroke(Color.white.opacity(0.1), lineWidth: 1)
                         )
-                        
+
                         VStack(alignment: .leading) {
                             Text(entry.sound.appleData?.artistName ?? "Unknown")
                                 .foregroundColor(.secondary)
@@ -375,15 +287,15 @@ struct WispView: View {
                         }
                         .lineLimit(1) // Restrict to a single line
                         .truncationMode(.tail) // Truncate if it's too long
-                        
+
                         Spacer()
-                        
+
                         Image(systemName: "ellipsis")
                             .font(.system(size: 15, weight: .bold))
                             .foregroundColor(.secondary)
                     }
                 }
-                
+
                 if type == "reaction" {
                     ZStack(alignment: .bottomTrailing) {
                         Circle()
@@ -428,9 +340,8 @@ struct WispView: View {
                     .padding(.leading, 28)
                     .padding(.trailing, 64)
                 }
-                
             }
-            
+
             if !sampleComments.isEmpty {
                 HStack(spacing: 4) {
                     VStack {
@@ -451,7 +362,7 @@ struct WispView: View {
                         }
                     }
                     .frame(width: 36, height: 36)
-                    
+
                     Text("33")
                         .foregroundColor(.secondary)
                         .font(.system(size: 13, weight: .semibold))
