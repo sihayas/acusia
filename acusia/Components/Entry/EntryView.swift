@@ -68,12 +68,32 @@ struct Entry: View {
     }
 }
 
+
+class EmojiTextField: UITextField {
+    override var textInputMode: UITextInputMode? {
+        .activeInputModes.first(where: { $0.primaryLanguage == "emoji" })
+    }
+}
+
+struct EmojiTextFieldWrapper: UIViewRepresentable {
+    func makeUIView(context: Context) -> EmojiTextField {
+        let textField = EmojiTextField()
+        textField.placeholder = "Enter Emoji"
+        return textField
+    }
+
+    func updateUIView(_ uiView: EmojiTextField, context: Context) {
+        // Update any properties if needed
+    }
+}
+
 struct ArtifactView: View {
     @Namespace private var namespace
     let entry: APIEntry
     @Binding var showReplySheet: Bool
     @State private var showPopover = false
     @State private var showPopoverAnimate = false
+    @State private var showEmojiTextField = false
     @State private var selection: Int = 1
 
     var body: some View {
@@ -122,14 +142,14 @@ struct ArtifactView: View {
                                             .mask(
                                                 LinearGradient(
                                                     gradient: Gradient(stops: [
-                                                        .init(color: .black, location: 0),      // Fully visible
+                                                        .init(color: .black, location: 0),
                                                         .init(color: .black, location: 0.75),
                                                         .init(color: .clear, location: 0.825)
                                                     ]),
                                                     startPoint: .top,
                                                     endPoint: .bottom
                                                 )
-                                                .frame(height: .infinity) // Mask takes the full height of the view
+                                                .frame(height: .infinity)
                                             )
                                         }
 
@@ -156,6 +176,14 @@ struct ArtifactView: View {
                                         }
                                         .padding(20)
                                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                    }
+                                }
+                                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
+                                .contextMenu {
+                                    Button {
+                                        showEmojiTextField = true
+                                    } label: {
+                                        Label("Open Emoji Keyboard", systemImage: "keyboard")
                                     }
                                 }
                                 .popover(isPresented: $showPopover, attachmentAnchor: .point(.topLeading), arrowEdge: .bottom) {
@@ -190,6 +218,7 @@ struct ArtifactView: View {
                                     }
                                 }
                                 .frame(height: showPopoverAnimate ? 68 : 280)
+
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
@@ -212,6 +241,11 @@ struct ArtifactView: View {
                 .frame(width: 204, height: 280)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            
+//            if showEmojiTextField {
+//                EmojiTextFieldWrapper()
+//                    .frame(height: 40) // Adjust the size as needed
+//            }
 
             if !sampleComments.isEmpty {
                 HStack(spacing: 4) {

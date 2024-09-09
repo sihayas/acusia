@@ -32,6 +32,7 @@ struct CardPreview: View {
     @State private var selection: Int = 1
     @State private var showPopover = false
     @State private var showPopoverAnimate = false
+    @State private var showEmojiTextField = false
 
     let imageUrl: String
     let name: String
@@ -117,11 +118,19 @@ struct CardPreview: View {
                                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                     }
                                 }
+                                .contextMenu {
+                                    Button {
+                                        // Trigger the emoji text field to appear or take focus
+                                        showEmojiTextField = true
+                                    } label: {
+                                        Label("Open Emoji Keyboard", systemImage: "keyboard")
+                                    }
+                                }
                                 .popover(isPresented: $showPopover, attachmentAnchor: .point(.topLeading), arrowEdge: .bottom) {
                                     ScrollView {
                                         Text(text)
                                             .fixedSize(horizontal: false, vertical: true)
-                                            .font(.system(size: 15, weight: .semibold))
+                                            .font(.system(size: 15, weight: .regular))
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 8)
                                             .foregroundColor(.primary)
@@ -296,6 +305,13 @@ struct WispPreview: View {
                             .padding(.vertical, 10)
                             .background(Color(UIColor.systemGray6),
                                         in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .contextMenu {
+                                Button {
+                                    // Add this item to a list of favorites.
+                                } label: {
+                                    Label("Open Emoji Keyboard", systemImage: "keyboard")
+                                }
+                            }
                     }
                     .padding(.bottom, 40)
                     .padding(.leading, 28)

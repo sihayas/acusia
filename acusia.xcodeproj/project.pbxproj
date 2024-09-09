@@ -41,6 +41,7 @@
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
 		CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */; };
 		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
+		CDD77D9B2C8F8E4100D5BCC1 /* StickerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD77D9A2C8F8E3A00D5BCC1 /* StickerPreview.swift */; };
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
 		CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */; };
@@ -147,6 +148,7 @@
 		CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWallView.swift; sourceTree = "<group>"; };
 		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
+		CDD77D9A2C8F8E3A00D5BCC1 /* StickerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerPreview.swift; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -318,6 +320,15 @@
 			path = IridescentHolo;
 			sourceTree = "<group>";
 		};
+		CDD77D992C8F8E2200D5BCC1 /* Stickers */ = {
+			isa = PBXGroup;
+			children = (
+				CDD77D9A2C8F8E3A00D5BCC1 /* StickerPreview.swift */,
+				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
+			);
+			path = Stickers;
+			sourceTree = "<group>";
+		};
 		CDDED7292C194C8400958B39 = {
 			isa = PBXGroup;
 			children = (
@@ -407,7 +418,7 @@
 				CD4332522C82B205009ADBF0 /* Entry */,
 				CD4332532C82B216009ADBF0 /* Home */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
-				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
+				CDD77D992C8F8E2200D5BCC1 /* Stickers */,
 				CDE14A442C8118C400D0F172 /* PathViews.swift */,
 				CD4332502C82B146009ADBF0 /* SearchBar.swift */,
 				CDA330AD2C39EFEE00622779 /* TapbackView.swift */,
@@ -641,6 +652,7 @@
 				CD43324F2C82A856009ADBF0 /* RecentlyPlayedView.swift in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
 				CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */,
+				CDD77D9B2C8F8E4100D5BCC1 /* StickerPreview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
