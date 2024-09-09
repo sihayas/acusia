@@ -250,8 +250,8 @@ struct WispPreview: View {
                                 .foregroundColor(.white)
                                 .font(.system(size: 13, weight: .regular, design: .rounded))
                         }
-                        .lineLimit(1) // Restrict to a single line
-                        .truncationMode(.tail) // Truncate if it's too long
+                        .lineLimit(1)
+                        .truncationMode(.tail)
 
                         Spacer()
                     }
