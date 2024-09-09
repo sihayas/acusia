@@ -182,7 +182,7 @@ struct CustomCardDeckPageView: View {
         return -abs(position)
     }
     
-    // Originally, the padding wasa set to containerSize.width / 10. But to show more of the cards "behind",
+    // Originally, the padding was set to 10. But to show more of the cards "behind",
     // decrease the value. Subsequently, you have to change the swingOutMultiplier to multiply by double the new value.
     func xOffset(for index: Int) -> Double {
         let cardPaddingFactor = 2.0 // Adjust the value to show more cards "behind"

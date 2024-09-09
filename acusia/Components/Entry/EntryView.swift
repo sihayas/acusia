@@ -116,10 +116,21 @@ struct ArtifactView: View {
                                                     .foregroundColor(.white)
                                                     .font(.system(size: 15, weight: .semibold))
                                                     .multilineTextAlignment(.leading)
-                                                    .lineLimit(11)
                                             }
-                                            .padding(20)
+                                            .padding([.horizontal, .top], 20)
                                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                            .mask(
+                                                LinearGradient(
+                                                    gradient: Gradient(stops: [
+                                                        .init(color: .black, location: 0),      // Fully visible
+                                                        .init(color: .black, location: 0.75),
+                                                        .init(color: .clear, location: 0.825)
+                                                    ]),
+                                                    startPoint: .top,
+                                                    endPoint: .bottom
+                                                )
+                                                .frame(height: .infinity) // Mask takes the full height of the view
+                                            )
                                         }
 
                                         HStack {
@@ -152,18 +163,30 @@ struct ArtifactView: View {
                                         Text(entry.text)
                                             .fixedSize(horizontal: false, vertical: true)
                                             .font(.system(size: 15, weight: .regular))
-                                            .padding(10)
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 12)
+                                            .foregroundColor(.primary)
                                     }
                                     .frame(width: 272)
                                     .presentationCompactAdaptation(.popover)
-                                    .presentationBackground(.clear)
+                                    .presentationBackground(.ultraThinMaterial)
                                 }
                                 .onTapGesture {
-                                    showPopover.toggle()
+                                    withAnimation(.spring()) {
+                                        showPopoverAnimate.toggle()
+                                    }
+
+                                    // Delay the popover presentation or dismissal after the animation starts
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                        showPopover = showPopoverAnimate
+                                    }
                                 }
                                 .onChange(of: showPopover) { _, value in
-                                    withAnimation(.spring()) {
-                                        showPopoverAnimate = value
+                                    // If the popover is dismissed (showPopover = false), reverse the animation state
+                                    if !value {
+                                        withAnimation(.spring()) {
+                                            showPopoverAnimate = false
+                                        }
                                     }
                                 }
                                 .frame(height: showPopoverAnimate ? 68 : 280)
@@ -284,10 +307,6 @@ struct WispView: View {
                         .truncationMode(.tail) // Truncate if it's too long
 
                         Spacer()
-
-                        Image(systemName: "ellipsis")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(.secondary)
                     }
                 }
 

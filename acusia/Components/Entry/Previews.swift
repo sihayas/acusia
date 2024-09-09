@@ -75,10 +75,21 @@ struct CardPreview: View {
                                                     .foregroundColor(.white)
                                                     .font(.system(size: 15, weight: .semibold))
                                                     .multilineTextAlignment(.leading)
-                                                    .lineLimit(11)
                                             }
-                                            .padding(20)
+                                            .padding([.horizontal, .top], 20)
                                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                            .mask(
+                                                LinearGradient(
+                                                    gradient: Gradient(stops: [
+                                                        .init(color: .black, location: 0),
+                                                        .init(color: .black, location: 0.75),
+                                                        .init(color: .clear, location: 0.825)
+                                                    ]),
+                                                    startPoint: .top,
+                                                    endPoint: .bottom
+                                                )
+                                                .frame(height: .infinity)
+                                            )
                                         }
 
                                         HStack {
@@ -110,19 +121,28 @@ struct CardPreview: View {
                                     ScrollView {
                                         Text(text)
                                             .fixedSize(horizontal: false, vertical: true)
-                                            .font(.system(size: 15, weight: .regular))
-                                            .padding(10)
+                                            .font(.system(size: 15, weight: .semibold))
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 8)
+                                            .foregroundColor(.primary)
                                     }
                                     .frame(width: 272)
                                     .presentationCompactAdaptation(.popover)
-                                    .presentationBackground(.clear)
+                                    .presentationBackground(.ultraThinMaterial)
                                 }
                                 .onTapGesture {
-                                    showPopover.toggle()
+                                    withAnimation(.spring()) {
+                                        showPopoverAnimate.toggle()
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                        showPopover = showPopoverAnimate
+                                    }
                                 }
                                 .onChange(of: showPopover) { _, value in
-                                    withAnimation(.spring()) {
-                                        showPopoverAnimate = value
+                                    if !value {
+                                        withAnimation(.spring()) {
+                                            showPopoverAnimate = false
+                                        }
                                     }
                                 }
                                 .frame(height: showPopoverAnimate ? 68 : 280)
@@ -234,10 +254,6 @@ struct WispPreview: View {
                         .truncationMode(.tail) // Truncate if it's too long
 
                         Spacer()
-
-                        Image(systemName: "ellipsis")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(.secondary)
                     }
                 }
 

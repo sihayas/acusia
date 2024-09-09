@@ -39,3 +39,8 @@ struct BlurView: UIViewRepresentable {
         // No updates needed for now
     }
 }
+
+
+// Example
+//BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
+//    .edgesIgnoringSafeArea(.all)
