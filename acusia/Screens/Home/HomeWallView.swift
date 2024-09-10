@@ -35,15 +35,6 @@ struct HomeWallView: View {
     
     // 3D Config
     @State var activeSticker: StickerViewType? = nil
-    @State var xAxisSliderValueHello: Double = 60
-    
-    @State var zAxisSliderValueHello: Double = -45
-    
-    @State var offsetSliderValueHello: Double = 15
-    
-    // Resetting
-    @State var resetStickerOffset = false
-    
     // MARK: Animation States
 
     @State var expandEssentialStates = [false, false, false]
@@ -52,30 +43,25 @@ struct HomeWallView: View {
     var body: some View {
         ZStack {
             // MARK: Sticker Interface
-            ZStack {
-                HelloStickerView(zIndexMap: $zIndexMap,
-                                 nextZIndex: $nextZIndex,
-                                 resetStickerOffset: $resetStickerOffset,
-                                 xAxisSliderValue: $xAxisSliderValueHello,
-                                 zAxisSliderValue: $zAxisSliderValueHello,
-                                 offsetSliderValue: $offsetSliderValueHello,
-                                 activeSticker: $activeSticker)
-                    .offset(x: 0, y: -160)
-                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
-                    .scaleEffect(viewVisible ? 1 : 2)
-                    .blur(radius: viewVisible ? 0.0 : 30.0)
-                    .opacity(viewVisible ? 1.0 : 0.0)
-                    .animation(.spring().delay(0), value: viewVisible)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            self.triggerSensoryFeedback += 1
-                        }
-                    }
-                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
-                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
-            }
-            .blur(radius: showRecents ? 12 : 0)
-            .animation(.spring(), value: showRecents)
+//            ZStack {
+//                HelloStickerView(zIndexMap: $zIndexMap,
+//                                 nextZIndex: $nextZIndex)
+//                    .offset(x: 0, y: -160)
+//                    .rotationEffect(Angle(degrees: activeSticker == .sticker_zero ? 0 : 20))
+//                    .scaleEffect(viewVisible ? 1 : 2)
+//                    .blur(radius: viewVisible ? 0.0 : 30.0)
+//                    .opacity(viewVisible ? 1.0 : 0.0)
+//                    .animation(.spring().delay(0), value: viewVisible)
+//                    .onAppear {
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//                            self.triggerSensoryFeedback += 1
+//                        }
+//                    }
+//                    .sensoryFeedback(.impact(weight: .heavy), trigger: triggerSensoryFeedback)
+//                    .zIndex(Double(zIndexMap[.sticker_zero] ?? 0))
+//            }
+//            .blur(radius: showRecents ? 12 : 0)
+//            .animation(.spring(), value: showRecents)
             
             // MARK: User Data Buttons
             ZStack {

@@ -36,12 +36,13 @@
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
-		CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Iridescent.metal */; };
+		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
 		CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
-		CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */; };
 		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
-		CDD77D9B2C8F8E4100D5BCC1 /* StickerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD77D9A2C8F8E3A00D5BCC1 /* StickerPreview.swift */; };
+		CDD77DA32C8F956200D5BCC1 /* Stick.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA22C8F956200D5BCC1 /* Stick.metal */; };
+		CDD77DA52C8F966000D5BCC1 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA42C8F965C00D5BCC1 /* Test.swift */; };
+		CDD77DA72C8FD94200D5BCC1 /* HoloPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */; };
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
 		CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */; };
@@ -144,11 +145,12 @@
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
-		CDC37D4B2C606C2A002D2709 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
+		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWallView.swift; sourceTree = "<group>"; };
-		CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloStickerView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
-		CDD77D9A2C8F8E3A00D5BCC1 /* StickerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerPreview.swift; sourceTree = "<group>"; };
+		CDD77DA22C8F956200D5BCC1 /* Stick.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Stick.metal; sourceTree = "<group>"; };
+		CDD77DA42C8F965C00D5BCC1 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloPreview.swift; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				CDC37D442C6067FA002D2709 /* Iridescent */,
 				CDC37D492C606C16002D2709 /* IridescentHolo */,
 				CD132AA42C6DE75800C16804 /* Loupe */,
+				CDD77DA22C8F956200D5BCC1 /* Stick.metal */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -315,7 +318,8 @@
 		CDC37D492C606C16002D2709 /* IridescentHolo */ = {
 			isa = PBXGroup;
 			children = (
-				CDC37D4B2C606C2A002D2709 /* Iridescent.metal */,
+				CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */,
+				CDC37D4B2C606C2A002D2709 /* Holo.metal */,
 			);
 			path = IridescentHolo;
 			sourceTree = "<group>";
@@ -323,8 +327,7 @@
 		CDD77D992C8F8E2200D5BCC1 /* Stickers */ = {
 			isa = PBXGroup;
 			children = (
-				CDD77D9A2C8F8E3A00D5BCC1 /* StickerPreview.swift */,
-				CDD48E1F2C62C2C20001C4E8 /* HelloStickerView.swift */,
+				CDD77DA42C8F965C00D5BCC1 /* Test.swift */,
 			);
 			path = Stickers;
 			sourceTree = "<group>";
@@ -606,7 +609,6 @@
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CD85AB0C2C89228300A61FBB /* PictureInPictureViewController.swift in Sources */,
 				CD85AB132C89230200A61FBB /* InstantPanGestureRecognizer.swift in Sources */,
-				CDD48E272C62C2C20001C4E8 /* HelloStickerView.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */,
 				CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,
@@ -622,6 +624,7 @@
 				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
 				CD8E0BDF2C8D7EF8003A6F91 /* ReplySheet.swift in Sources */,
 				CDE43C0D2C854DF60009CB87 /* VGrid.swift in Sources */,
+				CDD77DA72C8FD94200D5BCC1 /* HoloPreview.swift in Sources */,
 				CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */,
@@ -636,13 +639,14 @@
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
+				CDD77DA52C8F966000D5BCC1 /* Test.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD85AB112C8922D700A61FBB /* CGRect+Extensions.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
 				CDE43C0F2C865B120009CB87 /* UIScreen.swift in Sources */,
-				CDC37D4C2C606C2A002D2709 /* Iridescent.metal in Sources */,
+				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CD8E0BDB2C8D6C8C003A6F91 /* BlackBlurView.swift in Sources */,
 				CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */,
@@ -650,9 +654,9 @@
 				CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */,
 				CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */,
 				CD43324F2C82A856009ADBF0 /* RecentlyPlayedView.swift in Sources */,
+				CDD77DA32C8F956200D5BCC1 /* Stick.metal in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
 				CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */,
-				CDD77D9B2C8F8E4100D5BCC1 /* StickerPreview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

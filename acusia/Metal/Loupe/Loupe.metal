@@ -10,7 +10,7 @@
 
 using namespace metal;
 
-float mapRange(float value, float inMin, float inMax, float outMin, float outMax) {
+float mapRangeLoupe(float value, float inMin, float inMax, float outMin, float outMax) {
     return ((value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin);
 }
 
@@ -60,8 +60,8 @@ float easeInQuart(float x) {
 
         // Calculate the new coordinates to sample.
         // For example, when `px` == `loupeMinX`, it'll be converted to `zoomRangeMinX`.
-        float zoomPosX = mapRange(px, loupeMinX, loupeMaxX, zoomRangeMinX, zoomRangeMaxX);
-        float zoomPosY = mapRange(py, loupeMinY, loupeMaxY, zoomRangeMinY, zoomRangeMaxY);
+        float zoomPosX = mapRangeLoupe(px, loupeMinX, loupeMaxX, zoomRangeMinX, zoomRangeMaxX);
+        float zoomPosY = mapRangeLoupe(py, loupeMinY, loupeMaxY, zoomRangeMinY, zoomRangeMaxY);
 
         // un-normalize position back to user-space
         // We've been working with normalized unit values, but we need convert those values back to "user-space".
@@ -80,13 +80,13 @@ float easeInQuart(float x) {
         float distanceFromEdge = d - r;
 
         // Progress is normalized within the [0, 1] range.
-        float progress = mapRange(distanceFromEdge, 0, shadowRadius, 1, 0);
+        float progress = mapRangeLoupe(distanceFromEdge, 0, shadowRadius, 1, 0);
 
         // Decay progress really quickly to create a more realistic shadow.
         progress = easeInQuart(progress);
 
         // Finally, do some alpha compositing to blend the black shadow color with the original pixel's color:
-        float shadowOpacity = mapRange(progress, 1, 0, 0.2, 0);
+        float shadowOpacity = mapRangeLoupe(progress, 1, 0, 0.2, 0);
         color = mix(color, half4(half3(0), 1), half4(shadowOpacity));
     }
 
