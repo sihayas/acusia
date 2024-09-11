@@ -4,7 +4,6 @@
 //
 //  Created by decoherence on 9/9/24.
 //
-
 import CoreMotion
 import SwiftUI
 import Wave
@@ -67,7 +66,6 @@ struct MeshTransform: ViewModifier, Animatable {
     func body(content: Content) -> some View {
         content
             .distortionEffect(shader(), maxSampleOffset: CGSize(width: 500, height: 500))
-            .scaleEffect(currentMagnification * pinchMagnification)
             .rotationEffect(currentRotation + twistAngle, anchor: .center)
             .offset(offset)
     }
@@ -82,6 +80,18 @@ struct StickerTestView: View {
         ZStack {
             OGHelloStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex)
                 .offset(x: 0, y: -30)
+                .zIndex(Double(zIndexMap[.hello] ?? 0))
+            
+            OGHelloStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex)
+                .offset(x: 0, y: 30)
+                .zIndex(Double(zIndexMap[.hello] ?? 0))
+            
+            OGHelloStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex)
+                .offset(x: 0, y: 60)
+                .zIndex(Double(zIndexMap[.hello] ?? 0))
+            
+            OGHelloStickerView(zIndexMap: $zIndexMap, nextZIndex: $nextZIndex)
+                .offset(x: 0, y: 90)
                 .zIndex(Double(zIndexMap[.hello] ?? 0))
         }
         .ignoresSafeArea()

@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "background-blur-refined.png",
+      "filename" : "yRQO2.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "background-blur-refined 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "background-blur-refined 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

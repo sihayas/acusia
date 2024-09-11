@@ -40,8 +40,8 @@
 		CDD48E182C62C20F0001C4E8 /* HomeWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
 		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
-		CDD77DA32C8F956200D5BCC1 /* Stick.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA22C8F956200D5BCC1 /* Stick.metal */; };
-		CDD77DA52C8F966000D5BCC1 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA42C8F965C00D5BCC1 /* Test.swift */; };
+		CDD77DA32C8F956200D5BCC1 /* Squeeze.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA22C8F956200D5BCC1 /* Squeeze.metal */; };
+		CDD77DA52C8F966000D5BCC1 /* SqueezePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA42C8F965C00D5BCC1 /* SqueezePreview.swift */; };
 		CDD77DA72C8FD94200D5BCC1 /* HoloPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */; };
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
@@ -148,9 +148,10 @@
 		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* HomeWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWallView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
-		CDD77DA22C8F956200D5BCC1 /* Stick.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Stick.metal; sourceTree = "<group>"; };
-		CDD77DA42C8F965C00D5BCC1 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		CDD77DA22C8F956200D5BCC1 /* Squeeze.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Squeeze.metal; sourceTree = "<group>"; };
+		CDD77DA42C8F965C00D5BCC1 /* SqueezePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SqueezePreview.swift; sourceTree = "<group>"; };
 		CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloPreview.swift; sourceTree = "<group>"; };
+		CDD77DA92C8FF83000D5BCC1 /* definitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = definitions.h; sourceTree = "<group>"; };
 		CDDED7322C194C8400958B39 /* acusia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = acusia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -247,9 +248,7 @@
 			isa = PBXGroup;
 			children = (
 				CDC37D442C6067FA002D2709 /* Iridescent */,
-				CDC37D492C606C16002D2709 /* IridescentHolo */,
 				CD132AA42C6DE75800C16804 /* Loupe */,
-				CDD77DA22C8F956200D5BCC1 /* Stick.metal */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -315,19 +314,21 @@
 			path = Iridescent;
 			sourceTree = "<group>";
 		};
-		CDC37D492C606C16002D2709 /* IridescentHolo */ = {
+		CDC37D492C606C16002D2709 /* Holo */ = {
 			isa = PBXGroup;
 			children = (
 				CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */,
 				CDC37D4B2C606C2A002D2709 /* Holo.metal */,
 			);
-			path = IridescentHolo;
+			path = Holo;
 			sourceTree = "<group>";
 		};
 		CDD77D992C8F8E2200D5BCC1 /* Stickers */ = {
 			isa = PBXGroup;
 			children = (
-				CDD77DA42C8F965C00D5BCC1 /* Test.swift */,
+				CDC37D492C606C16002D2709 /* Holo */,
+				CDD77DA42C8F965C00D5BCC1 /* SqueezePreview.swift */,
+				CDD77DA22C8F956200D5BCC1 /* Squeeze.metal */,
 			);
 			path = Stickers;
 			sourceTree = "<group>";
@@ -355,11 +356,12 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
-				CD8CFDA42C6F02AC00D7DEA7 /* App */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
+				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
 				CD8D19842C29C5FF00FDC979 /* Info.plist */,
-				CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */,
 				CDDED7392C194C8500958B39 /* Assets.xcassets */,
+				CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */,
+				CD8CFDA42C6F02AC00D7DEA7 /* App */,
 				CDDED7712C1951BE00958B39 /* Components */,
 				CD13D5252C3FAD84007E3120 /* Metal */,
 				CDDED77C2C19520300958B39 /* Models */,
@@ -639,7 +641,7 @@
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
-				CDD77DA52C8F966000D5BCC1 /* Test.swift in Sources */,
+				CDD77DA52C8F966000D5BCC1 /* SqueezePreview.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD85AB112C8922D700A61FBB /* CGRect+Extensions.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
@@ -654,7 +656,7 @@
 				CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */,
 				CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */,
 				CD43324F2C82A856009ADBF0 /* RecentlyPlayedView.swift in Sources */,
-				CDD77DA32C8F956200D5BCC1 /* Stick.metal in Sources */,
+				CDD77DA32C8F956200D5BCC1 /* Squeeze.metal in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
 				CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */,
 			);

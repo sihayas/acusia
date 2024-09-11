@@ -1,7 +1,7 @@
 import CoreData
 import SwiftUI
 
-let apiurl = "http://192.168.1.48:8000"
+let apiurl = "http://192.168.1.234:8000"
 
 @main
 struct AcusiaApp: App {
@@ -30,36 +30,37 @@ struct AcusiaAppView: View {
     @State private var homePath = NavigationPath()
 
     var body: some View {
-        Group {
-            if auth.isAuthenticated && auth.user != nil {
-                GeometryReader {
-                    let size = $0.size
-                    let safeArea = $0.safeAreaInsets
-                    Home(size: size, safeArea: safeArea, homePath: $homePath)
-                        .ignoresSafeArea(.all)
-                        .background(Color.black)
-                        .onAppear {
-                            safeAreaInsetsManager.insets = safeArea
-                        }
-                }
-            } else {
-                AuthScreen()
-            }
-        }
-        .onAppear {
-            setupNavigationBar()
-
-            Task {
-                await auth.initSession()
-                await musicKitManager.requestMusicAuthorization()
-
-                // Load recently played songs if authorized
-                if musicKitManager.isAuthorizedForMusicKit {
-                    print("Loading recently played songs")
-                    await musicKitManager.loadRecentlyPlayedSongs()
-                }
-            }
-        }
+        HoloPreview()
+//        Group {
+//            if auth.isAuthenticated && auth.user != nil {
+//                GeometryReader {
+//                    let size = $0.size
+//                    let safeArea = $0.safeAreaInsets
+//                    Home(size: size, safeArea: safeArea, homePath: $homePath)
+//                        .ignoresSafeArea(.all)
+//                        .background(Color.black)
+//                        .onAppear {
+//                            safeAreaInsetsManager.insets = safeArea
+//                        }
+//                }
+//            } else {
+//                AuthScreen()
+//            }
+//        }
+//        .onAppear {
+//            setupNavigationBar()
+//
+//            Task {
+//                await auth.initSession()
+//                await musicKitManager.requestMusicAuthorization()
+//
+//                // Load recently played songs if authorized
+//                if musicKitManager.isAuthorizedForMusicKit {
+//                    print("Loading recently played songs")
+//                    await musicKitManager.loadRecentlyPlayedSongs()
+//                }
+//            }
+//        }
     }
 
     // Remove the ugly default nav.
