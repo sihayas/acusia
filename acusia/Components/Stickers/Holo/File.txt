@@ -1,0 +1,26 @@
+fragment float4 fragment_main(VertexOut in [[stage_in]],
+                              constant Uniforms &uniforms [[buffer(1)]],
+                              texture2d<float> rampTexture [[texture(0)]],
+                              texture2d<float> noiseTexture [[texture(1)]]) {
+    constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
+    
+    // Sample the noise texture and convert it to a normal map
+    float3 normalMap = noiseTexture.sample(textureSampler, in.texCoord).rgb * 2.0 - 1.0;
+    
+    // Normalize the normal map and combine it with the world normal
+    float3 normal = normalize(in.worldNormal);
+    
+    // Adjust the 1.0 to control the bump strength
+    float3 fullNormal = normalize(normal + normalMap * 0.5);
+    
+    // Calculate the dot product between the light direction and the full normal
+    float NdotL = dot(uniforms.lightDirection, fullNormal);
+
+    // Instead of applying a rotation effect, directly control the vertical progression
+    float2 rampUV = float2(0.5, NdotL * 0.5 + 0.5);  // Use NdotL for vertical progression
+    
+    // Sample the ramp texture using the adjusted UV coordinates
+    float3 rampColor = rampTexture.sample(textureSampler, rampUV).rgb;
+    
+    return float4(rampColor, 1.0);
+}

@@ -11,7 +11,7 @@ struct IridescentUniforms {
     var modelMatrix: simd_float4x4
     var viewProjectionMatrix: simd_float4x4
     var lightDirection: simd_float3
-    var padding: Float = 0  // Add this padding
+    var padding: Float = 0 // Add this padding
     var rotationAngleX: Float
     var rotationAngleY: Float
     var time: Float
@@ -160,7 +160,7 @@ struct MetalCardView: UIViewRepresentable {
     }
 }
 
-struct HoloPreview: View {
+struct HoloShaderPreview: View {
     @State private var rotationAngleX: Double = 0
     @State private var rotationAngleY: Double = 0
 
@@ -171,7 +171,6 @@ struct HoloPreview: View {
                 MetalCardView(rotationAngleX: $rotationAngleX, rotationAngleY: $rotationAngleY)
                     .frame(width: 400, height: 400)
                     .clipShape(Circle())
-                    .shadow(radius: 10)
             }
             .rotation3DEffect(
                 .degrees(rotationAngleX),
@@ -200,9 +199,7 @@ struct HoloPreview: View {
     }
 }
 
-struct SoundScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        HoloPreview()
-            .background(Color.black)
-    }
+#Preview {
+    HoloShaderPreview()
+        .background(Color.black)
 }

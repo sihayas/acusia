@@ -49,7 +49,7 @@ fragment float4 fragment_main(VertexOut in [[stage_in]],
     float3 normal = normalize(in.worldNormal);
     
     // Adjust the 1.0 to control the bump strength
-    float3 fullNormal = normalize(normal + normalMap * 0.75);
+    float3 fullNormal = normalize(normal + normalMap * 0.5);
     
     // Calculate the dot product between the light direction and the full normal
     float NdotL = dot(uniforms.lightDirection, fullNormal);
