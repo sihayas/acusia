@@ -30,7 +30,8 @@ struct AcusiaAppView: View {
     @State private var homePath = NavigationPath()
 
     var body: some View {
-        StickerTestView()
+        HoloShaderPreview()
+            .background(Color.black)
 //        Group {
 //            if auth.isAuthenticated && auth.user != nil {
 //                GeometryReader {

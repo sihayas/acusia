@@ -109,8 +109,8 @@ struct MetalCardView: UIViewRepresentable {
                 let options: [MTKTextureLoader.Option: Any] = [
                     .SRGB: false // Fixes saturation from color ramp.
                 ]
-                self.rampTexture = try textureLoader.newTexture(name: "ramp", scaleFactor: 1.0, bundle: nil, options: options)
-                self.noiseTexture = try textureLoader.newTexture(name: "noise", scaleFactor: 1.0, bundle: nil, options: nil)
+                self.rampTexture = try textureLoader.newTexture(name: "ramp2", scaleFactor: 1.0, bundle: nil, options: options)
+                self.noiseTexture = try textureLoader.newTexture(name: "noise3", scaleFactor: 1.0, bundle: nil, options: nil)
             } catch {
                 print("Failed to create pipeline state, buffers, or textures: \(error.localizedDescription)")
             }
@@ -161,16 +161,44 @@ struct MetalCardView: UIViewRepresentable {
 }
 
 struct HoloShaderPreview: View {
-    @State private var rotationAngleX: Double = 0
+    @State private var rotationAngleX: Double = 0.25
     @State private var rotationAngleY: Double = 0
 
     var body: some View {
+        let mkShape = MKSymbolShape(imageName: "helloSticker")
+        
         VStack {
             ZStack {
+                mkShape
+                    .stroke(.white,
+                            style: StrokeStyle(
+                                lineWidth: 8,
+                                lineCap: .round, // This makes the stroke ends rounded
+                                lineJoin: .round // This makes the stroke joins rounded
+                            ))
+                    .frame(width: 170, height: 56)
+                
+                Image("helloSticker")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 170, height: 56)
+                    .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/ .fill/*@END_MENU_TOKEN@*/)
+                
                 // Metal shader view with circular mask
                 MetalCardView(rotationAngleX: $rotationAngleX, rotationAngleY: $rotationAngleY)
-                    .frame(width: 400, height: 400)
-                    .clipShape(Circle())
+                    .frame(width: 178, height: 178)
+                    .mask(
+                        mkShape
+                            .stroke(.white,
+                                    style: StrokeStyle(
+                                        lineWidth: 8,
+                                        lineCap: .round, // This makes the stroke ends rounded
+                                        lineJoin: .round // This makes the stroke joins rounded
+                                    ))
+                            .frame(width: 170, height: 56)
+                    )
+                    .blendMode(.screen)
+                    .opacity(1.0)
             }
             .rotation3DEffect(
                 .degrees(rotationAngleX),
@@ -186,11 +214,12 @@ struct HoloShaderPreview: View {
                 DragGesture()
                     .onChanged { value in
                         rotationAngleX = Double(-value.translation.height / 20)
+                        print(rotationAngleX)
                         rotationAngleY = Double(value.translation.width / 20)
                     }
                     .onEnded { _ in
                         withAnimation(.spring()) {
-                            rotationAngleX = 0
+                            rotationAngleX = 1
                             rotationAngleY = 0
                         }
                     }
