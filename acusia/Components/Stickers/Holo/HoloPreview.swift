@@ -161,7 +161,7 @@ struct MetalCardView: UIViewRepresentable {
 }
 
 struct HoloShaderPreview: View {
-    @State private var rotationAngleX: Double = 0.25
+    @State private var rotationAngleX: Double = 1.75 // -5 is end of, 5 is beginning
     @State private var rotationAngleY: Double = 0
 
     var body: some View {
@@ -187,16 +187,16 @@ struct HoloShaderPreview: View {
                 // Metal shader view with circular mask
                 MetalCardView(rotationAngleX: $rotationAngleX, rotationAngleY: $rotationAngleY)
                     .frame(width: 178, height: 178)
-                    .mask(
-                        mkShape
-                            .stroke(.white,
-                                    style: StrokeStyle(
-                                        lineWidth: 8,
-                                        lineCap: .round, // This makes the stroke ends rounded
-                                        lineJoin: .round // This makes the stroke joins rounded
-                                    ))
-                            .frame(width: 170, height: 56)
-                    )
+//                    .mask(
+//                        mkShape
+//                            .stroke(.white,
+//                                    style: StrokeStyle(
+//                                        lineWidth: 8,
+//                                        lineCap: .round, // This makes the stroke ends rounded
+//                                        lineJoin: .round // This makes the stroke joins rounded
+//                                    ))
+//                            .frame(width: 170, height: 56)
+//                    )
                     .blendMode(.screen)
                     .opacity(1.0)
             }
@@ -214,12 +214,11 @@ struct HoloShaderPreview: View {
                 DragGesture()
                     .onChanged { value in
                         rotationAngleX = Double(-value.translation.height / 20)
-                        print(rotationAngleX)
                         rotationAngleY = Double(value.translation.width / 20)
                     }
                     .onEnded { _ in
                         withAnimation(.spring()) {
-                            rotationAngleX = 1
+                            rotationAngleX = 1.75
                             rotationAngleY = 0
                         }
                     }
