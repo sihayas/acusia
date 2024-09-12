@@ -30,7 +30,7 @@ struct AcusiaAppView: View {
     @State private var homePath = NavigationPath()
 
     var body: some View {
-        HoloShaderPreview()
+        HoloPreview()
             .background(Color.black)
 //        Group {
 //            if auth.isAuthenticated && auth.user != nil {

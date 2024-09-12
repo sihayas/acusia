@@ -9,7 +9,7 @@ import SwiftUI
 
 class MetalResourceManager {
     static let shared = MetalResourceManager()
-    
+
     let device: MTLDevice
     let commandQueue: MTLCommandQueue
     let pipelineState: MTLRenderPipelineState
@@ -17,6 +17,7 @@ class MetalResourceManager {
     let indexBuffer: MTLBuffer
     let rampTexture: MTLTexture
     let noiseTexture: MTLTexture
+    var uniformBuffer: MTLBuffer!
 
     private init() {
         guard let device = MTLCreateSystemDefaultDevice() else {
@@ -72,10 +73,26 @@ class MetalResourceManager {
             // Load ramp and noise textures
             let textureLoader = MTKTextureLoader(device: device)
             let options: [MTKTextureLoader.Option: Any] = [.SRGB: false]
-            self.rampTexture = try textureLoader.newTexture(name: "ramp2", scaleFactor: 1.0, bundle: nil, options: nil)
+            self.rampTexture = try textureLoader.newTexture(name: "ramp", scaleFactor: 1.0, bundle: nil, options: nil)
             self.noiseTexture = try textureLoader.newTexture(name: "noise3", scaleFactor: 1.0, bundle: nil, options: nil)
+
+            // Create the shared uniform buffer
+            self.uniformBuffer = device.makeBuffer(length: MemoryLayout<HoloUniforms>.stride, options: [])
+
         } catch {
             fatalError("Failed to create pipeline state, buffers, or textures: \(error.localizedDescription)")
         }
+    }
+
+    // Method to update the shared uniform buffer
+    func updateUniformBuffer(rotationX: Float, rotationY: Float) {
+        var uniforms = HoloUniforms(
+            modelMatrix: matrix_identity_float4x4,
+            viewProjectionMatrix: matrix_identity_float4x4,
+            lightDirection: simd_normalize(simd_float3(1, 1, -1)),
+            rotationAngleX: rotationX,
+            rotationAngleY: rotationY
+        )
+        self.uniformBuffer.contents().copyMemory(from: &uniforms, byteCount: MemoryLayout<HoloUniforms>.size)
     }
 }
