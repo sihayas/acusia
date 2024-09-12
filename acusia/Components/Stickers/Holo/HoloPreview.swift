@@ -4,9 +4,9 @@
 //
 //  Created by decoherence on 9/9/24.
 //
+import CoreMotion
 import MetalKit
 import SwiftUI
-import CoreMotion
 
 struct IridescentUniforms {
     var modelMatrix: simd_float4x4
@@ -15,7 +15,6 @@ struct IridescentUniforms {
     var padding: Float = 0
     var rotationAngleX: Float
     var rotationAngleY: Float
-    var time: Float
 }
 
 struct MetalCardView: UIViewRepresentable {
@@ -44,7 +43,6 @@ struct MetalCardView: UIViewRepresentable {
 
     class Coordinator: NSObject, MTKViewDelegate {
         var parent: MetalCardView
-        var time: Float = 0
         var currentRotationAngleX: Double = 0
         var currentRotationAngleY: Double = 0
         var targetRotationAngleX: Double = 0
@@ -54,9 +52,9 @@ struct MetalCardView: UIViewRepresentable {
         init(_ parent: MetalCardView) {
             self.parent = parent
             super.init()
-            
+
             // Create uniform buffer
-            self.uniformBuffer = MetalResourceManager.shared.device.makeBuffer(length: MemoryLayout<IridescentUniforms>.size, options: [])
+            self.uniformBuffer = MetalResourceManager.shared.device.makeBuffer(length: MemoryLayout<IridescentUniforms>.stride, options: [])
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
@@ -67,8 +65,6 @@ struct MetalCardView: UIViewRepresentable {
                   let commandBuffer = MetalResourceManager.shared.commandQueue.makeCommandBuffer(),
                   let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
             else { return }
-
-            time += 1 / Float(view.preferredFramesPerSecond)
 
             // Animate rotation angles
             let animationSpeed = 0.05
@@ -81,8 +77,7 @@ struct MetalCardView: UIViewRepresentable {
                 viewProjectionMatrix: matrix_identity_float4x4,
                 lightDirection: simd_normalize(simd_float3(1, 1, -1)),
                 rotationAngleX: Float(currentRotationAngleX),
-                rotationAngleY: Float(currentRotationAngleY),
-                time: time
+                rotationAngleY: Float(currentRotationAngleY)
             )
             uniformBuffer.contents().copyMemory(from: &uniforms, byteCount: MemoryLayout<IridescentUniforms>.size)
 
@@ -102,15 +97,20 @@ struct MetalCardView: UIViewRepresentable {
 }
 
 struct HoloShaderPreview: View {
-    @State private var rotationAngleX: Double = 30 // Initial value within new range (-15 to 75)
-    @State private var rotationAngleY: Double = 0
     private let motionManager = CMMotionManager()
-    
-    @State private var pitchBaseline: Double = 30 // Baseline for pitch, middle of shader range
-    @State private var rollBaseline: Double = 0  // Baseline for roll
+
+    // Range -15 to 75 (Complete-Start)
+    @State private var rotationAngleX: Double = 30
+    @State private var rotationAngleY: Double = 0
+
+    // Baseline for pitch, middle of shader range
+    @State private var pitchBaseline: Double = 30
+    // Baseline for roll
+    @State private var rollBaseline: Double = 0
 
     var body: some View {
         let mkShape = MKSymbolShape(imageName: "helloSticker")
+        let mkShape2 = MKSymbolShape(imageName: "bunnySticker")
 
         VStack {
             ZStack {
@@ -121,6 +121,7 @@ struct HoloShaderPreview: View {
                                 lineCap: .round,
                                 lineJoin: .round
                             ))
+                    .fill(.white)
                     .frame(width: 170, height: 56)
 
                 Image("helloSticker")
@@ -140,11 +141,48 @@ struct HoloShaderPreview: View {
                                         lineCap: .round,
                                         lineJoin: .round
                                     ))
+                            .fill(.white)
                             .frame(width: 170, height: 56)
                     )
                     .blendMode(.screen)
                     .opacity(1.0)
             }
+
+            ZStack {
+                mkShape2
+                    .stroke(.white,
+                            style: StrokeStyle(
+                                lineWidth: 8,
+                                lineCap: .round,
+                                lineJoin: .round
+                            ))
+                    .fill(.white)
+                    .frame(width: 90, height: 110)
+
+                Image("bunnySticker")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 90, height: 110)
+                    .aspectRatio(contentMode: .fill)
+
+                // Metal shader view with circular mask
+                MetalCardView(rotationAngleX: $rotationAngleX, rotationAngleY: $rotationAngleY)
+                    .frame(width: 98, height: 118)
+                    .mask(
+                        mkShape2
+                            .stroke(.white,
+                                    style: StrokeStyle(
+                                        lineWidth: 8,
+                                        lineCap: .round,
+                                        lineJoin: .round
+                                    ))
+                            .fill(.white)
+                            .frame(width: 90, height: 110)
+                    )
+                    .blendMode(.screen)
+            }
+            
+            
         }
         .gesture(
             DragGesture()
@@ -166,16 +204,16 @@ struct HoloShaderPreview: View {
 
     func startDeviceMotionUpdates() {
         if motionManager.isDeviceMotionAvailable {
-            motionManager.deviceMotionUpdateInterval = 0.1
-            
-            motionManager.startDeviceMotionUpdates(to: .main) { motionData, error in
+            motionManager.deviceMotionUpdateInterval = 0.01
+
+            motionManager.startDeviceMotionUpdates(to: .main) { motionData, _ in
                 guard let motion = motionData else { return }
 
                 let pitch = motion.attitude.pitch * 180 / .pi
 
                 // Adjust pitch based on baseline
                 var adjustedPitch = pitch - pitchBaseline
-                
+
                 // Shader progression: map pitch to -15 to 75 range
                 if adjustedPitch <= -45 { // New wider range
                     // Rebase if pitch exceeds lower limit
@@ -191,9 +229,8 @@ struct HoloShaderPreview: View {
                 let shaderValue = clamp(30 + adjustedPitch, -15, 75)
 
                 // Apply shader value to rotationAngleX
-                withAnimation(.easeInOut(duration: 0.1)) {
-                    rotationAngleX = shaderValue
-                }
+
+                rotationAngleX = shaderValue
             }
         }
     }

@@ -21,7 +21,6 @@ struct Uniforms {
     float padding;
     float rotationAngleX;
     float rotationAngleY;
-    float time;
 };
 
 vertex VertexOut vertex_main(VertexIn in [[stage_in]],
@@ -56,7 +55,8 @@ fragment float4 fragment_main(VertexOut in [[stage_in]],
     float NdotL = dot(uniforms.lightDirection, fullNormal);
 
     // Scale the ramp effect to stretch the gradient
-    float rampScale = 0.25;  // Adjust this value to stretch or compress the gradient
+    // Adjust this value to stretch or compress the gradient
+    float rampScale = 0.25;
 
     // Calculate the rotation effect for vertical progression, scaled
     float rotationEffect = (1.0 - in.texCoord.y) * uniforms.rotationAngleX * rampScale;
@@ -66,7 +66,8 @@ fragment float4 fragment_main(VertexOut in [[stage_in]],
     float3 rampColor = rampTexture.sample(textureSampler, rampUV).rgb;
 
     // Blend the noise with the ramp color
-    float3 finalColor = mix(rampColor, noiseColor, 0.1); // Adjust blending factor as needed
+    // Adjust blending factor as needed
+    float3 finalColor = mix(rampColor, noiseColor, 0.25);
 
     return float4(finalColor, 1.0);
 }
