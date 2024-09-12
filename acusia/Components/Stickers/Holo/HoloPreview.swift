@@ -6,12 +6,13 @@
 //
 import MetalKit
 import SwiftUI
+import CoreMotion
 
 struct IridescentUniforms {
     var modelMatrix: simd_float4x4
     var viewProjectionMatrix: simd_float4x4
     var lightDirection: simd_float3
-    var padding: Float = 0 // Add this padding
+    var padding: Float = 0
     var rotationAngleX: Float
     var rotationAngleY: Float
     var time: Float
@@ -27,7 +28,7 @@ struct MetalCardView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> MTKView {
         let mtkView = MTKView()
-        mtkView.device = MTLCreateSystemDefaultDevice()
+        mtkView.device = MetalResourceManager.shared.device
         mtkView.delegate = context.coordinator
         mtkView.preferredFramesPerSecond = 60
         mtkView.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -43,77 +44,19 @@ struct MetalCardView: UIViewRepresentable {
 
     class Coordinator: NSObject, MTKViewDelegate {
         var parent: MetalCardView
-        var device: MTLDevice!
-        var commandQueue: MTLCommandQueue!
-        var pipelineState: MTLRenderPipelineState!
         var time: Float = 0
-        var vertexBuffer: MTLBuffer!
-        var indexBuffer: MTLBuffer!
-        var uniformBuffer: MTLBuffer!
-        var rampTexture: MTLTexture!
-        var noiseTexture: MTLTexture!
         var currentRotationAngleX: Double = 0
         var currentRotationAngleY: Double = 0
         var targetRotationAngleX: Double = 0
         var targetRotationAngleY: Double = 0
+        var uniformBuffer: MTLBuffer!
 
         init(_ parent: MetalCardView) {
             self.parent = parent
             super.init()
-
-            guard let device = MTLCreateSystemDefaultDevice() else {
-                print("Metal is not supported on this device")
-                return
-            }
-            self.device = device
-
-            do {
-                let library = device.makeDefaultLibrary()
-                let vertexFunction = library?.makeFunction(name: "vertex_main")
-                let fragmentFunction = library?.makeFunction(name: "fragment_main")
-
-                let vertexDescriptor = MTLVertexDescriptor()
-                vertexDescriptor.attributes[0].format = .float3
-                vertexDescriptor.attributes[0].offset = 0
-                vertexDescriptor.attributes[0].bufferIndex = 0
-                vertexDescriptor.attributes[1].format = .float2
-                vertexDescriptor.attributes[1].offset = MemoryLayout<Float>.size * 3
-                vertexDescriptor.attributes[1].bufferIndex = 0
-                vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.size * 5
-
-                let pipelineDescriptor = MTLRenderPipelineDescriptor()
-                pipelineDescriptor.vertexFunction = vertexFunction
-                pipelineDescriptor.fragmentFunction = fragmentFunction
-                pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
-                pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
-                pipelineDescriptor.vertexDescriptor = vertexDescriptor
-
-                self.pipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
-                self.commandQueue = device.makeCommandQueue()
-
-                let vertexData: [Float] = [
-                    -1.0, -1.0, 0.0, 0.0, 1.0,
-                    1.0, -1.0, 0.0, 1.0, 1.0,
-                    -1.0, 1.0, 0.0, 0.0, 0.0,
-                    1.0, 1.0, 0.0, 1.0, 0.0
-                ]
-                self.vertexBuffer = device.makeBuffer(bytes: vertexData, length: vertexData.count * MemoryLayout<Float>.size, options: [])
-
-                let indexData: [UInt16] = [0, 1, 2, 2, 1, 3]
-                self.indexBuffer = device.makeBuffer(bytes: indexData, length: indexData.count * MemoryLayout<UInt16>.size, options: [])
-
-                self.uniformBuffer = device.makeBuffer(length: MemoryLayout<IridescentUniforms>.size, options: [])
-
-                // Load ramp texture
-                let textureLoader = MTKTextureLoader(device: device)
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .SRGB: false // Fixes saturation from color ramp.
-                ]
-                self.rampTexture = try textureLoader.newTexture(name: "ramp2", scaleFactor: 1.0, bundle: nil, options: options)
-                self.noiseTexture = try textureLoader.newTexture(name: "noise3", scaleFactor: 1.0, bundle: nil, options: nil)
-            } catch {
-                print("Failed to create pipeline state, buffers, or textures: \(error.localizedDescription)")
-            }
+            
+            // Create uniform buffer
+            self.uniformBuffer = MetalResourceManager.shared.device.makeBuffer(length: MemoryLayout<IridescentUniforms>.size, options: [])
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
@@ -121,11 +64,9 @@ struct MetalCardView: UIViewRepresentable {
         func draw(in view: MTKView) {
             guard let drawable = view.currentDrawable,
                   let descriptor = view.currentRenderPassDescriptor,
-                  let commandBuffer = commandQueue.makeCommandBuffer(),
+                  let commandBuffer = MetalResourceManager.shared.commandQueue.makeCommandBuffer(),
                   let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
-            else {
-                return
-            }
+            else { return }
 
             time += 1 / Float(view.preferredFramesPerSecond)
 
@@ -145,13 +86,13 @@ struct MetalCardView: UIViewRepresentable {
             )
             uniformBuffer.contents().copyMemory(from: &uniforms, byteCount: MemoryLayout<IridescentUniforms>.size)
 
-            renderEncoder.setRenderPipelineState(pipelineState)
-            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+            renderEncoder.setRenderPipelineState(MetalResourceManager.shared.pipelineState)
+            renderEncoder.setVertexBuffer(MetalResourceManager.shared.vertexBuffer, offset: 0, index: 0)
             renderEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
             renderEncoder.setFragmentBuffer(uniformBuffer, offset: 0, index: 1)
-            renderEncoder.setFragmentTexture(rampTexture, index: 0)
-            renderEncoder.setFragmentTexture(noiseTexture, index: 1)
-            renderEncoder.drawIndexedPrimitives(type: .triangle, indexCount: 6, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0)
+            renderEncoder.setFragmentTexture(MetalResourceManager.shared.rampTexture, index: 0)
+            renderEncoder.setFragmentTexture(MetalResourceManager.shared.noiseTexture, index: 1)
+            renderEncoder.drawIndexedPrimitives(type: .triangle, indexCount: 6, indexType: .uint16, indexBuffer: MetalResourceManager.shared.indexBuffer, indexBufferOffset: 0)
             renderEncoder.endEncoding()
 
             commandBuffer.present(drawable)
@@ -163,10 +104,14 @@ struct MetalCardView: UIViewRepresentable {
 struct HoloShaderPreview: View {
     @State private var rotationAngleX: Double = 1.75 // -5 is end of, 5 is beginning
     @State private var rotationAngleY: Double = 0
+    private let motionManager = CMMotionManager()
+    
+    @State private var pitchBaseline: Double = 0 // Baseline for pitch
+    @State private var rollBaseline: Double = 0  // Baseline for roll
 
     var body: some View {
         let mkShape = MKSymbolShape(imageName: "helloSticker")
-        
+
         VStack {
             ZStack {
                 mkShape
@@ -177,54 +122,92 @@ struct HoloShaderPreview: View {
                                 lineJoin: .round // This makes the stroke joins rounded
                             ))
                     .frame(width: 170, height: 56)
-                
+
                 Image("helloSticker")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 170, height: 56)
-                    .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/ .fill/*@END_MENU_TOKEN@*/)
-                
+                    .aspectRatio(contentMode: .fill)
+
                 // Metal shader view with circular mask
                 MetalCardView(rotationAngleX: $rotationAngleX, rotationAngleY: $rotationAngleY)
                     .frame(width: 178, height: 178)
-//                    .mask(
-//                        mkShape
-//                            .stroke(.white,
-//                                    style: StrokeStyle(
-//                                        lineWidth: 8,
-//                                        lineCap: .round, // This makes the stroke ends rounded
-//                                        lineJoin: .round // This makes the stroke joins rounded
-//                                    ))
-//                            .frame(width: 170, height: 56)
-//                    )
+                    .mask(
+                        mkShape
+                            .stroke(.white,
+                                    style: StrokeStyle(
+                                        lineWidth: 8,
+                                        lineCap: .round,
+                                        lineJoin: .round
+                                    ))
+                            .frame(width: 170, height: 56)
+                    )
                     .blendMode(.screen)
                     .opacity(1.0)
             }
-            .rotation3DEffect(
-                .degrees(rotationAngleX),
-                axis: (x: 1, y: 0, z: 0),
-                perspective: 0.5
-            )
-            .rotation3DEffect(
-                .degrees(rotationAngleY),
-                axis: (x: 0, y: 1, z: 0),
-                perspective: 0.5
-            )
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        rotationAngleX = Double(-value.translation.height / 20)
-                        rotationAngleY = Double(value.translation.width / 20)
+        }
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    rotationAngleX = Double(-value.translation.height / 20)
+                    rotationAngleY = Double(value.translation.width / 20)
+                }
+                .onEnded { _ in
+                    withAnimation(.spring()) {
+                        rotationAngleX = 1.75
+                        rotationAngleY = 0
                     }
-                    .onEnded { _ in
-                        withAnimation(.spring()) {
-                            rotationAngleX = 1.75
-                            rotationAngleY = 0
-                        }
-                    }
-            )
+                }
+        )
+        .onAppear {
+            startDeviceMotionUpdates()
         }
     }
+
+    func startDeviceMotionUpdates() {
+        if motionManager.isDeviceMotionAvailable {
+            // Adjust the update interval to reduce CPU load
+            motionManager.deviceMotionUpdateInterval = 0.1
+            
+            motionManager.startDeviceMotionUpdates(to: .main) { motionData, error in
+                guard let motion = motionData else { return }
+
+                // Get pitch and roll from device motion
+                let pitch = motion.attitude.pitch * 180 / .pi
+                let roll = motion.attitude.roll * 180 / .pi
+
+                // Calculate adjusted pitch and roll based on the baseline
+                var adjustedPitch = (pitch - pitchBaseline) / 10
+                var adjustedRoll = (roll - rollBaseline) / 10
+
+                // Clamp values between -5 and 5
+                adjustedPitch = clamp(adjustedPitch, -5, 5)
+                adjustedRoll = clamp(adjustedRoll, -5, 5)
+
+                // Rebase: If we hit the max/min, reset and treat it as the new baseline
+                if adjustedPitch == -5 || adjustedPitch == 5 {
+                    pitchBaseline = pitch // Reset baseline to current pitch
+                    adjustedPitch = 1.75  // Reset rotationAngleX to initial value
+                }
+
+                if adjustedRoll == -5 || adjustedRoll == 5 {
+                    rollBaseline = roll // Reset baseline to current roll
+                    adjustedRoll = 0     // Reset rotationAngleY to initial value
+                }
+
+                // Apply with smooth animation
+                withAnimation(.easeInOut(duration: 0.1)) { // Slightly longer animation duration
+                    rotationAngleX = adjustedPitch
+                    rotationAngleY = adjustedRoll
+                }
+            }
+        }
+    }
+      
+      // Helper function to clamp values
+      func clamp(_ value: Double, _ minValue: Double, _ maxValue: Double) -> Double {
+          return min(max(value, minValue), maxValue)
+      }
 }
 
 #Preview {

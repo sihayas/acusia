@@ -17,6 +17,7 @@
 		CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4332502C82B146009ADBF0 /* SearchBar.swift */; };
 		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
 		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
+		CD6438C92C92829000D7436E /* HoloResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloResourceManager.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
 		CD85AB0A2C891F5300A61FBB /* Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* Wave.swift */; };
 		CD85AB0C2C89228300A61FBB /* PictureInPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB0B2C89227A00A61FBB /* PictureInPictureViewController.swift */; };
@@ -125,6 +126,7 @@
 		CD4332502C82B146009ADBF0 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
+		CD6438C82C92828900D7436E /* HoloResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloResourceManager.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CD85AB092C891F4400A61FBB /* Wave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wave.swift; sourceTree = "<group>"; };
 		CD85AB0B2C89227A00A61FBB /* PictureInPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureInPictureViewController.swift; sourceTree = "<group>"; };
@@ -326,6 +328,7 @@
 		CDC37D492C606C16002D2709 /* Holo */ = {
 			isa = PBXGroup;
 			children = (
+				CD6438C82C92828900D7436E /* HoloResourceManager.swift */,
 				CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */,
 				CDC37D4B2C606C2A002D2709 /* Holo.metal */,
 			);
@@ -618,6 +621,7 @@
 				CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
 				CD85AB0C2C89228300A61FBB /* PictureInPictureViewController.swift in Sources */,
+				CD6438C92C92829000D7436E /* HoloResourceManager.swift in Sources */,
 				CD85AB132C89230200A61FBB /* InstantPanGestureRecognizer.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */,
 				CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */,
