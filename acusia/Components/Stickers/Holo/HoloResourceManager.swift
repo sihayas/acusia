@@ -72,7 +72,7 @@ class MetalResourceManager {
             // Load ramp and noise textures
             let textureLoader = MTKTextureLoader(device: device)
             let options: [MTKTextureLoader.Option: Any] = [.SRGB: false]
-            self.rampTexture = try textureLoader.newTexture(name: "ramp2", scaleFactor: 1.0, bundle: nil, options: options)
+            self.rampTexture = try textureLoader.newTexture(name: "ramp2", scaleFactor: 1.0, bundle: nil, options: nil)
             self.noiseTexture = try textureLoader.newTexture(name: "noise3", scaleFactor: 1.0, bundle: nil, options: nil)
         } catch {
             fatalError("Failed to create pipeline state, buffers, or textures: \(error.localizedDescription)")

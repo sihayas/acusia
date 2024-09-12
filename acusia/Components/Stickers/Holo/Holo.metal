@@ -41,29 +41,32 @@ fragment float4 fragment_main(VertexOut in [[stage_in]],
                               texture2d<float> rampTexture [[texture(0)]],
                               texture2d<float> noiseTexture [[texture(1)]]) {
     constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
-    
+
     // Sample the noise texture (keep it independent of the ramp)
     float3 noiseColor = noiseTexture.sample(textureSampler, in.texCoord).rgb;
-    
+
     // Sample the normal map and combine with the world normal
     float3 normalMap = noiseColor * 2.0 - 1.0;
     float3 normal = normalize(in.worldNormal);
-    
+
     // Adjust the bump strength
     float3 fullNormal = normalize(normal + normalMap * 1.0);
-    
+
     // Calculate the dot product between the light direction and the full normal
     float NdotL = dot(uniforms.lightDirection, fullNormal);
 
-    // Calculate the rotation effect for vertical progression
-    float rotationEffect = (1.0 - in.texCoord.y) * uniforms.rotationAngleX;
-    
-    // Ramp texture coordinates
-    float2 rampUV = float2(NdotL * 0.5 + 0.5 + rotationEffect, 0.5);
+    // Scale the ramp effect to stretch the gradient
+    float rampScale = 0.25;  // Adjust this value to stretch or compress the gradient
+
+    // Calculate the rotation effect for vertical progression, scaled
+    float rotationEffect = (1.0 - in.texCoord.y) * uniforms.rotationAngleX * rampScale;
+
+    // Ramp texture coordinates, with a scaled NdotL
+    float2 rampUV = float2((NdotL * 0.5 + 0.5 + rotationEffect) * rampScale, 0.5);
     float3 rampColor = rampTexture.sample(textureSampler, rampUV).rgb;
 
-    // Blend the noise with the ramp color (adjust the blending factor for subtlety)
-    float3 finalColor = mix(rampColor, noiseColor, 0.1); // Change 0.1 for more or less noise
-    
+    // Blend the noise with the ramp color
+    float3 finalColor = mix(rampColor, noiseColor, 0.1); // Adjust blending factor as needed
+
     return float4(finalColor, 1.0);
 }

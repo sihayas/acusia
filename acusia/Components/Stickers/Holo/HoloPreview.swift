@@ -30,7 +30,7 @@ struct MetalCardView: UIViewRepresentable {
         let mtkView = MTKView()
         mtkView.device = MetalResourceManager.shared.device
         mtkView.delegate = context.coordinator
-        mtkView.preferredFramesPerSecond = 60
+        mtkView.preferredFramesPerSecond = 120
         mtkView.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
         mtkView.colorPixelFormat = .bgra8Unorm
         mtkView.depthStencilPixelFormat = .depth32Float
@@ -102,11 +102,11 @@ struct MetalCardView: UIViewRepresentable {
 }
 
 struct HoloShaderPreview: View {
-    @State private var rotationAngleX: Double = 1.75 // -5 is end of, 5 is beginning
+    @State private var rotationAngleX: Double = 30 // Initial value within new range (-15 to 75)
     @State private var rotationAngleY: Double = 0
     private let motionManager = CMMotionManager()
     
-    @State private var pitchBaseline: Double = 0 // Baseline for pitch
+    @State private var pitchBaseline: Double = 30 // Baseline for pitch, middle of shader range
     @State private var rollBaseline: Double = 0  // Baseline for roll
 
     var body: some View {
@@ -118,8 +118,8 @@ struct HoloShaderPreview: View {
                     .stroke(.white,
                             style: StrokeStyle(
                                 lineWidth: 8,
-                                lineCap: .round, // This makes the stroke ends rounded
-                                lineJoin: .round // This makes the stroke joins rounded
+                                lineCap: .round,
+                                lineJoin: .round
                             ))
                     .frame(width: 170, height: 56)
 
@@ -154,7 +154,7 @@ struct HoloShaderPreview: View {
                 }
                 .onEnded { _ in
                     withAnimation(.spring()) {
-                        rotationAngleX = 1.75
+                        rotationAngleX = 30
                         rotationAngleY = 0
                     }
                 }
@@ -166,48 +166,42 @@ struct HoloShaderPreview: View {
 
     func startDeviceMotionUpdates() {
         if motionManager.isDeviceMotionAvailable {
-            // Adjust the update interval to reduce CPU load
             motionManager.deviceMotionUpdateInterval = 0.1
             
             motionManager.startDeviceMotionUpdates(to: .main) { motionData, error in
                 guard let motion = motionData else { return }
 
-                // Get pitch and roll from device motion
                 let pitch = motion.attitude.pitch * 180 / .pi
-                let roll = motion.attitude.roll * 180 / .pi
 
-                // Calculate adjusted pitch and roll based on the baseline
-                var adjustedPitch = (pitch - pitchBaseline) / 10
-                var adjustedRoll = (roll - rollBaseline) / 10
-
-                // Clamp values between -5 and 5
-                adjustedPitch = clamp(adjustedPitch, -5, 5)
-                adjustedRoll = clamp(adjustedRoll, -5, 5)
-
-                // Rebase: If we hit the max/min, reset and treat it as the new baseline
-                if adjustedPitch == -5 || adjustedPitch == 5 {
-                    pitchBaseline = pitch // Reset baseline to current pitch
-                    adjustedPitch = 1.75  // Reset rotationAngleX to initial value
+                // Adjust pitch based on baseline
+                var adjustedPitch = pitch - pitchBaseline
+                
+                // Shader progression: map pitch to -15 to 75 range
+                if adjustedPitch <= -45 { // New wider range
+                    // Rebase if pitch exceeds lower limit
+                    pitchBaseline = pitch
+                    adjustedPitch = 30 // Reset shader progression to middle
+                } else if adjustedPitch >= 45 {
+                    // Rebase if pitch exceeds upper limit
+                    pitchBaseline = pitch
+                    adjustedPitch = 30 // Reset shader progression to middle
                 }
 
-                if adjustedRoll == -5 || adjustedRoll == 5 {
-                    rollBaseline = roll // Reset baseline to current roll
-                    adjustedRoll = 0     // Reset rotationAngleY to initial value
-                }
+                // Ensure shader progression stays within the -15 to 75 range
+                let shaderValue = clamp(30 + adjustedPitch, -15, 75)
 
-                // Apply with smooth animation
-                withAnimation(.easeInOut(duration: 0.1)) { // Slightly longer animation duration
-                    rotationAngleX = adjustedPitch
-                    rotationAngleY = adjustedRoll
+                // Apply shader value to rotationAngleX
+                withAnimation(.easeInOut(duration: 0.1)) {
+                    rotationAngleX = shaderValue
                 }
             }
         }
     }
-      
-      // Helper function to clamp values
-      func clamp(_ value: Double, _ minValue: Double, _ maxValue: Double) -> Double {
-          return min(max(value, minValue), maxValue)
-      }
+
+    // Helper function to clamp values
+    func clamp(_ value: Double, _ minValue: Double, _ maxValue: Double) -> Double {
+        return min(max(value, minValue), maxValue)
+    }
 }
 
 #Preview {
