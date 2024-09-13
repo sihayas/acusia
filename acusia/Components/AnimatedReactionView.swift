@@ -102,7 +102,7 @@ struct HeartbreakReactionView: View {
             HeartbreakLeftPath()
                 .stroke(.white, lineWidth: 1)
                 .fill(.white)
-                .frame(width: 64, height: 58)
+                .frame(width: 64, height: 64)
                 .keyframeAnimator(initialValue: AnimationValues()) { content, value in
                     content
                         .foregroundStyle(.white)
@@ -171,7 +171,7 @@ struct HeartbreakReactionView: View {
             HeartbreakRightPath()
                 .stroke(.white, lineWidth: 1)
                 .fill(.white)
-                .frame(width: 64, height: 58)
+                .frame(width: 64, height: 64)
                 .keyframeAnimator(initialValue: AnimationValues()) { content, value in
                     content
                         .foregroundStyle(.white)

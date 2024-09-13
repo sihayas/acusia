@@ -12,54 +12,30 @@ import Wave
     MorphView()
 }
 
+let circleControlPoints: AnimatableVector = Circle().path(in: CGRect(x: 0, y: 0, width: 1, height: 1))
+    .controlPoints(count: 500)
+let heartControlPoints: AnimatableVector = HeartPath().path(in: CGRect(x: 0, y: 0, width: 1, height: 1))
+    .controlPoints(count: 500)
 
 struct MorphView: View {
     @State var controlPoints: AnimatableVector = circleControlPoints
-    @State var morphProgress: Double = 0.0
-    @State var dragOffset: CGSize = .zero
+    @State var morphProgress: Double = 0.0 // 0...1
 
-    let screenWidth: CGFloat = UIScreen.main.bounds.width
-    
-    let offsetAnimator = SpringAnimator<CGPoint>(spring: Spring(dampingRatio: 0.72, response: 0.7))
-
-    @State var boxOffset: CGPoint = .zero
+    @State private var animationTrigger = false
 
     var body: some View {
-        MorphableShape(controlPoints: self.controlPoints)
-            .frame(width: 64, height: 64)
-            .onAppear {
-                offsetAnimator.value = .zero
-
-                // The offset animator's callback will update the `offset` state variable.
-                offsetAnimator.valueChanged = { newValue in
-                    boxOffset = newValue
-                }
+        VStack {
+            MorphableShape(controlPoints: self.controlPoints)
+                .frame(width: 64, height: 64)
+        }
+        .onChange(of: self.morphProgress) { _, _ in
+            self.controlPoints = self.interpolatedControlPoints(from: circleControlPoints, to: heartControlPoints, progress: morphProgress)
+        }
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.3)) {
+                self.controlPoints = circleControlPoints
             }
-            .offset(x: boxOffset.x, y: boxOffset.y)
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        // Update the animator's target to the new drag translation.
-                        offsetAnimator.target = CGPoint(x: value.translation.width, y: value.translation.height)
-
-                        // Don't animate the box's position when we're dragging it.
-                        offsetAnimator.mode = .nonAnimated
-                        offsetAnimator.start()
-                    }
-                    .onEnded { value in
-                        // Animate the box to its original location (i.e. with zero translation).
-                        offsetAnimator.target = .zero
-
-                        // We want the box to animate to its original location, so use an `animated` mode.
-                        // This is different than the
-                        offsetAnimator.mode = .animated
-
-                        // Take the velocity of the gesture, and give it to the animator.
-                        // This makes the throw animation feel natural and continuous.
-                        offsetAnimator.velocity = CGPoint(x: value.velocity.width, y: value.velocity.height)
-                        offsetAnimator.start()
-                    }
-            )
+        }
     }
     
     func interpolatedControlPoints(from: AnimatableVector, to: AnimatableVector, progress: Double) -> AnimatableVector {
@@ -185,16 +161,6 @@ struct MorphableShape: Shape {
         }
     }
 }
-
-func randomVector(count: Int) -> AnimatableVector {
-    let randomValues = Array(1...count).map { _ in Double.random(in: 0...1.0) }
-    return AnimatableVector(with: randomValues)
-}
-
-let circleControlPoints: AnimatableVector = Circle().path(in: CGRect(x: 0, y: 0, width: 1, height: 1))
-    .controlPoints(count: 500)
-let heartControlPoints: AnimatableVector = HeartPath().path(in: CGRect(x: 0, y: 0, width: 1, height: 1))
-    .controlPoints(count: 500)
 
 extension Path {
     // return point at the curve

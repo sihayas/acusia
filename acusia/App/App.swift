@@ -30,9 +30,7 @@ struct AcusiaAppView: View {
     @State private var homePath = NavigationPath()
 
     var body: some View {
-        HoloPreview()
-            .background(Color.black)
-//        SwiftUIView()
+        SwiftUIView()
 //        Group {
 //            if auth.isAuthenticated && auth.user != nil {
 //                GeometryReader {
