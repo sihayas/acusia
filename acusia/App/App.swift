@@ -32,6 +32,7 @@ struct AcusiaAppView: View {
     var body: some View {
         HoloPreview()
             .background(Color.black)
+//        SwiftUIView()
 //        Group {
 //            if auth.isAuthenticated && auth.user != nil {
 //                GeometryReader {

@@ -17,11 +17,11 @@
 		CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4332502C82B146009ADBF0 /* SearchBar.swift */; };
 		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
 		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
-		CD6438C92C92829000D7436E /* HoloResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloResourceManager.swift */; };
+		CD6438C92C92829000D7436E /* HoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloManager.swift */; };
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
-		CD85AB0A2C891F5300A61FBB /* Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* Wave.swift */; };
-		CD85AB0C2C89228300A61FBB /* PictureInPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB0B2C89227A00A61FBB /* PictureInPictureViewController.swift */; };
+		CD85AB0A2C891F5300A61FBB /* WavePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* WavePreview.swift */; };
+		CD85AB0C2C89228300A61FBB /* PictureInPicturePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB0B2C89227A00A61FBB /* PictureInPicturePreview.swift */; };
 		CD85AB0F2C8922AA00A61FBB /* PathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB0E2C8922A800A61FBB /* PathView.swift */; };
 		CD85AB112C8922D700A61FBB /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */; };
 		CD85AB132C89230200A61FBB /* InstantPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */; };
@@ -127,11 +127,11 @@
 		CD4332502C82B146009ADBF0 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
-		CD6438C82C92828900D7436E /* HoloResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloResourceManager.swift; sourceTree = "<group>"; };
+		CD6438C82C92828900D7436E /* HoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloManager.swift; sourceTree = "<group>"; };
 		CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloShaderView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
-		CD85AB092C891F4400A61FBB /* Wave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wave.swift; sourceTree = "<group>"; };
-		CD85AB0B2C89227A00A61FBB /* PictureInPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureInPictureViewController.swift; sourceTree = "<group>"; };
+		CD85AB092C891F4400A61FBB /* WavePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePreview.swift; sourceTree = "<group>"; };
+		CD85AB0B2C89227A00A61FBB /* PictureInPicturePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureInPicturePreview.swift; sourceTree = "<group>"; };
 		CD85AB0E2C8922A800A61FBB /* PathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathView.swift; sourceTree = "<group>"; };
 		CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPanGestureRecognizer.swift; sourceTree = "<group>"; };
@@ -295,16 +295,24 @@
 			path = Squeeze;
 			sourceTree = "<group>";
 		};
-		CD85AB0D2C8922A000A61FBB /* Wave */ = {
+		CD68BD452C939D030050EE2B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */,
-				CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */,
 				CD85AB0E2C8922A800A61FBB /* PathView.swift */,
-				CD85AB092C891F4400A61FBB /* Wave.swift */,
-				CD85AB0B2C89227A00A61FBB /* PictureInPictureViewController.swift */,
+				CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */,
+				CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */,
 			);
-			path = Wave;
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		CD85AB0D2C8922A000A61FBB /* Swing */ = {
+			isa = PBXGroup;
+			children = (
+				CD68BD452C939D030050EE2B /* Helpers */,
+				CD85AB092C891F4400A61FBB /* WavePreview.swift */,
+				CD85AB0B2C89227A00A61FBB /* PictureInPicturePreview.swift */,
+			);
+			path = Swing;
 			sourceTree = "<group>";
 		};
 		CD8CFDA42C6F02AC00D7DEA7 /* App */ = {
@@ -331,7 +339,7 @@
 			isa = PBXGroup;
 			children = (
 				CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */,
-				CD6438C82C92828900D7436E /* HoloResourceManager.swift */,
+				CD6438C82C92828900D7436E /* HoloManager.swift */,
 				CDD77DA62C8FD93E00D5BCC1 /* HoloPreview.swift */,
 				CDC37D4B2C606C2A002D2709 /* Holo.metal */,
 			);
@@ -431,7 +439,7 @@
 			isa = PBXGroup;
 			children = (
 				CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */,
-				CD85AB0D2C8922A000A61FBB /* Wave */,
+				CD85AB0D2C8922A000A61FBB /* Swing */,
 				CDE43C122C8684FD0009CB87 /* MorphView.swift */,
 				CDE43C102C8671250009CB87 /* AnimatedReactionView.swift */,
 				CD4332522C82B205009ADBF0 /* Entry */,
@@ -623,8 +631,8 @@
 				CD8E0BD92C8D6133003A6F91 /* FittedSheet.swift in Sources */,
 				CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
-				CD85AB0C2C89228300A61FBB /* PictureInPictureViewController.swift in Sources */,
-				CD6438C92C92829000D7436E /* HoloResourceManager.swift in Sources */,
+				CD85AB0C2C89228300A61FBB /* PictureInPicturePreview.swift in Sources */,
+				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
 				CD85AB132C89230200A61FBB /* InstantPanGestureRecognizer.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */,
 				CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */,
@@ -652,7 +660,7 @@
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,
 				CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */,
 				CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */,
-				CD85AB0A2C891F5300A61FBB /* Wave.swift in Sources */,
+				CD85AB0A2C891F5300A61FBB /* WavePreview.swift in Sources */,
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,

@@ -11,6 +11,10 @@ struct AnimationValues {
 }
 
 
+#Preview {
+    HeartbreakReactionView()
+}
+
 struct HeartReactionView: View {
     @State private var isAnimating = false
 
@@ -236,8 +240,4 @@ struct HeartbreakReactionView: View {
         }
         .frame(width: 64, height: 58)
     }
-}
-
-#Preview {
-    HeartbreakReactionView()
 }

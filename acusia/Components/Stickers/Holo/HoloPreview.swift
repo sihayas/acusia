@@ -15,20 +15,15 @@ import SwiftUI
 
 struct HoloPreview: View {
     private let motionManager = CMMotionManager()
-
-    // Range -15 to 75 (Complete-Start)
-    @State private var rotationAngleX: Double = 30
-    @State private var rotationAngleY: Double = 0
-
-    // Baseline for pitch, middle of shader range
+    
+    // Baseline for pitch and roll
     @State private var pitchBaseline: Double = 30
-    // Baseline for roll
     @State private var rollBaseline: Double = 0
-
+    
     var body: some View {
         let mkShape = MKSymbolShape(imageName: "helloSticker")
         let mkShape2 = MKSymbolShape(imageName: "bunnySticker")
-
+        
         VStack {
             ZStack {
                 mkShape
@@ -40,15 +35,15 @@ struct HoloPreview: View {
                             ))
                     .fill(.white)
                     .frame(width: 170, height: 56)
-
+                
                 Image("helloSticker")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 170, height: 56)
                     .aspectRatio(contentMode: .fill)
-
+                
                 // Metal shader view with circular mask
-                MetalCardView(rotationAngleX: $rotationAngleX, rotationAngleY: $rotationAngleY)
+                HoloShaderView()
                     .frame(width: 178, height: 178)
                     .mask(
                         mkShape
@@ -64,7 +59,7 @@ struct HoloPreview: View {
                     .blendMode(.screen)
                     .opacity(1.0)
             }
-
+            
             ZStack {
                 mkShape2
                     .stroke(.white,
@@ -75,15 +70,15 @@ struct HoloPreview: View {
                             ))
                     .fill(.white)
                     .frame(width: 90, height: 110)
-
+                
                 Image("bunnySticker")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 90, height: 110)
                     .aspectRatio(contentMode: .fill)
-
+                
                 // Metal shader view with circular mask
-                MetalCardView(rotationAngleX: $rotationAngleX, rotationAngleY: $rotationAngleY)
+                HoloShaderView()
                     .frame(width: 98, height: 118)
                     .mask(
                         mkShape2
@@ -98,17 +93,19 @@ struct HoloPreview: View {
                     )
                     .blendMode(.screen)
             }
+            
+            
         }
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    rotationAngleX = Double(-value.translation.height / 20)
-                    rotationAngleY = Double(value.translation.width / 20)
+                    HoloRotationManager.shared.rotationAngleX = Float(-value.translation.height / 20)
+                    HoloRotationManager.shared.rotationAngleY = Float(value.translation.width / 20)
                 }
                 .onEnded { _ in
                     withAnimation(.spring()) {
-                        rotationAngleX = 30
-                        rotationAngleY = 0
+                        HoloRotationManager.shared.rotationAngleX = 30
+                        HoloRotationManager.shared.rotationAngleY = 0
                     }
                 }
         )
@@ -116,21 +113,21 @@ struct HoloPreview: View {
             startDeviceMotionUpdates()
         }
     }
-
+    
     func startDeviceMotionUpdates() {
         if motionManager.isDeviceMotionAvailable {
             motionManager.deviceMotionUpdateInterval = 0.01
-
+            
             motionManager.startDeviceMotionUpdates(to: .main) { motionData, _ in
                 guard let motion = motionData else { return }
-
+                
                 let pitch = motion.attitude.pitch * 180 / .pi
-
+                
                 // Adjust pitch based on baseline
                 var adjustedPitch = pitch - pitchBaseline
-
+                
                 // Shader progression: map pitch to -15 to 75 range
-                if adjustedPitch <= -45 { // New wider range
+                if adjustedPitch <= -45 {
                     // Rebase if pitch exceeds lower limit
                     pitchBaseline = pitch
                     adjustedPitch = 30 // Reset shader progression to middle
@@ -139,17 +136,16 @@ struct HoloPreview: View {
                     pitchBaseline = pitch
                     adjustedPitch = 30 // Reset shader progression to middle
                 }
-
+                
                 // Ensure shader progression stays within the -15 to 75 range
                 let shaderValue = clamp(30 + adjustedPitch, -15, 75)
-
-                // Apply shader value to rotationAngleX
-
-                rotationAngleX = shaderValue
+                
+                // Apply shader value to rotationAngleX via the manager
+                HoloRotationManager.shared.rotationAngleX = Float(shaderValue)
             }
         }
     }
-
+    
     // Helper function to clamp values
     func clamp(_ value: Double, _ minValue: Double, _ maxValue: Double) -> Double {
         return min(max(value, minValue), maxValue)

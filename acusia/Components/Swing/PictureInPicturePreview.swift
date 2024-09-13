@@ -4,11 +4,9 @@
 //
 //  Created by decoherence on 9/4/24.
 //
-
 import Foundation
 import UIKit
 import SwiftUI
-
 import Wave
 
 struct PictureInPictureViewControllerWrapper: UIViewControllerRepresentable {
@@ -20,17 +18,16 @@ struct PictureInPictureViewControllerWrapper: UIViewControllerRepresentable {
         // Leave empty for now
     }
 }
-struct PictureInPictureViewController_Preview: PreviewProvider {
-    static var previews: some View {
-        PictureInPictureViewControllerWrapper()
-            .edgesIgnoringSafeArea(.all)  // Optional: to display the view controller fullscreen
-    }
+
+#Preview {
+    PictureInPictureViewControllerWrapper()
+        .edgesIgnoringSafeArea(.all)
 }
 
 
 class PictureInPictureViewController: UIViewController {
 
-    let pipView = PictureInPictureView(frame: CGRect(x: 0, y: 0, width: 120, height: 80))
+    let pipView = PictureInPictureView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
 
     /// A tighter spring used when dragging the PiP view around.
     let interactiveSpring = Spring(dampingRatio: 0.8, response: 0.26)
@@ -228,7 +225,7 @@ extension PictureInPictureViewController {
 
         var origin: CGPoint = .zero
 
-        let marginX = 25.0
+        let marginX = 24.0
         let marginY = marginX
 
         let window = UIApplication.shared.delegate?.window
