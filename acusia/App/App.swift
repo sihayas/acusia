@@ -30,7 +30,7 @@ struct AcusiaAppView: View {
     @State private var homePath = NavigationPath()
 
     var body: some View {
-        SwiftUIView()
+        ImprintView()
 //        Group {
 //            if auth.isAuthenticated && auth.user != nil {
 //                GeometryReader {

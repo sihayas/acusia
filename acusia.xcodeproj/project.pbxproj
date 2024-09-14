@@ -15,6 +15,8 @@
 		CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD27939B2C7B883C00486C1D /* AvatarView.swift */; };
 		CD43324F2C82A856009ADBF0 /* RecentlyPlayedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */; };
 		CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4332502C82B146009ADBF0 /* SearchBar.swift */; };
+		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
+		CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */; };
 		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
 		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
 		CD6438C92C92829000D7436E /* HoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloManager.swift */; };
@@ -125,6 +127,8 @@
 		CD27939B2C7B883C00486C1D /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyPlayedView.swift; sourceTree = "<group>"; };
 		CD4332502C82B146009ADBF0 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		CD4BAA9F2C950A570005F3DB /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
+		CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
 		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
 		CD6438C82C92828900D7436E /* HoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloManager.swift; sourceTree = "<group>"; };
@@ -251,6 +255,7 @@
 		CD13D5252C3FAD84007E3120 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
+				CD4BAA9E2C950A3F0005F3DB /* Ripple */,
 				CDC37D442C6067FA002D2709 /* Iridescent */,
 				CD132AA42C6DE75800C16804 /* Loupe */,
 			);
@@ -284,6 +289,15 @@
 				CD8CFDA92C6F030100D7DEA7 /* FeedBarView.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		CD4BAA9E2C950A3F0005F3DB /* Ripple */ = {
+			isa = PBXGroup;
+			children = (
+				CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */,
+				CD4BAA9F2C950A570005F3DB /* Ripple.metal */,
+			);
+			path = Ripple;
 			sourceTree = "<group>";
 		};
 		CD6438C12C9142B700D7436E /* Squeeze */ = {
@@ -644,6 +658,7 @@
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
 				CDE43C112C8671280009CB87 /* AnimatedReactionView.swift in Sources */,
 				CDE43C132C8684FF0009CB87 /* MorphView.swift in Sources */,
+				CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */,
 				CD85AB0F2C8922AA00A61FBB /* PathView.swift in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */,
@@ -674,6 +689,7 @@
 				CDE43C0F2C865B120009CB87 /* UIScreen.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
+				CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */,
 				CD8E0BDB2C8D6C8C003A6F91 /* BlackBlurView.swift in Sources */,
 				CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
