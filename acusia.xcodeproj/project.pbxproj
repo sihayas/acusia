@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* SearchSheet.swift */; };
+		CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* IndexSheet.swift */; };
 		CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA62C6DE76900C16804 /* Loupe.metal */; };
@@ -17,23 +17,22 @@
 		CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4332502C82B146009ADBF0 /* SearchBar.swift */; };
 		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
 		CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */; };
+		CD4BAAA42C9524DA0005F3DB /* AnimatableVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA32C9524D50005F3DB /* AnimatableVector.swift */; };
+		CD4BAAA92C95402A0005F3DB /* ImprintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA82C9540200005F3DB /* ImprintView.swift */; };
+		CD4BAAAB2C95407F0005F3DB /* ResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAAA2C95407A0005F3DB /* ResultsView.swift */; };
+		CD4BAAAD2C954A5E0005F3DB /* SubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAAC2C954A540005F3DB /* SubmissionView.swift */; };
 		CD614C402C7489050059C80F /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C3F2C7488FF0059C80F /* MusicKit.swift */; };
 		CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD614C412C74BA150059C80F /* MusicKitModel.swift */; };
 		CD6438C92C92829000D7436E /* HoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloManager.swift */; };
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
-		CD85AB0A2C891F5300A61FBB /* WavePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* WavePreview.swift */; };
-		CD85AB0C2C89228300A61FBB /* PictureInPicturePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB0B2C89227A00A61FBB /* PictureInPicturePreview.swift */; };
-		CD85AB0F2C8922AA00A61FBB /* PathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB0E2C8922A800A61FBB /* PathView.swift */; };
-		CD85AB112C8922D700A61FBB /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */; };
-		CD85AB132C89230200A61FBB /* InstantPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */; };
+		CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* ImprintPreview.swift */; };
 		CD85AB152C8950D600A61FBB /* Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB142C8950D200A61FBB /* Previews.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* HomePastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */; };
 		CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA92C6F030100D7DEA7 /* FeedBarView.swift */; };
 		CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D197E2C24E3CD00FDC979 /* Auth.swift */; };
 		CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D19822C27973800FDC979 /* NotificationModel.swift */; };
-		CD8E0BD92C8D6133003A6F91 /* FittedSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BD82C8D6130003A6F91 /* FittedSheet.swift */; };
 		CD8E0BDB2C8D6C8C003A6F91 /* BlackBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */; };
 		CD8E0BDF2C8D7EF8003A6F91 /* ReplySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDE2C8D7EF2003A6F91 /* ReplySheet.swift */; };
 		CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */; };
@@ -67,7 +66,6 @@
 		CDE43C0D2C854DF60009CB87 /* VGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C0C2C854DF10009CB87 /* VGrid.swift */; };
 		CDE43C0F2C865B120009CB87 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C0E2C865B0F0009CB87 /* UIScreen.swift */; };
 		CDE43C112C8671280009CB87 /* AnimatedReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C102C8671250009CB87 /* AnimatedReactionView.swift */; };
-		CDE43C132C8684FF0009CB87 /* MorphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C122C8684FD0009CB87 /* MorphView.swift */; };
 		CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* IridescentPreview.swift */; };
 		CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
@@ -120,7 +118,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CD06C26F2C69B10100FC010C /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
+		CD06C26F2C69B10100FC010C /* IndexSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexSheet.swift; sourceTree = "<group>"; };
 		CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
@@ -129,16 +127,16 @@
 		CD4332502C82B146009ADBF0 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		CD4BAA9F2C950A570005F3DB /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
 		CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
+		CD4BAAA32C9524D50005F3DB /* AnimatableVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatableVector.swift; sourceTree = "<group>"; };
+		CD4BAAA82C9540200005F3DB /* ImprintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprintView.swift; sourceTree = "<group>"; };
+		CD4BAAAA2C95407A0005F3DB /* ResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsView.swift; sourceTree = "<group>"; };
+		CD4BAAAC2C954A540005F3DB /* SubmissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionView.swift; sourceTree = "<group>"; };
 		CD614C3F2C7488FF0059C80F /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
 		CD614C412C74BA150059C80F /* MusicKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitModel.swift; sourceTree = "<group>"; };
 		CD6438C82C92828900D7436E /* HoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloManager.swift; sourceTree = "<group>"; };
 		CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloShaderView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
-		CD85AB092C891F4400A61FBB /* WavePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavePreview.swift; sourceTree = "<group>"; };
-		CD85AB0B2C89227A00A61FBB /* PictureInPicturePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureInPicturePreview.swift; sourceTree = "<group>"; };
-		CD85AB0E2C8922A800A61FBB /* PathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathView.swift; sourceTree = "<group>"; };
-		CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
-		CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPanGestureRecognizer.swift; sourceTree = "<group>"; };
+		CD85AB092C891F4400A61FBB /* ImprintPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprintPreview.swift; sourceTree = "<group>"; };
 		CD85AB142C8950D200A61FBB /* Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Previews.swift; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		CD8CFDA72C6F02F100D7DEA7 /* HomePastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePastView.swift; sourceTree = "<group>"; };
@@ -146,7 +144,6 @@
 		CD8D197E2C24E3CD00FDC979 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		CD8D19822C27973800FDC979 /* NotificationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModel.swift; sourceTree = "<group>"; };
 		CD8D19842C29C5FF00FDC979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		CD8E0BD82C8D6130003A6F91 /* FittedSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittedSheet.swift; sourceTree = "<group>"; };
 		CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackBlurView.swift; sourceTree = "<group>"; };
 		CD8E0BDE2C8D7EF2003A6F91 /* ReplySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplySheet.swift; sourceTree = "<group>"; };
 		CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
@@ -184,7 +181,6 @@
 		CDE43C0C2C854DF10009CB87 /* VGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VGrid.swift; sourceTree = "<group>"; };
 		CDE43C0E2C865B0F0009CB87 /* UIScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreen.swift; sourceTree = "<group>"; };
 		CDE43C102C8671250009CB87 /* AnimatedReactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedReactionView.swift; sourceTree = "<group>"; };
-		CDE43C122C8684FD0009CB87 /* MorphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphView.swift; sourceTree = "<group>"; };
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDEB4E912C44AB5600DFF026 /* EntryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAPI.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
@@ -255,6 +251,8 @@
 		CD13D5252C3FAD84007E3120 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
+				CD6438C12C9142B700D7436E /* Squeeze */,
+				CDC37D492C606C16002D2709 /* Holo */,
 				CD4BAA9E2C950A3F0005F3DB /* Ripple */,
 				CDC37D442C6067FA002D2709 /* Iridescent */,
 				CD132AA42C6DE75800C16804 /* Loupe */,
@@ -300,6 +298,17 @@
 			path = Ripple;
 			sourceTree = "<group>";
 		};
+		CD4BAAA52C953D4D0005F3DB /* Index */ = {
+			isa = PBXGroup;
+			children = (
+				CD06C26F2C69B10100FC010C /* IndexSheet.swift */,
+				CD4BAAAA2C95407A0005F3DB /* ResultsView.swift */,
+				CD4BAAAC2C954A540005F3DB /* SubmissionView.swift */,
+				CD4BAAA82C9540200005F3DB /* ImprintView.swift */,
+			);
+			path = Index;
+			sourceTree = "<group>";
+		};
 		CD6438C12C9142B700D7436E /* Squeeze */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,24 +318,13 @@
 			path = Squeeze;
 			sourceTree = "<group>";
 		};
-		CD68BD452C939D030050EE2B /* Helpers */ = {
+		CD85AB0D2C8922A000A61FBB /* Imprint */ = {
 			isa = PBXGroup;
 			children = (
-				CD85AB0E2C8922A800A61FBB /* PathView.swift */,
-				CD85AB102C8922D300A61FBB /* CGRect+Extensions.swift */,
-				CD85AB122C8922FE00A61FBB /* InstantPanGestureRecognizer.swift */,
+				CDE43C102C8671250009CB87 /* AnimatedReactionView.swift */,
+				CD85AB092C891F4400A61FBB /* ImprintPreview.swift */,
 			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		CD85AB0D2C8922A000A61FBB /* Swing */ = {
-			isa = PBXGroup;
-			children = (
-				CD68BD452C939D030050EE2B /* Helpers */,
-				CD85AB092C891F4400A61FBB /* WavePreview.swift */,
-				CD85AB0B2C89227A00A61FBB /* PictureInPicturePreview.swift */,
-			);
-			path = Swing;
+			path = Imprint;
 			sourceTree = "<group>";
 		};
 		CD8CFDA42C6F02AC00D7DEA7 /* App */ = {
@@ -358,15 +356,6 @@
 				CDC37D4B2C606C2A002D2709 /* Holo.metal */,
 			);
 			path = Holo;
-			sourceTree = "<group>";
-		};
-		CDD77D992C8F8E2200D5BCC1 /* Stickers */ = {
-			isa = PBXGroup;
-			children = (
-				CD6438C12C9142B700D7436E /* Squeeze */,
-				CDC37D492C606C16002D2709 /* Holo */,
-			);
-			path = Stickers;
 			sourceTree = "<group>";
 		};
 		CDDED7292C194C8400958B39 = {
@@ -438,7 +427,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				CD8E0BD82C8D6130003A6F91 /* FittedSheet.swift */,
+				CD4BAAA32C9524D50005F3DB /* AnimatableVector.swift */,
 				CDE43C0E2C865B0F0009CB87 /* UIScreen.swift */,
 				CDE43C0C2C854DF10009CB87 /* VGrid.swift */,
 				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
@@ -453,13 +442,10 @@
 			isa = PBXGroup;
 			children = (
 				CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */,
-				CD85AB0D2C8922A000A61FBB /* Swing */,
-				CDE43C122C8684FD0009CB87 /* MorphView.swift */,
-				CDE43C102C8671250009CB87 /* AnimatedReactionView.swift */,
+				CD85AB0D2C8922A000A61FBB /* Imprint */,
 				CD4332522C82B205009ADBF0 /* Entry */,
 				CD4332532C82B216009ADBF0 /* Home */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
-				CDD77D992C8F8E2200D5BCC1 /* Stickers */,
 				CDE14A442C8118C400D0F172 /* PathViews.swift */,
 				CD4332502C82B146009ADBF0 /* SearchBar.swift */,
 				CDA330AD2C39EFEE00622779 /* TapbackView.swift */,
@@ -494,10 +480,10 @@
 		CDDED7872C1955A500958B39 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				CD4BAAA52C953D4D0005F3DB /* Index */,
 				CD8E0BDE2C8D7EF2003A6F91 /* ReplySheet.swift */,
 				CD2E1ABD2C7A011100922C1B /* Home */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
-				CD06C26F2C69B10100FC010C /* SearchSheet.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -642,12 +628,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD8E0BD92C8D6133003A6F91 /* FittedSheet.swift in Sources */,
 				CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */,
 				CDDED7822C1953AC00958B39 /* FeedAPI.swift in Sources */,
-				CD85AB0C2C89228300A61FBB /* PictureInPicturePreview.swift in Sources */,
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
-				CD85AB132C89230200A61FBB /* InstantPanGestureRecognizer.swift in Sources */,
+				CD4BAAA42C9524DA0005F3DB /* AnimatableVector.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */,
 				CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,
@@ -657,12 +641,12 @@
 				CDDED77D2C19520300958B39 /* FeedModel.swift in Sources */,
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
 				CDE43C112C8671280009CB87 /* AnimatedReactionView.swift in Sources */,
-				CDE43C132C8684FF0009CB87 /* MorphView.swift in Sources */,
 				CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */,
-				CD85AB0F2C8922AA00A61FBB /* PathView.swift in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
+				CD4BAAAB2C95407F0005F3DB /* ResultsView.swift in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */,
 				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
+				CD4BAAA92C95402A0005F3DB /* ImprintView.swift in Sources */,
 				CD8E0BDF2C8D7EF8003A6F91 /* ReplySheet.swift in Sources */,
 				CDE43C0D2C854DF60009CB87 /* VGrid.swift in Sources */,
 				CDD77DA72C8FD94200D5BCC1 /* HoloPreview.swift in Sources */,
@@ -671,18 +655,18 @@
 				CDDED78F2C195B2700958B39 /* HomeFeedView.swift in Sources */,
 				CD85AB152C8950D600A61FBB /* Previews.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
-				CD06C2702C69B10600FC010C /* SearchSheet.swift in Sources */,
+				CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */,
+				CD4BAAAD2C954A5E0005F3DB /* SubmissionView.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,
 				CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */,
 				CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */,
-				CD85AB0A2C891F5300A61FBB /* WavePreview.swift in Sources */,
+				CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */,
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
 				CDD77DA52C8F966000D5BCC1 /* SqueezePreview.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
-				CD85AB112C8922D700A61FBB /* CGRect+Extensions.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,

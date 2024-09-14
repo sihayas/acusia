@@ -1,50 +1,17 @@
 //
-//  MorphView.swift
+//  AnimatableVector.swift
 //  acusia
 //
-//  Created by decoherence on 9/2/24.
+//  Created by decoherence on 9/13/24.
 //
 
 import SwiftUI
 import Wave
 
-#Preview {
-    MorphView()
-}
-
 let circleControlPoints: AnimatableVector = Circle().path(in: CGRect(x: 0, y: 0, width: 1, height: 1))
     .controlPoints(count: 500)
 let heartControlPoints: AnimatableVector = HeartPath().path(in: CGRect(x: 0, y: 0, width: 1, height: 1))
     .controlPoints(count: 500)
-
-struct MorphView: View {
-    @State var controlPoints: AnimatableVector = circleControlPoints
-    @State var morphProgress: Double = 0.0 // 0...1
-
-    @State private var animationTrigger = false
-
-    var body: some View {
-        VStack {
-            MorphableShape(controlPoints: self.controlPoints)
-                .frame(width: 64, height: 64)
-        }
-        .onChange(of: self.morphProgress) { _, _ in
-            self.controlPoints = self.interpolatedControlPoints(from: circleControlPoints, to: heartControlPoints, progress: morphProgress)
-        }
-        .onAppear {
-            withAnimation(.easeOut(duration: 0.3)) {
-                self.controlPoints = circleControlPoints
-            }
-        }
-    }
-    
-    func interpolatedControlPoints(from: AnimatableVector, to: AnimatableVector, progress: Double) -> AnimatableVector {
-        let interpolatedValues = zip(from.values, to.values).map { start, end in
-            start + (end - start)*progress
-        }
-        return AnimatableVector(with: interpolatedValues)
-    }
-}
 
 struct AnimatableVector: VectorArithmetic {
     var values: [Double] // vector values

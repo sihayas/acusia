@@ -9,10 +9,10 @@ import SwiftUI
 import Wave
 
 #Preview {
-    ImprintView()
+    ImprintPreview()
 }
 
-struct ImprintView: View {
+struct ImprintPreview: View {
     // Card Deck
     @State private var selection: Int = 1
 
@@ -47,74 +47,71 @@ struct ImprintView: View {
             PageView(selection: $selection) {
                 ForEach([1, 2], id: \.self) { index in
                     if index == 1 {
-                        RoundedRectangle(cornerRadius: 32, style: .continuous)
-                            .fill(Color(UIColor.systemGray6))
-//                            .foregroundStyle(.ultraThickMaterial)
-//                            .background(
-//                                AsyncImage(url: URL(string: imageUrl)) { image in
-//                                    image
-//                                        .resizable()
-//                                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-//                                } placeholder: {
-//                                    Rectangle()
-//                                }
-//                            )
-                            .overlay {
-                                ZStack(alignment: .bottomTrailing) {
-                                    VStack {
-                                        Text("")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 15, weight: .semibold))
-                                            .multilineTextAlignment(.leading)
-                                    }
-                                    .padding([.horizontal, .top], 20)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                                    .mask(
-                                        LinearGradient(
-                                            gradient: Gradient(stops: [
-                                                .init(color: .black, location: 0),
-                                                .init(color: .black, location: 0.75),
-                                                .init(color: .clear, location: 0.825)
-                                            ]),
-                                            startPoint: .top,
-                                            endPoint: .bottom
+                        GeometryReader { geo in
+                            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                                .fill(Color(UIColor.systemGray6))
+                                .overlay {
+                                    ZStack(alignment: .bottomTrailing) {
+                                        VStack {
+                                            Text("")
+                                                .foregroundColor(.white)
+                                                .font(.system(size: 15, weight: .semibold))
+                                                .multilineTextAlignment(.leading)
+                                        }
+                                        .padding([.horizontal, .top], 20)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                        .mask(
+                                            LinearGradient(
+                                                gradient: Gradient(stops: [
+                                                    .init(color: .black, location: 0),
+                                                    .init(color: .black, location: 0.75),
+                                                    .init(color: .clear, location: 0.825)
+                                                ]),
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                            )
+                                            .frame(height: .infinity)
                                         )
-                                        .frame(height: .infinity)
-                                    )
-
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(artistName)
-                                                .foregroundColor(.secondary)
-                                                .font(.system(size: 11, weight: .regular, design: .rounded))
-                                                .lineLimit(1)
-                                            Text(name)
-                                                .foregroundColor(.secondary)
-                                                .font(.system(size: 11, weight: .semibold, design: .rounded))
-                                                .lineLimit(1)
+                                        
+                                        HStack {
+                                            VStack(alignment: .leading) {
+                                                Text(artistName)
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .regular, design: .rounded))
+                                                    .lineLimit(1)
+                                                Text(name)
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                                    .lineLimit(1)
+                                            }
+                                            
+                                            Spacer()
+                                            
+                                            // Reserve space for shape to animate to.
+                                            GeometryReader { geo in
+                                                Rectangle()
+                                                    .fill(.clear)
+                                                    .frame(width: 28, height: 28)
+                                                    .onAppear {
+                                                        // Capture the position of the target for the shape
+                                                        shapeTargetPosition = CGPoint(x: geo.frame(in: .global).minX, y: geo.frame(in: .global).minY)
+                                                    }
+                                            }
+                                            .frame(width: 28, height: 28) // Limit GeometryReader size
                                         }
-
-                                        Spacer()
-
-                                        // Reserve space for mark to animate to.
-                                        GeometryReader { geo in
-                                            Rectangle()
-                                                .fill(.clear)
-                                                .frame(width: 28, height: 28)
-                                                .onAppear {
-                                                    // Capture the position of the red rectangle
-                                                    shapeTargetPosition = CGPoint(x: geo.frame(in: .global).minX, y: geo.frame(in: .global).minY)
-                                                    origin = shapeTargetPosition
-                                                }
-                                        }
-                                        .frame(width: 28, height: 28) // Limit GeometryReader size
+                                        .padding(20)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                     }
-                                    .padding(20)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                 }
-                            }
-                            .frame(height: 280)
-                            .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
+                                .frame(height: 280)
+                                .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
+                                .onAppear {
+                                    // Capture the bottom-right position for the ripple effect
+                                    let frame = geo.frame(in: .global)
+                                    let bottomTrailing = CGPoint(x: frame.maxX, y: frame.maxY)
+                                    origin = bottomTrailing
+                                }
+                        }
                     } else {
                         Rectangle()
                             .foregroundStyle(.clear)

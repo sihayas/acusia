@@ -242,7 +242,7 @@ struct HomeWallView: View {
         }
         // MARK: - Search Sheet
         .sheet(isPresented: $searchSheet) {
-            SearchSheet()
+            IndexSheet()
         }
     }
 }
