@@ -27,43 +27,39 @@ struct Home: View {
     
     @Binding var homePath: NavigationPath
 
-    // State to track current visible view
-    @State private var currentView: String = "mainView"
-
     var body: some View {
-        let sidebarWidth = size.width * 0.9
-        
-        GeometryReader { geometry in
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 0) {
-                    // Main Feed + User + User History View
-                    ScrollView(.vertical) {
-                        VStack(spacing: 0) {
-                            HomePastView(size: size, safeArea: safeArea)
+        // Main Feed + User + User History View
+        ScrollView(.vertical) {
+            VStack(spacing: 0) {
+                PastView(size: size, safeArea: safeArea)
                             
-                            HomeWallView(homePath: $homePath, initialUserData: nil, userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af", username: "decoherence", image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"))
-                                .frame(minHeight: size.height)
-                                .offset(y: shareData.gestureProgress * 30)
+                GridView(homePath: $homePath,
+                             initialUserData: nil,
+                             userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af",
+                                                    username: "decoherence",
+                                                    image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"),
+                             size: size
+                )
                             
-                            HomeFeedView(userId: auth.user?.id ?? "")
-                                .padding(.top, safeArea.bottom + 40)
-                                .padding(.bottom, size.height)
-                        }
-                    }
+                FeedView(userId: auth.user?.id ?? "")
+                    .padding(.top, safeArea.bottom + 40)
+                    .padding(.bottom, size.height)
+            }
+        }
+        .scrollDisabled(shareData.isExpanded)
 //                    .onScrollGeometryChange(for: CGFloat.self) { proxy in
 //                        proxy.contentOffset.y
 //                    } action: { oldValue, newValue in
 //                        shareData.mainScrollValue = newValue
 //                        print("Main Scroll Value: \(newValue)")
 //                    }
-                    .scrollDisabled(shareData.isExpanded)
 //                    .simultaneousGesture(
 //                        DragGesture()
 //                            .onChanged { value in
 //                                let translation = value.translation.height * 0.1 // Friction
 //                                let draggingUp = translation < 0
 //                                let draggingDown = translation > 0
-//                                
+//
 //                                if draggingDown && shareData.mainScrollValue <= 0 && !shareData.isExpanded {
 //                                    shareData.canPullDown = true
 //                                    let progress = max(min(translation / (size.height + safeArea.top + safeArea.bottom) * 0.2, 1.0), 0.0)
@@ -90,45 +86,17 @@ struct Home: View {
 //                                shareData.canPullUp = false
 //                            }
 //                    )
-                    .frame(width: size.width)
-                    .id("mainView")
-                    
-                    // Notifications View
-                    VStack {
-                        Text("Notifications")
-                            .font(.largeTitle)
-                            .padding()
-                        Spacer()
-                    }
-                    .frame(width: sidebarWidth)
-                    .background(Color.black)
-                    .border(Color.cyan, width: 1)
-                    .id("sidebar")
-                }
-                .scrollTargetLayout()
-            }
-            .scrollTargetBehavior(.paging)
-            .onScrollTargetVisibilityChange(idType: String.self) { visibleTargets in
-                // Haptic feedback when switching to notifications.
-                if let visibleTarget = visibleTargets.first, visibleTarget != currentView {
-                    currentView = visibleTarget
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                }
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .overlay(alignment: .top) {
-                VStack {
-                    VariableBlurView(radius: 1, mask: Image(.gradient))
-                        .scaleEffect(x: 1, y: -1)
-                        .ignoresSafeArea()
-                        .frame(maxWidth: .infinity, maxHeight: safeArea.top * 1.5)
-                    Spacer()
-                    FeedBarView(safeArea: safeArea)
-                }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .top) {
+            VStack {
+                VariableBlurView(radius: 1, mask: Image(.gradient))
+                    .scaleEffect(x: 1, y: -1)
+                    .ignoresSafeArea()
+                    .frame(maxWidth: .infinity, maxHeight: safeArea.top * 1.5)
+                Spacer()
+//                    FeedBarView(safeArea: safeArea)
             }
         }
-        .background(.black)
-        .ignoresSafeArea()
     }
 }
 

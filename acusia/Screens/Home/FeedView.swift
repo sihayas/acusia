@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-struct HomeFeedView: View {
+struct FeedView: View {
     @StateObject private var viewModel: FeedViewModel
     @State private var deleteError: Error?
     @State private var expandedEntryId: String?

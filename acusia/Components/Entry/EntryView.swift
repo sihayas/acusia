@@ -9,8 +9,6 @@ import BigUIPaging
 import SwiftUI
 
 struct Entry: View {
-    @EnvironmentObject private var safeAreaInsetsManager: SafeAreaInsetsManager
-
     let entry: APIEntry
     let onDelete: (String) async -> Void
 

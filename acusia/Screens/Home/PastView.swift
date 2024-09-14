@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HomePastView: View {
+struct PastView: View {
     let size: CGSize
     let safeArea: EdgeInsets
     @EnvironmentObject private var shareData: ShareData
