@@ -15,60 +15,64 @@ struct ResultsView: View {
     @Binding var searchResults: [SearchResult]
 
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack {
-                ForEach(searchResults.indices, id: \.self) { index in
-                    if let artwork = searchResults[index].artwork {
-                        let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
+        VStack {
+            ForEach(searchResults.indices, id: \.self) { index in
+                if let artwork = searchResults[index].artwork {
+                    let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
+                    let isSong = searchResults[index].type == "Song"
 
-                        ZStack {
-                            if selectedResult?.id != searchResults[index].id {
-                                HStack {
-                                    AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
-                                        image.resizable()
-                                    } placeholder: {
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                            .fill(Color.gray.opacity(0.25))
-                                    }
-                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                    .matchedGeometryEffect(id: "\(searchResults[index].id)-artwork", in: animationNamespace)
-                                    .aspectRatio(contentMode: .fit)
-                                    .padding(4)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                            .stroke(Color(backgroundColor), lineWidth: 2)
-                                    )
-
-                                    VStack(alignment: .leading) {
-                                        Text(searchResults[index].artistName)
-                                            .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            .lineLimit(1)
-                                            .foregroundColor(.white.opacity(0.6))
-
-                                        Text(searchResults[index].title)
-                                            .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            .lineLimit(1)
-                                            .foregroundColor(.white)
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                                .frame(width: .infinity, height: 48)
+                    if selectedResult?.id != searchResults[index].id {
+                        HStack {
+                            AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
+                                image.resizable()
+                            } placeholder: {
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(Color.gray.opacity(0.25))
                             }
+                            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .matchedGeometryEffect(id: "\(searchResults[index].id)-artwork", in: animationNamespace)
+                            .aspectRatio(contentMode: .fit)
+                            .padding(4)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                    .strokeBorder(
+                                        style: StrokeStyle(
+                                            lineWidth: 1,
+                                            lineCap: .round,
+                                            dash: [5]
+                                        )
+                                    )
+                                    .foregroundColor(
+                                        isSong ? Color.white.opacity(0) : Color(backgroundColor)
+                                    )
+                            )
+
+                            VStack(alignment: .leading) {
+                                Text(searchResults[index].artistName)
+                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                    .lineLimit(1)
+                                    .foregroundColor(.white.opacity(0.6))
+
+                                Text(searchResults[index].title)
+                                    .font(.system(size: 15, weight: .regular, design: .rounded))
+                                    .lineLimit(1)
+                                    .foregroundColor(.white)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
+                        .frame(width: .infinity, height: 56)
                         .onTapGesture {
                             withAnimation(.spring()) {
                                 selectedResult = searchResults[index]
                             }
                         }
-                    } else {
-                        EmptyView()
-                            .frame(width: .infinity, height: 112)
                     }
                 }
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
-            .padding(.bottom, 64)
         }
+        .padding(.horizontal, 24)
+        .padding(.top, 64)
+        .padding(.bottom, 64)
     }
 }

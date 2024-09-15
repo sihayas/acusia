@@ -13,22 +13,21 @@ struct GridView: View {
     // Global Properties
     @EnvironmentObject var musicKitManager: MusicKitManager
     
+    // Local Properties
+    @State private var keyboardOffset: CGFloat = 0
+    @State private var showSettings = false
+    @State private var searchSheet = false
+    @State private var searchText = "joji"
+    
+    // Animation States
+    @State var expandEssentialStates = [false, false, false]
+    @State var showRecents = false
+    
     // Parameters
     @Binding var homePath: NavigationPath
     let initialUserData: APIUser?
     let userResult: UserResult?
     let size: CGSize
-
-    @State private var keyboardOffset: CGFloat = 0
-    @State private var showSettings = false
-    @State private var searchSheet = false
-    @State private var searchText = "joji"
-
-    // Sticker Wall Config
-
-    // Animation States
-    @State var expandEssentialStates = [false, false, false]
-    @State var showRecents = false
 
     var body: some View {
         ZStack {

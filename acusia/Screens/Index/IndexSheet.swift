@@ -26,37 +26,50 @@ struct IndexSheet: View {
     @Namespace private var animationNamespace
 
     var body: some View {
-        ZStack {
+        ScrollView {
             ResultsView(animationNamespace: animationNamespace, selectedResult: $selectedResult, searchResults: $searchResults)
-                .overlay(
-                    // Search Bar
-                    VStack {
-                        Spacer()
-
-                        SearchBar(searchText: $searchText, entryText: $entryText, selectedResult: $selectedResult, animationNamespace: animationNamespace)
-                            .padding(.horizontal, 24)
-                            .offset(y: -keyboardOffset)
-                            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
-                    }
-                    .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
-                )
-                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-                    withAnimation(.spring()) {
-                        keyboardOffset = 8
-                    }
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-                    withAnimation {
-                        keyboardOffset = 0
-                    }
-                }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .presentationBackground(.thinMaterial)
-        .presentationDetents([.large])
+        .presentationDetents([.fraction(0.94)])
         .presentationDragIndicator(.hidden)
         .presentationBackground(.clear)
         .presentationCornerRadius(32)
+        .overlay(
+            // Search Bar
+            VStack {
+                HStack {
+                    Image(systemName: "timelapse")
+                        .foregroundColor(.white)
+
+                    Text("Index")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(.white)
+
+                    Spacer()
+                }
+                .padding(.leading, 24)
+                .padding(.top, 24)
+
+                Spacer()
+
+                SearchBar(searchText: $searchText, entryText: $entryText, selectedResult: $selectedResult, animationNamespace: animationNamespace)
+                    .padding(.horizontal, 24)
+                    .offset(y: -keyboardOffset)
+                    .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+            }
+            .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
+        )
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            withAnimation(.spring()) {
+                keyboardOffset = 8
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            withAnimation {
+                keyboardOffset = 0
+            }
+        }
         .onAppear {
             Task {
                 await performSearch(query: searchText)
@@ -74,10 +87,10 @@ struct IndexSheet: View {
     }
 }
 
-//VStack {
+// VStack {
 //    if selectedResult != nil {
 //        SubmissionView(animationNamespace: animationNamespace, selectedResult: $selectedResult)
 //    }
-//}
-//.id(1)
-//.frame(minWidth: UIScreen.main.bounds.width)
+// }
+// .id(1)
+// .frame(minWidth: UIScreen.main.bounds.width)
