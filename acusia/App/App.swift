@@ -1,5 +1,7 @@
 import CoreData
 import SwiftUI
+import Modals
+import Transmission
 
 let apiurl = "http://192.168.1.248:8000"
 
@@ -12,11 +14,13 @@ struct AcusiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AcusiaAppView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(auth)
-                .environmentObject(musicKitManager)
-                .environmentObject(shareData)
+            ModalStackView {
+                AcusiaAppView()
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .environmentObject(auth)
+                    .environmentObject(musicKitManager)
+                    .environmentObject(shareData)
+            }
         }
     }
 }
@@ -25,37 +29,63 @@ struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKitManager
     @State private var homePath = NavigationPath()
+    @State private var isPresented = false
 
     var body: some View {
-        Group {
-//            if auth.isAuthenticated && auth.user != nil {
-                GeometryReader {
-                    let size = $0.size
-                    let safeArea = $0.safeAreaInsets
-                    Home(size: size, safeArea: safeArea, homePath: $homePath)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .ignoresSafeArea(.all)
-                        .background(Color.black)
-//                }
-            } 
-//            else {
-//                AuthScreen()
-//            }
-        }
-        .onAppear {
-            setupNavigationBar()
-
-            Task {
-//                await auth.initSession()
-                await musicKitManager.requestMusicAuthorization()
-
-                // Load recently played songs if authorized
-                if musicKitManager.isAuthorizedForMusicKit {
-                    print("Loading recently played songs")
-                    await musicKitManager.loadRecentlyPlayedSongs()
+        VStack {
+            Button {
+                withAnimation {
+                    isPresented = true
+                }
+            } label: {
+                HStack {
+                    Image("noise2")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 240, height: 240)
+                        .presentation(
+                            transition: .custom,
+                            isPresented: $isPresented
+                        ) {
+                            Image("noise2")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 240, height: 240)
+                        }
                 }
             }
+            
+            Spacer()
         }
+//        Group {
+////            if auth.isAuthenticated && auth.user != nil {
+//                GeometryReader {
+//                    let size = $0.size
+//                    let safeArea = $0.safeAreaInsets
+//                    Home(size: size, safeArea: safeArea, homePath: $homePath)
+//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                        .ignoresSafeArea(.all)
+//                        .background(Color.black)
+////                }
+//            } 
+////            else {
+////                AuthScreen()
+////            }
+//        }
+//        .onAppear {
+//            setupNavigationBar()
+//
+//            Task {
+////                await auth.initSession()
+//                await musicKitManager.requestMusicAuthorization()
+//
+//                // Load recently played songs if authorized
+//                if musicKitManager.isAuthorizedForMusicKit {
+//                    print("Loading recently played songs")
+//                    await musicKitManager.loadRecentlyPlayedSongs()
+//                }
+//            }
+//        }
     }
 
     // Remove the ugly default nav.

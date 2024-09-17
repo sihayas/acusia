@@ -40,6 +40,12 @@
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
+		CDB3102D2C968AA900A79E40 /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CDB3102C2C968AA900A79E40 /* Transmission */; };
+		CDB3102F2C968B1400A79E40 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB3102E2C968B1200A79E40 /* Test.swift */; };
+		CDB310332C96B6E000A79E40 /* Hero.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB310322C96B6DF00A79E40 /* Hero.swift */; };
+		CDB3103C2C97807000A79E40 /* Modals in Frameworks */ = {isa = PBXBuildFile; productRef = CDB3103B2C97807000A79E40 /* Modals */; };
+		CDB3103E2C97C31B00A79E40 /* SheetHero.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB3103D2C97C31800A79E40 /* SheetHero.swift */; };
+		CDB310402C97E49500A79E40 /* Slide.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB3103F2C97E49400A79E40 /* Slide.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
 		CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* GridView.swift */; };
 		CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDD48E1A2C62C26B0001C4E8 /* Wave */; };
@@ -152,6 +158,10 @@
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
+		CDB3102E2C968B1200A79E40 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		CDB310322C96B6DF00A79E40 /* Hero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hero.swift; sourceTree = "<group>"; };
+		CDB3103D2C97C31800A79E40 /* SheetHero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetHero.swift; sourceTree = "<group>"; };
+		CDB3103F2C97E49400A79E40 /* Slide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slide.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
@@ -212,6 +222,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */,
+				CDB3102D2C968AA900A79E40 /* Transmission in Frameworks */,
+				CDB3103C2C97807000A79E40 /* Modals in Frameworks */,
 				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -332,6 +344,10 @@
 		CD8CFDA42C6F02AC00D7DEA7 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				CDB3103F2C97E49400A79E40 /* Slide.swift */,
+				CDB3103D2C97C31800A79E40 /* SheetHero.swift */,
+				CDB310322C96B6DF00A79E40 /* Hero.swift */,
+				CDB3102E2C968B1200A79E40 /* Test.swift */,
 				CDDED7352C194C8400958B39 /* App.swift */,
 				CD8D197E2C24E3CD00FDC979 /* Auth.swift */,
 				CDDED7852C19543D00958B39 /* CoreData.swift */,
@@ -512,6 +528,8 @@
 			packageProductDependencies = (
 				CDD48E1A2C62C26B0001C4E8 /* Wave */,
 				CD132AA22C6DDB7200C16804 /* BigUIPaging */,
+				CDB3102C2C968AA900A79E40 /* Transmission */,
+				CDB3103B2C97807000A79E40 /* Modals */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -588,6 +606,8 @@
 			packageReferences = (
 				CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */,
 				CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */,
+				CDB3102B2C968AA900A79E40 /* XCRemoteSwiftPackageReference "Transmission" */,
+				CDB3103A2C97807000A79E40 /* XCRemoteSwiftPackageReference "Modals" */,
 			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
@@ -642,6 +662,7 @@
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
 				CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */,
 				CDDED77D2C19520300958B39 /* FeedModel.swift in Sources */,
+				CDB310332C96B6E000A79E40 /* Hero.swift in Sources */,
 				CDDED77E2C19520300958B39 /* SearchModel.swift in Sources */,
 				CDE43C112C8671280009CB87 /* AnimatedReactionView.swift in Sources */,
 				CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */,
@@ -664,12 +685,14 @@
 				CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */,
 				CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */,
 				CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */,
+				CDB310402C97E49500A79E40 /* Slide.swift in Sources */,
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
 				CDD77DA52C8F966000D5BCC1 /* SqueezePreview.swift in Sources */,
 				CD4BAAB02C9649660005F3DB /* SettingsButtonView.swift in Sources */,
+				CDB3102F2C968B1400A79E40 /* Test.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
@@ -678,6 +701,7 @@
 				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */,
+				CDB3103E2C97C31B00A79E40 /* SheetHero.swift in Sources */,
 				CD8E0BDB2C8D6C8C003A6F91 /* BlackBlurView.swift in Sources */,
 				CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
@@ -1030,6 +1054,22 @@
 				minimumVersion = 0.0.3;
 			};
 		};
+		CDB3102B2C968AA900A79E40 /* XCRemoteSwiftPackageReference "Transmission" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nathantannar4/Transmission.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.6;
+			};
+		};
+		CDB3103A2C97807000A79E40 /* XCRemoteSwiftPackageReference "Modals" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/newmaterialco/Modals.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jtrivedi/Wave";
@@ -1045,6 +1085,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */;
 			productName = BigUIPaging;
+		};
+		CDB3102C2C968AA900A79E40 /* Transmission */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDB3102B2C968AA900A79E40 /* XCRemoteSwiftPackageReference "Transmission" */;
+			productName = Transmission;
+		};
+		CDB3103B2C97807000A79E40 /* Modals */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDB3103A2C97807000A79E40 /* XCRemoteSwiftPackageReference "Modals" */;
+			productName = Modals;
 		};
 		CDD48E1A2C62C26B0001C4E8 /* Wave */ = {
 			isa = XCSwiftPackageProductDependency;
