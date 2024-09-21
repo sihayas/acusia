@@ -10,7 +10,7 @@ import Transmission
 
 struct ButtonView: View {
     @State private var isPresented = false
-    @State private var progress: CGFloat = 0
+    @State private var isImageVisible = false
 
     var body: some View {
         Image("maps")
@@ -22,26 +22,28 @@ struct ButtonView: View {
                 }
             }
             .presentation(
-                transition: .custom,
+                transition: setupCustomTransition(),
                 isPresented: $isPresented
             ) {
                 TransitionReader { proxy in
-                    ZStack {
-                        Image("maps")
-                            .resizable()
-                            .frame(width: 120, height: 120)
-                            .opacity(proxy.progress)
-                        
-                        VStack {
-                            Text("Hello, world!")
-                                .font(.title)
-                                .padding()
-                            
-                            Spacer()
+                    Image("maps")
+                        .resizable()
+                        .frame(width: 120, height: 120)
+                        .opacity(isImageVisible ? 1 : 0) // Use opacity to show/hide image
+                        .onAppear {
+                            isImageVisible = false
                         }
-                    }
                 }
             }
+    }
+
+    private func setupCustomTransition() -> PresentationLinkTransition {
+        .custom(
+            options: .init(),
+            SheetTransition {
+                isImageVisible = true // Update state when transition completes
+            }
+        )
     }
 }
 

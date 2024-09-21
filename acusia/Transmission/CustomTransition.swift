@@ -8,14 +8,13 @@ import SwiftUI
 import Transmission
 import UIKit
 
-extension PresentationLinkTransition {
-    static let custom: PresentationLinkTransition = .custom(
-        options: .init(),
-        SheetTransition()
-    )
-}
-
 struct SheetTransition: PresentationLinkTransitionRepresentable {
+    var onTransitionCompleted: (() -> Void)? // Store the completion handler
+
+    init(onTransitionCompleted: (() -> Void)? = nil) {
+        self.onTransitionCompleted = onTransitionCompleted
+    }
+
     /// The presentation controller to use for the transition.
     func makeUIPresentationController(
         presented: UIViewController,
@@ -46,7 +45,8 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         CustomSheetAnimator(
             sourceView: context.sourceView,
             isPresenting: true,
-            animation: nil
+            animation: nil,
+            onTransitionCompleted: onTransitionCompleted
         )
     }
 
@@ -58,7 +58,8 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         CustomSheetAnimator(
             sourceView: context.sourceView,
             isPresenting: false,
-            animation: nil
+            animation: nil,
+            onTransitionCompleted: onTransitionCompleted
         )
     }
 
@@ -91,20 +92,22 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         adaptivePresentationController: UIPresentationController,
         context: Context
     ) {}
-    
 }
 
 class CustomSheetAnimator: PresentationControllerTransition {
     weak var sourceView: UIView?
+    var onTransitionCompleted: (() -> Void)?
 
     init(
         sourceView: UIView,
         isPresenting: Bool,
-        animation: Animation?
+        animation: Animation?,
+        onTransitionCompleted: (() -> Void)? = nil
     ) {
         super.init(isPresenting: isPresenting, animation: animation)
-        sourceView.isHidden = false // Source view measures a frame. No content.
+        sourceView.isHidden = false // Source view measures a frame, it does not provide content.
         self.sourceView = sourceView
+        self.onTransitionCompleted = onTransitionCompleted
     }
 
     override func transitionAnimator(
@@ -132,12 +135,6 @@ class CustomSheetAnimator: PresentationControllerTransition {
         /// The source view that was tapped to initiate the transition.
         let sourceFrame = sourceView?.convert(sourceView?.frame ?? .zero, to: containerView) ?? containerView.frame
 
-        /// Determine the final frame of the presented view controller.
-        let presentedFrame = isPresenting
-            ? transitionContext.finalFrame(for: toVC)
-            : transitionContext.initialFrame(for: fromVC)
-        
-        
         /// Make a snapshot of the source view to animate from.
         let originalColor = fromVC.view.backgroundColor
         fromVC.view.backgroundColor = .clear
@@ -146,75 +143,63 @@ class CustomSheetAnimator: PresentationControllerTransition {
                                                          withCapInsets: .zero)
         fromVC.view.backgroundColor = originalColor
 
+        /// Create a container view to hold the snapshot.
+        let snapshotContainer = UIView(frame: sourceFrame)
+
+        /// Determine the final frame of the presented view controller.
+        let presentedFrame = isPresenting
+            ? transitionContext.finalFrame(for: toVC)
+            : transitionContext.initialFrame(for: fromVC)
 
         if isPresenting {
-            /// Set up the toVC view for the presentation animation.
-            containerView.addSubview(toVC.view)
-
-
-            let snapshotContainer = UIView()
-            snapshotContainer.frame = sourceFrame
+            /// Set up snapshot
             if let snapshot = snapshot {
                 snapshotContainer.addSubview(snapshot)
-
                 snapshot.translatesAutoresizingMaskIntoConstraints = false
-
-                // Center the snapshot in the snapContainer
                 NSLayoutConstraint.activate([
                     snapshot.centerYAnchor.constraint(equalTo: snapshotContainer.centerYAnchor),
-                    snapshot.centerXAnchor.constraint(equalTo: snapshotContainer.centerXAnchor)
+                    snapshot.centerXAnchor.constraint(equalTo: snapshotContainer.centerXAnchor),
+                    snapshot.widthAnchor.constraint(equalToConstant: snapshot.frame.width),
+                    snapshot.heightAnchor.constraint(equalToConstant: snapshot.frame.height)
                 ])
-
-                snapshot.widthAnchor.constraint(equalToConstant: snapshot.frame.width).isActive = true
-                snapshot.heightAnchor.constraint(equalToConstant: snapshot.frame.height).isActive = true
             }
 
+            containerView.addSubview(toVC.view)
             containerView.addSubview(snapshotContainer)
 
-            /// Set up the toVC view for the presentation animation.
+            /// Set up toVC view for presentation as sheet
             toVC.view.frame = presentedFrame
-            toVC.view.backgroundColor = .white
-
-            /// Move the background off-screen for the slide-up animation.
-            toVC.view.transform = CGAffineTransform(translationX: 0, y: presentedFrame.height)
-
-            /// Ensure layout is updated before animations.
+            toVC.view.backgroundColor = .black
+            toVC.view.layer.cornerRadius = 16
             toVC.view.layoutIfNeeded()
             hostingController?.render()
 
-            /// Define animations for presenting.
-            animator.addAnimations {
-                snapshotContainer.frame = presentedFrame
-                snapshot?.layoutIfNeeded()
-                toVC.view.transform = .identity
-                toVC.view.layoutIfNeeded()
-            }
+            /// Move sheet offscreen
+            toVC.view.transform = CGAffineTransform(translationX: 0, y: presentedFrame.height)
+        }
 
-            /// Clean up snapshot and complete transition after animation.
-            animator.addCompletion { animatingPosition in
-                snapshot?.removeFromSuperview()
-                switch animatingPosition {
-                case .end:
-                    transitionContext.completeTransition(true)
-                default:
-                    transitionContext.completeTransition(false)
-                }
-            }
-        } else {
-            /// Dismissal animations.
-            animator.addAnimations {
+        /// Animate depending on whether the view is being presented or dismissed.
+        animator.addAnimations {
+            if isPresenting {
+                snapshotContainer.frame = presentedFrame /// Center the snapshot.
+                snapshotContainer.layoutIfNeeded()
+                toVC.view.transform = .identity /// Move the sheet into view.
+                toVC.view.layoutIfNeeded()
+            } else {
                 fromVC.view.transform = CGAffineTransform(translationX: 0, y: presentedFrame.height)
             }
+        }
 
-            /// Complete transition after dismissal.
-            animator.addCompletion { animatingPosition in
-                snapshot?.removeFromSuperview()
-                switch animatingPosition {
-                case .end:
-                    transitionContext.completeTransition(true)
-                default:
-                    transitionContext.completeTransition(false)
-                }
+        /// Clean up the snapshot and container view when the animation completes.
+        animator.addCompletion { position in
+            snapshotContainer.removeFromSuperview()
+            let completed = position == .end
+            if isPresenting {
+                if completed { self.onTransitionCompleted?() } /// Call the completion handler so parent SwiftUI view knows.
+                transitionContext.completeTransition(completed)
+
+            } else {
+                transitionContext.completeTransition(completed)
             }
         }
 
