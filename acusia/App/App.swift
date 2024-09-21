@@ -1,6 +1,5 @@
 import CoreData
 import SwiftUI
-import Modals
 import Transmission
 
 let apiurl = "http://192.168.1.248:8000"
@@ -14,17 +13,14 @@ struct AcusiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ModalStackView {
                 AcusiaAppView()
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     .environmentObject(auth)
                     .environmentObject(musicKitManager)
                     .environmentObject(shareData)
             }
-        }
     }
 }
-
 struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKitManager
@@ -32,31 +28,13 @@ struct AcusiaAppView: View {
     @State private var isPresented = false
 
     var body: some View {
-        VStack {
-            Button {
-                withAnimation {
-                    isPresented = true
-                }
-            } label: {
-                HStack {
-                    Image("noise2")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 240, height: 240)
-                        .presentation(
-                            transition: .custom,
-                            isPresented: $isPresented
-                        ) {
-                            Image("noise2")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 240, height: 240)
-                        }
-                }
-            }
-            
-            Spacer()
+        VStack(alignment: .leading) {
+            ButtonView()
+            ButtonView()
+            ButtonView()
+            ButtonView()
         }
+        Spacer()
 //        Group {
 ////            if auth.isAuthenticated && auth.user != nil {
 //                GeometryReader {
