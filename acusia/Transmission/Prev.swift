@@ -8,6 +8,23 @@
 import SwiftUI
 import Transmission
 
+// create a generic srtuct that shows a sheet on button press
+struct SheetView: View {
+    @State private var isPresented = false
+
+    var body: some View {
+        VStack {
+            Button("Show Sheet") {
+                isPresented.toggle()
+            }
+        }
+        .sheet(isPresented: $isPresented) {
+            Text("Sheet")
+                .presentationDetents([.large])
+        }
+    }
+}
+
 struct ButtonView: View {
     @State private var isPresented = false
     @State private var isImageVisible = false
@@ -25,7 +42,7 @@ struct ButtonView: View {
                 transition: setupCustomTransition(),
                 isPresented: $isPresented
             ) {
-                TransitionReader { proxy in
+                TransitionReader { _ in
                     Image("maps")
                         .resizable()
                         .frame(width: 120, height: 120)
@@ -55,6 +72,7 @@ struct Prev: View {
                 ButtonView()
                 ButtonView()
                 ButtonView()
+                SheetView()
             }
             Spacer()
         }

@@ -8,6 +8,47 @@ import SwiftUI
 import Transmission
 import UIKit
 
+class SheetPresentationController: InteractivePresentationController {
+    var edge: Edge = .bottom
+
+    override var presentationStyle: UIModalPresentationStyle {
+        .custom // Custom presentation style to make it a sheet.
+    }
+
+    init(
+        edge: Edge = .bottom,
+        presentedViewController: UIViewController,
+        presenting presentingViewController: UIViewController?
+    ) {
+        self.edge = edge
+        super.init(
+            presentedViewController: presentedViewController,
+            presenting: presentingViewController
+        )
+    }
+
+    override func presentedViewTransform(for translation: CGPoint) -> CGAffineTransform {
+        return .identity
+    }
+
+    override func containerViewDidLayoutSubviews() {
+        super.containerViewDidLayoutSubviews()
+
+        presentingViewController.view.isHidden = presentedViewController.presentedViewController != nil
+    }
+
+    // The frame of the presented view controller.
+    override var frameOfPresentedViewInContainerView: CGRect {
+        var frame: CGRect = .zero
+        frame.size = size(forChildContentContainer: presentedViewController,
+                          withParentContainerSize: containerView!.bounds.size)
+
+        frame.origin.y = containerView!.frame.height * (0.3 / 3.0)
+        return frame
+    }
+
+}
+
 struct SheetTransition: PresentationLinkTransitionRepresentable {
     var onTransitionCompleted: (() -> Void)? // Store the completion handler
 
@@ -21,12 +62,10 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         presenting: UIViewController?,
         context: Context
     ) -> UIPresentationController {
-        let presentationController = UISheetPresentationController(
+        let presentationController = SheetPresentationController(
             presentedViewController: presented,
             presenting: presenting
         )
-        presentationController.detents = [.large()]
-        presentationController.prefersGrabberVisible = true
         return presentationController
     }
 
@@ -42,7 +81,7 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         presenting: UIViewController,
         context: Context
     ) -> UIViewControllerAnimatedTransitioning? {
-        CustomSheetAnimator(
+        CustomSheetTransition(
             sourceView: context.sourceView,
             isPresenting: true,
             animation: nil,
@@ -55,20 +94,17 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         forDismissed dismissed: UIViewController,
         context: Context
     ) -> UIViewControllerAnimatedTransitioning? {
-        CustomSheetAnimator(
+        guard let presentationController = dismissed.presentationController as? SheetPresentationController else {
+            return nil
+        }
+        let transition = CustomSheetTransition(
             sourceView: context.sourceView,
             isPresenting: false,
             animation: nil,
             onTransitionCompleted: onTransitionCompleted
         )
-    }
-
-    /// The interaction controller to use for the transition dismissal.
-    func interactionControllerForPresentation(
-        using animator: UIViewControllerAnimatedTransitioning,
-        context: Context
-    ) -> UIViewControllerInteractiveTransitioning? {
-        nil
+        presentationController.transition(with: transition)
+        return transition
     }
 
     /// The interaction controller to use for the transition dismissal.
@@ -76,27 +112,21 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         using animator: UIViewControllerAnimatedTransitioning,
         context: Context
     ) -> UIViewControllerInteractiveTransitioning? {
-        nil
+        return animator as? CustomSheetTransition
     }
-
-    /// The presentation style to use for an adaptive presentation.
-    func adaptivePresentationStyle(
-        for controller: UIPresentationController,
-        traitCollection: UITraitCollection
-    ) -> UIModalPresentationStyle {
-        .none
-    }
-
-    /// The presentation controller to use for an adaptive presentation.
-    func updateAdaptivePresentationController(
-        adaptivePresentationController: UIPresentationController,
-        context: Context
-    ) {}
 }
 
-class CustomSheetAnimator: PresentationControllerTransition {
+class CustomSheetTransition: PresentationControllerTransition {
     weak var sourceView: UIView?
     var onTransitionCompleted: (() -> Void)?
+
+    static let displayCornerRadius: CGFloat = {
+        #if targetEnvironment(macCatalyst)
+        return 12
+        #else
+        return max(UIScreen.main.displayCornerRadius, 12)
+        #endif
+    }()
 
     init(
         sourceView: UIView,
@@ -110,10 +140,27 @@ class CustomSheetAnimator: PresentationControllerTransition {
         self.onTransitionCompleted = onTransitionCompleted
     }
 
+    override func cancel() {
+        let clampedPercentComplete = min(max(percentComplete, 0.0), 0.5)
+        
+        let minSpeed: CGFloat = 0.1
+        let maxSpeed: CGFloat = 0.3
+        
+        completionSpeed = minSpeed + (maxSpeed - minSpeed) * (clampedPercentComplete / 0.5)
+        timingCurve = UISpringTimingParameters(dampingRatio: 1.0)
+        super.cancel()
+    }
+
     override func transitionAnimator(
         using transitionContext: UIViewControllerContextTransitioning
     ) -> UIViewPropertyAnimator {
-        let animator = UIViewPropertyAnimator(duration: duration, curve: completionCurve)
+        let isPresenting = self.isPresenting
+        let animator = UIViewPropertyAnimator(animation: animation) ??
+            UIViewPropertyAnimator(duration: duration, curve: completionCurve)
+
+        /// UIKit encapsulates the entire transition inside a container view to simplify managing both the view hierarchy and the animations.
+        /// Get a reference to the container view and determine what the final frame of the new view will be.
+        let containerView = transitionContext.containerView
 
         /// Extract a reference to both the view controller being replaced and the one being presented.
         guard let fromVC = transitionContext.viewController(forKey: .from),
@@ -123,25 +170,20 @@ class CustomSheetAnimator: PresentationControllerTransition {
             return animator
         }
 
-        /// UIKit encapsulates the entire transition inside a container view to simplify managing both the view hierarchy and the animations.
-        /// Get a reference to the container view and determine what the final frame of the new view will be.
-        let isPresenting = self.isPresenting
-        let containerView = transitionContext.containerView
-
         /// Place the passed SwiftUI view into a hosting controller.
         let hostingController = toVC as? AnyHostingController
         hostingController?.disableSafeArea = true
 
+        /// Scale the from view controller down and move it down.
+        let isScaleEnabled = toVC.view.convert(toVC.view.frame.origin, to: nil).y == 0
+        let safeAreaInsets = containerView.safeAreaInsets
+        var dzTransform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+        dzTransform = dzTransform.translatedBy(x: 0, y: safeAreaInsets.top / 2)
+
+        let cornerRadius = Self.displayCornerRadius
+
         /// The source view that was tapped to initiate the transition.
         let sourceFrame = sourceView?.convert(sourceView?.frame ?? .zero, to: containerView) ?? containerView.frame
-
-        /// Make a snapshot of the source view to animate from.
-        let originalColor = fromVC.view.backgroundColor
-        fromVC.view.backgroundColor = .clear
-        let snapshot = fromVC.view.resizableSnapshotView(from: sourceFrame,
-                                                         afterScreenUpdates: true,
-                                                         withCapInsets: .zero)
-        fromVC.view.backgroundColor = originalColor
 
         /// Create a container view to hold the snapshot.
         let snapshotContainer = UIView(frame: sourceFrame)
@@ -151,7 +193,18 @@ class CustomSheetAnimator: PresentationControllerTransition {
             ? transitionContext.finalFrame(for: toVC)
             : transitionContext.initialFrame(for: fromVC)
 
+        toVC.view.layer.cornerCurve = .continuous
+        fromVC.view.layer.cornerCurve = .continuous
+
         if isPresenting {
+            /// Make a snapshot of the source view to animate from.
+            let originalColor = fromVC.view.backgroundColor
+            fromVC.view.backgroundColor = .clear
+            let snapshot = fromVC.view.resizableSnapshotView(from: sourceFrame,
+                                                             afterScreenUpdates: true,
+                                                             withCapInsets: .zero)
+            fromVC.view.backgroundColor = originalColor
+
             /// Set up snapshot
             if let snapshot = snapshot {
                 snapshotContainer.addSubview(snapshot)
@@ -168,8 +221,10 @@ class CustomSheetAnimator: PresentationControllerTransition {
             containerView.addSubview(snapshotContainer)
 
             /// Set up toVC view for presentation as sheet
+            fromVC.view.layer.cornerRadius = cornerRadius
+
             toVC.view.frame = presentedFrame
-            toVC.view.backgroundColor = .black
+            toVC.view.backgroundColor = UIColor.systemGray6
             toVC.view.layer.cornerRadius = 16
             toVC.view.layoutIfNeeded()
             hostingController?.render()
@@ -185,7 +240,13 @@ class CustomSheetAnimator: PresentationControllerTransition {
                 snapshotContainer.layoutIfNeeded()
                 toVC.view.transform = .identity /// Move the sheet into view.
                 toVC.view.layoutIfNeeded()
+                if isScaleEnabled {
+                    fromVC.view.transform = dzTransform
+                    fromVC.view.layer.cornerRadius = 12
+                }
             } else {
+                toVC.view.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                toVC.view.layer.cornerRadius = cornerRadius
                 fromVC.view.transform = CGAffineTransform(translationX: 0, y: presentedFrame.height)
             }
         }
@@ -193,16 +254,33 @@ class CustomSheetAnimator: PresentationControllerTransition {
         /// Clean up the snapshot and container view when the animation completes.
         animator.addCompletion { position in
             snapshotContainer.removeFromSuperview()
+
             let completed = position == .end
             if isPresenting {
-                if completed { self.onTransitionCompleted?() } /// Call the completion handler so parent SwiftUI view knows.
+                if completed {
+                    self.onTransitionCompleted?()
+                } /// Call the completion handler so parent SwiftUI view knows.
                 transitionContext.completeTransition(completed)
-
             } else {
+                if completed {
+                    toVC.view.layer.cornerRadius = 0
+                }
                 transitionContext.completeTransition(completed)
             }
         }
 
         return animator
+    }
+}
+
+extension UIScreen {
+    var displayCornerRadius: CGFloat {
+        _displayCornerRadius
+    }
+
+    public var _displayCornerRadius: CGFloat {
+        let key = String("suidaRrenroCyalpsid_".reversed())
+        let value = value(forKey: key) as? CGFloat ?? 0
+        return value
     }
 }

@@ -33,6 +33,7 @@ struct AcusiaAppView: View {
             ButtonView()
             ButtonView()
             ButtonView()
+            SheetView()
         }
         Spacer()
 //        Group {
