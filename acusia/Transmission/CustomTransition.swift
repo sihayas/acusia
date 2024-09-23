@@ -10,10 +10,13 @@ import UIKit
 
 struct CustomTransition: PresentationLinkTransitionRepresentable {
     func makeUIPresentationController(presented: UIViewController, presenting: UIViewController?, context: Context) -> UIPresentationController {
-        UISheetPresentationController(
+        let sheet = UISheetPresentationController(
             presentedViewController: presented,
             presenting: presenting
         )
+        sheet.preferredCornerRadius = 20
+
+        return sheet
     }
 
     /// Updates the presentation controller for the transition
@@ -27,14 +30,14 @@ struct CustomTransition: PresentationLinkTransitionRepresentable {
         presenting: UIViewController,
         context: Context
     ) -> UIViewControllerAnimatedTransitioning? {
-        CoverTransitionAnimator(sourceView: context.sourceView, isPresenting: true, duration: 0.5)
+        CoverTransitionAnimator(sourceView: context.sourceView, isPresenting: true)
     }
 
     func animationController(
         forDismissed dismissed: UIViewController,
         context: Context
     ) -> UIViewControllerAnimatedTransitioning? {
-        let animator = CoverTransitionAnimator(sourceView: context.sourceView, isPresenting: false, duration: 0.5)
+        let animator = CoverTransitionAnimator(sourceView: context.sourceView, isPresenting: false)
         return animator
     }
 }
@@ -42,21 +45,19 @@ struct CustomTransition: PresentationLinkTransitionRepresentable {
 class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     weak var sourceView: UIView?
     let isPresenting: Bool
-    let duration: TimeInterval
 
     var animator: UIViewPropertyAnimator?
 
-    init(sourceView: UIView?, isPresenting: Bool, duration: TimeInterval) {
+    init(sourceView: UIView?, isPresenting: Bool) {
         self.sourceView = sourceView
         self.isPresenting = isPresenting
-        self.duration = duration
         super.init()
     }
 
     func transitionDuration(
         using transitionContext: UIViewControllerContextTransitioning?
     ) -> TimeInterval {
-        return transitionContext?.isAnimated == true ? duration : 0
+        return transitionContext?.isAnimated == true ? 0.5 : 0
     }
 
     func animateTransition(
@@ -89,22 +90,9 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         }
 
         let animator = UIViewPropertyAnimator(
-            duration: nil,
-            curve: .linear
+            duration: 0.5,
+            timingParameters: UISpringTimingParameters(dampingRatio: 1.0)
         )
-
-        let containerView = transitionContext.containerView
-        let fromView = transitionContext.view(forKey: .from)
-        let toView = transitionContext.view(forKey: .to)
-
-        let fromFrame = transitionContext.viewController(forKey: .from).map { transitionContext.finalFrame(for: $0) } ?? containerView.bounds
-        let toFrame = transitionContext.viewController(forKey: .to).map { transitionContext.finalFrame(for: $0) } ?? containerView.bounds
-
-        let sourceFrame = sourceView?.convert(sourceView?.frame ?? .zero, to: containerView) ?? containerView.frame
-
-        let snapshotContainer = UIView(frame: sourceFrame)
-        snapshotContainer.layer.borderColor = UIColor.red.cgColor
-        snapshotContainer.layer.borderWidth = 10
 
         guard let fromVC = transitionContext.viewController(forKey: .from),
               let toVC = transitionContext.viewController(forKey: .to)
@@ -112,7 +100,26 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             transitionContext.completeTransition(false)
             return animator
         }
+
+        /// !IMPORTANT: For some weird reason, accessing the views of the view controller
+        /// directly, like `fromVC.view` or `toVC.view` will break the sheet transition and gestures.
+        /// Instead, use the `view(forKey:)` method of the `transitionContext` to get the views.
+        let fromView = transitionContext.view(forKey: .from)
+        let toView = transitionContext.view(forKey: .to)
+
+        let containerView = transitionContext.containerView
+
+        let fromFrame = transitionContext.viewController(forKey: .from).map { transitionContext.finalFrame(for: $0) } ?? containerView.bounds
+        let toFrame = transitionContext.viewController(forKey: .to).map { transitionContext.finalFrame(for: $0) } ?? containerView.bounds
+
+        let sourceFrame = sourceView?.convert(sourceView?.frame ?? .zero, to: containerView) ?? containerView.frame
+
+        let snapshotContainer = UIView(frame: sourceFrame)
+        snapshotContainer.layer.borderColor = UIColor.blue.cgColor
+        snapshotContainer.layer.borderWidth = 2
+
         if isPresenting {
+            // Create a snapshot of the source view
             let originalColor = fromVC.view.backgroundColor
             fromVC.view.backgroundColor = .clear
             let snapshot = fromVC.view.resizableSnapshotView(from: sourceFrame,
@@ -120,10 +127,12 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                                                              withCapInsets: .zero)
             fromVC.view.backgroundColor = originalColor
 
-            /// Set up snapshot
+            // Add the snapshot to the snapshot container
             if let snapshot = snapshot {
                 snapshotContainer.addSubview(snapshot)
                 snapshot.translatesAutoresizingMaskIntoConstraints = false
+                snapshot.layer.borderWidth = 2
+                snapshot.layer.borderColor = UIColor.red.cgColor
                 NSLayoutConstraint.activate([
                     snapshot.centerYAnchor.constraint(equalTo: snapshotContainer.centerYAnchor),
                     snapshot.centerXAnchor.constraint(equalTo: snapshotContainer.centerXAnchor),
@@ -132,8 +141,10 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 ])
             }
 
-            // transitioning view is toView
+            // Transitioning view is toView
             toView?.frame = toFrame
+            toView?.layer.borderColor = UIColor.green.cgColor
+            toView?.layer.borderWidth = 2
             toView?.transform = CGAffineTransform(translationX: 0, y: containerView.frame.size.height)
 
             if let fromView {
@@ -145,12 +156,14 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             }
 
             animator.addAnimations {
+                toVC.view.layoutIfNeeded()
                 toView?.transform = CGAffineTransform.identity
                 snapshotContainer.frame = toFrame /// Center the snapshot.
+                snapshotContainer.transform = CGAffineTransform(translationX: 0, y: -18)
                 snapshotContainer.layoutIfNeeded()
             }
         } else {
-            // transitioning view is fromView
+            // Transitioning view is fromView
             if let toView {
                 containerView.addSubview(toView)
             }
@@ -164,8 +177,8 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         }
 
         animator.addCompletion { animatingPosition in
-            // remove teh snapshot container
             snapshotContainer.removeFromSuperview()
+            
             switch animatingPosition {
             case .end:
                 transitionContext.completeTransition(true)
