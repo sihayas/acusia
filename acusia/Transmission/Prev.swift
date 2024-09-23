@@ -39,28 +39,19 @@ struct ButtonView: View {
                 }
             }
             .presentation(
-                transition: setupCustomTransition(),
+                transition:  .custom(CustomTransition()),
                 isPresented: $isPresented
             ) {
                 TransitionReader { _ in
                     Image("maps")
                         .resizable()
                         .frame(width: 120, height: 120)
-                        .opacity(isImageVisible ? 1 : 0) // Use opacity to show/hide image
+                        .opacity(isImageVisible ? 1 : 1) // Use opacity to show/hide image
                         .onAppear {
                             isImageVisible = false
                         }
                 }
             }
-    }
-
-    private func setupCustomTransition() -> PresentationLinkTransition {
-        .custom(
-            options: .init(),
-            SheetTransition {
-                isImageVisible = true // Update state when transition completes
-            }
-        )
     }
 }
 
