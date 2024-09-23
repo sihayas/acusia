@@ -8,47 +8,6 @@ import SwiftUI
 import Transmission
 import UIKit
 
-class SheetPresentationController: InteractivePresentationController {
-    var edge: Edge = .bottom
-
-    override var presentationStyle: UIModalPresentationStyle {
-        .custom // Custom presentation style to make it a sheet.
-    }
-
-    init(
-        edge: Edge = .bottom,
-        presentedViewController: UIViewController,
-        presenting presentingViewController: UIViewController?
-    ) {
-        self.edge = edge
-        super.init(
-            presentedViewController: presentedViewController,
-            presenting: presentingViewController
-        )
-    }
-
-    override func presentedViewTransform(for translation: CGPoint) -> CGAffineTransform {
-        return .identity
-    }
-
-    override func containerViewDidLayoutSubviews() {
-        super.containerViewDidLayoutSubviews()
-
-        presentingViewController.view.isHidden = presentedViewController.presentedViewController != nil
-    }
-
-    // The frame of the presented view controller.
-    override var frameOfPresentedViewInContainerView: CGRect {
-        var frame: CGRect = .zero
-        frame.size = size(forChildContentContainer: presentedViewController,
-                          withParentContainerSize: containerView!.bounds.size)
-
-        frame.origin.y = containerView!.frame.height * (0.3 / 3.0)
-        return frame
-    }
-
-}
-
 struct SheetTransition: PresentationLinkTransitionRepresentable {
     var onTransitionCompleted: (() -> Void)? // Store the completion handler
 
@@ -63,6 +22,7 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         context: Context
     ) -> UIPresentationController {
         let presentationController = SheetPresentationController(
+            sourceView: context.sourceView,
             presentedViewController: presented,
             presenting: presenting
         )
@@ -81,12 +41,14 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         presenting: UIViewController,
         context: Context
     ) -> UIViewControllerAnimatedTransitioning? {
-        CustomSheetTransition(
-            sourceView: context.sourceView,
-            isPresenting: true,
-            animation: nil,
-            onTransitionCompleted: onTransitionCompleted
+        guard let presentationController = presented.presentationController as? SheetPresentationController else {
+            return nil
+        }
+        let transition = CustomSheetTransition(
+            sourceView: presentationController.sourceView!,
+            isPresenting: true
         )
+        return transition
     }
 
     /// The animation controller to use for the transition dismissal.
@@ -98,12 +60,11 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
             return nil
         }
         let transition = CustomSheetTransition(
-            sourceView: context.sourceView,
+            sourceView: presentationController.sourceView!,
             isPresenting: false,
-            animation: nil,
             onTransitionCompleted: onTransitionCompleted
         )
-        presentationController.transition(with: transition)
+        presentationController.beginTransition(with: transition)
         return transition
     }
 
@@ -112,51 +73,156 @@ struct SheetTransition: PresentationLinkTransitionRepresentable {
         using animator: UIViewControllerAnimatedTransitioning,
         context: Context
     ) -> UIViewControllerInteractiveTransitioning? {
-        return animator as? CustomSheetTransition
+        // swiftlint:disable force_cast
+        animator as! CustomSheetTransition
     }
 }
 
-class CustomSheetTransition: PresentationControllerTransition {
+class SheetPresentationController: UIPresentationController, UIGestureRecognizerDelegate {
+    private(set) weak var sourceView: UIView?
+    private weak var transition: CustomSheetTransition?
+
+    private lazy var panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+
+    private var isPanGestureActive = false
+    private var initialTranslation: CGFloat = 0
+    private var dyOffset: CGFloat = 0
+
+    override var shouldPresentInFullscreen: Bool { false }
+    override var presentationStyle: UIModalPresentationStyle { .custom }
+
+    init(
+        sourceView: UIView? = nil,
+        presentedViewController: UIViewController,
+        presenting presentingViewController: UIViewController?
+    ) {
+        super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
+        self.sourceView = sourceView
+    }
+
+    override var frameOfPresentedViewInContainerView: CGRect {
+        guard let containerView = containerView else { return .zero }
+        let height = containerView.bounds.height * 0.5
+        return CGRect(
+            x: 0,
+            y: containerView.bounds.height - height,
+            width: containerView.bounds.width,
+            height: height
+        )
+    }
+
+    override func presentationTransitionWillBegin() {
+        super.presentationTransitionWillBegin()
+        guard let containerView = containerView else { return }
+        containerView.addSubview(presentedViewController.view)
+        presentedViewController.view.frame = frameOfPresentedViewInContainerView
+        presentedViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        setupPresentedViewConstraints(containerView: containerView)
+    }
+
+    func setupPresentedViewConstraints(containerView: UIView) {
+        let frame = frameOfPresentedViewInContainerView
+        NSLayoutConstraint.activate([
+            presentedViewController.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: frame.origin.y),
+            presentedViewController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: frame.origin.x),
+            presentedViewController.view.widthAnchor.constraint(equalToConstant: frame.width),
+            presentedViewController.view.heightAnchor.constraint(equalToConstant: frame.height),
+        ])
+    }
+
+    override func presentationTransitionDidEnd(_ completed: Bool) {
+        super.presentationTransitionDidEnd(completed)
+        guard completed else { return }
+        panGesture.delegate = self
+        panGesture.allowedScrollTypesMask = .all
+        containerView?.addGestureRecognizer(panGesture)
+    }
+
+    override func dismissalTransitionWillBegin() {
+        super.dismissalTransitionWillBegin()
+        delegate?.presentationControllerWillDismiss?(self)
+    }
+
+    override func dismissalTransitionDidEnd(_ completed: Bool) {
+        super.dismissalTransitionDidEnd(completed)
+        if completed {
+            delegate?.presentationControllerDidDismiss?(self)
+        } else {
+            delegate?.presentationControllerDidAttemptToDismiss?(self)
+        }
+    }
+
+    func beginTransition(with transition: CustomSheetTransition) {
+        self.transition = transition
+        transition.wantsInteractiveStart = isPanGestureActive
+    }
+
+    @objc
+    private func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
+        guard let containerView = containerView else { return }
+
+        // Get the vertical translation of the gesture in the container view's coordinate space
+        let translation = gestureRecognizer.translation(in: containerView)
+
+        switch gestureRecognizer.state {
+        case .began, .changed:
+            transition?.animator?.stopAnimation(true)
+            // Apply the translation to the view's transform to move it up and down
+            presentedViewController.view.transform = CGAffineTransform(translationX: 0, y: max(0, translation.y))
+
+        case .ended, .cancelled:
+            // Reset the transform when the gesture ends or is cancelled
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
+                self.presentedViewController.view.transform = .identity
+            }
+
+        default:
+            break
+        }
+    }
+}
+
+class CustomSheetTransition: UIPercentDrivenInteractiveTransition, UIViewControllerAnimatedTransitioning {
     weak var sourceView: UIView?
     var onTransitionCompleted: (() -> Void)?
+    var isPresenting: Bool
 
-    static let displayCornerRadius: CGFloat = {
-        #if targetEnvironment(macCatalyst)
-        return 12
-        #else
-        return max(UIScreen.main.displayCornerRadius, 12)
-        #endif
-    }()
+    var animator: UIViewImplicitlyAnimating?
+    var onInteractionEnded: (() -> Void)?
+    
+    private var animatorForCurrentTransition: UIViewImplicitlyAnimating?
+
+    static let displayCornerRadius: CGFloat = max(UIScreen.main.displayCornerRadius, 12)
 
     init(
         sourceView: UIView,
         isPresenting: Bool,
-        animation: Animation?,
         onTransitionCompleted: (() -> Void)? = nil
     ) {
-        super.init(isPresenting: isPresenting, animation: animation)
         sourceView.isHidden = false // Source view measures a frame, it does not provide content.
         self.sourceView = sourceView
         self.onTransitionCompleted = onTransitionCompleted
+        self.isPresenting = isPresenting
+        super.init()
     }
+    
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+         // animateTransition should work too, so let's just use the interruptibleAnimator implementation to achieve it
+         let anim = self.interruptibleAnimator(using: transitionContext)
+         anim.startAnimation()
+     }
 
-    override func cancel() {
-        let clampedPercentComplete = min(max(percentComplete, 0.0), 0.5)
-        
-        let minSpeed: CGFloat = 0.1
-        let maxSpeed: CGFloat = 0.3
-        
-        completionSpeed = minSpeed + (maxSpeed - minSpeed) * (clampedPercentComplete / 0.5)
-        timingCurve = UISpringTimingParameters(dampingRatio: 1.0)
-        super.cancel()
-    }
+    func interruptibleAnimator(using transitionContext: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating {
+        if let animator = animator {
+            return animator
+        }
 
-    override func transitionAnimator(
-        using transitionContext: UIViewControllerContextTransitioning
-    ) -> UIViewPropertyAnimator {
-        let isPresenting = self.isPresenting
-        let animator = UIViewPropertyAnimator(animation: animation) ??
-            UIViewPropertyAnimator(duration: duration, curve: completionCurve)
+        let isPresenting = isPresenting
+        // let options: UIView.AnimationOptions = UIView.AnimationOptions(rawValue: UInt(completionCurve.rawValue << 16))
+        let animator = UIViewPropertyAnimator(
+            duration: duration,
+            curve: completionCurve
+        )
 
         /// UIKit encapsulates the entire transition inside a container view to simplify managing both the view hierarchy and the animations.
         /// Get a reference to the container view and determine what the final frame of the new view will be.
@@ -213,7 +279,7 @@ class CustomSheetTransition: PresentationControllerTransition {
                     snapshot.centerYAnchor.constraint(equalTo: snapshotContainer.centerYAnchor),
                     snapshot.centerXAnchor.constraint(equalTo: snapshotContainer.centerXAnchor),
                     snapshot.widthAnchor.constraint(equalToConstant: snapshot.frame.width),
-                    snapshot.heightAnchor.constraint(equalToConstant: snapshot.frame.height)
+                    snapshot.heightAnchor.constraint(equalToConstant: snapshot.frame.height),
                 ])
             }
 
@@ -269,7 +335,23 @@ class CustomSheetTransition: PresentationControllerTransition {
             }
         }
 
+        self.animator = animator
         return animator
+    }
+    
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        transitionContext?.isAnimated == true ? 0.35 : 0
+    }
+    
+    override func cancel() {
+        let clampedPercentComplete = min(max(percentComplete, 0.0), 0.5)
+
+        let minSpeed: CGFloat = 0.1
+        let maxSpeed: CGFloat = 0.1
+
+        completionSpeed = minSpeed + (maxSpeed - minSpeed) * (clampedPercentComplete / 0.5)
+        timingCurve = UISpringTimingParameters(dampingRatio: 1.0)
+        super.cancel()
     }
 }
 
