@@ -12,6 +12,7 @@ import SwiftUI
 struct GridView: View {
     // Global Properties
     @EnvironmentObject var musicKitManager: MusicKitManager
+    @EnvironmentObject var windowState: WindowState
     
     // Local Properties
     @State private var keyboardOffset: CGFloat = 0
@@ -128,6 +129,11 @@ struct GridView: View {
         // MARK: - Search Sheet
         .sheet(isPresented: $searchSheet) {
             IndexSheet()
+        }
+        .onChange(of: searchSheet) { _ in
+            withAnimation() {
+                windowState.isSearchBarVisible = searchSheet
+            }
         }
     }
 }

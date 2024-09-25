@@ -1,7 +1,13 @@
 import SwiftUI
 
-class ShareData: ObservableObject {
-    // This is true when the TopScrollView is Expanded
+class HomeState: ObservableObject {
+    // Singleton instance
+    static let shared = HomeState()
+
+    // Prevent external initialization
+    private init() {}
+
+    // Your shared properties go here
     @Published var isExpanded: Bool = false
     
     // ScrollView Properties
@@ -22,7 +28,7 @@ class ShareData: ObservableObject {
 struct Home: View {
     let size: CGSize
     let safeArea: EdgeInsets
-    @EnvironmentObject private var shareData: ShareData
+    @EnvironmentObject private var shareData: HomeState
     @StateObject private var auth = Auth.shared
     
     @Binding var homePath: NavigationPath

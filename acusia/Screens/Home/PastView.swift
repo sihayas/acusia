@@ -3,7 +3,7 @@ import SwiftUI
 struct PastView: View {
     let size: CGSize
     let safeArea: EdgeInsets
-    @EnvironmentObject private var shareData: ShareData
+    @EnvironmentObject private var shareData: HomeState
     @State private var position: ScrollPosition  = .init()
     
     var body: some View {

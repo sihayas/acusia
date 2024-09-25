@@ -44,6 +44,7 @@ struct ResultCell: View {
                     image.resizable()
                 } placeholder: {
                     Rectangle()
+                        .frame(width: 40, height: 40)
                 }
                 .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
                 .aspectRatio(contentMode: .fit)

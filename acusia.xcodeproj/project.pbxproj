@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* IndexSheet.swift */; };
-		CD0D904F2CA2D7A1004FD674 /* j.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0D904E2CA2D7A0004FD674 /* j.swift */; };
 		CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0D90502CA3C31A004FD674 /* Notification.swift */; };
 		CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
@@ -121,7 +120,6 @@
 
 /* Begin PBXFileReference section */
 		CD06C26F2C69B10100FC010C /* IndexSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexSheet.swift; sourceTree = "<group>"; };
-		CD0D904E2CA2D7A0004FD674 /* j.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = j.swift; sourceTree = "<group>"; };
 		CD0D90502CA3C31A004FD674 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
@@ -383,7 +381,6 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
-				CD0D904E2CA2D7A0004FD674 /* j.swift */,
 				CD7D87DB2C99559B00F0E67B /* Transmission */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
 				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
@@ -656,7 +653,6 @@
 				CD8E0BDF2C8D7EF8003A6F91 /* ReplySheet.swift in Sources */,
 				CDD77DA72C8FD94200D5BCC1 /* HoloPreview.swift in Sources */,
 				CD7D87E12C9A5A9D00F0E67B /* CustomTransition.swift in Sources */,
-				CD0D904F2CA2D7A1004FD674 /* j.swift in Sources */,
 				CD8CFDA82C6F02F100D7DEA7 /* PastView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedView.swift in Sources */,

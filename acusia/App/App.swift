@@ -4,21 +4,22 @@ import Transmission
 
 let apiurl = "http://192.168.1.248:8000"
 
-class SharedState: ObservableObject {
-    static let shared = SharedState() // Singleton instance
+class WindowState: ObservableObject {
+    static let shared = WindowState() // Singleton instance
 
     // Your shared properties go here
-    @Published var someValue: String = ""
+    @Published var isSearchBarVisible: Bool = false
 
     private init() {} // Prevents external initialization
 }
 
 @main
 struct AcusiaApp: App {
-    let persistenceController = PersistenceController.shared
     @StateObject private var auth = Auth.shared
+    @StateObject private var windowState = WindowState.shared
     @StateObject private var musicKitManager = MusicKitManager.shared
-    @StateObject private var shareData = ShareData()
+    @StateObject private var homeState = HomeState.shared
+    let persistenceController = PersistenceController.shared
     private var floatingBarPresenter = FloatingBarPresenter()
 
     var body: some Scene {
@@ -27,8 +28,8 @@ struct AcusiaApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(auth)
                 .environmentObject(musicKitManager)
-                .environmentObject(shareData)
-                .environmentObject(SharedState.shared) // Use singleton instance here
+                .environmentObject(homeState)
+                .environmentObject(windowState)
                 .onAppear {
                     floatingBarPresenter.showFloatingBar()
                 }
@@ -44,10 +45,15 @@ class FloatingBarPresenter {
             return
         }
 
-        let view = FloatingBarView().environmentObject(SharedState.shared) // Use singleton instance
+        let view = FloatingBarView()
+            .environmentObject(Auth.shared)
+            .environmentObject(WindowState.shared)
+            .environmentObject(MusicKitManager.shared)
+            .environmentObject(HomeState.shared)
+
         let hostingController = UIHostingController(rootView: view)
         hostingController.view.backgroundColor = .clear
-        hostingController.safeAreaRegions = SafeAreaRegions() // Important
+        hostingController.safeAreaRegions = SafeAreaRegions()
 
         floatingBarWindow = PassThroughWindow(windowScene: scene)
         floatingBarWindow?.backgroundColor = .clear
@@ -74,10 +80,10 @@ struct AcusiaAppView: View {
                 let safeArea = $0.safeAreaInsets
                 Home(size: size, safeArea: safeArea, homePath: $homePath)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .ignoresSafeArea()
                     .background(Color.black)
 //                }
             }
+            .ignoresSafeArea()
 //            else {
 //                AuthScreen()
 //            }
@@ -121,7 +127,7 @@ struct FloatingBarView: View {
 
     var body: some View {
         ZStack {
-            SearchBar(searchText: $searchText, entryText: $entryText, selectedResult: $selectedResult)
+            SearchBar(searchText: $searchText, entryText: $entryText)
                 .padding(.horizontal, 24)
                 .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
                 .offset(y: -keyboardOffset)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FeedBarView: View {
-    @EnvironmentObject private var shareData: ShareData
+    @EnvironmentObject private var shareData: HomeState
     @Namespace private var animation
     
     let safeArea: EdgeInsets
