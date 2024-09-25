@@ -26,27 +26,30 @@ struct SheetView: View {
 }
 
 struct ButtonView: View {
-    @State private var isPresented = false
+    @State private var showSheet = false
     @State private var isImageVisible = false
 
     var body: some View {
         Image("maps")
             .resizable()
             .frame(width: 120, height: 120)
+            .opacity(showSheet ? 0 : 1)
             .onTapGesture {
                 withAnimation {
-                    isPresented.toggle()
+                    showSheet.toggle()
                 }
             }
             .presentation(
-                transition:  .custom(CustomTransition()),
-                isPresented: $isPresented
+                transition: .custom(CustomTransition {
+                    isImageVisible = true
+                }),
+                isPresented: $showSheet
             ) {
                 TransitionReader { _ in
                     Image("maps")
                         .resizable()
                         .frame(width: 120, height: 120)
-                        .opacity(isImageVisible ? 1 : 1) // Use opacity to show/hide image
+                        .opacity(isImageVisible ? 1 : 0)
                         .onAppear {
                             isImageVisible = false
                         }

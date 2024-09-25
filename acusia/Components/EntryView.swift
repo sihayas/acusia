@@ -239,11 +239,6 @@ struct ArtifactView: View {
                 .frame(width: 204, height: 280)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            
-//            if showEmojiTextField {
-//                EmojiTextFieldWrapper()
-//                    .frame(height: 40) // Adjust the size as needed
-//            }
 
             if !sampleComments.isEmpty {
                 HStack(spacing: 4) {

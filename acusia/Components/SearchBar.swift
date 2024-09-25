@@ -7,13 +7,14 @@
 import SwiftUI
 
 struct SearchBar: View {
+    @StateObject private var musicKitManager = MusicKitManager.shared
     @StateObject private var auth = Auth.shared
 
     @Binding var searchText: String
     @Binding var entryText: String
     @Binding var selectedResult: SearchResult?
 
-    var animationNamespace: Namespace.ID
+    @Namespace private var animationNamespace
 
     var body: some View {
         HStack {
@@ -43,7 +44,7 @@ struct SearchBar: View {
                             HStack {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundColor(.secondary)
-                                
+
                                 ZStack {
                                     TextField("Index", text: $searchText, axis: .horizontal)
                                         .textFieldStyle(PlainTextFieldStyle())
@@ -67,11 +68,10 @@ struct SearchBar: View {
                                         .textFieldStyle(PlainTextFieldStyle())
                                         .foregroundColor(.white)
                                         .font(.system(size: 15))
-                                    
                                         .matchedGeometryEffect(id: "input-field", in: animationNamespace)
                                 }
                             }
-                                .padding(.horizontal, 12)
+                            .padding(.horizontal, 12)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -80,5 +80,15 @@ struct SearchBar: View {
                 }
             }
         }
+        .onAppear {
+            Task { await performSearch(query: searchText) }
+        }
+        .onChange(of: searchText) { _, query in
+            Task { await performSearch(query: query) }
+        }
+    }
+
+    private func performSearch(query: String) async {
+        await musicKitManager.loadCatalogSearchTopResults(searchTerm: query)
     }
 }

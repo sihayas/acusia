@@ -10,10 +10,12 @@ import Wave
 
 struct ImprintView: View {
     // Card Deck
-    @State private var selection: Int = 1
+    @State private var selection: Int = 2
+    @Environment(\.navigatePageView) private var navigate
+    @Environment(\.canNavigatePageView) private var canNavigate
 
     // Wave
-    let offsetAnimator = SpringAnimator<CGPoint>(spring: .defaultInteractive)
+    let offsetAnimator = SpringAnimator<CGPoint>(spring: .defaultInteractive, value: .zero)
     let interactiveSpring = Spring(dampingRatio: 0.8, response: 0.26)
     let animatedSpring = Spring(dampingRatio: 0.72, response: 0.7)
     @State var shapeOffset: CGPoint = .zero
@@ -34,115 +36,136 @@ struct ImprintView: View {
     @State private var velocity: CGFloat = 1.0
     
     // Parameters
-    var animationNamespace: Namespace.ID
-    @Binding var selectedResult: SearchResult?
+    @Binding var result: SearchResult
 
     var body: some View {
-        if let result = selectedResult {
-            VStack {
-                // Card stack
-                PageView(selection: $selection) {
-                    ForEach([1, 2], id: \.self) { index in
-                        if index == 1 {
-                            GeometryReader { geo in
-                                RoundedRectangle(cornerRadius: 32, style: .continuous)
-                                    .fill(Color(UIColor.systemGray6))
-                                    .overlay {
-                                        ZStack(alignment: .bottomTrailing) {
-                                            VStack {
-                                                Text("")
-                                                    .foregroundColor(.white)
-                                                    .font(.system(size: 15, weight: .semibold))
-                                                    .multilineTextAlignment(.leading)
-                                            }
-                                            .padding([.horizontal, .top], 20)
-                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                                            .mask(
-                                                LinearGradient(
-                                                    gradient: Gradient(stops: [
-                                                        .init(color: .black, location: 0),
-                                                        .init(color: .black, location: 0.75),
-                                                        .init(color: .clear, location: 0.825)
-                                                    ]),
-                                                    startPoint: .top,
-                                                    endPoint: .bottom
-                                                )
-                                                .frame(height: .infinity)
-                                            )
-                                            
-                                            HStack {
-                                                VStack(alignment: .leading) {
-                                                    Text(result.artistName)
-                                                        .foregroundColor(.secondary)
-                                                        .font(.system(size: 11, weight: .regular, design: .rounded))
-                                                        .lineLimit(1)
-                                                    Text(result.title)
-                                                        .foregroundColor(.secondary)
-                                                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                                                        .lineLimit(1)
-                                                }
-                                                
-                                                Spacer()
-                                                
-                                                // Reserve space for shape to animate to.
-                                                GeometryReader { geo in
-                                                    Rectangle()
-                                                        .fill(.clear)
-                                                        .frame(width: 28, height: 28)
-                                                        .onAppear {
-                                                            // Capture the position of the target for the shape
-                                                            shapeTargetPosition = CGPoint(x: geo.frame(in: .global).minX, y: geo.frame(in: .global).minY)
-                                                        }
-                                                }
-                                                .frame(width: 28, height: 28) // Limit GeometryReader size
-                                            }
-                                            .padding(20)
-                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        VStack {
+            Spacer()
+            // Card stack
+            PageView(selection: $selection) {
+                ForEach([1, 2], id: \.self) { index in
+                    if index == 1 {
+                        GeometryReader { _ in
+                            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                                .fill(Color(UIColor.systemGray6))
+                                .overlay {
+                                    ZStack(alignment: .bottomTrailing) {
+                                        VStack {
+                                            Text("")
+                                                .foregroundColor(.white)
+                                                .font(.system(size: 15, weight: .semibold))
+                                                .multilineTextAlignment(.leading)
                                         }
+                                        .padding([.horizontal, .top], 20)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                        .mask(
+                                            LinearGradient(
+                                                gradient: Gradient(stops: [
+                                                    .init(color: .black, location: 0),
+                                                    .init(color: .black, location: 0.75),
+                                                    .init(color: .clear, location: 0.825)
+                                                ]),
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                            )
+                                        )
+                                            
+                                        HStack {
+                                            VStack(alignment: .leading) {
+                                                Text(result.artistName)
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .regular, design: .rounded))
+                                                    .lineLimit(1)
+                                                Text(result.title)
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                                    .lineLimit(1)
+                                            }
+                                                
+                                            Spacer()
+                                        }
+                                        .padding(20)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                                     }
-                                    .frame(height: 280)
-                                    .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
-                                    .onAppear {
-                                        // Capture the bottom-right position for the ripple effect
-                                        let frame = geo.frame(in: .global)
-                                        let bottomTrailing = CGPoint(x: frame.maxX, y: frame.maxY)
-                                        origin = bottomTrailing
-                                    }
-                            }
-                        } else {
+                                }
+                                .frame(height: 280)
+                        }
+                    } else {
+                        GeometryReader { geo in
+                            let mainFrame = geo.frame(in: .global)
+                            let smallRectanglePosition = CGPoint(x: mainFrame.maxX - 28 - 20, y: mainFrame.maxY - 28 - 20)
+                            
                             Rectangle()
                                 .foregroundStyle(.clear)
                                 .background(.clear)
                                 .overlay(alignment: .bottom) {
-                                    AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
-                                        image
-                                            .resizable()
-                                    } placeholder: {
+                                    ZStack(alignment: .bottomTrailing) {
+                                        AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
+                                            image
+                                                .resizable()
+                                        } placeholder: {
+                                            Rectangle()
+                                        }
+                                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                                        .aspectRatio(contentMode: .fit)
+                                        
                                         Rectangle()
+                                            .fill(.clear)
+                                            .frame(width: 28, height: 28)
+                                            .position(smallRectanglePosition) // Using calculated position
+                                            .onAppear {
+                                                // Capture the position of the target for the shape
+                                                shapeTargetPosition = smallRectanglePosition
+                                            }
+                                            .padding(20)
                                     }
-                                    .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                                    .aspectRatio(contentMode: .fit)
                                 }
+                                .onAppear {
+                                    // Capture the bottom-right position for the ripple effect
+                                    let bottomTrailing = CGPoint(x: mainFrame.maxX, y: mainFrame.maxY)
+                                    origin = bottomTrailing
+                                }
+                                .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
                         }
+                        .frame(height: 280)
                     }
                 }
-                .pageViewStyle(.customCardDeck)
-                .pageViewCardShadow(.visible)
-                .frame(width: 204, height: 280)
+            }
+            .pageViewStyle(.customCardDeck)
+            .pageViewCardShadow(.visible)
+            .frame(width: 204, height: 280)
                 
-                Spacer()
-                    .frame(width: 32, height: 124)
+            // MARK: - Imprint Ball
+
+            Spacer()
+            ZStack {
+                HStack(spacing: 32) {
+                    Image(systemName: "heart.slash.fill")
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+
+                    Spacer()
+                        .frame(width: 80, height: 80) // Spacer between the texts
+
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading) // Align to the left
+                }
+                .frame(maxWidth: .infinity)
                 
                 ZStack {
                     GeometryReader { geo in
                         MorphableShape(controlPoints: self.controlPoints)
-                            .fill(morphShape ? .white : .secondary)
+                            .fill(morphShape ? .white : .black)
                             .frame(width: morphShape ? 28 : 80, height: morphShape ? 28 : 80)
+                            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                            .opacity(showKeyframeShape.contains(true) ? 0 : 1)
                             .onAppear {
                                 // Capture the initial position of the blue rectangle
                                 shapeInitialPosition = CGPoint(x: geo.frame(in: .global).minX, y: geo.frame(in: .global).minY)
                             }
-                            .opacity(showKeyframeShape.contains(true) ? 0 : 1)
                         
                         // Quickly transition to a keyframe heart.
                         Group {
@@ -152,21 +175,18 @@ struct ImprintView: View {
                                     .fill(.white)
                                     .frame(width: 28, height: 28)
                                     .applyHeartbreakLeftAnimator(triggerKeyframe: keyframeTrigger)
-                                    .opacity(1)
                                 
                                 HeartbreakRightPath()
                                     .stroke(.white, lineWidth: 1)
                                     .fill(.white)
                                     .frame(width: 28, height: 28)
                                     .applyHeartbreakRightAnimator(triggerKeyframe: keyframeTrigger)
-                                    .opacity(1)
                             } else if showKeyframeShape[1] {
                                 HeartPath()
                                     .stroke(.white, lineWidth: 1)
                                     .fill(.white)
                                     .frame(width: 28, height: 28)
                                     .applyHeartbeatAnimator(triggerKeyframe: keyframeTrigger)
-                                    .opacity(1)
                             }
                         }
                         .onAppear {
@@ -207,11 +227,9 @@ struct ImprintView: View {
                     offsetAnimator.completion = { event in
                         switch event {
                         case .finished(let finalValue):
-                            // Update blue rectangle position after the animation fully completes
                             print("Animation finished at value: \(finalValue)")
                             
                         case .retargeted(let from, let to):
-                            // Log the retarget event or handle if necessary
                             print("Animation retargeted from: \(from) to: \(to)")
                         }
                     }
@@ -289,6 +307,8 @@ struct ImprintView: View {
                         }
                 )
             }
+            
+            Spacer()
         }
     }
         
