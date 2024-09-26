@@ -10,10 +10,6 @@ import MusicKit
 import SwiftUI
 import Transmission
 
-#Preview {
-    IndexSheet()
-}
-
 struct IndexSheet: View {
     // Global state
     @EnvironmentObject var windowState: WindowState
@@ -138,6 +134,7 @@ struct ResultCell: View {
                             }
 
                             ImageViewFromCache(url: artwork.url(width: 1000, height: 1000))
+                                .opacity(0)
                         }
                         .edgesIgnoringSafeArea(.vertical)
                     }

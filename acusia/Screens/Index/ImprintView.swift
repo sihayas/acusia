@@ -11,8 +11,6 @@ import Wave
 struct ImprintView: View {
     // Card Deck
     @State private var selection: Int = 2
-    @Environment(\.navigatePageView) private var navigate
-    @Environment(\.canNavigatePageView) private var canNavigate
 
     // Wave
     let offsetAnimator = SpringAnimator<CGPoint>(spring: .defaultInteractive, value: .zero)
@@ -41,11 +39,11 @@ struct ImprintView: View {
     var body: some View {
         VStack {
             Spacer()
-            // Card stack
-            PageView(selection: $selection) {
-                ForEach([1, 2], id: \.self) { index in
-                    if index == 1 {
-                        GeometryReader { _ in
+            GeometryReader { geometry in
+                // Card stack
+                PageView(selection: $selection) {
+                    ForEach([1, 2], id: \.self) { index in
+                        if index == 1 {
                             RoundedRectangle(cornerRadius: 32, style: .continuous)
                                 .fill(Color(UIColor.systemGray6))
                                 .overlay {
@@ -69,7 +67,7 @@ struct ImprintView: View {
                                                 endPoint: .bottom
                                             )
                                         )
-                                            
+                                    
                                         HStack {
                                             VStack(alignment: .leading) {
                                                 Text(result.artistName)
@@ -81,7 +79,7 @@ struct ImprintView: View {
                                                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                                                     .lineLimit(1)
                                             }
-                                                
+                                        
                                             Spacer()
                                         }
                                         .padding(20)
@@ -89,12 +87,7 @@ struct ImprintView: View {
                                     }
                                 }
                                 .frame(height: 280)
-                        }
-                    } else {
-                        GeometryReader { geo in
-                            let mainFrame = geo.frame(in: .global)
-                            let smallRectanglePosition = CGPoint(x: mainFrame.maxX - 28 - 20, y: mainFrame.maxY - 28 - 20)
-                            
+                        } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
                                 .background(.clear)
@@ -108,32 +101,28 @@ struct ImprintView: View {
                                         }
                                         .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                                         .aspectRatio(contentMode: .fit)
-                                        
+                                    
+                                        // Second GeometryReader inside overlay to get frame of smaller rectangle
                                         Rectangle()
                                             .fill(.clear)
                                             .frame(width: 28, height: 28)
-                                            .position(smallRectanglePosition) // Using calculated position
-                                            .onAppear {
-                                                // Capture the position of the target for the shape
-                                                shapeTargetPosition = smallRectanglePosition
-                                            }
                                             .padding(20)
                                     }
-                                    .opacity(0.1)
                                 }
-                                .onAppear {
-                                    // Capture the bottom-right position for the ripple effect
-                                    let bottomTrailing = CGPoint(x: mainFrame.maxX, y: mainFrame.maxY)
-                                    origin = bottomTrailing
-                                }
-                                .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
+                                .modifier(RippleEffect(at: shapeTargetPosition, trigger: rippleTrigger, velocity: velocity))
+                                .frame(height: 280)
                         }
-                        .frame(height: 280)
                     }
                 }
+                .pageViewStyle(.customCardDeck)
+                .pageViewCardShadow(.visible)
+                .onAppear {
+                    shapeTargetPosition = CGPoint(
+                        x: geometry.frame(in: .global).maxX - 54 - 20, // 20 padding from the right
+                        y: geometry.frame(in: .global).maxY - 54 - 20  // 20 padding from the bottom
+                    )
+                }
             }
-            .pageViewStyle(.customCardDeck)
-            .pageViewCardShadow(.visible)
             .frame(width: 204, height: 280)
                 
             // MARK: - Imprint Ball
@@ -160,11 +149,10 @@ struct ImprintView: View {
                     GeometryReader { geo in
                         MorphableShape(controlPoints: self.controlPoints)
                             .fill(morphShape ? .white : .black)
-                            .frame(width: morphShape ? 28 : 80, height: morphShape ? 28 : 80)
                             .shadow(color: .black.opacity(0.4), radius: 20, x: 0, y: 15)
                             .opacity(showKeyframeShape.contains(true) ? 0 : 1)
                             .onAppear {
-                                // Capture the initial position of the blue rectangle
+                                // Capture the initial position of the shape
                                 shapeInitialPosition = CGPoint(x: geo.frame(in: .global).minX, y: geo.frame(in: .global).minY)
                             }
                         
@@ -213,7 +201,7 @@ struct ImprintView: View {
                             }
                         }
                     }
-                    .frame(width: 80, height: 80)
+                    .frame(width: morphShape ? 28 : 80, height: morphShape ? 28 : 80)
                 }
                 .offset(x: shapeOffset.x, y: shapeOffset.y)
                 .onAppear {
@@ -264,6 +252,7 @@ struct ImprintView: View {
                                     x: shapeTargetPosition.x - shapeInitialPosition.x,
                                     y: shapeTargetPosition.y - shapeInitialPosition.y
                                 )
+                                print("Target Offset: \(targetOffset)")
                                 
                                 // Assign this offset as the new target for the animator
                                 offsetAnimator.target = targetOffset
