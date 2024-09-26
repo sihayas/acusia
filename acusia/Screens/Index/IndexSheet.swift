@@ -65,7 +65,6 @@ struct IndexSheet: View {
 }
 
 struct ResultCell: View {
-    @EnvironmentObject var windowState: WindowState
 
     @Binding var searchResult: SearchResult
     @Binding var selectedResult: SearchResult?
@@ -80,7 +79,7 @@ struct ResultCell: View {
             if let artwork = searchResult.artwork {
                 let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
                 let isSong = searchResult.type == "Song"
-
+                
                 KFImage(artwork.url(width: 1000, height: 1000))
                     .placeholder {
                         Image("placeholderImage")
@@ -88,7 +87,7 @@ struct ResultCell: View {
                     }
                     .setProcessor(
                         DownsamplingImageProcessor(size: CGSize(width: 40, height: 40))
-                            |> RoundCornerImageProcessor(cornerRadius: 12)
+                        |> RoundCornerImageProcessor(cornerRadius: 12)
                     )
                     .cacheOriginalImage()
                     .scaleFactor(UIScreen.main.scale)
@@ -114,23 +113,23 @@ struct ResultCell: View {
                                 .background(.thinMaterial)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                                 .ignoresSafeArea()
-
+                            
                             VStack {
                                 ImprintView(result: $searchResult)
                             }
-
+                            
                             ImageViewFromCache(url: artwork.url(width: 1000, height: 1000))
                         }
                         .edgesIgnoringSafeArea(.vertical)
                     }
             }
-
+            
             VStack(alignment: .leading) {
                 Text(searchResult.artistName)
                     .font(.system(size: 13, weight: .regular, design: .rounded))
                     .lineLimit(1)
                     .foregroundColor(.white.opacity(0.6))
-
+                
                 Text(searchResult.title)
                     .font(.system(size: 15, weight: .regular, design: .rounded))
                     .lineLimit(1)
@@ -142,9 +141,6 @@ struct ResultCell: View {
             withAnimation {
                 showSheet.toggle()
             }
-        }
-        .onChange(of: showSheet) { _, newValue in
-            windowState.jumpTrigger.toggle()
         }
     }
 }
