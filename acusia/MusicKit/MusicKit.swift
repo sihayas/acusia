@@ -43,9 +43,13 @@ class MusicKit: ObservableObject {
         do {
             let request = MusicRecentlyPlayedRequest<Song>()
             let response = try await request.response()
-            recentlyPlayedSongs = response.items.map { song in
-                SongModel(from: song)
+            
+            DispatchQueue.main.async {
+                self.recentlyPlayedSongs = response.items.map { song in
+                    SongModel(from: song)
+                }
             }
+
             print("\(recentlyPlayedSongs)")
         } catch {
             print("Failed to load recently played songs: \(error)")
@@ -97,8 +101,8 @@ extension SongModel {
             lastPlayedDate: song.lastPlayedDate,
             libraryAddedDate: song.libraryAddedDate,
             releaseDate: song.releaseDate,
-            title: song.title,
-            albumName: song.albumTitle,
+            title: song.title.replacingOccurrences(of: " - Single", with: ""),
+            albumName: song.albumTitle?.replacingOccurrences(of: " - Single", with: ""),
             isrc: song.isrc,
             playCount: song.playCount
         )
@@ -115,7 +119,7 @@ extension AlbumModel {
             lastPlayedDate: album.lastPlayedDate,
             libraryAddedDate: album.libraryAddedDate,
             releaseDate: album.releaseDate,
-            title: album.title,
+            title: album.title.replacingOccurrences(of: " - Single", with: ""),
             upc: album.upc
         )
     }

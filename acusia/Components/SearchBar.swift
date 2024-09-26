@@ -56,7 +56,7 @@ struct SearchBar: View {
                         HStack {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.secondary)
-                                .font(.system(size: 13))
+                                .font(.system(size: 15))
                                 .matchedGeometryEffect(id: "input-glass", in: animationNamespace)
 
                             ZStack {
@@ -78,17 +78,16 @@ struct SearchBar: View {
                     )
                     .offset(y: windowState.jumpTrigger ? 80 : 0)
                     .animation(.spring(), value: windowState.jumpTrigger)
-//                    .phaseAnimator(AnimationPhase.allCases, trigger: windowState.jumpTrigger) { content, phase in
-//                        content
-//                            .scaleEffect(phase == .start ? 1 : 1.05)
-//                            .offset(y: phase == .start ? 0 : 128)
-//                    } animation: { phase in
-//                        switch phase {
-//                        case .start, .end: .spring(duration: 0.5, bounce: 0.7)
-//                        }
-//                    }
             }
         }
+//        .phaseAnimator(AnimationPhase.allCases, trigger: windowState.showSearchSheet) { content, phase in
+//            content
+//                .scaleEffect(phase == .start ? 1 : 1.05)
+//        } animation: { phase in
+//            switch phase {
+//            case .start, .end: .spring(duration: 0.5, bounce: 0.7)
+//            }
+//        }
         .animation(.spring(), value: windowState.showSearchSheet)
         .onAppear {
             Task { await performSearch(query: searchText) }

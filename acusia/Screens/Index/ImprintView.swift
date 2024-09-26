@@ -161,7 +161,7 @@ struct ImprintView: View {
                         MorphableShape(controlPoints: self.controlPoints)
                             .fill(morphShape ? .white : .black)
                             .frame(width: morphShape ? 28 : 80, height: morphShape ? 28 : 80)
-                            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                            .shadow(color: .black.opacity(0.4), radius: 20, x: 0, y: 15)
                             .opacity(showKeyframeShape.contains(true) ? 0 : 1)
                             .onAppear {
                                 // Capture the initial position of the blue rectangle

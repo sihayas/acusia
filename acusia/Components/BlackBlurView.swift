@@ -12,8 +12,16 @@ struct BlurView: UIViewRepresentable {
     var blurMutingFactor: CGFloat = 0.5
     
     func makeUIView(context: Context) -> UIVisualEffectView {
-        let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: style))
+        let blurEffect = UIBlurEffect(style: style)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.isUserInteractionEnabled = false
+        
+        // Create and add the vibrancy effect view
+        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
+        let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
+        vibrancyEffectView.frame = blurEffectView.bounds
+        vibrancyEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.contentView.addSubview(vibrancyEffectView)
         
         // Insert the blur effect view
         DispatchQueue.main.async {
