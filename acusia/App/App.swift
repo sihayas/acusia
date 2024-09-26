@@ -5,12 +5,12 @@ import Transmission
 let apiurl = "http://192.168.1.248:8000"
 
 class WindowState: ObservableObject {
-    static let shared = WindowState() // Singleton instance
+    static let shared = WindowState()
 
-    // Your shared properties go here
-    @Published var isSearchBarVisible: Bool = false
+    @Published var showSearchSheet: Bool = false
+    @Published var jumpTrigger: Bool = false
 
-    private init() {} // Prevents external initialization
+    private init() {}
 }
 
 @main
@@ -129,7 +129,6 @@ struct FloatingBarView: View {
         ZStack {
             SearchBar(searchText: $searchText, entryText: $entryText)
                 .padding(.horizontal, 24)
-                .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
                 .offset(y: -keyboardOffset)
                 .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
                     keyboardOffset = getKeyboardHeight(from: notification)

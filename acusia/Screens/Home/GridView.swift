@@ -12,18 +12,16 @@ import SwiftUI
 struct GridView: View {
     // Global Properties
     @EnvironmentObject var musicKitManager: MusicKitManager
-    @EnvironmentObject var windowState: WindowState
-    
+
     // Local Properties
     @State private var keyboardOffset: CGFloat = 0
     @State private var showSettings = false
-    @State private var searchSheet = false
     @State private var searchText = "joji"
-    
+
     // Animation States
     @State var expandEssentialStates = [false, false, false]
     @State var showRecents = false
-    
+
     // Parameters
     @Binding var homePath: NavigationPath
     let initialUserData: APIUser?
@@ -38,11 +36,12 @@ struct GridView: View {
 //            }
 
             // MARK: User Data & Buttons
+
             VStack {
                 Text("Alia")
                     .font(.system(size: 27, weight: .ultraLight))
                     .foregroundColor(.primary)
-                
+
                 Spacer()
 
                 AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
@@ -56,29 +55,13 @@ struct GridView: View {
                 }
                 .blur(radius: showRecents ? 12 : 0)
                 .animation(.spring(), value: showRecents)
-                
+
                 Spacer()
-
-                HStack {
-                    Spacer()
-
-                    Button {
-                        searchSheet.toggle()
-                    } label: {
-                        Image(systemName: "waveform.badge.magnifyingglass")
-                            .font(.system(size: 16))
-                            .frame(width: 32, height: 32)
-                            .background(.ultraThinMaterial, in: .circle)
-                            .contentShape(.circle)
-                            .foregroundColor(.white)
-                            .symbolRenderingMode(.multicolor)
-                    }
-                    .transition(.blurReplace)
-                }
             }
             .padding(.horizontal, 32)
 
             // MARK: - Pinned
+
             VStack {
                 Spacer()
 
@@ -126,14 +109,5 @@ struct GridView: View {
             }
         }
         .frame(minWidth: size.width, minHeight: size.height)
-        // MARK: - Search Sheet
-        .sheet(isPresented: $searchSheet) {
-            IndexSheet()
-        }
-        .onChange(of: searchSheet) { _, _ in
-            withAnimation() {
-                windowState.isSearchBarVisible = searchSheet
-            }
-        }
     }
 }

@@ -26,11 +26,12 @@ class HomeState: ObservableObject {
 }
 
 struct Home: View {
-    let size: CGSize
-    let safeArea: EdgeInsets
+    @EnvironmentObject var windowState: WindowState
     @EnvironmentObject private var shareData: HomeState
     @StateObject private var auth = Auth.shared
     
+    let size: CGSize
+    let safeArea: EdgeInsets
     @Binding var homePath: NavigationPath
 
     var body: some View {
@@ -53,6 +54,10 @@ struct Home: View {
             }
         }
         .scrollDisabled(shareData.isExpanded)
+        // MARK: - Search Sheet
+        .sheet(isPresented: $windowState.showSearchSheet) {
+            IndexSheet()
+        }
 //                    .onScrollGeometryChange(for: CGFloat.self) { proxy in
 //                        proxy.contentOffset.y
 //                    } action: { oldValue, newValue in
@@ -100,7 +105,6 @@ struct Home: View {
                     .ignoresSafeArea()
                     .frame(maxWidth: .infinity, maxHeight: safeArea.top * 1.5)
                 Spacer()
-//                    FeedBarView(safeArea: safeArea)
             }
         }
     }

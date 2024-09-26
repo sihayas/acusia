@@ -6,22 +6,25 @@
 //
 import SwiftUI
 
+
 class PassThroughWindow: UIWindow {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event) else { return nil }
         
-        // If the hit view is the root view, check for interactive subviews.
-        if hitView == rootViewController?.view {
-            for subview in hitView.subviews {
-                let subviewPoint = subview.convert(point, from: self)
-                if let subviewHitView = subview.hitTest(subviewPoint, with: event) {
-                    return subviewHitView
-                }
-            }
+        // If the hit view is not the root view controller's view, return it
+        guard hitView == rootViewController?.view else { return hitView }
+        
+        // Check if there are any visible, interactive subviews at the touch point
+        let interactiveSubview = hitView.subviews.first { subview in
+            !subview.isHidden &&
+            subview.alpha > 0.01 &&
+            subview.isUserInteractionEnabled &&
+            subview.frame.contains(point)
         }
         
-        // If no interactive subview is found, return nil to allow pass through.
-        return hitView == rootViewController?.view ? nil : hitView
+        // If there's an interactive subview, return the hit view (allow interaction)
+        // Otherwise, return nil (pass through)
+        return interactiveSubview != nil ? hitView : nil
     }
 }
 
