@@ -8,13 +8,13 @@
 import MusicKit
 import SwiftUI
 
-class MusicKitManager: ObservableObject {
+class MusicKit: ObservableObject {
     @Published var isAuthorizedForMusicKit = false
     @Published var recentlyPlayedSongs: [SongModel] = []
     @Published var searchResults: [SearchResult] = []
 
     // Singleton instance
-    static let shared = MusicKitManager()
+    static let shared = MusicKit()
 
     // MARK: - Authorization
 

@@ -13,7 +13,7 @@ enum AnimationPhase: CaseIterable {
 struct SearchBar: View {
     @EnvironmentObject var windowState: WindowState
     @EnvironmentObject var auth: Auth
-    @EnvironmentObject var musicKitManager: MusicKitManager
+    @EnvironmentObject var musicKitManager: MusicKit
 
     @Binding var searchText: String
     @Binding var entryText: String
@@ -78,15 +78,15 @@ struct SearchBar: View {
                     )
                     .offset(y: windowState.jumpTrigger ? 80 : 0)
                     .animation(.spring(), value: windowState.jumpTrigger)
-                    .phaseAnimator(AnimationPhase.allCases, trigger: windowState.jumpTrigger) { content, phase in
-                        content
-                            .scaleEffect(phase == .start ? 1 : 1.05)
-                            .offset(y: phase == .start ? 0 : 128)
-                    } animation: { phase in
-                        switch phase {
-                        case .start, .end: .spring(duration: 0.5, bounce: 0.7)
-                        }
-                    }
+//                    .phaseAnimator(AnimationPhase.allCases, trigger: windowState.jumpTrigger) { content, phase in
+//                        content
+//                            .scaleEffect(phase == .start ? 1 : 1.05)
+//                            .offset(y: phase == .start ? 0 : 128)
+//                    } animation: { phase in
+//                        switch phase {
+//                        case .start, .end: .spring(duration: 0.5, bounce: 0.7)
+//                        }
+//                    }
             }
         }
         .animation(.spring(), value: windowState.showSearchSheet)

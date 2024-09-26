@@ -149,9 +149,9 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 width: 204,
                 height: 204
             )
-//
-//            let snapshot2 = toVC.view.resizableSnapshotView(from: to, afterScreenUpdates: true, withCapInsets: .zero)
-//            snapshot2?.frame = snapshotFrameInContainer
+
+            let snapshot2 = toVC.view.resizableSnapshotView(from: to, afterScreenUpdates: true, withCapInsets: .zero)
+            snapshot2?.frame = snapshotFrameInContainer
 
             toView?.frame = toFrame
             toView?.transform = CGAffineTransform(translationX: 0, y: containerView.frame.size.height)
@@ -168,27 +168,27 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
             if let toView {
                 containerView.addSubview(toView)
-//                containerView.addSubview(snapshot2 ?? UIView())
+                containerView.addSubview(snapshot2 ?? UIView())
             }
 
             animator.addAnimations {
-//                Wave.animate(
-//                    withSpring: self.animatedSpring,
-//                    mode: .animated,
-//                    gestureVelocity: CGPoint(x: 0, y: -3000)
-//                ) {
-//                    snapshot2?.animator.frame.size = CGSize(width: 204, height: 204) // Important to animate first
-//                    snapshot2?.animator.center = toViewCenter
-//                } completion: { finished, retargeted in
-//                    print("finished: \(finished), retargeted: \(retargeted)")
-//                }
+                Wave.animate(
+                    withSpring: self.animatedSpring,
+                    mode: .animated,
+                    gestureVelocity: CGPoint(x: 0, y: -3000)
+                ) {
+                    snapshot2?.animator.frame.size = CGSize(width: 204, height: 204) // Important to animate first
+                    snapshot2?.animator.center = toViewCenter
+                } completion: { finished, retargeted in
+                    print("finished: \(finished), retargeted: \(retargeted)")
+                }
                 toView?.transform = CGAffineTransform.identity
             }
 
             animator.addCompletion { animatingPosition in
                 switch animatingPosition {
                 case .end:
-//                    snapshot2?.removeFromSuperview()
+                    snapshot2?.removeFromSuperview()
                     transitionContext.completeTransition(true)
                 default:
                     transitionContext.completeTransition(false)

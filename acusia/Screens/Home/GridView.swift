@@ -11,7 +11,7 @@ import SwiftUI
 
 struct GridView: View {
     // Global Properties
-    @EnvironmentObject var musicKitManager: MusicKitManager
+    @EnvironmentObject var musicKitManager: MusicKit
 
     // Local Properties
     @State private var keyboardOffset: CGFloat = 0
@@ -44,15 +44,14 @@ struct GridView: View {
 
                 Spacer()
 
-                AsyncImage(url: URL(string: userResult?.image ?? initialUserData?.image ?? "")) { image in
+                AsyncImage(url: URL(string: "https://i.pinimg.com/474x/ce/7e/af/ce7eafb66f1d7edf58ef4d4b284d677a.jpg")) { image in
                     image
                         .resizable()
-                        .frame(width: 112, height: 112)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(.thinMaterial, lineWidth: 1))
                 } placeholder: {
                     ProgressView()
                 }
+                .frame(width: 112, height: 112)
+                .clipShape(Circle())
                 .blur(radius: showRecents ? 12 : 0)
                 .animation(.spring(), value: showRecents)
 

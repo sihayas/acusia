@@ -5,10 +5,10 @@
 //  Created by decoherence on 8/11/24.
 //
 
+import Kingfisher
 import MusicKit
 import SwiftUI
 import Transmission
-import Kingfisher
 
 #Preview {
     IndexSheet()
@@ -16,7 +16,8 @@ import Kingfisher
 
 struct IndexSheet: View {
     // Global state
-    @StateObject private var musicKitManager = MusicKitManager.shared
+    @EnvironmentObject var windowState: WindowState
+    @StateObject private var musicKitManager = MusicKit.shared
 
     @State private var keyboardOffset: CGFloat = 0
     @State private var selectedResult: SearchResult?
@@ -26,9 +27,12 @@ struct IndexSheet: View {
             VStack(spacing: 16) {
                 ForEach(musicKitManager.searchResults.indices, id: \.self) { index in
                     ResultCell(
-                        searchResult: $musicKitManager.searchResults[index],
-                        selectedResult: $selectedResult
-                    )
+                          searchResult: $musicKitManager.searchResults[index],
+                          selectedResult: $selectedResult
+                      ) {
+                          /// Having the environment object directly in the cell breaks Wave animator.
+                          windowState.jumpTrigger.toggle()
+                      }
                 }
             }
             .padding(.horizontal, 24)
@@ -60,7 +64,6 @@ struct IndexSheet: View {
             }
             .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
         )
-
     }
 }
 
@@ -68,6 +71,8 @@ struct ResultCell: View {
 
     @Binding var searchResult: SearchResult
     @Binding var selectedResult: SearchResult?
+    
+    var onShowSheetChange: () -> Void
 
     // Custom Sheet Transition
     @State private var showSheet = false
@@ -79,7 +84,7 @@ struct ResultCell: View {
             if let artwork = searchResult.artwork {
                 let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
                 let isSong = searchResult.type == "Song"
-                
+
                 KFImage(artwork.url(width: 1000, height: 1000))
                     .placeholder {
                         Image("placeholderImage")
@@ -87,7 +92,7 @@ struct ResultCell: View {
                     }
                     .setProcessor(
                         DownsamplingImageProcessor(size: CGSize(width: 40, height: 40))
-                        |> RoundCornerImageProcessor(cornerRadius: 12)
+                            |> RoundCornerImageProcessor(cornerRadius: 12)
                     )
                     .cacheOriginalImage()
                     .scaleFactor(UIScreen.main.scale)
@@ -113,23 +118,23 @@ struct ResultCell: View {
                                 .background(.thinMaterial)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                                 .ignoresSafeArea()
-                            
+
                             VStack {
                                 ImprintView(result: $searchResult)
                             }
-                            
+
                             ImageViewFromCache(url: artwork.url(width: 1000, height: 1000))
                         }
                         .edgesIgnoringSafeArea(.vertical)
                     }
             }
-            
+
             VStack(alignment: .leading) {
                 Text(searchResult.artistName)
                     .font(.system(size: 13, weight: .regular, design: .rounded))
                     .lineLimit(1)
                     .foregroundColor(.white.opacity(0.6))
-                
+
                 Text(searchResult.title)
                     .font(.system(size: 15, weight: .regular, design: .rounded))
                     .lineLimit(1)
@@ -142,6 +147,9 @@ struct ResultCell: View {
                 showSheet.toggle()
             }
         }
+        .onChange(of: showSheet) { _, _ in
+              onShowSheetChange()
+          }
     }
 }
 

@@ -15,9 +15,9 @@ class WindowState: ObservableObject {
 
 @main
 struct AcusiaApp: App {
-    @StateObject private var auth = Auth.shared
     @StateObject private var windowState = WindowState.shared
-    @StateObject private var musicKitManager = MusicKitManager.shared
+    @StateObject private var auth = Auth.shared
+    @StateObject private var musicKit = MusicKit.shared
     @StateObject private var homeState = HomeState.shared
     let persistenceController = PersistenceController.shared
     private var floatingBarPresenter = FloatingBarPresenter()
@@ -26,10 +26,10 @@ struct AcusiaApp: App {
         WindowGroup {
             AcusiaAppView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(auth)
-                .environmentObject(musicKitManager)
-                .environmentObject(homeState)
                 .environmentObject(windowState)
+                .environmentObject(auth)
+                .environmentObject(musicKit)
+                .environmentObject(homeState)
                 .onAppear {
                     floatingBarPresenter.showFloatingBar()
                 }
@@ -46,9 +46,9 @@ class FloatingBarPresenter {
         }
 
         let view = FloatingBarView()
-            .environmentObject(Auth.shared)
             .environmentObject(WindowState.shared)
-            .environmentObject(MusicKitManager.shared)
+            .environmentObject(Auth.shared)
+            .environmentObject(MusicKit.shared)
             .environmentObject(HomeState.shared)
 
         let hostingController = UIHostingController(rootView: view)
@@ -68,7 +68,7 @@ class FloatingBarPresenter {
 
 struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
-    @EnvironmentObject private var musicKitManager: MusicKitManager
+    @EnvironmentObject private var musicKitManager: MusicKit
     @State private var homePath = NavigationPath()
     @State private var isPresented = false
 
