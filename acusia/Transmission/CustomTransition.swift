@@ -19,7 +19,7 @@ extension UISheetPresentationController.Detent {
 
 struct CustomTransition: PresentationLinkTransitionRepresentable {
     var completion: (() -> Void)?
-    
+
     func makeUIPresentationController(presented: UIViewController, presenting: UIViewController?, context: Context) -> UIPresentationController {
         let sheet = UISheetPresentationController(
             presentedViewController: presented,
@@ -29,7 +29,7 @@ struct CustomTransition: PresentationLinkTransitionRepresentable {
         sheet.preferredCornerRadius = 40
         sheet.prefersGrabberVisible = true
         presented.view.backgroundColor = .clear
-        
+
         return sheet
     }
 
@@ -63,7 +63,7 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     var animator: UIViewPropertyAnimator?
     var completion: (() -> Void)? // Add a completion closure
 
-    let animatedSpring = Spring(dampingRatio: 1.68, response: 1.8)
+    let animatedSpring = Spring(dampingRatio: 0.68, response: 0.8)
 
     lazy var sheetPresentationAnimator = SpringAnimator<CGFloat>(spring: animatedSpring)
 
@@ -140,58 +140,57 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         // Calculate the frame of sourceView relative to containerView to position the snapshot correctly.
         let snapshotFrameInContainer = sourceView?.convert(sourceView?.frame ?? .zero, to: containerView) ?? containerView.frame
 
-        let snapshot: UIView?
-
         if isPresenting {
             // Create a snapshot of fromVC.view from the defined area (snapshotFrameInFromVC).
-            let originalColor = fromVC.view.backgroundColor
-            fromVC.view.backgroundColor = .clear
-            snapshot = fromVC.view.resizableSnapshotView(from: snapshotFrameInFromVC,
-                                                         afterScreenUpdates: true,
-                                                         withCapInsets: .zero)
 
-            fromVC.view.backgroundColor = originalColor
+            let to = CGRect(
+                x: 118,
+                y: 153,
+                width: 204,
+                height: 204
+            )
 
-            // Position the snapshot correctly within the snapshot container
-            snapshot?.frame = snapshotFrameInContainer
+            let snapshot2 = toVC.view.resizableSnapshotView(from: to, afterScreenUpdates: true, withCapInsets: .zero)
+            snapshot2?.frame = snapshotFrameInContainer
+            containerView.addSubview(snapshot2 ?? UIView())
 
             toView?.frame = toFrame
             toView?.transform = CGAffineTransform(translationX: 0, y: containerView.frame.size.height)
             toView?.layoutIfNeeded()
 
+            let toViewCenter = CGPoint(
+                x: toFrame.midX,
+                y: toFrame.midY
+            )
+
             if let fromView {
                 containerView.addSubview(fromView)
             }
+
             if let toView {
                 containerView.addSubview(toView)
-                containerView.addSubview(snapshot ?? UIView())
+                containerView.addSubview(snapshot2 ?? UIView())
             }
-
-            let toViewCenter = CGPoint(
-                x: toFrame.midX,
-                y: toFrame.midY + 55
-            )
-
-            let gestureVelocity = CGPoint(x: 0, y: -5000)
 
             animator.addAnimations {
                 Wave.animate(
                     withSpring: self.animatedSpring,
                     mode: .animated,
-                    gestureVelocity: gestureVelocity
+                    gestureVelocity: CGPoint(x: 0, y: -3000)
                 ) {
-                    snapshot?.animator.frame.size = CGSize(width: 204, height: 204) // Important to animate first
-                    snapshot?.animator.center = toViewCenter
+                    snapshot2?.animator.frame.size = CGSize(width: 204, height: 204) // Important to animate first
+                    snapshot2?.animator.center = toViewCenter
                 } completion: { finished, retargeted in
                     print("finished: \(finished), retargeted: \(retargeted)")
                 }
                 toView?.transform = CGAffineTransform.identity
+                toVC.view.alpha = 1
             }
-            
+
             animator.addCompletion { animatingPosition in
                 switch animatingPosition {
                 case .end:
-                    snapshot?.removeFromSuperview()
+//                    snapshot?.removeFromSuperview()
                     transitionContext.completeTransition(true)
                 default:
                     transitionContext.completeTransition(false)
@@ -209,7 +208,7 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             animator.addAnimations {
                 fromView?.transform = CGAffineTransform(translationX: 0, y: containerView.frame.size.height)
             }
-            
+
             animator.addCompletion { animatingPosition in
                 switch animatingPosition {
                 case .end:
@@ -219,7 +218,7 @@ class CoverTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 }
             }
         }
-        
+
         self.animator = animator
         return animator
     }

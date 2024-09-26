@@ -18,7 +18,7 @@ struct SearchBar: View {
 
     var body: some View {
         ZStack {
-            let isExpanded = windowState.isSearchBarVisible
+            let _ = windowState.isSearchBarVisible
             
             if !windowState.isSearchBarVisible {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)

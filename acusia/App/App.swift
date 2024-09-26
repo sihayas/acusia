@@ -140,7 +140,6 @@ struct FloatingBarView: View {
                 .animation(.spring(), value: keyboardOffset)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .border(Color.green)
     }
 
     private func getKeyboardHeight(from notification: Notification) -> CGFloat {

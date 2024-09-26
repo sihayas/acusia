@@ -4,6 +4,7 @@
 //
 //  Created by decoherence on 9/13/24.
 //
+import Kingfisher
 import SwiftUI
 import Transmission
 
@@ -33,6 +34,7 @@ struct ResultCell: View {
     // Custom Sheet Transition
     @State private var showSheet = false
     @State private var isImageVisible = false
+    @State private var progress: CGFloat = 0
 
     var body: some View {
         HStack(spacing: 12) {
@@ -40,46 +42,53 @@ struct ResultCell: View {
                 let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
                 let isSong = searchResult.type == "Song"
 
-                AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
-                    image.resizable()
-                } placeholder: {
-                    Rectangle()
-                        .frame(width: 40, height: 40)
-                }
-                .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
-                .aspectRatio(contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .frame(height: 40)
-                .presentation(
-                    transition: .custom(CustomTransition {
-                        isImageVisible = true
-                    }),
-                    isPresented: $showSheet
-                ) {
-                    ZStack {
-                        Rectangle()
-                            .foregroundStyle(.clear)
-                            .background(.thinMaterial)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                            .ignoresSafeArea()
-                        
-                        VStack {
-                            ImprintView(result: $searchResult)
-                        }
-
-                        AsyncImage(url: artwork.url(width: 1000, height: 1000)) { image in
-                            image.resizable()
-                        } placeholder: {
-                            Rectangle()
-                        }
-                        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
-                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 204, height: 204)
-                        .opacity(isImageVisible ? 0 : 0) // 1
+                KFImage(artwork.url(width: 1000, height: 1000))
+                    .placeholder {
+                        Image("placeholderImage")
+                            .resizable()
                     }
-                    .edgesIgnoringSafeArea(.vertical)
-                }
+                    .setProcessor(
+                        DownsamplingImageProcessor(size: CGSize(width: 40, height: 40))
+                            |> RoundCornerImageProcessor(cornerRadius: 12)
+                    )
+                    .cacheOriginalImage()
+                    .scaleFactor(UIScreen.main.scale)
+                    .resizable() // Make the image resizable to fit the view
+                    .onSuccess { result in
+                        print("Task done for: \(result.source.url?.absoluteString ?? "")")
+                    }
+                    .onFailure { error in
+                        print("Job failed: \(error.localizedDescription)")
+                    }
+                    .frame(width: 40, height: 40) // Adjust the frame as needed
+                    .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                    .opacity(progress > 0 ? 0 : 1)
+                    .presentation(
+                        transition: .custom(CustomTransition {
+                            isImageVisible = true
+                        }),
+                        isPresented: $showSheet
+                    ) {
+                        TransitionReader { proxy in
+                            ZStack {
+                                Rectangle()
+                                    .foregroundStyle(.clear)
+                                    .background(.thinMaterial)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                                    .ignoresSafeArea()
+
+                                VStack {
+                                    ImprintView(result: $searchResult)
+                                }
+
+                                ImageViewFromCache(url: artwork.url(width: 1000, height: 1000))
+                            }
+                            .edgesIgnoringSafeArea(.vertical)
+                            .onChange(of: proxy.progress) {_, newValue in
+                                progress = newValue
+                            }
+                        }
+                    }
             }
 
             VStack(alignment: .leading) {
@@ -100,6 +109,20 @@ struct ResultCell: View {
                 showSheet.toggle()
             }
         }
+    }
+}
+
+struct ImageViewFromCache: View {
+    let url: URL?
+
+    var body: some View {
+        KFImage(url)
+            .setProcessor(RoundCornerImageProcessor(cornerRadius: 32))
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 204, height: 204)
+            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
     }
 }
 

@@ -130,7 +130,7 @@ struct GridView: View {
         .sheet(isPresented: $searchSheet) {
             IndexSheet()
         }
-        .onChange(of: searchSheet) { _ in
+        .onChange(of: searchSheet) { _, _ in
             withAnimation() {
                 windowState.isSearchBarVisible = searchSheet
             }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* IndexSheet.swift */; };
 		CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0D90502CA3C31A004FD674 /* Notification.swift */; };
+		CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CD0D90532CA40434004FD674 /* Kingfisher */; };
 		CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA62C6DE76900C16804 /* Loupe.metal */; };
@@ -27,7 +28,6 @@
 		CD6438C92C92829000D7436E /* HoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloManager.swift */; };
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
-		CD7D87DD2C9955A600F0E67B /* Prev.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7D87DC2C9955A400F0E67B /* Prev.swift */; };
 		CD7D87E12C9A5A9D00F0E67B /* CustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7D87E02C9A5A9300F0E67B /* CustomTransition.swift */; };
 		CD7D87E42C9A9C4400F0E67B /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CD7D87E32C9A9C4400F0E67B /* Transmission */; };
 		CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* ImprintPreview.swift */; };
@@ -138,7 +138,6 @@
 		CD6438C82C92828900D7436E /* HoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloManager.swift; sourceTree = "<group>"; };
 		CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloShaderView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
-		CD7D87DC2C9955A400F0E67B /* Prev.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prev.swift; sourceTree = "<group>"; };
 		CD7D87E02C9A5A9300F0E67B /* CustomTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransition.swift; sourceTree = "<group>"; };
 		CD85AB092C891F4400A61FBB /* ImprintPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprintPreview.swift; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
@@ -209,6 +208,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */,
 				CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */,
 				CD7D87E42C9A9C4400F0E67B /* Transmission in Frameworks */,
 				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
@@ -313,7 +313,6 @@
 			isa = PBXGroup;
 			children = (
 				CD7D87E02C9A5A9300F0E67B /* CustomTransition.swift */,
-				CD7D87DC2C9955A400F0E67B /* Prev.swift */,
 			);
 			path = Transmission;
 			sourceTree = "<group>";
@@ -511,6 +510,7 @@
 				CDD48E1A2C62C26B0001C4E8 /* Wave */,
 				CD132AA22C6DDB7200C16804 /* BigUIPaging */,
 				CD7D87E32C9A9C4400F0E67B /* Transmission */,
+				CD0D90532CA40434004FD674 /* Kingfisher */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -588,6 +588,7 @@
 				CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */,
 				CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */,
 				CD7D87E22C9A9C4400F0E67B /* XCRemoteSwiftPackageReference "Transmission" */,
+				CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
@@ -679,7 +680,6 @@
 				CD4332512C82B148009ADBF0 /* SearchBar.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
 				CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */,
-				CD7D87DD2C9955A600F0E67B /* Prev.swift in Sources */,
 				CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */,
 				CD43324F2C82A856009ADBF0 /* RecentlyPlayedView.swift in Sources */,
 				CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */,
@@ -1021,6 +1021,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.3;
+			};
+		};
 		CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/notsobigcompany/BigUIPaging.git";
@@ -1048,6 +1056,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CD0D90532CA40434004FD674 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		CD132AA22C6DDB7200C16804 /* BigUIPaging */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */;

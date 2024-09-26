@@ -119,6 +119,7 @@ struct ImprintView: View {
                                             }
                                             .padding(20)
                                     }
+                                    .opacity(0.1)
                                 }
                                 .onAppear {
                                     // Capture the bottom-right position for the ripple effect
