@@ -71,13 +71,13 @@ struct SearchBar: View {
                     )
                     .shadow(color: Color.black.opacity(0.2), radius: 30, x: 0, y: 40)
                     .rotation3DEffect(
-                        .degrees(windowState.jumpTrigger ? -180 : 0),
+                        .degrees(windowState.hideFloatingBar ? -180 : 0),
                         axis: (x: 1, y: 0, z: 0),
                         anchor: .bottom,
                         perspective: 0.5
                     )
-                    .offset(y: windowState.jumpTrigger ? 80 : 0)
-                    .animation(.spring(), value: windowState.jumpTrigger)
+                    .offset(y: windowState.hideFloatingBar ? 80 : 0)
+                    .animation(.spring(), value: windowState.hideFloatingBar)
             }
         }
 //        .phaseAnimator(AnimationPhase.allCases, trigger: windowState.showSearchSheet) { content, phase in

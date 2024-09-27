@@ -8,17 +8,18 @@ class WindowState: ObservableObject {
     static let shared = WindowState()
 
     @Published var showSearchSheet: Bool = false
-    @Published var jumpTrigger: Bool = false
+    @Published var hideFloatingBar: Bool = false
 
     private init() {}
 }
 
 @main
 struct AcusiaApp: App {
-    @StateObject private var windowState = WindowState.shared
-    @StateObject private var auth = Auth.shared
-    @StateObject private var musicKit = MusicKit.shared
-    @StateObject private var homeState = HomeState.shared
+    @ObservedObject private var windowState = WindowState.shared
+    @ObservedObject private var auth = Auth.shared
+    @ObservedObject private var musicKit = MusicKit.shared
+    @ObservedObject private var homeState = HomeState.shared
+    
     let persistenceController = PersistenceController.shared
     private var floatingBarPresenter = FloatingBarPresenter()
 

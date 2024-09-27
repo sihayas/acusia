@@ -26,9 +26,9 @@ class HomeState: ObservableObject {
 }
 
 struct Home: View {
-    @EnvironmentObject var windowState: WindowState
+    @EnvironmentObject private var windowState: WindowState
     @EnvironmentObject private var shareData: HomeState
-    @StateObject private var auth = Auth.shared
+    @EnvironmentObject private var auth: Auth
     
     let size: CGSize
     let safeArea: EdgeInsets

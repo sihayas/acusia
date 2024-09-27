@@ -37,7 +37,7 @@ struct IndexSheet: View {
                             selectedResult: $selectedResult
                         ) {
                             /// Having the environment object directly in the cell breaks Wave animator.
-                            windowState.jumpTrigger.toggle()
+                            windowState.hideFloatingBar.toggle()
                         }
                     }
                 }
@@ -72,7 +72,6 @@ struct IndexSheet: View {
 }
 
 struct ResultCell: View {
-
     @Binding var searchResult: SearchResult
     @Binding var selectedResult: SearchResult?
     
@@ -160,7 +159,7 @@ struct ResultCell: View {
         }
         .onChange(of: showSheet) { _, _ in
               onShowSheetChange()
-          }
+        }
     }
 }
 
