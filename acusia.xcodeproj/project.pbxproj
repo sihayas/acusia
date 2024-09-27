@@ -37,6 +37,7 @@
 		CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D19822C27973800FDC979 /* NotificationModel.swift */; };
 		CD8E0BDB2C8D6C8C003A6F91 /* BlackBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */; };
 		CD8E0BDF2C8D7EF8003A6F91 /* ReplySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDE2C8D7EF2003A6F91 /* ReplySheet.swift */; };
+		CD92450A2CA6713800635716 /* AperturePrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9245092CA6713100635716 /* AperturePrototype.swift */; };
 		CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
@@ -146,6 +147,7 @@
 		CD8D19842C29C5FF00FDC979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackBlurView.swift; sourceTree = "<group>"; };
 		CD8E0BDE2C8D7EF2003A6F91 /* ReplySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplySheet.swift; sourceTree = "<group>"; };
+		CD9245092CA6713100635716 /* AperturePrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AperturePrototype.swift; sourceTree = "<group>"; };
 		CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
@@ -437,6 +439,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CD9245092CA6713100635716 /* AperturePrototype.swift */,
 				CD4BAAAF2C96495F0005F3DB /* SettingsButtonView.swift */,
 				CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */,
 				CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */,
@@ -665,6 +668,7 @@
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
 				CDD77DA52C8F966000D5BCC1 /* SqueezePreview.swift in Sources */,
 				CD4BAAB02C9649660005F3DB /* SettingsButtonView.swift in Sources */,
+				CD92450A2CA6713800635716 /* AperturePrototype.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
