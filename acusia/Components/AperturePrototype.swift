@@ -4,21 +4,15 @@ struct ContentView: View {
     @State var blurRadius: CGFloat = 4
     @State var isExpanded: Bool = false
     
-    // Left Shape
     @State var leadingOffset = CGPoint(x: 0, y: 0)
     @State var leadingMinimal: Bool = false
-    @State var isLeftVisible: Bool = false
     
-    // Middle Shape
-    @State var midOffset = CGPoint(x: 0, y: 0)
-    @State var expandSearch: Bool = false
-    @State var isMidVisible: Bool = false
+    @State var centerOffset = CGPoint(x: 0, y: 0)
+    @State var centerExpanded: Bool = false
     @State var searchText: String = ""
 
-    // Right Shape
-    @State var rightOffset = CGPoint(x: 0, y: 0)
-    @State var expandReply: Bool = false
-    @State var isRightVisible: Bool = false
+    @State var trailingOffset = CGPoint(x: 0, y: 0)
+    @State var trailingExpanded: Bool = false
     @State var replyText: String = ""
     
     var body: some View {
@@ -34,17 +28,19 @@ struct ContentView: View {
             let horizontalPadding: CGFloat = 48
             
             // Dynamic dimensions based on state
-            let leftDimensions: CGSize = leadingMinimal
+            let leadingSize: CGSize = leadingMinimal
                 ? CGSize(width: 36, height: 36)
-                : CGSize(width: 128, height: 36)
+                : trailingExpanded ? CGSize(width: 40, height: 40) :
+                CGSize(width: 128, height: 36)
             
-            let midDimensions: CGSize = expandSearch
+            let centerSize: CGSize = centerExpanded
                 ? CGSize(width: width - horizontalPadding, height: 48)
                 : CGSize(width: 128, height: 36)
             
-            let rightDimensions: CGSize = expandReply
-                ? CGSize(width: width - horizontalPadding - blobSize - gap, height: 36)
+            let trailingSize: CGSize = trailingExpanded
+                ? CGSize(width: width - horizontalPadding - blobSize - gap, height: 40)
                 : CGSize(width: 128, height: 36)
+            let trailingRadius: CGFloat = trailingExpanded ? 20 : 18
             
             ZStack {
                 // MARK: Canvas
@@ -71,15 +67,15 @@ struct ContentView: View {
                 } symbols: {
                     // Left Capsule
                     Capsule()
-                        .frame(width: leftDimensions.width, height: leftDimensions.height)
+                        .frame(width: leadingSize.width, height: leadingSize.height)
                         .offset(x: leadingOffset.x, y: leadingOffset.y)
                         .frame(width: width, height: height, alignment: .bottom)
                         .tag(1)
                     
                     // Middle RoundedRectangle
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .frame(width: midDimensions.width, height: midDimensions.height)
-                        .offset(x: midOffset.x, y: midOffset.y)
+                        .frame(width: centerSize.width, height: centerSize.height)
+                        .offset(x: centerOffset.x, y: centerOffset.y)
                         .frame(width: width, height: height, alignment: .bottom)
                         .tag(0)
                     
@@ -88,13 +84,13 @@ struct ContentView: View {
                         .font(.system(size: 15, weight: .regular))
                         .foregroundColor(.white)
                         .background(.black)
-                        .frame(width: rightDimensions.width)
-                        .frame(minHeight: 36, alignment: .leading)
+                        .frame(width: trailingSize.width)
+                        .frame(minHeight: trailingSize.height, alignment: .leading)
                         .frame(maxHeight: 124)
-                        .cornerRadius(18, antialiased: true)
+                        .cornerRadius(trailingRadius, antialiased: true)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
-                        .offset(x: rightOffset.x, y: rightOffset.y)
+                        .offset(x: trailingOffset.x, y: trailingOffset.y)
                         .frame(width: width, height: height, alignment: .bottom)
                         .tag(2)
                 }
@@ -103,10 +99,10 @@ struct ContentView: View {
                 
                 // Left Capsule Overlay
                 Capsule()
-                    .frame(width: leftDimensions.width, height: leftDimensions.height)
+                    .frame(width: leadingSize.width, height: leadingSize.height)
                     .overlay {
                         VStack {
-                            if isLeftVisible {
+                            if leadingMinimal {
                                 AsyncImage(url: URL(string: "https://i.pinimg.com/474x/ce/7e/af/ce7eafb66f1d7edf58ef4d4b284d677a.jpg")) { image in
                                     image
                                         .resizable()
@@ -127,10 +123,10 @@ struct ContentView: View {
 
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
 //                    .stroke(Color.red, lineWidth: 1)
-                    .frame(width: midDimensions.width, height: midDimensions.height)
+                    .frame(width: centerSize.width, height: centerSize.height)
                     .overlay {
                         HStack {
-                            if isMidVisible {
+                            if centerExpanded {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundColor(.secondary)
                                     .font(.system(size: 15))
@@ -145,24 +141,23 @@ struct ContentView: View {
                         }
                         .padding(.horizontal, 16)
                     }
-                    .offset(x: midOffset.x, y: midOffset.y)
+                    .offset(x: centerOffset.x, y: centerOffset.y)
                     .frame(width: width, height: height, alignment: .bottom)
                     .foregroundColor(.clear)
-                
                 
                 TextEditor(text: $replyText)
                     .font(.system(size: 15, weight: .regular))
                     .foregroundColor(.white)
                     .background(.black)
-                    .frame(width: rightDimensions.width)
-                    .frame(minHeight: 36, alignment: .leading)
+                    .frame(width: trailingSize.width)
+                    .frame(minHeight: trailingSize.height, alignment: .leading)
                     .frame(maxHeight: 124)
-                    .cornerRadius(18, antialiased: true)
+                    .cornerRadius(trailingRadius, antialiased: true)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
-                    .offset(x: rightOffset.x, y: rightOffset.y)
+                    .offset(x: trailingOffset.x, y: trailingOffset.y)
                     .frame(width: width, height: height, alignment: .bottom)
-                    .opacity(isRightVisible ? 1 : 0)
+                    .opacity(trailingExpanded ? 1 : 0)
                 
                 // MARK: Controls
                 
@@ -251,14 +246,12 @@ struct ContentView: View {
         )) {
             self.blurRadius = 4
             self.leadingOffset = .zero
-            self.rightOffset = .zero
-            self.midOffset = .zero
+            self.trailingOffset = .zero
+            self.centerOffset = .zero
             self.leadingMinimal = false
-            self.expandSearch = false
-            self.expandReply = false
-            self.isLeftVisible = false
-            self.isMidVisible = false
-            self.isRightVisible = false
+            self.centerExpanded = false
+            self.trailingExpanded = false
+            self.trailingExpanded = false
             self.isExpanded = false
         } completion: {
             blurRadius = 0
@@ -275,10 +268,8 @@ struct ContentView: View {
         )) {
             self.blurRadius = 4
             self.leadingOffset = CGPoint(x: -(centerWidth - gap) + 24, y: 0)
-            self.rightOffset = CGPoint(x: 24, y: 0)
-            self.leadingMinimal = true
-            self.expandReply = true
-            self.isRightVisible = true
+            self.trailingOffset = CGPoint(x: 24, y: 0)
+            self.trailingExpanded = true
             self.isExpanded = true
         } completion: {
             blurRadius = 0
@@ -293,8 +284,7 @@ struct ContentView: View {
             damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
             initialVelocity: 0.0
         )) {
-            self.expandSearch = true
-            self.isMidVisible = true
+            self.centerExpanded = true
             self.isExpanded = true
         }
     }
@@ -308,9 +298,8 @@ struct ContentView: View {
         )) {
             self.blurRadius = 4
             self.leadingOffset = CGPoint(x: -(centerWidth - 126) - 16, y: 0)
-            self.rightOffset = CGPoint(x: 46, y: 0)
+            self.trailingOffset = CGPoint(x: 46, y: 0)
             self.leadingMinimal = true
-            self.isLeftVisible = true
             self.isExpanded = true
         } completion: {
             blurRadius = 0
