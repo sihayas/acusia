@@ -3,9 +3,10 @@ import SwiftUI
 struct ContentView: View {
     @State var blurRadius: CGFloat = 4
     @State var isExpanded: Bool = false
+    
     // Left Shape
-    @State var leftOffset = CGPoint(x: 0, y: 0)
-    @State var shrinkLeft: Bool = false
+    @State var leadingOffset = CGPoint(x: 0, y: 0)
+    @State var leadingMinimal: Bool = false
     @State var isLeftVisible: Bool = false
     
     // Middle Shape
@@ -33,7 +34,7 @@ struct ContentView: View {
             let horizontalPadding: CGFloat = 48
             
             // Dynamic dimensions based on state
-            let leftDimensions: CGSize = shrinkLeft
+            let leftDimensions: CGSize = leadingMinimal
                 ? CGSize(width: 36, height: 36)
                 : CGSize(width: 128, height: 36)
             
@@ -71,7 +72,7 @@ struct ContentView: View {
                     // Left Capsule
                     Capsule()
                         .frame(width: leftDimensions.width, height: leftDimensions.height)
-                        .offset(x: leftOffset.x, y: leftOffset.y)
+                        .offset(x: leadingOffset.x, y: leadingOffset.y)
                         .frame(width: width, height: height, alignment: .bottom)
                         .tag(1)
                     
@@ -86,12 +87,12 @@ struct ContentView: View {
                     TextEditor(text: $replyText)
                         .font(.system(size: 15, weight: .regular))
                         .foregroundColor(.white)
-                        .multilineTextAlignment(.leading)
-                        .padding(.horizontal, 14)
-                        .background(.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .background(.black)
                         .frame(width: rightDimensions.width)
                         .frame(minHeight: 36, alignment: .leading)
                         .frame(maxHeight: 124)
+                        .cornerRadius(18, antialiased: true)
+                        .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
                         .offset(x: rightOffset.x, y: rightOffset.y)
                         .frame(width: width, height: height, alignment: .bottom)
@@ -102,7 +103,6 @@ struct ContentView: View {
                 
                 // Left Capsule Overlay
                 Capsule()
-//                    .stroke(Color.blue, lineWidth: 1)
                     .frame(width: leftDimensions.width, height: leftDimensions.height)
                     .overlay {
                         VStack {
@@ -121,11 +121,10 @@ struct ContentView: View {
                         .frame(width: blobSize, height: blobSize)
                     }
                     .clipShape(Capsule())
-                    .offset(x: leftOffset.x, y: leftOffset.y)
+                    .offset(x: leadingOffset.x, y: leadingOffset.y)
                     .frame(width: width, height: height, alignment: .bottom)
                     .foregroundColor(.clear)
 
-                // Middle RoundedRectangle
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
 //                    .stroke(Color.red, lineWidth: 1)
                     .frame(width: midDimensions.width, height: midDimensions.height)
@@ -150,21 +149,20 @@ struct ContentView: View {
                     .frame(width: width, height: height, alignment: .bottom)
                     .foregroundColor(.clear)
                 
-                // Right RoundedRectangle
+                
                 TextEditor(text: $replyText)
                     .font(.system(size: 15, weight: .regular))
                     .foregroundColor(.white)
-                    .multilineTextAlignment(.leading)
-                    .padding(.horizontal, 14)
-                    .background(.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .background(.black)
                     .frame(width: rightDimensions.width)
                     .frame(minHeight: 36, alignment: .leading)
                     .frame(maxHeight: 124)
+                    .cornerRadius(18, antialiased: true)
+                    .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .offset(x: rightOffset.x, y: rightOffset.y)
                     .frame(width: width, height: height, alignment: .bottom)
                     .opacity(isRightVisible ? 1 : 0)
-                    .tag(2)
                 
                 // MARK: Controls
                 
@@ -252,10 +250,10 @@ struct ContentView: View {
             initialVelocity: 0.0
         )) {
             self.blurRadius = 4
-            self.leftOffset = .zero
+            self.leadingOffset = .zero
             self.rightOffset = .zero
             self.midOffset = .zero
-            self.shrinkLeft = false
+            self.leadingMinimal = false
             self.expandSearch = false
             self.expandReply = false
             self.isLeftVisible = false
@@ -276,9 +274,9 @@ struct ContentView: View {
             initialVelocity: 0.0
         )) {
             self.blurRadius = 4
-            self.leftOffset = CGPoint(x: -(centerWidth - gap) + 24, y: 0)
+            self.leadingOffset = CGPoint(x: -(centerWidth - gap) + 24, y: 0)
             self.rightOffset = CGPoint(x: 24, y: 0)
-            self.shrinkLeft = true
+            self.leadingMinimal = true
             self.expandReply = true
             self.isRightVisible = true
             self.isExpanded = true
@@ -309,9 +307,9 @@ struct ContentView: View {
             initialVelocity: 0.0
         )) {
             self.blurRadius = 4
-            self.leftOffset = CGPoint(x: -(centerWidth - 126) - 16, y: 0)
+            self.leadingOffset = CGPoint(x: -(centerWidth - 126) - 16, y: 0)
             self.rightOffset = CGPoint(x: 46, y: 0)
-            self.shrinkLeft = true
+            self.leadingMinimal = true
             self.isLeftVisible = true
             self.isExpanded = true
         } completion: {
