@@ -2,153 +2,212 @@ import SwiftUI
 
 struct ContentView: View {
     @State var blurRadius: CGFloat = 4
+    @State var isExpanded: Bool = false
+    // Left Shape
+    @State var leftOffset = CGPoint(x: 0, y: 0)
+    @State var shrinkLeft: Bool = false
+    @State var isLeftVisible: Bool = false
     
-    @State var leftPos = CGSize(width: 0, height: 0)
-    @State var midPos = CGSize(width: 0, height: 0)
-    @State var rightPos = CGSize(width: 0, height: 0)
-    
-    @State var collapseLeft: Bool = false
-    
-    // Middle bar
+    // Middle Shape
+    @State var midOffset = CGPoint(x: 0, y: 0)
     @State var expandSearch: Bool = false
+    @State var isMidVisible: Bool = false
+    @State var searchText: String = ""
+
+    // Right Shape
+    @State var rightOffset = CGPoint(x: 0, y: 0)
     @State var expandReply: Bool = false
+    @State var isRightVisible: Bool = false
+    @State var replyText: String = ""
     
     var body: some View {
-        
         GeometryReader { geometry in
-            let leftDimensions: CGSize = collapseLeft
-            ? CGSize(width: 36, height: 36)
-            : CGSize(width: 128, height: 36)
+            // Screen dimensions
+            let width = geometry.size.width
+            let height = geometry.size.height
+            let centerWidth = width / 2
+            
+            // Constants
+            let blobSize: CGFloat = 36
+            let gap: CGFloat = 18
+            let horizontalPadding: CGFloat = 48
+            
+            // Dynamic dimensions based on state
+            let leftDimensions: CGSize = shrinkLeft
+                ? CGSize(width: 36, height: 36)
+                : CGSize(width: 128, height: 36)
             
             let midDimensions: CGSize = expandSearch
-            ? CGSize(width: geometry.size.width - 48, height: 48)
-            : CGSize(width: 128, height: 36)
+                ? CGSize(width: width - horizontalPadding, height: 48)
+                : CGSize(width: 128, height: 36)
             
             let rightDimensions: CGSize = expandReply
-            ? CGSize(width: geometry.size.width - 48 - 36 - 16, height: 36)
-            : CGSize(width: 128, height: 36)
+                ? CGSize(width: width - horizontalPadding - blobSize - gap, height: 36)
+                : CGSize(width: 128, height: 36)
             
             ZStack {
                 // MARK: Canvas
                 
-                Canvas { context, size in
+                Canvas { context, _ in
+                    // Resolve symbols
                     let firstCircle = context.resolveSymbol(id: 0)!
                     let secondCircle = context.resolveSymbol(id: 1)!
                     let thirdCircle = context.resolveSymbol(id: 2)!
                     
-                    // Add filters
+                    // Apply filters
                     context.addFilter(.alphaThreshold(min: 0.5, color: .black))
                     context.addFilter(.blur(radius: blurRadius))
                     
-                    // Calculate the center of the canvas
-                    let center = CGPoint(x: size.width / 2, y: size.height / 2)
+                    // Center point
+                    let center = CGPoint(x: width / 2, y: height / 2)
                     
-                    // Draw symbols at the center
+                    // Draw symbols at center
                     context.drawLayer { context2 in
                         context2.draw(firstCircle, at: center)
                         context2.draw(secondCircle, at: center)
                         context2.draw(thirdCircle, at: center)
                     }
                 } symbols: {
+                    // Left Capsule
                     Capsule()
                         .frame(width: leftDimensions.width, height: leftDimensions.height)
-                        .offset(x: leftPos.width, y: leftPos.height)
-                        .frame(width: geometry.size.width - 48, height: 48, alignment: .bottom)
+                        .offset(x: leftOffset.x, y: leftOffset.y)
+                        .frame(width: width, height: height, alignment: .bottom)
                         .tag(1)
-
+                    
+                    // Middle RoundedRectangle
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .frame(width: midDimensions.width, height: midDimensions.height)
-                        .offset(x: midPos.width, y: midPos.height)
-                        .frame(width: geometry.size.width - 48, height: 48, alignment: .bottom)
+                        .offset(x: midOffset.x, y: midOffset.y)
+                        .frame(width: width, height: height, alignment: .bottom)
                         .tag(0)
                     
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .frame(width: rightDimensions.width, height: rightDimensions.height)
-                        .offset(x: rightPos.width, y: rightPos.height)
-                        .frame(width: geometry.size.width - 48, height: 48, alignment: .bottom)
+                    // Right RoundedRectangle
+                    TextEditor(text: $replyText)
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.leading)
+                        .padding(.horizontal, 14)
+                        .background(.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .frame(width: rightDimensions.width)
+                        .frame(minHeight: 36, alignment: .leading)
+                        .frame(maxHeight: 124)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .offset(x: rightOffset.x, y: rightOffset.y)
+                        .frame(width: width, height: height, alignment: .bottom)
                         .tag(2)
                 }
                 
                 // MARK: Content Overlay
+                
+                // Left Capsule Overlay
+                Capsule()
+//                    .stroke(Color.blue, lineWidth: 1)
+                    .frame(width: leftDimensions.width, height: leftDimensions.height)
+                    .overlay {
+                        VStack {
+                            if isLeftVisible {
+                                AsyncImage(url: URL(string: "https://i.pinimg.com/474x/ce/7e/af/ce7eafb66f1d7edf58ef4d4b284d677a.jpg")) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                                .frame(width: 24, height: 24)
+                                .clipShape(Circle())
+                                .transition(.blurReplace)
+                            }
+                        }
+                        .frame(width: blobSize, height: blobSize)
+                    }
+                    .clipShape(Capsule())
+                    .offset(x: leftOffset.x, y: leftOffset.y)
+                    .frame(width: width, height: height, alignment: .bottom)
+                    .foregroundColor(.clear)
 
-                Capsule()
-                    .frame(width: 128, height: 36)
-                    .offset(x: rightPos.width, y: rightPos.height)
+                // Middle RoundedRectangle
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+//                    .stroke(Color.red, lineWidth: 1)
+                    .frame(width: midDimensions.width, height: midDimensions.height)
+                    .overlay {
+                        HStack {
+                            if isMidVisible {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.secondary)
+                                    .font(.system(size: 15))
+                                    .transition(.blurReplace)
+
+                                TextField("Index", text: $searchText, axis: .horizontal)
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 15))
+                                    .transition(.blurReplace)
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                    }
+                    .offset(x: midOffset.x, y: midOffset.y)
+                    .frame(width: width, height: height, alignment: .bottom)
                     .foregroundColor(.clear)
                 
-                Capsule()
-                    .frame(width: 128, height: 36)
-                    .foregroundColor(.clear)
-                
-                Capsule()
-                    .frame(width: collapseLeft ? 36 : 128, height: 36)
-                    .offset(x: leftPos.width, y: leftPos.height)
-                    .foregroundColor(.clear)
+                // Right RoundedRectangle
+                TextEditor(text: $replyText)
+                    .font(.system(size: 15, weight: .regular))
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 14)
+                    .background(.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .frame(width: rightDimensions.width)
+                    .frame(minHeight: 36, alignment: .leading)
+                    .frame(maxHeight: 124)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .offset(x: rightOffset.x, y: rightOffset.y)
+                    .frame(width: width, height: height, alignment: .bottom)
+                    .opacity(isRightVisible ? 1 : 0)
+                    .tag(2)
                 
                 // MARK: Controls
                 
                 VStack {
-                    Spacer()
                     HStack {
-                        // Button to animate the first circle to the left
+                        // Animate left circle to the left
                         Button(action: {
-                            withAnimation(.interpolatingSpring(
-                                mass: 1.0,
-                                stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
-                                damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
-                                initialVelocity: 10.0
-                            )) {
-                                self.blurRadius = 4
-                                self.leftPos = CGSize(width: -(geometry.size.width / 2 - 126) - 16, height: 0)
-                                self.collapseLeft = true
-                            } completion: {
-                                blurRadius = 0
+                            if isExpanded {
+                                resetState {
+                                    expandLeftBlob(centerWidth: centerWidth)
+                                }
+                            } else {
+                                expandLeftBlob(centerWidth: centerWidth)
                             }
                         }) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 19))
+                            Image(systemName: "arrowshape.turn.up.left.fill")
+                                .font(.system(size: 17))
                                 .foregroundColor(.white)
                                 .padding()
-                                .background(Color.blue)
+                                .background(Color.green)
                                 .clipShape(Circle())
                         }
                         
                         // Reset button
                         Button(action: {
-                            withAnimation(.interpolatingSpring(
-                                mass: 1.0,
-                                stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
-                                damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
-                                initialVelocity: 0.0
-                            )) {
-                                self.blurRadius = 4
-                                self.leftPos = .zero
-                                self.rightPos = .zero
-                                self.midPos = .zero
-                                self.collapseLeft = false
-                                self.expandSearch = false
-                                self.expandReply = false
-                            } completion: {
-                                blurRadius = 0
-                            }
+                            resetState()
                         }) {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.system(size: 14))
+                            Image(systemName: "arrow.counterclockwise")
+                                .font(.system(size: 13))
                                 .foregroundColor(.white)
                                 .padding()
-                                .background(Color.yellow)
+                                .background(Color.red)
                                 .clipShape(Circle())
                         }
                         
-                        // Button to expand the search bar
+                        // Expand search bar
                         Button(action: {
-                            withAnimation(.interpolatingSpring(
-                                mass: 1.0,
-                                stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
-                                damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
-                                initialVelocity: 10.0
-                            )) {
-                                self.expandSearch = true
+                            if isExpanded {
+                                resetState {
+                                    expandSearchBar()
+                                }
+                            } else {
+                                expandSearchBar()
                             }
                         }) {
                             Image(systemName: "magnifyingglass")
@@ -159,33 +218,104 @@ struct ContentView: View {
                                 .clipShape(Circle())
                         }
                         
-                        // Button to expand the reply button
+                        // Expand reply button
+                        
                         Button(action: {
-                            withAnimation(.interpolatingSpring(
-                                mass: 1.0,
-                                stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
-                                damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
-                                initialVelocity: 10.0
-                            )) {
-                                self.blurRadius = 4
-                                self.leftPos = CGSize(width: -(geometry.size.width / 2 - 18) + 24, height: 0)
-                                self.rightPos = CGSize(width: 24, height: 0)
-                                self.collapseLeft = true
-                                self.expandReply = true
-                            } completion: {
-                                blurRadius = 0
+                            if isExpanded {
+                                resetState {
+                                    expandReply(centerWidth: centerWidth, gap: gap)
+                                }
+                            } else {
+                                expandReply(centerWidth: centerWidth, gap: gap)
                             }
+        
                         }) {
                             Image(systemName: "arrowshape.turn.up.right.fill")
                                 .font(.system(size: 17))
                                 .foregroundColor(.white)
                                 .padding()
-                                .background(Color.blue)
+                                .background(Color.yellow)
                                 .clipShape(Circle())
                         }
                     }
                 }
             }
+        }
+        .background(Color(UIColor.systemGray6))
+    }
+    
+    func resetState(completion: @escaping () -> Void = {}) {
+        withAnimation(.interpolatingSpring(
+            mass: 1.0,
+            stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
+            damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
+            initialVelocity: 0.0
+        )) {
+            self.blurRadius = 4
+            self.leftOffset = .zero
+            self.rightOffset = .zero
+            self.midOffset = .zero
+            self.shrinkLeft = false
+            self.expandSearch = false
+            self.expandReply = false
+            self.isLeftVisible = false
+            self.isMidVisible = false
+            self.isRightVisible = false
+            self.isExpanded = false
+        } completion: {
+            blurRadius = 0
+            completion()
+        }
+    }
+    
+    func expandReply(centerWidth: CGFloat, gap: CGFloat) {
+        withAnimation(.interpolatingSpring(
+            mass: 1.0,
+            stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
+            damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
+            initialVelocity: 0.0
+        )) {
+            self.blurRadius = 4
+            self.leftOffset = CGPoint(x: -(centerWidth - gap) + 24, y: 0)
+            self.rightOffset = CGPoint(x: 24, y: 0)
+            self.shrinkLeft = true
+            self.expandReply = true
+            self.isRightVisible = true
+            self.isExpanded = true
+        } completion: {
+            blurRadius = 0
+        }
+    }
+    
+    // expand search bar func
+    func expandSearchBar() {
+        withAnimation(.interpolatingSpring(
+            mass: 1.0,
+            stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
+            damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
+            initialVelocity: 0.0
+        )) {
+            self.expandSearch = true
+            self.isMidVisible = true
+            self.isExpanded = true
+        }
+    }
+    
+    func expandLeftBlob(centerWidth: CGFloat) {
+        withAnimation(.interpolatingSpring(
+            mass: 1.0,
+            stiffness: pow(2 * .pi / 0.5, 2), // Response 0.5
+            damping: 4 * .pi * 0.7 / 0.5, // Damping 0.7
+            initialVelocity: 0.0
+        )) {
+            self.blurRadius = 4
+            self.leftOffset = CGPoint(x: -(centerWidth - 126) - 16, y: 0)
+            self.rightOffset = CGPoint(x: 46, y: 0)
+            self.shrinkLeft = true
+            self.isLeftVisible = true
+            self.isExpanded = true
+        } completion: {
+            blurRadius = 0
         }
     }
 }
@@ -193,20 +323,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
-// VStack(alignment: .leading, spacing: 12) {
-//    RoundedRectangle(cornerRadius: 32)
-//        .fill(.black)
-//        .frame(width: 196, height: 196)
-//    Text(text)
-//        .font(.system(size: 16, weight: .regular))
-//        .foregroundColor(.black)
-//        .padding(.horizontal, 14)
-//        .padding(.vertical, 10)
-//        .background(.black, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-//        .scaleEffect(animateScale ? 1 : 0, anchor: .top)
-//        .offset(y: animateOffset ? 0 : -16)
-// }
-// .frame(maxWidth: .infinity, alignment: .bottomLeading)
-// .padding(12)
-// .tag(0)
