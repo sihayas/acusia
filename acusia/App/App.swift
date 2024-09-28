@@ -76,7 +76,7 @@ struct AcusiaAppView: View {
     var body: some View {
         Group {
 //            if auth.isAuthenticated && auth.user != nil {
-            ContentView()
+            ApertureView()
 //            GeometryReader {
 //                let size = $0.size
 //                let safeArea = $0.safeAreaInsets
@@ -129,16 +129,16 @@ struct FloatingBarView: View {
 
     var body: some View {
         ZStack {
-            SearchBar(searchText: $searchText, entryText: $entryText)
-                .padding(.horizontal, 24)
-                .offset(y: -keyboardOffset)
-                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
-                    keyboardOffset = getKeyboardHeight(from: notification)
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-                    keyboardOffset = 34
-                }
-                .animation(.spring(), value: keyboardOffset)
+//            SearchBar(searchText: $searchText, entryText: $entryText)
+//                .padding(.horizontal, 24)
+//                .offset(y: -keyboardOffset)
+//                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
+//                    keyboardOffset = getKeyboardHeight(from: notification)
+//                }
+//                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+//                    keyboardOffset = 34
+//                }
+//                .animation(.spring(), value: keyboardOffset)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }

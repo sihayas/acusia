@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct ApertureView: View {
     @State var blurRadius: CGFloat = 4
     @State var isExpanded: Bool = false
     
@@ -21,6 +21,7 @@ struct ContentView: View {
             let width = geometry.size.width
             let height = geometry.size.height
             let centerWidth = width / 2
+            let centerPoint = CGPoint(x: width / 2, y: height / 2)
             
             // Constants
             let blobSize: CGFloat = 36
@@ -47,39 +48,29 @@ struct ContentView: View {
                 
                 Canvas { context, _ in
                     // Resolve symbols
-                    let firstCircle = context.resolveSymbol(id: 0)!
-                    let secondCircle = context.resolveSymbol(id: 1)!
-                    let thirdCircle = context.resolveSymbol(id: 2)!
+                    let leading = context.resolveSymbol(id: 0)!
+                    let trailing = context.resolveSymbol(id: 1)!
+                    let center = context.resolveSymbol(id: 2)!
                     
                     // Apply filters
                     context.addFilter(.alphaThreshold(min: 0.5, color: .black))
                     context.addFilter(.blur(radius: blurRadius))
                     
-                    // Center point
-                    let center = CGPoint(x: width / 2, y: height / 2)
-                    
                     // Draw symbols at center
                     context.drawLayer { context2 in
-                        context2.draw(firstCircle, at: center)
-                        context2.draw(secondCircle, at: center)
-                        context2.draw(thirdCircle, at: center)
+                        context2.draw(leading, at: centerPoint)
+                        context2.draw(trailing, at: centerPoint)
+                        context2.draw(center, at: centerPoint)
                     }
                 } symbols: {
-                    // Left Capsule
+                    // Leading
                     Capsule()
                         .frame(width: leadingSize.width, height: leadingSize.height)
                         .offset(x: leadingOffset.x, y: leadingOffset.y)
                         .frame(width: width, height: height, alignment: .bottom)
-                        .tag(1)
-                    
-                    // Middle RoundedRectangle
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .frame(width: centerSize.width, height: centerSize.height)
-                        .offset(x: centerOffset.x, y: centerOffset.y)
-                        .frame(width: width, height: height, alignment: .bottom)
                         .tag(0)
-                    
-                    // Right RoundedRectangle
+
+                    // Trailing
                     TextEditor(text: $replyText)
                         .font(.system(size: 15, weight: .regular))
                         .foregroundColor(.white)
@@ -92,6 +83,13 @@ struct ContentView: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .offset(x: trailingOffset.x, y: trailingOffset.y)
                         .frame(width: width, height: height, alignment: .bottom)
+                        .tag(1)
+                    
+                    // Center
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .frame(width: centerSize.width, height: centerSize.height)
+                        .offset(x: centerOffset.x, y: centerOffset.y)
+                        .frame(width: width, height: height, alignment: .bottom)
                         .tag(2)
                 }
                 
@@ -100,21 +98,17 @@ struct ContentView: View {
                 // Left Capsule Overlay
                 Capsule()
                     .frame(width: leadingSize.width, height: leadingSize.height)
-                    .overlay {
-                        VStack {
-                            if leadingMinimal {
-                                AsyncImage(url: URL(string: "https://i.pinimg.com/474x/ce/7e/af/ce7eafb66f1d7edf58ef4d4b284d677a.jpg")) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    ProgressView()
-                                }
-                                .frame(width: 24, height: 24)
-                                .clipShape(Circle())
-                                .transition(.blurReplace)
-                            }
+                    .overlay(alignment: .trailing) {
+                        AsyncImage(url: URL(string: "https://i.pinimg.com/474x/7a/18/20/7a1820d818d3601fb92c59a84d458428.jpg")) { image in
+                            image
+                                .resizable()
+                        } placeholder: {
+                            ProgressView()
                         }
-                        .frame(width: blobSize, height: blobSize)
+                        .frame(width: 24, height: 24)
+                        .clipShape(Circle())
+                        .frame(width: leadingSize.width, height: leadingSize.height)
+                        .opacity(leadingMinimal || trailingExpanded ? 1 : 0)
                     }
                     .clipShape(Capsule())
                     .offset(x: leadingOffset.x, y: leadingOffset.y)
@@ -122,24 +116,22 @@ struct ContentView: View {
                     .foregroundColor(.clear)
 
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-//                    .stroke(Color.red, lineWidth: 1)
                     .frame(width: centerSize.width, height: centerSize.height)
                     .overlay {
                         HStack {
-                            if centerExpanded {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundColor(.secondary)
-                                    .font(.system(size: 15))
-                                    .transition(.blurReplace)
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 15))
+                                .transition(.blurReplace)
 
-                                TextField("Index", text: $searchText, axis: .horizontal)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .foregroundColor(.white)
-                                    .font(.system(size: 15))
-                                    .transition(.blurReplace)
-                            }
+                            TextField("Index", text: $searchText, axis: .horizontal)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .foregroundColor(.white)
+                                .font(.system(size: 15))
+                                .transition(.blurReplace)
                         }
                         .padding(.horizontal, 16)
+                        .opacity(centerExpanded ? 1 : 0)
                     }
                     .offset(x: centerOffset.x, y: centerOffset.y)
                     .frame(width: width, height: height, alignment: .bottom)
@@ -148,7 +140,7 @@ struct ContentView: View {
                 TextEditor(text: $replyText)
                     .font(.system(size: 15, weight: .regular))
                     .foregroundColor(.white)
-                    .background(.black)
+                    .background(.clear)
                     .frame(width: trailingSize.width)
                     .frame(minHeight: trailingSize.height, alignment: .leading)
                     .frame(maxHeight: 124)
@@ -308,5 +300,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ApertureView()
 }
