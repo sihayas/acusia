@@ -45,7 +45,7 @@ struct ApertureView: View {
                     let trailing = context.resolveSymbol(id: 1)!
                     let center = context.resolveSymbol(id: 2)!
                     
-                    context.addFilter(.alphaThreshold(min: 0.5, color: .black))
+                    context.addFilter(.alphaThreshold(min: 0.5, color: .white))
                     context.addFilter(.blur(radius: blurRadius))
                     
                     context.drawLayer { context2 in
@@ -80,6 +80,7 @@ struct ApertureView: View {
                         .frame(width: width, height: height, alignment: .bottom)
                         .tag(2)
                 }
+                .allowsHitTesting(false)
                 
                 
                 // MARK: Content Overlay
@@ -150,7 +151,6 @@ struct ApertureView: View {
                 )
             }
         }
-        .background(Color(UIColor.systemGray6))
     }
     
     func resetState(completion: @escaping () -> Void = {}) {
@@ -299,4 +299,5 @@ struct ControlButtons: View {
 
 #Preview {
     ApertureView()
+        .background(.black)
 }

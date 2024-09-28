@@ -193,6 +193,7 @@
 				KeychainHelper.swift,
 				UIColor.swift,
 				UIImageView.swift,
+				UINavigationBar.swift,
 				UIScreen.swift,
 			);
 			target = CDDED7312C194C8400958B39 /* acusia */;

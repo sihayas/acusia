@@ -4,6 +4,7 @@ import Transmission
 
 let apiurl = "http://192.168.1.248:8000"
 
+// Shared state between the two windows
 class WindowState: ObservableObject {
     static let shared = WindowState()
 
@@ -19,7 +20,7 @@ struct AcusiaApp: App {
     @ObservedObject private var auth = Auth.shared
     @ObservedObject private var musicKit = MusicKit.shared
     @ObservedObject private var homeState = HomeState.shared
-    
+
     let persistenceController = PersistenceController.shared
     private var floatingBarPresenter = FloatingBarPresenter()
 
@@ -46,7 +47,11 @@ class FloatingBarPresenter {
             return
         }
 
-        let view = FloatingBarView()
+        // Get safe area insets from the scene's window
+        let safeAreaInsets = scene.windows.first?.safeAreaInsets ?? UIEdgeInsets.zero
+
+        // Pass the insets to the SwiftUI view
+        let view = FloatingBarView(safeAreaInsets: safeAreaInsets)
             .environmentObject(WindowState.shared)
             .environmentObject(Auth.shared)
             .environmentObject(MusicKit.shared)
@@ -54,12 +59,16 @@ class FloatingBarPresenter {
 
         let hostingController = UIHostingController(rootView: view)
         hostingController.view.backgroundColor = .clear
-        hostingController.safeAreaRegions = SafeAreaRegions()
+
+        // Remove safe area from the hosting controller
+        hostingController.safeAreaRegions = SafeAreaRegions()   
 
         floatingBarWindow = PassThroughWindow(windowScene: scene)
         floatingBarWindow?.backgroundColor = .clear
+
         let screenBounds = UIScreen.main.bounds
-        floatingBarWindow?.frame = CGRect(x: 0, y: screenBounds.height / 2, width: screenBounds.width, height: screenBounds.height / 2)
+        floatingBarWindow?.frame = CGRect(x: 0, y: screenBounds.height / 2,
+                                          width: screenBounds.width, height: screenBounds.height / 2)
         floatingBarWindow?.rootViewController = hostingController
 
         floatingBarWindow?.windowLevel = UIWindow.Level.alert + 1
@@ -76,22 +85,20 @@ struct AcusiaAppView: View {
     var body: some View {
         Group {
 //            if auth.isAuthenticated && auth.user != nil {
-            ApertureView()
-//            GeometryReader {
-//                let size = $0.size
-//                let safeArea = $0.safeAreaInsets
-//                Home(size: size, safeArea: safeArea, homePath: $homePath)
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                    .background(Color.black)
-////                }
-//            }
-//            .ignoresSafeArea()
+            GeometryReader {
+                let size = $0.size
+                let safeArea = $0.safeAreaInsets
+                Home(size: size, safeArea: safeArea, homePath: $homePath)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
+            }
+            .ignoresSafeArea()
 //            else {
 //                AuthScreen()
 //            }
         }
         .onAppear {
-            setupNavigationBar()
+            UINavigationBar.setupCustomAppearance()
 
             Task {
 //                await auth.initSession()
@@ -105,40 +112,21 @@ struct AcusiaAppView: View {
             }
         }
     }
-
-    // Remove the ugly default nav.
-    private func setupNavigationBar() {
-        var backButtonBackgroundImage = UIImage(systemName: "chevron.left.circle.fill")!
-        backButtonBackgroundImage = backButtonBackgroundImage.applyingSymbolConfiguration(.init(paletteColors: [.white, .darkGray]))!
-        UINavigationBar.appearance().backIndicatorImage = backButtonBackgroundImage
-        UINavigationBar.appearance().backIndicatorTransitionMaskImage = backButtonBackgroundImage
-        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        UINavigationBar.appearance().shadowImage = UIImage()
-        UINavigationBar.appearance().isTranslucent = true
-        UINavigationBar.appearance().backgroundColor = .clear
-        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -1000.0, vertical: 0.0), for: .default)
-    }
 }
 
+/// NOTE: Putting a border on the outer stack prevents touch inputs from being passed through.
 struct FloatingBarView: View {
+    let safeAreaInsets: UIEdgeInsets
+    
     @State private var searchText = "clairo"
     @State private var entryText = ""
     @State private var selectedResult: SearchResult?
-
     @State private var keyboardOffset: CGFloat = 34
 
     var body: some View {
         ZStack {
-//            SearchBar(searchText: $searchText, entryText: $entryText)
-//                .padding(.horizontal, 24)
-//                .offset(y: -keyboardOffset)
-//                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
-//                    keyboardOffset = getKeyboardHeight(from: notification)
-//                }
-//                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-//                    keyboardOffset = 34
-//                }
-//                .animation(.spring(), value: keyboardOffset)
+            ApertureView()
+                .padding(.bottom, safeAreaInsets.bottom) // Use safe area insets
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }

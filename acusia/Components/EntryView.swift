@@ -21,10 +21,6 @@ struct Entry: View {
     @State private var showReplySheet = false
     @State private var animateReplySheet = false
 
-    // Helps to offset the selected entry to the top of the screen.
-    @State private var repliesOffset: CGFloat = 0
-    @State private var entryHeight: CGFloat = 0
-
     var body: some View {
         // Entry
         VStack {
@@ -42,18 +38,12 @@ struct Entry: View {
         .background(
             GeometryReader { geometry in
                 Color.clear
-                    .onAppear {
-                        entryHeight = geometry.size.height
-                    }
                     .onChange(of: showReplySheet) { _, new in
                         withAnimation {
                             if new {
-                                // Measure the top of the entry from the top of the screen.
-                                repliesOffset = geometry.frame(in: .global).minY - 32
                                 animateReplySheet = true
                                 expandedEntryId = entry.id
                             } else {
-                                repliesOffset = 0
                                 animateReplySheet = false
                                 expandedEntryId = nil
                             }
@@ -61,8 +51,6 @@ struct Entry: View {
                     }
             }
         )
-        /// Move the entry view to the top of the screen.
-        .offset(y: animateReplySheet ? 32 - repliesOffset : 0)
     }
 }
 
