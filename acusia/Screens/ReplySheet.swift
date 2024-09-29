@@ -6,72 +6,31 @@
 //
 import SwiftUI
 
-struct ReplySheetView: View {
+struct ReplySheet: View {
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                UnevenRoundedRectangle(topLeadingRadius: cornerRadius * 0.75, bottomLeadingRadius: cornerRadius * 0.75, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(.white.opacity(0.1), lineWidth: 1, antialiased: true)
-                    .foregroundStyle(.clear)
-                    .background(
-                        .black
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .edgesIgnoringSafeArea(.all)
-
-                ScrollView {
-                    LazyVStack(alignment: .leading) {
-                        RepliesView(replies: sampleComments) // The content you want to display
-                    }
-                    .padding(.horizontal, 24)
-                    .onAppear {
-                        print("Safe area insets: \(geometry.safeAreaInsets)")
-                    }
-                    Spacer()
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text("Chains")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(.secondary)
+                
+                ForEach(sampleComments) { reply in
+                    ReplyView(reply: reply)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .presentationDetents([.large])
-            .presentationCornerRadius(45)
-            .presentationBackground(.black)
-            .presentationDragIndicator(.visible)
-        }
-    }
-}
-
-struct RepliesView: View {
-    @State private var showReplyChildren: Reply? = nil
-
-    var replies: [Reply]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            ForEach(replies) { reply in
-                if showReplyChildren == nil || showReplyChildren == reply {
-                    ReplyView(reply: reply, showReplyChildren: $showReplyChildren)
-                        .transition(.opacity)
-                        .animation(.easeInOut, value: showReplyChildren)
-                }
-            }
+            .padding(.horizontal, 24)
+            .padding(.top, 80)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
 
 struct ReplyView: View {
     let reply: Reply
-    @Binding var showReplyChildren: Reply?
 
     var body: some View {
-        var isExpanded: Bool {
-            showReplyChildren == reply
-        }
-
-        var childrenCount: Int {
-            reply.children.count
-        }
-
         VStack(alignment: .leading) {
             // Comment
             HStack(alignment: .bottom, spacing: 0) {
@@ -111,6 +70,7 @@ struct ReplyView: View {
                             .background(Color(UIColor.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                             .fixedSize(horizontal: false, vertical: true)
+                            .shadow(color: Color.black.opacity(0.7), radius: 1, x: 0, y: 0)
                     }
                     .padding([.leading], 8)
                     .overlay(
@@ -123,37 +83,37 @@ struct ReplyView: View {
                 }
             }
 
-            // Children
-            if !reply.children.isEmpty {
-                // Expand thread capsule
-                HStack(spacing: -4) {
-                    if !isExpanded {
-                        Capsule()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 3, height: 16)
-                            .frame(width: 32)
-
-                        Text("\(childrenCount) threads")
-                            .font(.system(size: 11, weight: .medium, design: .rounded))
-                            .foregroundColor(.secondary)
-                    } else {
-                        LoopPath()
-                            .stroke(Color(UIColor.systemGray6),
-                                    style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                            .frame(width: 30, height: 20)
-                            .frame(width: 32)
-                            .transition(.scale)
-
-                        Text("Hide threads")
-                            .font(.system(size: 11, weight: .medium, design: .rounded))
-                            .foregroundColor(.secondary)
-                    }
-                }
-
-                if showReplyChildren == reply {
-                    RepliesView(replies: reply.children)
-                }
-            }
+//            // Children
+//            if !reply.children.isEmpty {
+//                // Expand thread capsule
+//                HStack(spacing: -4) {
+//                    if !isExpanded {
+//                        Capsule()
+//                            .fill(Color(UIColor.systemGray6))
+//                            .frame(width: 3, height: 16)
+//                            .frame(width: 32)
+//
+//                        Text("\(childrenCount) threads")
+//                            .font(.system(size: 11, weight: .medium, design: .rounded))
+//                            .foregroundColor(.secondary)
+//                    } else {
+//                        LoopPath()
+//                            .stroke(Color(UIColor.systemGray6),
+//                                    style: StrokeStyle(lineWidth: 3, lineCap: .round))
+//                            .frame(width: 30, height: 20)
+//                            .frame(width: 32)
+//                            .transition(.scale)
+//
+//                        Text("Hide threads")
+//                            .font(.system(size: 11, weight: .medium, design: .rounded))
+//                            .foregroundColor(.secondary)
+//                    }
+//                }
+//
+//                if showReplyChildren == reply {
+//                    RepliesView(replies: reply.children)
+//                }
+//            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

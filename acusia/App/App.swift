@@ -9,6 +9,7 @@ class WindowState: ObservableObject {
     static let shared = WindowState()
 
     @Published var showSearchSheet: Bool = false
+    @Published var isSplit: Bool = false
 
     private init() {}
 }
@@ -79,52 +80,62 @@ struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKit
     @EnvironmentObject private var windowState: WindowState
-    
+
     @State private var homePath = NavigationPath()
-    @State private var isCollapsed = false
-    
+
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
-        VStack {
-            GeometryReader {
-//            if auth.isAuthenticated && auth.user != nil {
-                Home(size: $0.size, safeArea: $0.safeAreaInsets, homePath: $homePath)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .overlay() {
-                        UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
-                            .strokeBorder(.white.opacity(1.0), lineWidth: 1, antialiased: true)
-                            .fill(.white.opacity(isCollapsed ? 0.1 : 0.0))
+        GeometryReader { proxy in
+            let size = proxy.size
+            let isSplit = windowState.isSplit
+
+            ZStack {
+                ReplySheet()
+                    .frame(maxWidth: .infinity, maxHeight: isSplit ? size.height * 0.7 + 64 : 0)
+                    .background(Color(UIColor.systemGray6))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    .animation(.spring(), value: isSplit)
+
+                Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
+                    .frame(maxWidth: .infinity, maxHeight: isSplit ? size.height * 0.3 : .infinity)
+                    .background(.black)
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .shadow(radius: 10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .fill(.white.opacity(isSplit ? 0.0 : 0))
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .animation(.spring(), value: isSplit)
+            }
+            .onAppear {
+                UINavigationBar.setupCustomAppearance()
+                print("size: \(size)")
+
+                Task {
+                    await musicKitManager.requestMusicAuthorization()
+
+                    // Load recently played songs if authorized
+                    if musicKitManager.isAuthorizedForMusicKit {
+                        await musicKitManager.loadRecentlyPlayedSongs()
                     }
-                    .frame(maxWidth: .infinity, maxHeight: isCollapsed ? $0.size.height * 0.5 : .infinity)
-                    .animation(.spring(), value: isCollapsed)
-                
-            }
-            .ignoresSafeArea()
-//            else {
-//                AuthScreen()
-//            }
-            
-            Button {
-                isCollapsed.toggle()
-            } label: {
-                Text("Toggle")
-            }
-        }
-        .onAppear {
-            UINavigationBar.setupCustomAppearance()
-
-            Task {
-//                await auth.initSession()
-                await musicKitManager.requestMusicAuthorization()
-
-                // Load recently played songs if authorized
-                if musicKitManager.isAuthorizedForMusicKit {
-                    print("Loading recently played songs")
-                    await musicKitManager.loadRecentlyPlayedSongs()
                 }
             }
+            .overlay(
+                Button {
+                    windowState.isSplit.toggle()
+                } label: {
+                    Image(systemName: "chevron.up")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.black.opacity(0.5))
+                        .clipShape(Circle())
+                }
+            )
         }
+        .ignoresSafeArea()
     }
 }
 

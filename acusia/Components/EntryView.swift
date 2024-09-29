@@ -9,10 +9,11 @@ import BigUIPaging
 import SwiftUI
 import Transmission
 
-
 struct ArtifactView: View {
-    let entry: EntryModel
+    @EnvironmentObject private var windowState: WindowState
     
+    let entry: EntryModel
+
     @Binding var showReplySheet: Bool
     @State private var showPopover = false
     @State private var showPopoverAnimate = false
@@ -165,41 +166,36 @@ struct ArtifactView: View {
                 .frame(width: 204, height: 280)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            
+
             if !sampleComments.isEmpty {
-                PresentationLink(
-                    transition: .slide(edge: .trailing)
-                ) {
+                HStack(spacing: 4) {
                     VStack {
-                        ReplySheetView()
+                        BottomCurvePath()
+                            .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                            .frame(maxWidth: 36, maxHeight: 18)
+
+                        Spacer()
                     }
-                } label: {
-                    HStack(spacing: 4) {
-                        VStack {
-                            BottomCurvePath()
-                                .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                                .frame(maxWidth: 36, maxHeight: 18)
+                    .frame(width: 36, height: 36)
 
-                            Spacer()
+                    ZStack {
+                        ForEach(0 ..< 3) { index in
+                            AvatarView(size: 14, imageURL: "https://picsum.photos/200/300")
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
+                                .offset(tricornOffset(for: index, radius: 10))
                         }
-                        .frame(width: 36, height: 36)
-
-                        ZStack {
-                            ForEach(0 ..< 3) { index in
-                                AvatarView(size: 14, imageURL: "https://picsum.photos/200/300")
-                                    .clipShape(Circle())
-                                    .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
-                                    .offset(tricornOffset(for: index, radius: 10))
-                            }
-                        }
-                        .frame(width: 36, height: 36)
+                    }
+                    .frame(width: 36, height: 36)
+                    .onTapGesture {
+                        windowState.isSplit.toggle()
                     }
                 }
             }
         }
         .padding(.horizontal, 24)
         .sheet(isPresented: $showReplySheet) {
-            ReplySheetView()
+            ReplySheet()
         }
     }
 
@@ -218,7 +214,7 @@ struct WispView: View {
 
     var body: some View {
         let imageUrl = entry.imageUrl
-        
+
         VStack(alignment: .leading) {
             Text(entry.username)
                 .foregroundColor(.secondary)

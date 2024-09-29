@@ -53,10 +53,6 @@ struct HeartTapSmall: View {
                     .foregroundColor(Color(UIColor.white))
             )
             .overlay(
-                Circle()
-                    .stroke(Color.black, lineWidth: 1)
-            )
-            .overlay(
                 ZStack {
                     Circle()
                         .fill(Color(UIColor.systemGray6))
@@ -69,6 +65,7 @@ struct HeartTapSmall: View {
                 },
                 alignment: .bottomTrailing
             )
+            .shadow(color: Color.black.opacity(0.7), radius: 1, x: 0, y: 0)
     }
 }
 
