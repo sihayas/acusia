@@ -45,3 +45,27 @@ extension UIScreen {
         UIWindow.current?.screen
     }
 }
+
+extension UIScreen {
+
+    var displayCornerRadius: CGFloat {
+        _displayCornerRadius
+    }
+
+    public var _displayCornerRadius: CGFloat {
+        let key = String("suidaRrenroCyalpsid_".reversed())
+        let value = value(forKey: key) as? CGFloat ?? 0
+        return value
+    }
+}
+
+extension UIColor {
+
+    var isTranslucent: Bool {
+        var alpha: CGFloat = 0
+        if getWhite(nil, alpha: &alpha) {
+            return alpha < 1
+        }
+        return false
+    }
+}

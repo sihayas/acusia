@@ -7,75 +7,12 @@
 
 import BigUIPaging
 import SwiftUI
+import Transmission
 
-struct Entry: View {
-    let entry: APIEntry
-    let onDelete: (String) async -> Void
-
-    @Binding var expandedEntryId: String?
-
-    // Entry is halfway past scrollview.
-    @State private var isVisible: Bool = false
-
-    // First controls the sheet visibility. Second controls animation.
-    @State private var showReplySheet = false
-    @State private var animateReplySheet = false
-
-    var body: some View {
-        // Entry
-        VStack {
-            if entry.rating == 2 {
-                WispView(entry: entry)
-            } else {
-                ArtifactView(entry: entry, showReplySheet: $showReplySheet)
-                    .scaleEffect(animateReplySheet ? 0.4 : 1, anchor: .topLeading)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .bottomLeading)
-        .onScrollVisibilityChange(threshold: 0.5) { visibility in
-            isVisible = visibility
-        }
-        .background(
-            GeometryReader { geometry in
-                Color.clear
-                    .onChange(of: showReplySheet) { _, new in
-                        withAnimation {
-                            if new {
-                                animateReplySheet = true
-                                expandedEntryId = entry.id
-                            } else {
-                                animateReplySheet = false
-                                expandedEntryId = nil
-                            }
-                        }
-                    }
-            }
-        )
-    }
-}
-
-
-class EmojiTextField: UITextField {
-    override var textInputMode: UITextInputMode? {
-        .activeInputModes.first(where: { $0.primaryLanguage == "emoji" })
-    }
-}
-
-struct EmojiTextFieldWrapper: UIViewRepresentable {
-    func makeUIView(context: Context) -> EmojiTextField {
-        let textField = EmojiTextField()
-        textField.placeholder = "Enter Emoji"
-        return textField
-    }
-
-    func updateUIView(_ uiView: EmojiTextField, context: Context) {
-        // Update any properties if needed
-    }
-}
 
 struct ArtifactView: View {
-    @Namespace private var namespace
-    let entry: APIEntry
+    let entry: EntryModel
+    
     @Binding var showReplySheet: Bool
     @State private var showPopover = false
     @State private var showPopoverAnimate = false
@@ -83,12 +20,10 @@ struct ArtifactView: View {
     @State private var selection: Int = 1
 
     var body: some View {
-        let imageUrl = entry.sound.appleData?.artworkUrl
-            .replacingOccurrences(of: "{w}", with: "720")
-            .replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
+        let imageUrl = entry.imageUrl
 
         VStack(alignment: .leading) {
-            Text(entry.author.username)
+            Text(entry.username)
                 .foregroundColor(.secondary)
                 .font(.system(size: 13, weight: .regular))
                 .multilineTextAlignment(.leading)
@@ -96,7 +31,7 @@ struct ArtifactView: View {
                 .padding(.bottom, -2)
 
             HStack(alignment: .bottom, spacing: 8) {
-                AvatarView(size: 36, imageURL: entry.author.image)
+                AvatarView(size: 36, imageURL: entry.userImage)
                     .zIndex(1)
 
                 // Card stack
@@ -141,11 +76,11 @@ struct ArtifactView: View {
 
                                         HStack {
                                             VStack(alignment: .leading) {
-                                                Text(entry.sound.appleData?.artistName ?? "Unknown")
+                                                Text(entry.name)
                                                     .foregroundColor(.secondary)
                                                     .font(.system(size: 11, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
-                                                Text(entry.sound.appleData?.name ?? "Unknown")
+                                                Text(entry.artistName)
                                                     .foregroundColor(.secondary)
                                                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                                                     .lineLimit(1)
@@ -155,10 +90,10 @@ struct ArtifactView: View {
 
                                             HeartPath()
                                                 .fill(.pink)
-                                                .frame(width: 28, height: 26)
+                                                .frame(width: 28, height: 28)
                                                 .frame(height: 28)
                                                 .shadow(radius: 4)
-                                                .rotationEffect(.degrees(8))
+                                                .rotationEffect(.degrees(4))
                                         }
                                         .padding(20)
                                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
@@ -227,37 +162,37 @@ struct ArtifactView: View {
                 .frame(width: 204, height: 280)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-
+            
             if !sampleComments.isEmpty {
-                HStack(spacing: 4) {
-                    VStack {
-                        BottomCurvePath()
-                            .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                            .frame(maxWidth: 36, maxHeight: 18)
+                PresentationLink(
+                    transition: .slide(edge: .trailing)// Use the custom slide transition options
+                ) {
+                    ReplySheetView()
+                } label: {
+                    HStack(spacing: 4) {
+                        VStack {
+                            BottomCurvePath()
+                                .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                                .frame(maxWidth: 36, maxHeight: 18)
 
-                        Spacer()
-                    }
-                    .frame(width: 36, height: 36)
-
-                    ZStack {
-                        ForEach(0 ..< 3) { index in
-                            AvatarView(size: 14, imageURL: "https://picsum.photos/200/300")
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
-                                .offset(tricornOffset(for: index, radius: 10))
+                            Spacer()
                         }
+                        .frame(width: 36, height: 36)
+
+                        ZStack {
+                            ForEach(0 ..< 3) { index in
+                                AvatarView(size: 14, imageURL: "https://picsum.photos/200/300")
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color(UIColor.systemGray6), lineWidth: 2))
+                                    .offset(tricornOffset(for: index, radius: 10))
+                            }
+                        }
+                        .frame(width: 36, height: 36)
                     }
-                    .frame(width: 36, height: 36)
-                }
-                .onTapGesture {
-                    showReplySheet.toggle()
                 }
             }
         }
         .padding(.horizontal, 24)
-        .sheet(isPresented: $showReplySheet) {
-            ReplySheetView()
-        }
     }
 
     var indicatorSelection: Binding<Int> {
@@ -270,15 +205,14 @@ struct ArtifactView: View {
 }
 
 struct WispView: View {
-    @Namespace private var namespace
-    let entry: APIEntry
+    let entry: EntryModel
     let type: String = "none"
 
     var body: some View {
-        let imageUrl = entry.sound.appleData?.artworkUrl.replacingOccurrences(of: "{w}", with: "720").replacingOccurrences(of: "{h}", with: "720") ?? "https://picsum.photos/300/300"
-
+        let imageUrl = entry.imageUrl
+        
         VStack(alignment: .leading) {
-            Text(entry.author.username)
+            Text(entry.username)
                 .foregroundColor(.secondary)
                 .font(.system(size: 13, weight: .regular))
                 .multilineTextAlignment(.leading)
@@ -287,7 +221,7 @@ struct WispView: View {
 
             ZStack(alignment: .bottomLeading) {
                 HStack(alignment: .bottom) {
-                    AvatarView(size: 36, imageURL: entry.author.image)
+                    AvatarView(size: 36, imageURL: entry.userImage)
 
                     HStack {
                         // Audiowave image in white
@@ -311,10 +245,10 @@ struct WispView: View {
                         )
 
                         VStack(alignment: .leading) {
-                            Text(entry.sound.appleData?.artistName ?? "Unknown")
+                            Text(entry.name)
                                 .foregroundColor(.secondary)
                                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                            Text(entry.sound.appleData?.name ?? "Unknown")
+                            Text(entry.artistName)
                                 .foregroundColor(.white)
                                 .font(.system(size: 13, weight: .regular, design: .rounded))
                         }

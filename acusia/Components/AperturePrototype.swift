@@ -45,7 +45,7 @@ struct ApertureView: View {
                     let trailing = context.resolveSymbol(id: 1)!
                     let center = context.resolveSymbol(id: 2)!
                     
-                    context.addFilter(.alphaThreshold(min: 0.5, color: .white))
+                    context.addFilter(.alphaThreshold(min: 0.5, color: .secondary))
                     context.addFilter(.blur(radius: blurRadius))
                     
                     context.drawLayer { context2 in

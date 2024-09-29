@@ -9,16 +9,6 @@ import SwiftUI
 struct ReplySheetView: View {
     var body: some View {
         ZStack {
-            UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
-                .stroke(.white.opacity(0.1), lineWidth: 1)
-                .foregroundStyle(.clear)
-                .background(
-                    BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
-                        .edgesIgnoringSafeArea(.all)
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .padding(1)
-                .ignoresSafeArea()
 
             ScrollView {
                 LazyVStack(alignment: .leading) {
@@ -439,3 +429,14 @@ func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
         return .zero
     }
 }
+
+//UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
+//    .stroke(.white.opacity(0.1), lineWidth: 1)
+//    .foregroundStyle(.clear)
+//    .background(
+//        BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
+//            .edgesIgnoringSafeArea(.all)
+//    )
+//    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+//    .padding(1)
+//    .ignoresSafeArea()
