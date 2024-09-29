@@ -7,24 +7,37 @@
 import SwiftUI
 
 struct ReplySheetView: View {
+    let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
+
     var body: some View {
-        ZStack {
+        GeometryReader { geometry in
+            ZStack {
+                UnevenRoundedRectangle(topLeadingRadius: cornerRadius * 0.75, bottomLeadingRadius: cornerRadius * 0.75, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(.white.opacity(0.1), lineWidth: 1, antialiased: true)
+                    .foregroundStyle(.clear)
+                    .background(
+                        .black
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .edgesIgnoringSafeArea(.all)
 
-            ScrollView {
-                LazyVStack(alignment: .leading) {
-                    RepliesView(replies: sampleComments) // The content you want to display
+                ScrollView {
+                    LazyVStack(alignment: .leading) {
+                        RepliesView(replies: sampleComments) // The content you want to display
+                    }
+                    .padding(.horizontal, 24)
+                    .onAppear {
+                        print("Safe area insets: \(geometry.safeAreaInsets)")
+                    }
+                    Spacer()
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 32)
-
-                Spacer()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .presentationDetents([.large])
+            .presentationCornerRadius(45)
+            .presentationBackground(.black)
+            .presentationDragIndicator(.visible)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .presentationDetents([.fraction(0.85), .large])
-        .presentationCornerRadius(45)
-        .presentationBackground(.clear)
-        .presentationDragIndicator(.visible)
     }
 }
 
@@ -66,7 +79,7 @@ struct ReplyView: View {
                 VStack {
                     Capsule()
                         .fill(Color(UIColor.systemGray6))
-                        .frame(width: 3, height: .infinity)
+                        .frame(width: 3)
 
                     AvatarView(size: 32, imageURL: reply.avatarURL)
                 }
@@ -87,20 +100,19 @@ struct ReplyView: View {
                         Circle()
                             .fill(Color(UIColor.systemGray6))
                             .frame(width: 6, height: 6)
-                            .offset(x: -8, y: 2)
+                            .offset(x: -4, y: 2)
 
                         Text(reply.text ?? "")
                             .foregroundColor(.white)
                             .font(.system(size: 15, weight: .regular))
                             .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 10)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
                             .background(Color(UIColor.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding([.leading], 12)
-                    .padding([.bottom], 4)
+                    .padding([.leading], 8)
                     .overlay(
                         ZStack {
                             HeartTapSmall(isTapped: false, count: 0)
@@ -135,15 +147,6 @@ struct ReplyView: View {
                         Text("Hide threads")
                             .font(.system(size: 11, weight: .medium, design: .rounded))
                             .foregroundColor(.secondary)
-                    }
-                }
-                .onTapGesture {
-                    withAnimation {
-                        if isExpanded {
-                            showReplyChildren = nil
-                        } else {
-                            showReplyChildren = reply
-                        }
                     }
                 }
 
@@ -429,14 +432,3 @@ func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
         return .zero
     }
 }
-
-//UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
-//    .stroke(.white.opacity(0.1), lineWidth: 1)
-//    .foregroundStyle(.clear)
-//    .background(
-//        BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
-//            .edgesIgnoringSafeArea(.all)
-//    )
-//    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-//    .padding(1)
-//    .ignoresSafeArea()

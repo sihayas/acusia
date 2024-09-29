@@ -33,6 +33,9 @@ struct ArtifactView: View {
             HStack(alignment: .bottom, spacing: 8) {
                 AvatarView(size: 36, imageURL: entry.userImage)
                     .zIndex(1)
+                    .onTapGesture {
+                        showReplySheet = true
+                    }
 
                 // Card stack
                 PageView(selection: $selection) {
@@ -70,7 +73,7 @@ struct ArtifactView: View {
                                                     startPoint: .top,
                                                     endPoint: .bottom
                                                 )
-                                                .frame(height: .infinity)
+                                                .frame(maxHeight: .infinity)
                                             )
                                         }
 
@@ -165,9 +168,11 @@ struct ArtifactView: View {
             
             if !sampleComments.isEmpty {
                 PresentationLink(
-                    transition: .slide(edge: .trailing)// Use the custom slide transition options
+                    transition: .slide(edge: .trailing)
                 ) {
-                    ReplySheetView()
+                    VStack {
+                        ReplySheetView()
+                    }
                 } label: {
                     HStack(spacing: 4) {
                         VStack {
@@ -193,6 +198,9 @@ struct ArtifactView: View {
             }
         }
         .padding(.horizontal, 24)
+        .sheet(isPresented: $showReplySheet) {
+            ReplySheetView()
+        }
     }
 
     var indicatorSelection: Binding<Int> {

@@ -10,19 +10,19 @@ struct BlurView: UIViewRepresentable {
     var style: UIBlurEffect.Style
     var backgroundColor: UIColor
     var blurMutingFactor: CGFloat = 0.5
-    
+
     func makeUIView(context: Context) -> UIVisualEffectView {
         let blurEffect = UIBlurEffect(style: style)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.isUserInteractionEnabled = false
-        
+
         // Create and add the vibrancy effect view
         let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
         let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
         vibrancyEffectView.frame = blurEffectView.bounds
         vibrancyEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurEffectView.contentView.addSubview(vibrancyEffectView)
-        
+
         // Insert the blur effect view
         DispatchQueue.main.async {
             // Try to access the tinting subview directly to apply background color
@@ -48,7 +48,12 @@ struct BlurView: UIViewRepresentable {
     }
 }
 
-
-// Example
-//BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.75)
+// UnevenRoundedRectangle(topLeadingRadius: cornerRadius * 0.75, bottomLeadingRadius: cornerRadius * 0.75, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
+//    .stroke(.white.opacity(0.1), lineWidth: 1)
+//    .foregroundStyle(.clear)
+//    .background(
+//        BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 1.0)
+//            .edgesIgnoringSafeArea(.all)
+//    )
+//    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 //    .edgesIgnoringSafeArea(.all)

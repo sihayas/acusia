@@ -45,7 +45,7 @@ struct ApertureView: View {
                     let trailing = context.resolveSymbol(id: 1)!
                     let center = context.resolveSymbol(id: 2)!
                     
-                    context.addFilter(.alphaThreshold(min: 0.5, color: .secondary))
+                    context.addFilter(.alphaThreshold(min: 0.5, color: .black))
                     context.addFilter(.blur(radius: blurRadius))
                     
                     context.drawLayer { context2 in
@@ -81,7 +81,6 @@ struct ApertureView: View {
                         .tag(2)
                 }
                 .allowsHitTesting(false)
-                
                 
                 // MARK: Content Overlay
                 
@@ -142,13 +141,13 @@ struct ApertureView: View {
                     .opacity(trailingExpanded ? 1 : 0)
                 
                 // Control Buttons
-                ControlButtons(
-                    isExpanded: $isExpanded,
-                    resetState: resetState,
-                    expandLeftBlob: { expandLeftBlob(centerWidth: centerWidth) },
-                    expandSearchBar: expandSearchBar,
-                    expandReply: { expandReply(centerWidth: centerWidth, gap: gap) }
-                )
+//                ControlButtons(
+//                    isExpanded: $isExpanded,
+//                    resetState: resetState,
+//                    expandLeftBlob: { expandLeftBlob(centerWidth: centerWidth) },
+//                    expandSearchBar: expandSearchBar,
+//                    expandReply: { expandReply(centerWidth: centerWidth, gap: gap) }
+//                )
             }
         }
     }
@@ -249,7 +248,7 @@ struct ControlButtons: View {
                 }
                 
                 Button(action: {
-                    resetState { }
+                    resetState {}
                 }) {
                     Image(systemName: "arrow.counterclockwise")
                         .font(.system(size: 13))

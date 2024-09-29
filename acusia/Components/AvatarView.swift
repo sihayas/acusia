@@ -12,18 +12,16 @@ struct AvatarView: View {
     let imageURL: String
 
     var body: some View {
-        NavigationLink(destination: EmptyView()) {
-            AsyncImage(url: URL(string: imageURL)) { image in
-                image
-                    .resizable()
-                    .frame(width: size, height: size)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.white.opacity(0.1), lineWidth: 1))
-            } placeholder: {
-                Circle()
-                    .fill(Color.gray)
-                    .frame(width: size, height: size)
-            }
+        AsyncImage(url: URL(string: imageURL)) { image in
+            image
+                .resizable()
+                .frame(width: size, height: size)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.white.opacity(0.1), lineWidth: 1))
+        } placeholder: {
+            Circle()
+                .fill(Color.gray)
+                .frame(width: size, height: size)
         }
     }
 }

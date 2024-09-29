@@ -37,7 +37,6 @@ struct IndexSheet: View {
                             selectedResult: $selectedResult
                         ) {
                             /// Having the environment object directly in the cell breaks Wave animator.
-                            windowState.hideFloatingBar.toggle()
                         }
                     }
                 }

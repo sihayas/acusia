@@ -9,7 +9,6 @@ class WindowState: ObservableObject {
     static let shared = WindowState()
 
     @Published var showSearchSheet: Bool = false
-    @Published var hideFloatingBar: Bool = false
 
     private init() {}
 }
@@ -61,7 +60,7 @@ class FloatingBarPresenter {
         hostingController.view.backgroundColor = .clear
 
         // Remove safe area from the hosting controller
-        hostingController.safeAreaRegions = SafeAreaRegions()   
+        hostingController.safeAreaRegions = SafeAreaRegions()
 
         floatingBarWindow = PassThroughWindow(windowScene: scene)
         floatingBarWindow?.backgroundColor = .clear
@@ -79,23 +78,38 @@ class FloatingBarPresenter {
 struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKit
+    @EnvironmentObject private var windowState: WindowState
+    
     @State private var homePath = NavigationPath()
-    @State private var isPresented = false
+    @State private var isCollapsed = false
+    
+    let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
-        Group {
-//            if auth.isAuthenticated && auth.user != nil {
+        VStack {
             GeometryReader {
-                let size = $0.size
-                let safeArea = $0.safeAreaInsets
-                Home(size: size, safeArea: safeArea, homePath: $homePath)
+//            if auth.isAuthenticated && auth.user != nil {
+                Home(size: $0.size, safeArea: $0.safeAreaInsets, homePath: $homePath)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.black)
+                    .overlay() {
+                        UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
+                            .strokeBorder(.white.opacity(1.0), lineWidth: 1, antialiased: true)
+                            .fill(.white.opacity(isCollapsed ? 0.1 : 0.0))
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: isCollapsed ? $0.size.height * 0.5 : .infinity)
+                    .animation(.spring(), value: isCollapsed)
+                
             }
             .ignoresSafeArea()
 //            else {
 //                AuthScreen()
 //            }
+            
+            Button {
+                isCollapsed.toggle()
+            } label: {
+                Text("Toggle")
+            }
         }
         .onAppear {
             UINavigationBar.setupCustomAppearance()
@@ -117,7 +131,7 @@ struct AcusiaAppView: View {
 /// NOTE: Putting a border on the outer stack prevents touch inputs from being passed through.
 struct FloatingBarView: View {
     let safeAreaInsets: UIEdgeInsets
-    
+
     @State private var searchText = "clairo"
     @State private var entryText = ""
     @State private var selectedResult: SearchResult?
