@@ -196,6 +196,7 @@ struct ArtifactView: View {
         .padding(.horizontal, 24)
         .sheet(isPresented: $showReplySheet) {
             ReplySheet()
+                .presentationDetents([.medium, .large])
         }
     }
 

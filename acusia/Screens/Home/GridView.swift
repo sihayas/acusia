@@ -104,7 +104,6 @@ struct GridView: View {
                             }
                         }
                 )
-                .border(.yellow)
             }
         }
         .frame(minWidth: size.width, minHeight: size.height)

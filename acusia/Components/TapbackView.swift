@@ -50,7 +50,7 @@ struct HeartTapSmall: View {
             .overlay(
                 Image(systemName: "heart.fill")
                     .font(.system(size: 14))
-                    .foregroundColor(Color(UIColor.white))
+                    .foregroundColor(.pink)
             )
             .overlay(
                 ZStack {

@@ -9,7 +9,11 @@ class WindowState: ObservableObject {
     static let shared = WindowState()
 
     @Published var showSearchSheet: Bool = false
-    @Published var isSplit: Bool = false
+
+    // Reply
+    @Published var isSplit: Bool = false // Split the screen
+    @Published var isSplitFull: Bool = false // Prevent gesture with the scrollview
+    @Published var isOffsetAtTop: Bool = true // Prevent gesture with the split
 
     private init() {}
 }
@@ -82,6 +86,7 @@ struct AcusiaAppView: View {
     @EnvironmentObject private var windowState: WindowState
 
     @State private var homePath = NavigationPath()
+    @State private var dragOffset: CGFloat = 0
 
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
@@ -90,28 +95,100 @@ struct AcusiaAppView: View {
             let size = proxy.size
             let isSplit = windowState.isSplit
 
-            ZStack {
-                ReplySheet()
-                    .frame(maxWidth: .infinity, maxHeight: isSplit ? size.height * 0.7 + 64 : 0)
-                    .background(Color(UIColor.systemGray6))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                    .animation(.spring(), value: isSplit)
+            let baseReplyHeight: CGFloat = size.height * 0.7 + 64
+            let maxReplyHeight: CGFloat = size.height * 1.0
+            let baseHomeHeight: CGFloat = size.height * 0.3
+            let minHomeHeight: CGFloat = size.height * 0.0
 
+            // Progress based on dragOffset to control opacity changes
+            let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
+            let replyOpacity = 1.0 - heightProgress // From 1.0 to 0.0 (opaque to transparent)
+            let homeOverlayOpacity = heightProgress * 0.1
+
+            // Heights for reply and home views
+            let replySplitHeight: CGFloat = isSplit ? baseReplyHeight + dragOffset : 0
+            let homeSplitHeight: CGFloat = isSplit ? baseHomeHeight - dragOffset : .infinity
+
+            ZStack {
+                // ReplySheet
+                ZStack {
+                    Rectangle()
+                        .foregroundStyle(.clear)
+                        .background(
+                            BlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.0)
+                                .opacity(replyOpacity) // Adjust opacity based on dragOffset
+                                .edgesIgnoringSafeArea(.all)
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .edgesIgnoringSafeArea(.all)
+
+                    ReplySheet()
+                        .frame(maxWidth: .infinity, maxHeight: replySplitHeight)
+                        .background(.clear)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        .animation(.spring(), value: replySplitHeight)
+                }
+
+                // Home view
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
-                    .frame(maxWidth: .infinity, maxHeight: isSplit ? size.height * 0.3 : .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: homeSplitHeight)
                     .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .fill(.white.opacity(isSplit ? 0.0 : 0))
+                            .fill(.white.opacity(homeOverlayOpacity)) // Adjust overlay opacity based on dragOffset
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .animation(.spring(), value: isSplit)
+                    .animation(.spring(), value: homeSplitHeight)
             }
+            // Add the drag gesture here
+            .simultaneousGesture(
+                DragGesture()
+                    .onChanged { value in
+                        guard isSplit else { return }
+
+                        let dragY = value.translation.height
+
+                        // Adjust dragOffset for both expanding (up) and collapsing (down)
+                        if (dragY > 0 && windowState.isOffsetAtTop) || !windowState.isSplitFull {
+                            dragOffset = -dragY
+                        }
+                    }
+                    .onEnded { value in
+                        guard isSplit else { return }
+
+                        let velocityY = value.velocity.height
+                        let velocityThreshold: CGFloat = 1000
+                        let halfwayPoint = (maxReplyHeight - baseReplyHeight) / 2
+
+                        if velocityY < -velocityThreshold || dragOffset >= halfwayPoint {
+                            // Expand fully
+                            dragOffset = maxReplyHeight - baseReplyHeight
+                            windowState.isSplitFull = true
+                        } else if value.translation.height > 0 {
+                            guard windowState.isOffsetAtTop else { return }
+
+                            // Collapse fully if dragging down past threshold
+                            let collapseHalfwayPoint = (baseReplyHeight - minHomeHeight) / 2
+                            if velocityY > velocityThreshold || dragOffset <= collapseHalfwayPoint {
+                                windowState.isSplit.toggle()
+                                dragOffset = 0
+                                windowState.isSplitFull = false
+                            } else {
+                                // Rubberband back to full expanded height
+                                dragOffset = maxReplyHeight - baseReplyHeight
+                                windowState.isSplitFull = true
+                            }
+                        } else {
+                            // Rubberband back to base height if no threshold met
+                            dragOffset = 0
+                            windowState.isSplitFull = false
+                        }
+                    }
+            )
             .onAppear {
                 UINavigationBar.setupCustomAppearance()
-                print("size: \(size)")
 
                 Task {
                     await musicKitManager.requestMusicAuthorization()

@@ -7,15 +7,21 @@
 import SwiftUI
 
 struct ReplySheet: View {
+    @EnvironmentObject private var windowState: WindowState
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
+
+    @State private var scrollState: (
+        phase: ScrollPhase,
+        context: ScrollPhaseChangeContext
+    )?
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("Chains")
                     .font(.system(size: 24, weight: .bold))
                     .foregroundColor(.secondary)
-                
+
                 ForEach(sampleComments) { reply in
                     ReplyView(reply: reply)
                 }
@@ -24,6 +30,44 @@ struct ReplySheet: View {
             .padding(.top, 80)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .scrollDisabled(!windowState.isSplitFull)
+        .onScrollPhaseChange { oldPhase, newPhase, context in
+            scrollState = (newPhase, context)
+            print("oldPhase: \(oldPhase), newPhase: \(newPhase)")
+        }
+        .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
+            geometry.contentOffset.y
+        }, action: { _, newValue in
+            if newValue <= 0 { // Scrolled to top
+                if scrollState?.phase == .decelerating {
+                    windowState.isOffsetAtTop = true
+                }
+            } else if newValue > 0 {
+                windowState.isOffsetAtTop = false // Scrolled away from top
+            }
+
+        })
+    }
+
+    private var scrollStateDescription: String {
+        guard let scrollState else { return "" }
+        let velocity: String = {
+            guard let velocity = scrollState.context.velocity else { return "none" }
+            return "\(velocity)"
+        }()
+        let geometry = scrollState.context.geometry
+        return """
+        State at the scroll phase change
+
+        Scrolling=\(scrollState.phase.isScrolling)
+        Phase=\(scrollState.phase)
+        Velocity
+        \(velocity)
+        Content offset
+        \(geometry.contentOffset)
+        Visible rect
+        \(geometry.visibleRect.integral)
+        """
     }
 }
 
@@ -34,32 +78,25 @@ struct ReplyView: View {
         VStack(alignment: .leading) {
             // Comment
             HStack(alignment: .bottom, spacing: 0) {
-                // Thread
-                VStack {
-                    Capsule()
-                        .fill(Color(UIColor.systemGray6))
-                        .frame(width: 3)
-
-                    AvatarView(size: 32, imageURL: reply.avatarURL)
-                }
+                AvatarView(size: 32, imageURL: reply.avatarURL)
 
                 // Text bubble
                 VStack(alignment: .leading, spacing: 4) {
                     Text(reply.username)
-                        .font(.system(size: 13, weight: .regular))
+                        .font(.system(size: 11, weight: .medium))
                         .foregroundColor(.secondary)
-                        .padding(.leading, 26)
+                        .padding(.leading, 20)
 
                     ZStack(alignment: .bottomLeading) {
                         Circle()
                             .fill(Color(UIColor.systemGray6))
                             .frame(width: 12, height: 12)
-                            .offset(x: 0, y: 0)
+                            .offset(x: 0, y: 2)
 
                         Circle()
                             .fill(Color(UIColor.systemGray6))
                             .frame(width: 6, height: 6)
-                            .offset(x: -4, y: 2)
+                            .offset(x: -6, y: 4)
 
                         Text(reply.text ?? "")
                             .foregroundColor(.white)
@@ -70,9 +107,9 @@ struct ReplyView: View {
                             .background(Color(UIColor.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                             .fixedSize(horizontal: false, vertical: true)
-                            .shadow(color: Color.black.opacity(0.7), radius: 1, x: 0, y: 0)
                     }
                     .padding([.leading], 8)
+                    .padding([.bottom], 4)
                     .overlay(
                         ZStack {
                             HeartTapSmall(isTapped: false, count: 0)
@@ -84,36 +121,24 @@ struct ReplyView: View {
             }
 
 //            // Children
-//            if !reply.children.isEmpty {
-//                // Expand thread capsule
-//                HStack(spacing: -4) {
-//                    if !isExpanded {
-//                        Capsule()
-//                            .fill(Color(UIColor.systemGray6))
-//                            .frame(width: 3, height: 16)
-//                            .frame(width: 32)
-//
-//                        Text("\(childrenCount) threads")
-//                            .font(.system(size: 11, weight: .medium, design: .rounded))
-//                            .foregroundColor(.secondary)
-//                    } else {
-//                        LoopPath()
-//                            .stroke(Color(UIColor.systemGray6),
-//                                    style: StrokeStyle(lineWidth: 3, lineCap: .round))
-//                            .frame(width: 30, height: 20)
-//                            .frame(width: 32)
-//                            .transition(.scale)
-//
-//                        Text("Hide threads")
-//                            .font(.system(size: 11, weight: .medium, design: .rounded))
-//                            .foregroundColor(.secondary)
-//                    }
-//                }
-//
-//                if showReplyChildren == reply {
-//                    RepliesView(replies: reply.children)
-//                }
-//            }
+            if !reply.children.isEmpty {
+                Capsule()
+                    .fill(Color(UIColor.systemGray6))
+                    .frame(width: 3)
+                    .frame(width: 32)
+                // Expand thread capsule
+                HStack(spacing: -4) {
+                    LoopPath()
+                        .stroke(Color(UIColor.systemGray6),
+                                style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                        .frame(width: 30, height: 20)
+                        .frame(width: 32)
+                        .transition(.scale)
+                    Text("4 threads")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.secondary)
+                }
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -320,6 +345,70 @@ let sampleComments: [Reply] = [
                 avatarURL: "https://picsum.photos/200/200"
             )
         ]
+    ),
+    Reply(
+        username: "alex_b",
+        text: "I disagree with you, janey.",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "jessica_w",
+        text: "mike, you’re oversimplifying this.",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "daniel_r",
+        text: "Interesting point, but I don’t see it that way.",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "emma_k",
+        text: "janey has a point, mike.",
+        avatarURL: "https://picsum.photos/200/200",
+        children: [
+            Reply(
+                username: "mike",
+                text: "I hear you, but I still think I’m right.",
+                avatarURL: "https://picsum.photos/200/200"
+            )
+        ]
+    ),
+    Reply(
+        username: "george",
+        text: "This conversation is going in circles.",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "john_doe",
+        text: "sarah_123, I agree with you.",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "jane_d",
+        text: "I think everyone’s missing the main point here.",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "tina_l",
+        text: "Can we all just agree to disagree?",
+        avatarURL: "https://picsum.photos/200/200"
+    ),
+    Reply(
+        username: "matt_w",
+        text: "mike, you’re totally missing the bigger picture.",
+        avatarURL: "https://picsum.photos/200/200",
+        children: [
+            Reply(
+                username: "mike",
+                text: "That’s fair, matt. But consider this...",
+                avatarURL: "https://picsum.photos/200/200"
+            )
+        ]
+    ),
+    Reply(
+        username: "lucy_h",
+        text: "This is getting way too heated.",
+        avatarURL: "https://picsum.photos/200/200"
     )
 ]
 
