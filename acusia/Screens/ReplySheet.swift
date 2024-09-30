@@ -5,6 +5,7 @@
 //  Created by decoherence on 9/8/24.
 //
 import SwiftUI
+import Transmission
 
 struct ReplySheet: View {
     @EnvironmentObject private var windowState: WindowState
@@ -16,37 +17,38 @@ struct ReplySheet: View {
     )?
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Chains")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.secondary)
-
-                ForEach(sampleComments) { reply in
-                    ReplyView(reply: reply)
+        ZStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Chains")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.secondary)
+                    
+                    ForEach(sampleComments) { reply in
+                        ReplyView(reply: reply)
+                    }
                 }
+                .padding(24)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 80)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .scrollDisabled(!windowState.isSplitFull)
-        .onScrollPhaseChange { oldPhase, newPhase, context in
-            scrollState = (newPhase, context)
-            print("oldPhase: \(oldPhase), newPhase: \(newPhase)")
-        }
-        .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
-            geometry.contentOffset.y
-        }, action: { _, newValue in
-            if newValue <= 0 { // Scrolled to top
-                if scrollState?.phase == .decelerating {
-                    windowState.isOffsetAtTop = true
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .scrollDisabled(!windowState.isSplitFull)
+            .onScrollPhaseChange { oldPhase, newPhase, context in
+                scrollState = (newPhase, context)
+                print("oldPhase: \(oldPhase), newPhase: \(newPhase)")
+            }
+            .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
+                geometry.contentOffset.y
+            }, action: { _, newValue in
+                if newValue <= 0 { // Scrolled to top
+                    if scrollState?.phase == .decelerating {
+                        windowState.isOffsetAtTop = true
+                    }
+                } else if newValue > 0 {
+                    windowState.isOffsetAtTop = false // Scrolled away from top
                 }
-            } else if newValue > 0 {
-                windowState.isOffsetAtTop = false // Scrolled away from top
-            }
-
-        })
+                
+            })
+        }
     }
 
     private var scrollStateDescription: String {
@@ -120,7 +122,7 @@ struct ReplyView: View {
                 }
             }
 
-//            // Children
+            // Children
             if !reply.children.isEmpty {
                 Capsule()
                     .fill(Color(UIColor.systemGray6))

@@ -95,14 +95,14 @@ struct AcusiaAppView: View {
             let size = proxy.size
             let isSplit = windowState.isSplit
 
-            let baseReplyHeight: CGFloat = size.height * 0.7 + 64
-            let maxReplyHeight: CGFloat = size.height * 1.0
+            let baseReplyHeight: CGFloat = size.height * 0.7
+            let maxReplyHeight: CGFloat = size.height * 0.9
             let baseHomeHeight: CGFloat = size.height * 0.3
-            let minHomeHeight: CGFloat = size.height * 0.0
+            let minHomeHeight: CGFloat = size.height * 0.1
 
             // Progress based on dragOffset to control opacity changes
             let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
-            let replyOpacity = 1.0 - heightProgress // From 1.0 to 0.0 (opaque to transparent)
+            let replyOpacity = 1.0 - heightProgress
             let homeOverlayOpacity = heightProgress * 0.1
 
             // Heights for reply and home views
@@ -110,26 +110,18 @@ struct AcusiaAppView: View {
             let homeSplitHeight: CGFloat = isSplit ? baseHomeHeight - dragOffset : .infinity
 
             ZStack {
-                // ReplySheet
-                ZStack {
-                    Rectangle()
-                        .foregroundStyle(.clear)
-                        .background(
-                            BlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.0)
-                                .opacity(replyOpacity) // Adjust opacity based on dragOffset
-                                .edgesIgnoringSafeArea(.all)
-                        )
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        .edgesIgnoringSafeArea(.all)
+                ReplySheet()
+                    .frame(maxWidth: .infinity, maxHeight: replySplitHeight)
+                    .background(Color(UIColor.systemGray6).opacity(replyOpacity))
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .shadow(radius: 10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .stroke(.blue, lineWidth: 1)
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    .animation(.spring(), value: replySplitHeight)
 
-                    ReplySheet()
-                        .frame(maxWidth: .infinity, maxHeight: replySplitHeight)
-                        .background(.clear)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                        .animation(.spring(), value: replySplitHeight)
-                }
-
-                // Home view
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
                     .frame(maxWidth: .infinity, maxHeight: homeSplitHeight)
                     .background(.black)
@@ -137,6 +129,7 @@ struct AcusiaAppView: View {
                     .shadow(radius: 10)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .stroke(.red, lineWidth: 1)
                             .fill(.white.opacity(homeOverlayOpacity)) // Adjust overlay opacity based on dragOffset
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
