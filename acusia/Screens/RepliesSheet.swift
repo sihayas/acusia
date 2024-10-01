@@ -7,142 +7,213 @@
 import SwiftUI
 import Transmission
 
-struct ReplySheet: View {
-    @EnvironmentObject private var windowState: WindowState
-    let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
+class LayerManager: ObservableObject {
+    @Published var layers: [Layer] = [Layer()]
 
-    @State private var scrollState: (
-        phase: ScrollPhase,
-        context: ScrollPhaseChangeContext
-    )?
+    func pushLayer() {
+        layers.append(Layer())
+    }
+
+    func popLayer(at index: Int) {
+        if layers.indices.contains(index) {
+            layers.remove(at: index)
+        }
+    }
+}
+
+struct Layer: Identifiable {
+    let id = UUID()
+    var state: LayerState = .expanded
+    var offsetY: CGFloat = 0 // For animating off-screen
+    
+    var isCollapsed: Bool {
+        state.isCollapsed
+    }
+}
+
+enum LayerState {
+    case expanded
+    case collapsed(height: CGFloat)
+    
+    var isCollapsed: Bool {
+        if case .collapsed = self {
+            return true
+        }
+        return false
+    }
+    
+    var dynamicHeight: CGFloat? {
+        switch self {
+        case .expanded:
+            return nil
+        case .collapsed(let height):
+            return height
+        }
+    }
+}
+
+struct RepliesSheet: View {
+    @EnvironmentObject private var windowState: WindowState
+    @StateObject private var layerManager = LayerManager()
+
+    var size: CGSize
 
     var body: some View {
-        ZStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Chains")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.secondary)
-                    
-                    ForEach(sampleComments) { reply in
-                        ReplyView(reply: reply)
+        ZStack(alignment: .top) {
+            ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, replyItem in
+                LayerView(
+                    sampleComments: sampleComments,
+                    width: size.width,
+                    height: size.height,
+                    replyItem: replyItem,
+                    index: index,
+                    onPushNewView: {
+                        withAnimation(.spring()) {
+                            layerManager.layers[index].state = .collapsed(height: 80)
+                            layerManager.pushLayer()
+                        }
                     }
-                }
-                .padding(24)
+                )
+                .offset(y: calculateOffset(for: index) + replyItem.offsetY)
+                .zIndex(Double(layerManager.layers.count - index))
+                .modifier(
+                    index == 0
+                        ? AnyViewModifier(RootScrollPhaseModifier())
+                        : AnyViewModifier(LayerScrollPhaseModifier(
+                            index: index,
+                            layerManager: layerManager,
+                            viewHeight: size.height
+                        ))
+                )
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-            .scrollDisabled(!windowState.isSplitFull)
-            .onScrollPhaseChange { oldPhase, newPhase, context in
+        }
+        .allowsHitTesting(windowState.isSplitFull)
+    }
+
+    private func calculateOffset(for index: Int) -> CGFloat {
+        var totalOffset: CGFloat = 0
+        for i in (index + 1) ..< layerManager.layers.count {
+            if case .collapsed = layerManager.layers[i].state {
+                totalOffset -= 16
+            }
+        }
+        return totalOffset
+    }
+}
+
+struct LayerView: View {
+    let sampleComments: [Reply]
+    let width: CGFloat
+    let height: CGFloat
+    let replyItem: Layer
+    let index: Int
+    let onPushNewView: () -> Void
+
+    var body: some View {
+        let isCollapsed = replyItem.isCollapsed
+        let dynamicHeight = replyItem.state.dynamicHeight
+
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(sampleComments) { reply in
+                    ReplyView(reply: reply)
+                }
+            }
+        }
+        .frame(minWidth: width, minHeight: height)
+        .frame(height: dynamicHeight, alignment: .top)
+        .clipped()
+        .allowsHitTesting(!isCollapsed)
+        .overlay(
+            Button(action: isCollapsed ? {} : onPushNewView) {
+                Text(isCollapsed ? "Collapsed" : "Push New RepliesView")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(isCollapsed ? Color.gray : Color.blue)
+                    .cornerRadius(10)
+            }
+        )
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(isCollapsed ? Color.gray.opacity(0.3) : Color.clear)
+        )
+        .animation(.spring(), value: isCollapsed)
+    }
+}
+
+struct LayerScrollPhaseModifier: ViewModifier {
+    var index: Int
+    @ObservedObject var layerManager: LayerManager
+    var viewHeight: CGFloat
+
+    @State private var isOffsetAtTop = true
+    @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
+
+    func body(content: Content) -> some View {
+        content
+            .onScrollPhaseChange { _, newPhase, context in
                 scrollState = (newPhase, context)
-                print("oldPhase: \(oldPhase), newPhase: \(newPhase)")
             }
             .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
                 geometry.contentOffset.y
             }, action: { _, newValue in
-                if newValue <= 0 { // Scrolled to top
+                if newValue <= 0 {
+                    isOffsetAtTop = true
+                } else if newValue > 0 {
+                    isOffsetAtTop = false
+                }
+            })
+            .simultaneousGesture(
+                DragGesture()
+                    .onChanged { value in
+                        if isOffsetAtTop, value.translation.height > 0 {
+                            if case .collapsed = layerManager.layers[index - 1].state {
+                                let newHeight = 80 + value.translation.height / 2
+                                layerManager.layers[index - 1].state = .collapsed(height: newHeight)
+                            }
+                        }
+                    }
+                    .onEnded { value in
+                        if isOffsetAtTop, value.translation.height > 0 {
+                            if case .collapsed = layerManager.layers[index - 1].state,
+                               value.translation.height > 50
+                            {
+                                withAnimation(.spring()) {
+                                    layerManager.layers[index - 1].state = .expanded
+                                    layerManager.layers[index].offsetY = viewHeight
+                                } completion: {
+                                    layerManager.popLayer(at: index)
+                                }
+                            } else {
+                                layerManager.layers[index - 1].state = .collapsed(height: 80)
+                            }
+                        }
+                    }
+            )
+    }
+}
+
+struct RootScrollPhaseModifier: ViewModifier {
+    @EnvironmentObject private var windowState: WindowState
+    @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
+
+    func body(content: Content) -> some View {
+        content
+            .onScrollPhaseChange { _, newPhase, context in
+                scrollState = (newPhase, context)
+            }
+            .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
+                geometry.contentOffset.y
+            }, action: { _, newValue in
+                if newValue <= 0 {
                     if scrollState?.phase == .decelerating {
                         windowState.isOffsetAtTop = true
                     }
                 } else if newValue > 0 {
-                    windowState.isOffsetAtTop = false // Scrolled away from top
+                    windowState.isOffsetAtTop = false
                 }
-                
             })
-        }
-    }
-
-    private var scrollStateDescription: String {
-        guard let scrollState else { return "" }
-        let velocity: String = {
-            guard let velocity = scrollState.context.velocity else { return "none" }
-            return "\(velocity)"
-        }()
-        let geometry = scrollState.context.geometry
-        return """
-        State at the scroll phase change
-
-        Scrolling=\(scrollState.phase.isScrolling)
-        Phase=\(scrollState.phase)
-        Velocity
-        \(velocity)
-        Content offset
-        \(geometry.contentOffset)
-        Visible rect
-        \(geometry.visibleRect.integral)
-        """
-    }
-}
-
-struct ReplyView: View {
-    let reply: Reply
-
-    var body: some View {
-        VStack(alignment: .leading) {
-            // Comment
-            HStack(alignment: .bottom, spacing: 0) {
-                AvatarView(size: 32, imageURL: reply.avatarURL)
-
-                // Text bubble
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(reply.username)
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundColor(.secondary)
-                        .padding(.leading, 20)
-
-                    ZStack(alignment: .bottomLeading) {
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 12, height: 12)
-                            .offset(x: 0, y: 2)
-
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 6, height: 6)
-                            .offset(x: -6, y: 4)
-
-                        Text(reply.text ?? "")
-                            .foregroundColor(.white)
-                            .font(.system(size: 15, weight: .regular))
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(Color(UIColor.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding([.leading], 8)
-                    .padding([.bottom], 4)
-                    .overlay(
-                        ZStack {
-                            HeartTapSmall(isTapped: false, count: 0)
-                                .offset(x: 12, y: -14)
-                        },
-                        alignment: .topTrailing
-                    )
-                }
-            }
-
-            // Children
-            if !reply.children.isEmpty {
-                Capsule()
-                    .fill(Color(UIColor.systemGray6))
-                    .frame(width: 3)
-                    .frame(width: 32)
-                // Expand thread capsule
-                HStack(spacing: -4) {
-                    LoopPath()
-                        .stroke(Color(UIColor.systemGray6),
-                                style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                        .frame(width: 30, height: 20)
-                        .frame(width: 32)
-                        .transition(.scale)
-                    Text("4 threads")
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundColor(.secondary)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -160,7 +231,6 @@ class Reply: Identifiable, Equatable {
         self.children = children
     }
 
-    // Conform to Equatable
     static func == (lhs: Reply, rhs: Reply) -> Bool {
         return lhs.id == rhs.id
     }
@@ -470,7 +540,6 @@ struct LoopPath: Shape {
     }
 }
 
-// Helper function to calculate avatar offsets
 func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
     switch index {
     case 0: // Top Center

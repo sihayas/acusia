@@ -32,7 +32,7 @@ struct ArtifactView: View {
                 .padding(.bottom, -2)
 
             HStack(alignment: .bottom, spacing: 8) {
-                AvatarView(size: 36, imageURL: entry.userImage)
+                AvatarView(size: 48, imageURL: entry.userImage)
                     .zIndex(1)
                     .onTapGesture {
                         showReplySheet = true
@@ -194,10 +194,6 @@ struct ArtifactView: View {
             }
         }
         .padding(.horizontal, 24)
-        .sheet(isPresented: $showReplySheet) {
-            ReplySheet()
-                .presentationDetents([.medium, .large])
-        }
     }
 
     var indicatorSelection: Binding<Int> {
@@ -225,8 +221,8 @@ struct WispView: View {
                 .padding(.bottom, -2)
 
             ZStack(alignment: .bottomLeading) {
-                HStack(alignment: .bottom) {
-                    AvatarView(size: 36, imageURL: entry.userImage)
+                HStack() {
+                    AvatarView(size: 48, imageURL: entry.userImage)
 
                     HStack {
                         // Audiowave image in white
@@ -242,8 +238,8 @@ struct WispView: View {
                             Rectangle()
                         }
                         .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        .frame(width: 32, height: 32)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .frame(width: 42, height: 42)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
                                 .stroke(Color.white.opacity(0.1), lineWidth: 1)
@@ -304,8 +300,8 @@ struct WispView: View {
                             .background(Color(UIColor.systemGray6),
                                         in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
-                    .padding(.bottom, 40)
-                    .padding(.leading, 28)
+                    .padding(.bottom, 48)
+                    .padding(.leading, 36)
                     .padding(.trailing, 64)
                 }
             }

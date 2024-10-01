@@ -93,47 +93,58 @@ struct AcusiaAppView: View {
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
+            let safeArea = proxy.safeAreaInsets
             let isSplit = windowState.isSplit
 
             let baseReplyHeight: CGFloat = size.height * 0.7
-            let maxReplyHeight: CGFloat = size.height * 0.9
             let baseHomeHeight: CGFloat = size.height * 0.3
-            let minHomeHeight: CGFloat = size.height * 0.1
+            
+            let maxReplyHeight: CGFloat = size.height * 0.93
+            let minHomeHeight: CGFloat = size.height * 0.07
 
-            // Progress based on dragOffset to control opacity changes
             let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
             let replyOpacity = 1.0 - heightProgress
             let homeOverlayOpacity = heightProgress * 0.1
 
-            // Heights for reply and home views
             let replySplitHeight: CGFloat = isSplit ? baseReplyHeight + dragOffset : 0
             let homeSplitHeight: CGFloat = isSplit ? baseHomeHeight - dragOffset : .infinity
 
-            ZStack {
-                ReplySheet()
-                    .frame(maxWidth: .infinity, maxHeight: replySplitHeight)
-                    .background(Color(UIColor.systemGray6).opacity(replyOpacity))
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                    .shadow(radius: 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .stroke(.blue, lineWidth: 1)
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                    .animation(.spring(), value: replySplitHeight)
+            ZStack(alignment: .top) {
+                VStack {
+                    Spacer()
+                    
+                    RepliesSheet(size: CGSize(width: size.width, height: maxReplyHeight))
+                        .frame(minWidth: size.width, minHeight: size.height)
+                        .frame(maxWidth: .infinity, maxHeight: replySplitHeight, alignment: .top) // Align content inside to top.
+                        .background(Color(UIColor.systemGray6).opacity(replyOpacity))
+                        .animation(.spring(), value: replySplitHeight)
+                }
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
-                    .frame(maxWidth: .infinity, maxHeight: homeSplitHeight)
+                    .overlay(
+                        Button {
+                            windowState.isSplit.toggle()
+                        } label: {
+                            Image(systemName: "chevron.up")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.black.opacity(0.5))
+                                .clipShape(Circle())
+                        }
+                    )
+                    .frame(minWidth: size.width, minHeight: size.height)
+                    .frame(maxWidth: .infinity, maxHeight: homeSplitHeight, alignment: .top) // Align content inside to top.
                     .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .stroke(.red, lineWidth: 1)
+                            .stroke(.pink, lineWidth: 1)
                             .fill(.white.opacity(homeOverlayOpacity)) // Adjust overlay opacity based on dragOffset
                     )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .animation(.spring(), value: homeSplitHeight)
+                    .allowsHitTesting(!windowState.isSplit)
             }
             // Add the drag gesture here
             .simultaneousGesture(
@@ -191,19 +202,8 @@ struct AcusiaAppView: View {
                         await musicKitManager.loadRecentlyPlayedSongs()
                     }
                 }
+                print("safeAreaInsets: \(proxy.safeAreaInsets)")
             }
-            .overlay(
-                Button {
-                    windowState.isSplit.toggle()
-                } label: {
-                    Image(systemName: "chevron.up")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.black.opacity(0.5))
-                        .clipShape(Circle())
-                }
-            )
         }
         .ignoresSafeArea()
     }
