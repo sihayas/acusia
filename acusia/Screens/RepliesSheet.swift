@@ -64,10 +64,10 @@ struct RepliesSheet: View {
 
     var body: some View {
         let heightCenter = size.height / 2
-        let collapsedHeight = size.height * 0.1
-        let collapsedOffset = size.height * 0.05
+        let collapsedHeight = size.height * 0.18
+        let collapsedOffset = size.height * 0.06
         
-        ZStack(alignment: .top) {
+        ZStack(alignment: .bottom) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, replyItem in
                 LayerView(
                     layerManager: layerManager,
@@ -89,19 +89,21 @@ struct RepliesSheet: View {
                 .zIndex(Double(layerManager.layers.count - index))
             }
         }
-        .allowsHitTesting(windowState.isSplitFull)
         .onReceive(layerManager.$layers) { layers in
             windowState.isLayered = layers.count > 1
         }
     }
 
     private func calculateOffset(for index: Int, offset: CGFloat) -> CGFloat {
-        layerManager.layers[(index + 1)...].reduce(0) { total, layer in
-            layer.isCollapsed ? total - offset : total
+        var totalOffset: CGFloat = 0
+        for i in (index + 1) ..< layerManager.layers.count {
+            if case .collapsed = layerManager.layers[i].state {
+                totalOffset += offset
+            }
         }
+        return totalOffset
     }
 }
-
 struct LayerView: View {
     @EnvironmentObject private var windowState: WindowState
     @ObservedObject var layerManager: LayerManager
@@ -117,6 +119,8 @@ struct LayerView: View {
     let replyItem: LayerManager.Layer
     let index: Int
     let onPushNewView: () -> Void
+    
+    let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
         let isCollapsed = replyItem.isCollapsed
@@ -135,6 +139,7 @@ struct LayerView: View {
         .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
             geometry.contentOffset.y
         }, action: { _, newValue in
+            // Prevent pop gesture from triggering if scroll offset is not at top
             if newValue <= 0 {
                 index == 0 ? (windowState.isOffsetAtTop = true) : (isOffsetAtTop = true)
             } else if newValue > 0 {
@@ -143,10 +148,14 @@ struct LayerView: View {
         })
         .frame(minWidth: width, minHeight: height)
         .frame(height: dynamicHeight, alignment: .top)
-        .clipShape(RoundedRectangle(cornerRadius: 12)) // Mask
-        .contentShape(Rectangle()) // Prevents touch inputs
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(isCollapsed ? Color.gray.opacity(0.3) : Color.clear)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius)) // Mask
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius))// Prevents touch inputs
         .overlay(
-            Button(action: onPushNewView) {
+            Button(action: isCollapsed ? {} : onPushNewView) {
                 Text(isCollapsed ? "Collapsed" : "Push New View")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
@@ -155,32 +164,37 @@ struct LayerView: View {
                     .cornerRadius(10)
             }
         )
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(isCollapsed ? Color.gray.opacity(0.3) : Color.clear)
-        )
         .simultaneousGesture(
             DragGesture()
                 .onChanged { value in
-                    guard index > 0, isOffsetAtTop else { return }
+                    guard index > 0 else { return }
                     let dragY = value.translation.height
-                    if case .collapsed = layerManager.layers[index - 1].state {
-                        layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight + dragY / 2)
+                    
+                    if isOffsetAtTop, dragY > 0 {
+                        if case .collapsed = layerManager.layers[index - 1].state {
+                            let newHeight = collapsedHeight + dragY / 2
+                            layerManager.layers[index - 1].state = .collapsed(height: newHeight)
+                        }
                     }
                 }
                 .onEnded { value in
-                    guard index > 0, isOffsetAtTop else { return }
+                    guard index > 0 else { return }
                     let dragY = value.translation.height
-                    if case .collapsed = layerManager.layers[index - 1].state, dragY > heightCenter {
-                        withAnimation(.spring()) {
-                            layerManager.layers[index - 1].state = .expanded
-                            layerManager.layers[index].offsetY = height
-                        } completion: {
-                            layerManager.popLayer(at: index)
-                        }
-                    } else {
-                        withAnimation(.spring()) {
-                            layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight)
+                    
+                    if isOffsetAtTop, dragY > 0 {
+                        if case .collapsed = layerManager.layers[index - 1].state,
+                           dragY > heightCenter
+                        {
+                            withAnimation(.spring()) {
+                                layerManager.layers[index - 1].state = .expanded
+                                layerManager.layers[index].offsetY = height
+                            } completion: {
+                                layerManager.popLayer(at: index)
+                            }
+                        } else {
+                            withAnimation(.spring()) {
+                                layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight)
+                            }
                         }
                     }
                 }

@@ -99,7 +99,7 @@ struct AcusiaAppView: View {
             let baseHomeHeight: CGFloat = size.height * 0.3
             
             let maxReplyHeight: CGFloat = size.height * 1.0
-            let minHomeHeight: CGFloat = size.height * 0.07
+            let minHomeHeight: CGFloat = size.height * 0.18
 
             let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
             let replyOpacity = 1.0 - heightProgress
@@ -108,10 +108,8 @@ struct AcusiaAppView: View {
             let replySplitHeight: CGFloat = windowState.isSplit ? baseReplyHeight + dragOffset : 0
             let homeSplitHeight = max(windowState.isSplit ? baseHomeHeight - dragOffset : size.height, minHomeHeight)
 
-            ZStack(alignment: .top) {
-                VStack {
-                    Spacer()
-                    
+            ZStack(alignment: .bottom) {
+                VStack() { // Align to top.
                     RepliesSheet(size: CGSize(width: size.width, height: maxReplyHeight))
                         .frame(minWidth: size.width, minHeight: size.height)
                         .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
@@ -120,6 +118,7 @@ struct AcusiaAppView: View {
                         .background(Color(UIColor.systemGray6).opacity(replyOpacity))
                         .animation(.spring(), value: replySplitHeight)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
                     .overlay(
@@ -136,57 +135,68 @@ struct AcusiaAppView: View {
                     )
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.black)
+                    .background(.red.opacity(homeOverlayOpacity))
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-//                            .stroke(.pink, lineWidth: 1)
-//                            .fill(.white.opacity(homeOverlayOpacity))
-//                    )
                     .animation(.spring(), value: homeSplitHeight)
             }
             // Add the drag gesture here
             .simultaneousGesture(
                 DragGesture()
                     .onChanged { value in
+                        // Only proceed if the window is split and not layered
                         guard windowState.isSplit && !windowState.isLayered else { return }
 
-                        let dragY = value.translation.height
+                        let verticalDrag = value.translation.height
 
-                        // Adjust dragOffset for both expanding (up) and collapsing (down)
-                        if (dragY > 0 && windowState.isOffsetAtTop) || !windowState.isSplitFull {
-                            dragOffset = -dragY
+                        // Determine if the user is dragging down at the top or if the window is not fully expanded
+                        let isDraggingDownAtTop = verticalDrag > 0 && windowState.isOffsetAtTop
+
+                        // Adjust dragOffset for expanding upwards or collapsing downwards
+                        if isDraggingDownAtTop || !windowState.isSplitFull {
+                            dragOffset = -verticalDrag
                         }
                     }
                     .onEnded { value in
-                        guard windowState.isSplit  else { return }
+                        // Only proceed if the window is split
+                        guard windowState.isSplit else { return }
 
-                        let velocityY = value.velocity.height
+                        let verticalDrag = value.translation.height
+                        let verticalVelocity = value.velocity.height
+
                         let velocityThreshold: CGFloat = 1000
-                        let halfwayPoint = (maxReplyHeight - baseReplyHeight) / 2
+                        let expandHalfwayPoint = (maxReplyHeight - baseReplyHeight) / 2
 
-                        if velocityY < -velocityThreshold || dragOffset >= halfwayPoint {
-                            // Expand fully
+                        let isQuickUpwardSwipe = verticalVelocity < -velocityThreshold
+                        let hasDraggedPastHalfwayUp = dragOffset >= expandHalfwayPoint
+
+                        if isQuickUpwardSwipe || hasDraggedPastHalfwayUp {
+                            // Expand the split fully
                             dragOffset = maxReplyHeight - baseReplyHeight
                             windowState.isSplitFull = true
-                        } else if value.translation.height > 0 {
+                        } else if verticalDrag > 0 {
+                            // User is dragging downwards
                             guard windowState.isOffsetAtTop else { return }
 
-                            // Collapse fully if dragging down past threshold
-                            let collapseHalfwayPoint = (baseReplyHeight - minHomeHeight) / 2
-                            if velocityY > velocityThreshold || dragOffset <= collapseHalfwayPoint {
+                            let collapseHalfwayPoint = baseReplyHeight / 2
+                            let totalDragDown = -dragOffset
+
+                            let isQuickDownwardSwipe = verticalVelocity > velocityThreshold
+                            let hasDraggedPastHalfwayDown = totalDragDown >= collapseHalfwayPoint
+
+                            if isQuickDownwardSwipe || hasDraggedPastHalfwayDown {
+                                // Collapse the window fully
                                 windowState.isSplit = false
                                 windowState.isSplitFull = false
                                 dragOffset = 0
                             } else {
-                                // Rubberband back to full expanded height
-                                dragOffset = maxReplyHeight - baseReplyHeight
-                                windowState.isSplitFull = true
+                                // Reset to base height without fully collapsing
+                                dragOffset = 0
+                                windowState.isSplitFull = false
                             }
                         } else {
-                            // Rubberband back to base height if no threshold met
+                            // Reset to base height if no significant drag occurred
                             dragOffset = 0
                             windowState.isSplitFull = false
                         }
