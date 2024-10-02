@@ -138,6 +138,7 @@ struct AcusiaAppView: View {
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
                     .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -145,7 +146,6 @@ struct AcusiaAppView: View {
                             .fill(.white.opacity(homeOverlayOpacity)) // Adjust overlay opacity based on dragOffset
                     )
                     .animation(.spring(), value: homeSplitHeight)
-                    .allowsHitTesting(!windowState.isSplit)
             }
             // Add the drag gesture here
             .simultaneousGesture(

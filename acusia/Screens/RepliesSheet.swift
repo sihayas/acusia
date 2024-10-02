@@ -19,35 +19,39 @@ class LayerManager: ObservableObject {
             layers.remove(at: index)
         }
     }
-}
 
-struct Layer: Identifiable {
-    let id = UUID()
-    var state: LayerState = .expanded
-    var offsetY: CGFloat = 0 // For animating off-screen
-    
-    var isCollapsed: Bool {
-        state.isCollapsed
-    }
-}
-
-enum LayerState {
-    case expanded
-    case collapsed(height: CGFloat)
-    
-    var isCollapsed: Bool {
-        if case .collapsed = self {
-            return true
+    struct Layer: Identifiable {
+        let id = UUID()
+        var state: LayerState = .expanded
+        var offsetY: CGFloat = 0 // For animating off-screen
+        
+        var isCollapsed: Bool {
+            state.isCollapsed
         }
-        return false
+        
+        var dynamicHeight: CGFloat? {
+            state.dynamicHeight
+        }
     }
-    
-    var dynamicHeight: CGFloat? {
-        switch self {
-        case .expanded:
-            return nil
-        case .collapsed(let height):
-            return height
+
+    enum LayerState {
+        case expanded
+        case collapsed(height: CGFloat)
+
+        var isCollapsed: Bool {
+            if case .collapsed = self {
+                return true
+            }
+            return false
+        }
+
+        var dynamicHeight: CGFloat? {
+            switch self {
+            case .expanded:
+                return nil
+            case .collapsed(let height):
+                return height
+            }
         }
     }
 }
@@ -110,7 +114,7 @@ struct LayerView: View {
     let height: CGFloat
     let heightCenter: CGFloat
     let collapsedHeight: CGFloat
-    let replyItem: Layer
+    let replyItem: LayerManager.Layer
     let index: Int
     let onPushNewView: () -> Void
 
@@ -140,8 +144,8 @@ struct LayerView: View {
         })
         .frame(minWidth: width, minHeight: height)
         .frame(height: dynamicHeight, alignment: .top)
-        .clipped()
-        .allowsHitTesting(!isCollapsed)
+        .clipShape(RoundedRectangle(cornerRadius: 12)) // Mask
+        .contentShape(Rectangle()) // Prevents touch inputs
         .overlay(
             Button(action: onPushNewView) {
                 Text(isCollapsed ? "Collapsed" : "Push New View")
