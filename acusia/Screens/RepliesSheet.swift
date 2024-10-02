@@ -135,11 +135,10 @@ struct LayerView: View {
         .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
             geometry.contentOffset.y
         }, action: { _, newValue in
-            let atTop = newValue <= 0
-            if index == 0 {
-                windowState.isOffsetAtTop = atTop
-            } else {
-                isOffsetAtTop = atTop
+            if newValue <= 0 {
+                index == 0 ? (windowState.isOffsetAtTop = true) : (isOffsetAtTop = true)
+            } else if newValue > 0 {
+                index == 0 ? (windowState.isOffsetAtTop = false) : (isOffsetAtTop = false)
             }
         })
         .frame(minWidth: width, minHeight: height)

@@ -94,21 +94,19 @@ struct AcusiaAppView: View {
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
-            let safeArea = proxy.safeAreaInsets
-            let isSplit = windowState.isSplit
 
             let baseReplyHeight: CGFloat = size.height * 0.7
             let baseHomeHeight: CGFloat = size.height * 0.3
             
-            let maxReplyHeight: CGFloat = size.height * 0.93
+            let maxReplyHeight: CGFloat = size.height * 1.0
             let minHomeHeight: CGFloat = size.height * 0.07
 
             let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
             let replyOpacity = 1.0 - heightProgress
             let homeOverlayOpacity = heightProgress * 0.1
 
-            let replySplitHeight: CGFloat = isSplit ? baseReplyHeight + dragOffset : 0
-            let homeSplitHeight = isSplit ? baseHomeHeight - dragOffset : size.height
+            let replySplitHeight: CGFloat = windowState.isSplit ? baseReplyHeight + dragOffset : 0
+            let homeSplitHeight = max(windowState.isSplit ? baseHomeHeight - dragOffset : size.height, minHomeHeight)
 
             ZStack(alignment: .top) {
                 VStack {
@@ -117,6 +115,8 @@ struct AcusiaAppView: View {
                     RepliesSheet(size: CGSize(width: size.width, height: maxReplyHeight))
                         .frame(minWidth: size.width, minHeight: size.height)
                         .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
+                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                        .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                         .background(Color(UIColor.systemGray6).opacity(replyOpacity))
                         .animation(.spring(), value: replySplitHeight)
                 }
@@ -140,18 +140,18 @@ struct AcusiaAppView: View {
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .stroke(.pink, lineWidth: 1)
-                            .fill(.white.opacity(homeOverlayOpacity)) // Adjust overlay opacity based on dragOffset
-                    )
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+//                            .stroke(.pink, lineWidth: 1)
+//                            .fill(.white.opacity(homeOverlayOpacity))
+//                    )
                     .animation(.spring(), value: homeSplitHeight)
             }
             // Add the drag gesture here
             .simultaneousGesture(
                 DragGesture()
                     .onChanged { value in
-                        guard isSplit && !windowState.isLayered else { return }
+                        guard windowState.isSplit && !windowState.isLayered else { return }
 
                         let dragY = value.translation.height
 
@@ -161,7 +161,7 @@ struct AcusiaAppView: View {
                         }
                     }
                     .onEnded { value in
-                        guard isSplit && !windowState.isLayered  else { return }
+                        guard windowState.isSplit  else { return }
 
                         let velocityY = value.velocity.height
                         let velocityThreshold: CGFloat = 1000
@@ -177,9 +177,9 @@ struct AcusiaAppView: View {
                             // Collapse fully if dragging down past threshold
                             let collapseHalfwayPoint = (baseReplyHeight - minHomeHeight) / 2
                             if velocityY > velocityThreshold || dragOffset <= collapseHalfwayPoint {
-                                windowState.isSplit.toggle()
-                                dragOffset = 0
+                                windowState.isSplit = false
                                 windowState.isSplitFull = false
+                                dragOffset = 0
                             } else {
                                 // Rubberband back to full expanded height
                                 dragOffset = maxReplyHeight - baseReplyHeight
