@@ -14,6 +14,7 @@ class WindowState: ObservableObject {
     @Published var isSplit: Bool = false // Split the screen
     @Published var isSplitFull: Bool = false // Prevent gesture with the scrollview
     @Published var isOffsetAtTop: Bool = true // Prevent gesture with the split
+    @Published var isLayered: Bool = false // Layered replies
 
     private init() {}
 }
@@ -107,7 +108,7 @@ struct AcusiaAppView: View {
             let homeOverlayOpacity = heightProgress * 0.1
 
             let replySplitHeight: CGFloat = isSplit ? baseReplyHeight + dragOffset : 0
-            let homeSplitHeight: CGFloat = isSplit ? baseHomeHeight - dragOffset : .infinity
+            let homeSplitHeight = isSplit ? baseHomeHeight - dragOffset : size.height
 
             ZStack(alignment: .top) {
                 VStack {
@@ -115,7 +116,7 @@ struct AcusiaAppView: View {
                     
                     RepliesSheet(size: CGSize(width: size.width, height: maxReplyHeight))
                         .frame(minWidth: size.width, minHeight: size.height)
-                        .frame(maxWidth: .infinity, maxHeight: replySplitHeight, alignment: .top) // Align content inside to top.
+                        .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
                         .background(Color(UIColor.systemGray6).opacity(replyOpacity))
                         .animation(.spring(), value: replySplitHeight)
                 }
@@ -134,7 +135,7 @@ struct AcusiaAppView: View {
                         }
                     )
                     .frame(minWidth: size.width, minHeight: size.height)
-                    .frame(maxWidth: .infinity, maxHeight: homeSplitHeight, alignment: .top) // Align content inside to top.
+                    .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
                     .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
@@ -150,7 +151,7 @@ struct AcusiaAppView: View {
             .simultaneousGesture(
                 DragGesture()
                     .onChanged { value in
-                        guard isSplit else { return }
+                        guard isSplit && !windowState.isLayered else { return }
 
                         let dragY = value.translation.height
 
@@ -160,7 +161,7 @@ struct AcusiaAppView: View {
                         }
                     }
                     .onEnded { value in
-                        guard isSplit else { return }
+                        guard isSplit && !windowState.isLayered  else { return }
 
                         let velocityY = value.velocity.height
                         let velocityThreshold: CGFloat = 1000

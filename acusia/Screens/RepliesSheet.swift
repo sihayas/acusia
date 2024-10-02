@@ -59,52 +59,57 @@ struct RepliesSheet: View {
     var size: CGSize
 
     var body: some View {
+        let heightCenter = size.height / 2
+        let collapsedHeight = size.height * 0.1
+        let collapsedOffset = size.height * 0.05
+        
         ZStack(alignment: .top) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, replyItem in
                 LayerView(
+                    layerManager: layerManager,
                     sampleComments: sampleComments,
                     width: size.width,
                     height: size.height,
+                    heightCenter: heightCenter,
+                    collapsedHeight: collapsedHeight,
                     replyItem: replyItem,
                     index: index,
                     onPushNewView: {
                         withAnimation(.spring()) {
-                            layerManager.layers[index].state = .collapsed(height: 80)
+                            layerManager.layers[index].state = .collapsed(height: collapsedHeight)
                             layerManager.pushLayer()
                         }
                     }
                 )
-                .offset(y: calculateOffset(for: index) + replyItem.offsetY)
+                .offset(y: calculateOffset(for: index, offset: collapsedOffset) + replyItem.offsetY)
                 .zIndex(Double(layerManager.layers.count - index))
-                .modifier(
-                    index == 0
-                        ? AnyViewModifier(RootScrollPhaseModifier())
-                        : AnyViewModifier(LayerScrollPhaseModifier(
-                            index: index,
-                            layerManager: layerManager,
-                            viewHeight: size.height
-                        ))
-                )
             }
         }
         .allowsHitTesting(windowState.isSplitFull)
+        .onReceive(layerManager.$layers) { layers in
+            windowState.isLayered = layers.count > 1
+        }
     }
 
-    private func calculateOffset(for index: Int) -> CGFloat {
-        var totalOffset: CGFloat = 0
-        for i in (index + 1) ..< layerManager.layers.count {
-            if case .collapsed = layerManager.layers[i].state {
-                totalOffset -= 16
-            }
+    private func calculateOffset(for index: Int, offset: CGFloat) -> CGFloat {
+        layerManager.layers[(index + 1)...].reduce(0) { total, layer in
+            layer.isCollapsed ? total - offset : total
         }
-        return totalOffset
     }
 }
 
 struct LayerView: View {
+    @EnvironmentObject private var windowState: WindowState
+    @ObservedObject var layerManager: LayerManager
+    
+    @State private var isOffsetAtTop = true
+    @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
+    
     let sampleComments: [Reply]
     let width: CGFloat
     let height: CGFloat
+    let heightCenter: CGFloat
+    let collapsedHeight: CGFloat
     let replyItem: Layer
     let index: Int
     let onPushNewView: () -> Void
@@ -120,13 +125,26 @@ struct LayerView: View {
                 }
             }
         }
+        .onScrollPhaseChange { _, newPhase, context in
+            scrollState = (newPhase, context)
+        }
+        .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
+            geometry.contentOffset.y
+        }, action: { _, newValue in
+            let atTop = newValue <= 0
+            if index == 0 {
+                windowState.isOffsetAtTop = atTop
+            } else {
+                isOffsetAtTop = atTop
+            }
+        })
         .frame(minWidth: width, minHeight: height)
         .frame(height: dynamicHeight, alignment: .top)
         .clipped()
         .allowsHitTesting(!isCollapsed)
         .overlay(
-            Button(action: isCollapsed ? {} : onPushNewView) {
-                Text(isCollapsed ? "Collapsed" : "Push New RepliesView")
+            Button(action: onPushNewView) {
+                Text(isCollapsed ? "Collapsed" : "Push New View")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
                     .padding()
@@ -138,82 +156,33 @@ struct LayerView: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(isCollapsed ? Color.gray.opacity(0.3) : Color.clear)
         )
+        .simultaneousGesture(
+            DragGesture()
+                .onChanged { value in
+                    guard index > 0, isOffsetAtTop else { return }
+                    let dragY = value.translation.height
+                    if case .collapsed = layerManager.layers[index - 1].state {
+                        layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight + dragY / 2)
+                    }
+                }
+                .onEnded { value in
+                    guard index > 0, isOffsetAtTop else { return }
+                    let dragY = value.translation.height
+                    if case .collapsed = layerManager.layers[index - 1].state, dragY > heightCenter {
+                        withAnimation(.spring()) {
+                            layerManager.layers[index - 1].state = .expanded
+                            layerManager.layers[index].offsetY = height
+                        } completion: {
+                            layerManager.popLayer(at: index)
+                        }
+                    } else {
+                        withAnimation(.spring()) {
+                            layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight)
+                        }
+                    }
+                }
+        )
         .animation(.spring(), value: isCollapsed)
-    }
-}
-
-struct LayerScrollPhaseModifier: ViewModifier {
-    var index: Int
-    @ObservedObject var layerManager: LayerManager
-    var viewHeight: CGFloat
-
-    @State private var isOffsetAtTop = true
-    @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
-
-    func body(content: Content) -> some View {
-        content
-            .onScrollPhaseChange { _, newPhase, context in
-                scrollState = (newPhase, context)
-            }
-            .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
-                geometry.contentOffset.y
-            }, action: { _, newValue in
-                if newValue <= 0 {
-                    isOffsetAtTop = true
-                } else if newValue > 0 {
-                    isOffsetAtTop = false
-                }
-            })
-            .simultaneousGesture(
-                DragGesture()
-                    .onChanged { value in
-                        if isOffsetAtTop, value.translation.height > 0 {
-                            if case .collapsed = layerManager.layers[index - 1].state {
-                                let newHeight = 80 + value.translation.height / 2
-                                layerManager.layers[index - 1].state = .collapsed(height: newHeight)
-                            }
-                        }
-                    }
-                    .onEnded { value in
-                        if isOffsetAtTop, value.translation.height > 0 {
-                            if case .collapsed = layerManager.layers[index - 1].state,
-                               value.translation.height > 50
-                            {
-                                withAnimation(.spring()) {
-                                    layerManager.layers[index - 1].state = .expanded
-                                    layerManager.layers[index].offsetY = viewHeight
-                                } completion: {
-                                    layerManager.popLayer(at: index)
-                                }
-                            } else {
-                                layerManager.layers[index - 1].state = .collapsed(height: 80)
-                            }
-                        }
-                    }
-            )
-    }
-}
-
-struct RootScrollPhaseModifier: ViewModifier {
-    @EnvironmentObject private var windowState: WindowState
-    @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
-
-    func body(content: Content) -> some View {
-        content
-            .onScrollPhaseChange { _, newPhase, context in
-                scrollState = (newPhase, context)
-            }
-            .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
-                geometry.contentOffset.y
-            }, action: { _, newValue in
-                if newValue <= 0 {
-                    if scrollState?.phase == .decelerating {
-                        windowState.isOffsetAtTop = true
-                    }
-                } else if newValue > 0 {
-                    windowState.isOffsetAtTop = false
-                }
-            })
     }
 }
 
