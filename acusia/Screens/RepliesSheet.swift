@@ -66,7 +66,7 @@ struct RepliesSheet: View {
         let heightCenter = size.height / 2
         let collapsedHeight = size.height * 0.18
         let collapsedOffset = size.height * 0.06
-        
+
         ZStack(alignment: .bottom) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, replyItem in
                 LayerView(
@@ -80,12 +80,13 @@ struct RepliesSheet: View {
                     index: index,
                     onPushNewView: {
                         withAnimation(.spring()) {
-                            layerManager.layers[index].state = .collapsed(height: collapsedHeight)
                             layerManager.pushLayer()
+                            layerManager.layers[index].state = .collapsed(height: collapsedHeight)
+                            updateOffsets(collapsedOffset: collapsedOffset)
                         }
                     }
                 )
-                .offset(y: calculateOffset(for: index, offset: collapsedOffset) + replyItem.offsetY)
+                .offset(y: replyItem.offsetY)
                 .zIndex(Double(layerManager.layers.count - index))
             }
         }
@@ -94,16 +95,19 @@ struct RepliesSheet: View {
         }
     }
 
-    private func calculateOffset(for index: Int, offset: CGFloat) -> CGFloat {
+    // Function to update the offsetY for all layers when state changes
+    private func updateOffsets(collapsedOffset: CGFloat) {
         var totalOffset: CGFloat = 0
-        for i in (index + 1) ..< layerManager.layers.count {
-            if case .collapsed = layerManager.layers[i].state {
-                totalOffset += offset
+
+        for index in 0..<layerManager.layers.count {
+            if layerManager.layers[index].isCollapsed {
+                totalOffset -= collapsedOffset
+                layerManager.layers[index].offsetY = totalOffset
             }
         }
-        return totalOffset
     }
 }
+
 struct LayerView: View {
     @EnvironmentObject private var windowState: WindowState
     @ObservedObject var layerManager: LayerManager
@@ -111,6 +115,7 @@ struct LayerView: View {
     @State private var isOffsetAtTop = true
     @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     
+    let colors: [Color] = [.red, .green, .blue, .orange, .purple, .pink, .yellow]
     let sampleComments: [Reply]
     let width: CGFloat
     let height: CGFloat
@@ -150,7 +155,7 @@ struct LayerView: View {
         .frame(height: dynamicHeight, alignment: .top)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(isCollapsed ? Color.gray.opacity(0.3) : Color.clear)
+                .fill(isCollapsed ? colors[index % colors.count] : Color.clear)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius)) // Mask
         .contentShape(RoundedRectangle(cornerRadius: cornerRadius))// Prevents touch inputs
@@ -174,20 +179,25 @@ struct LayerView: View {
                         if case .collapsed = layerManager.layers[index - 1].state {
                             let newHeight = collapsedHeight + dragY / 2
                             layerManager.layers[index - 1].state = .collapsed(height: newHeight)
+                            print(layerManager.layers[index - 1])
+                            
                         }
                     }
                 }
                 .onEnded { value in
                     guard index > 0 else { return }
-                    let dragY = value.translation.height
+                    let verticalDrag = value.translation.height
+                    let verticalVelocity = value.velocity.height
+                    let velocityThreshold: CGFloat = 500
                     
-                    if isOffsetAtTop, dragY > 0 {
+                    if isOffsetAtTop, verticalDrag > 0 {
                         if case .collapsed = layerManager.layers[index - 1].state,
-                           dragY > heightCenter
+                           verticalDrag > heightCenter  || verticalVelocity > velocityThreshold
                         {
                             withAnimation(.spring()) {
                                 layerManager.layers[index - 1].state = .expanded
-                                layerManager.layers[index].offsetY = height
+                                layerManager.layers[index - 1].offsetY = 0
+                                layerManager.layers[index].offsetY = height // Slide the current view down.
                             } completion: {
                                 layerManager.popLayer(at: index)
                             }

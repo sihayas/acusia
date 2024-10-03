@@ -96,7 +96,7 @@ struct AcusiaAppView: View {
             let size = proxy.size
 
             let baseReplyHeight: CGFloat = size.height * 0.7
-            let baseHomeHeight: CGFloat = size.height * 0.3
+            let baseHomeHeight: CGFloat = size.height * 0.4
             
             let maxReplyHeight: CGFloat = size.height * 1.0
             let minHomeHeight: CGFloat = size.height * 0.18
@@ -109,7 +109,7 @@ struct AcusiaAppView: View {
             let homeSplitHeight = max(windowState.isSplit ? baseHomeHeight - dragOffset : size.height, minHomeHeight)
 
             ZStack(alignment: .bottom) {
-                VStack() { // Align to top.
+                VStack(alignment: .leading) { // Align to top.
                     RepliesSheet(size: CGSize(width: size.width, height: maxReplyHeight))
                         .frame(minWidth: size.width, minHeight: size.height)
                         .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
@@ -118,7 +118,7 @@ struct AcusiaAppView: View {
                         .background(Color(UIColor.systemGray6).opacity(replyOpacity))
                         .animation(.spring(), value: replySplitHeight)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .frame(minWidth: size.width, minHeight: size.height, alignment: .top)
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
                     .overlay(
@@ -135,12 +135,13 @@ struct AcusiaAppView: View {
                     )
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.red.opacity(homeOverlayOpacity))
+                    .background(.thickMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
                     .animation(.spring(), value: homeSplitHeight)
             }
+            
             // Add the drag gesture here
             .simultaneousGesture(
                 DragGesture()
@@ -166,7 +167,7 @@ struct AcusiaAppView: View {
                         let verticalVelocity = value.velocity.height
 
                         let velocityThreshold: CGFloat = 1000
-                        let expandHalfwayPoint = (maxReplyHeight - baseReplyHeight) / 2
+                        let expandHalfwayPoint: CGFloat = 25
 
                         let isQuickUpwardSwipe = verticalVelocity < -velocityThreshold
                         let hasDraggedPastHalfwayUp = dragOffset >= expandHalfwayPoint
