@@ -20,15 +20,26 @@ class LayerManager: ObservableObject {
         }
     }
 
+    func updateOffsets(collapsedOffset: CGFloat) {
+        var totalOffset: CGFloat = 0
+
+        for index in 0 ..< layers.count {
+            if layers[index].isCollapsed {
+                totalOffset -= collapsedOffset
+                layers[index].offsetY = totalOffset
+            }
+        }
+    }
+
     struct Layer: Identifiable {
         let id = UUID()
         var state: LayerState = .expanded
         var offsetY: CGFloat = 0 // For animating off-screen
-        
+
         var isCollapsed: Bool {
             state.isCollapsed
         }
-        
+
         var dynamicHeight: CGFloat? {
             state.dynamicHeight
         }
@@ -68,7 +79,7 @@ struct RepliesSheet: View {
         let collapsedOffset = size.height * 0.07
 
         ZStack(alignment: .bottom) {
-            ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, replyItem in
+            ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, layer in
                 LayerView(
                     layerManager: layerManager,
                     sampleComments: sampleComments,
@@ -76,17 +87,10 @@ struct RepliesSheet: View {
                     height: size.height,
                     heightCenter: heightCenter,
                     collapsedHeight: collapsedHeight,
-                    replyItem: replyItem,
-                    index: index,
-                    onPushNewView: {
-                        withAnimation(.spring()) {
-                            layerManager.pushLayer()
-                            layerManager.layers[index].state = .collapsed(height: collapsedHeight)
-                            updateOffsets(collapsedOffset: collapsedOffset)
-                        }
-                    }
+                    collapsedOffset: collapsedOffset,
+                    layer: layer,
+                    index: index
                 )
-                .offset(y: replyItem.offsetY)
                 .zIndex(Double(layerManager.layers.count - index))
             }
         }
@@ -94,49 +98,33 @@ struct RepliesSheet: View {
             windowState.isLayered = layers.count > 1
         }
     }
-
-    // Function to update the offsetY for all layers when state changes
-    private func updateOffsets(collapsedOffset: CGFloat) {
-        var totalOffset: CGFloat = 0
-
-        for index in 0..<layerManager.layers.count {
-            if layerManager.layers[index].isCollapsed {
-                totalOffset -= collapsedOffset
-                layerManager.layers[index].offsetY = totalOffset
-            }
-        }
-    }
 }
 
 struct LayerView: View {
     @EnvironmentObject private var windowState: WindowState
     @ObservedObject var layerManager: LayerManager
-    
+
     @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     @State private var scrollDisabled = false
     @State private var isOffsetAtTop = true
     @State private var blurRadius: CGFloat = 0
     @State private var scale: CGFloat = 1
-    
+
     let colors: [Color] = [.red, .green, .blue, .orange, .purple, .pink, .yellow]
     let sampleComments: [Reply]
     let width: CGFloat
     let height: CGFloat
     let heightCenter: CGFloat
     let collapsedHeight: CGFloat
-    let replyItem: LayerManager.Layer
+    let collapsedOffset: CGFloat
+    let layer: LayerManager.Layer
     let index: Int
-    let onPushNewView: () -> Void
-
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
-        let isCollapsed = replyItem.isCollapsed
-        let dynamicHeight = replyItem.state.dynamicHeight
-
         ZStack {
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 12) {
                     ForEach(sampleComments) { reply in
                         ReplyView(reply: reply)
                     }
@@ -159,35 +147,44 @@ struct LayerView: View {
                 }
             })
             
-            Button(action: isCollapsed ? {} : onPushNewView) {
-                Text(isCollapsed ? "Collapsed" : "Push New View")
+            Button() {
+                layerManager.pushLayer()
+                layerManager.layers[index].state = .collapsed(height: collapsedHeight)
+                layerManager.updateOffsets(collapsedOffset: collapsedOffset)
+            } label: {
+                Image(systemName: "arrow.up")
                     .font(.system(size: 16, weight: .bold))
+                    .padding(12)
+                    .background(Color.white)
+                    .clipShape(Circle())
+                    .shadow(radius: 4)
             }
         }
         .frame(minWidth: width, minHeight: height)
-        .frame(height: dynamicHeight, alignment: .top)
+        .frame(height: layer.state.dynamicHeight, alignment: .top)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(isCollapsed ? colors[index % colors.count] : Color.clear)
+                .fill(layer.isCollapsed ? colors[index % colors.count] : Color.clear)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .offset(y: layer.offsetY)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { value in
                     guard index > 0 else { return }
                     let dragY = value.translation.height
-                    
-                    // Slowly uncollapse the previous layer if there is one if the user drags down.
+
+                    // Slowly expabds the previous layer if there is one if the user drags down.
                     if isOffsetAtTop, dragY > 0 {
                         if !scrollDisabled {
                             scrollDisabled = true
                         }
                         if case .collapsed = layerManager.layers[index - 1].state {
                             let newHeight = collapsedHeight + dragY / 2
-                            
+
                             layerManager.layers[index - 1].state = .collapsed(height: newHeight)
-                            
+
                             withAnimation(.spring()) {
                                 blurRadius = dragY / 100
                                 scale = 1 - dragY / 1000
@@ -201,10 +198,10 @@ struct LayerView: View {
                     let verticalVelocity = value.velocity.height
                     let velocityThreshold: CGFloat = 500
                     scrollDisabled = false
-                    
+
                     if isOffsetAtTop, verticalDrag > 0 {
                         if case .collapsed = layerManager.layers[index - 1].state,
-                           verticalDrag > heightCenter  || verticalVelocity > velocityThreshold
+                           verticalDrag > heightCenter || verticalVelocity > velocityThreshold
                         {
                             // On a successful drag down, collapse the previous layer & animate the current.
                             withAnimation(.spring()) {
@@ -224,7 +221,7 @@ struct LayerView: View {
                     }
                 }
         )
-        .animation(.spring(), value: isCollapsed)
+        .animation(.spring(), value: layer.isCollapsed)
     }
 }
 

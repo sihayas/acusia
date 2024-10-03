@@ -16,6 +16,7 @@
 		CD132AA92C6DE7B400C16804 /* Loupe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD132AA82C6DE7B100C16804 /* Loupe.swift */; };
 		CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CD17C1032CA8FC520014D3FD /* Transmission */; };
 		CD17C1072CAC77670014D3FD /* ReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C1062CAC77650014D3FD /* ReplyView.swift */; };
+		CD17C10C2CAF37440014D3FD /* LayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C10B2CAF37420014D3FD /* LayerManager.swift */; };
 		CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD27939B2C7B883C00486C1D /* AvatarView.swift */; };
 		CD43324F2C82A856009ADBF0 /* RecentlyPlayedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */; };
 		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
@@ -37,7 +38,7 @@
 		CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D19822C27973800FDC979 /* NotificationModel.swift */; };
 		CD8E0BDB2C8D6C8C003A6F91 /* BlackBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */; };
 		CD8E0BDF2C8D7EF8003A6F91 /* RepliesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDE2C8D7EF2003A6F91 /* RepliesSheet.swift */; };
-		CD92450A2CA6713800635716 /* AperturePrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9245092CA6713100635716 /* AperturePrototype.swift */; };
+		CD92450A2CA6713800635716 /* ApertureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9245092CA6713100635716 /* ApertureView.swift */; };
 		CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA330AD2C39EFEE00622779 /* TapbackView.swift */; };
@@ -126,6 +127,7 @@
 		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
 		CD17C1052CA8FCC20014D3FD /* transmission */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = transmission; path = /Users/decoherence/Downloads/transmission; sourceTree = "<absolute>"; };
 		CD17C1062CAC77650014D3FD /* ReplyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyView.swift; sourceTree = "<group>"; };
+		CD17C10B2CAF37420014D3FD /* LayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerManager.swift; sourceTree = "<group>"; };
 		CD27939B2C7B883C00486C1D /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyPlayedView.swift; sourceTree = "<group>"; };
 		CD4BAA9F2C950A570005F3DB /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
@@ -148,7 +150,7 @@
 		CD8D19842C29C5FF00FDC979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackBlurView.swift; sourceTree = "<group>"; };
 		CD8E0BDE2C8D7EF2003A6F91 /* RepliesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesSheet.swift; sourceTree = "<group>"; };
-		CD9245092CA6713100635716 /* AperturePrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AperturePrototype.swift; sourceTree = "<group>"; };
+		CD9245092CA6713100635716 /* ApertureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApertureView.swift; sourceTree = "<group>"; };
 		CD9CC8672C1AA82900E65A86 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDA330AD2C39EFEE00622779 /* TapbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbackView.swift; sourceTree = "<group>"; };
@@ -442,8 +444,9 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CD17C10B2CAF37420014D3FD /* LayerManager.swift */,
 				CD17C1062CAC77650014D3FD /* ReplyView.swift */,
-				CD9245092CA6713100635716 /* AperturePrototype.swift */,
+				CD9245092CA6713100635716 /* ApertureView.swift */,
 				CD4BAAAF2C96495F0005F3DB /* SettingsButtonView.swift */,
 				CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */,
 				CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */,
@@ -651,6 +654,7 @@
 				CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */,
 				CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */,
 				CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */,
+				CD17C10C2CAF37440014D3FD /* LayerManager.swift in Sources */,
 				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
 				CD4BAAA92C95402A0005F3DB /* ImprintView.swift in Sources */,
 				CD8E0BDF2C8D7EF8003A6F91 /* RepliesSheet.swift in Sources */,
@@ -672,7 +676,7 @@
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
 				CDD77DA52C8F966000D5BCC1 /* SqueezePreview.swift in Sources */,
 				CD4BAAB02C9649660005F3DB /* SettingsButtonView.swift in Sources */,
-				CD92450A2CA6713800635716 /* AperturePrototype.swift in Sources */,
+				CD92450A2CA6713800635716 /* ApertureView.swift in Sources */,
 				CDA330AE2C39EFF200622779 /* TapbackView.swift in Sources */,
 				CD9CC8682C1AA82900E65A86 /* SearchAPI.swift in Sources */,
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
