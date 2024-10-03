@@ -64,8 +64,8 @@ struct RepliesSheet: View {
 
     var body: some View {
         let heightCenter = size.height / 2
-        let collapsedHeight = size.height * 0.18
-        let collapsedOffset = size.height * 0.06
+        let collapsedHeight = size.height * 0.21
+        let collapsedOffset = size.height * 0.07
 
         ZStack(alignment: .bottom) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, replyItem in
@@ -112,8 +112,11 @@ struct LayerView: View {
     @EnvironmentObject private var windowState: WindowState
     @ObservedObject var layerManager: LayerManager
     
-    @State private var isOffsetAtTop = true
     @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
+    @State private var scrollDisabled = false
+    @State private var isOffsetAtTop = true
+    @State private var blurRadius: CGFloat = 0
+    @State private var scale: CGFloat = 1
     
     let colors: [Color] = [.red, .green, .blue, .orange, .purple, .pink, .yellow]
     let sampleComments: [Reply]
@@ -124,63 +127,71 @@ struct LayerView: View {
     let replyItem: LayerManager.Layer
     let index: Int
     let onPushNewView: () -> Void
-    
+
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
         let isCollapsed = replyItem.isCollapsed
         let dynamicHeight = replyItem.state.dynamicHeight
 
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                ForEach(sampleComments) { reply in
-                    ReplyView(reply: reply)
+        ZStack {
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 12) {
+                    ForEach(sampleComments) { reply in
+                        ReplyView(reply: reply)
+                    }
                 }
+                .padding(.horizontal, 24)
+                .scaleEffect(scale)
+                .blur(radius: blurRadius)
+            }
+            .scrollDisabled(scrollDisabled)
+            .onScrollPhaseChange { _, newPhase, context in
+                scrollState = (newPhase, context)
+            }
+            .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
+                geometry.contentOffset.y
+            }, action: { _, newValue in
+                if newValue <= 0 {
+                    index == 0 ? (windowState.isOffsetAtTop = true) : (isOffsetAtTop = true)
+                } else if newValue > 0 {
+                    index == 0 ? (windowState.isOffsetAtTop = false) : (isOffsetAtTop = false)
+                }
+            })
+            
+            Button(action: isCollapsed ? {} : onPushNewView) {
+                Text(isCollapsed ? "Collapsed" : "Push New View")
+                    .font(.system(size: 16, weight: .bold))
             }
         }
-        .onScrollPhaseChange { _, newPhase, context in
-            scrollState = (newPhase, context)
-        }
-        .onScrollGeometryChange(for: CGFloat.self, of: { geometry in
-            geometry.contentOffset.y
-        }, action: { _, newValue in
-            // Prevent pop gesture from triggering if scroll offset is not at top
-            if newValue <= 0 {
-                index == 0 ? (windowState.isOffsetAtTop = true) : (isOffsetAtTop = true)
-            } else if newValue > 0 {
-                index == 0 ? (windowState.isOffsetAtTop = false) : (isOffsetAtTop = false)
-            }
-        })
         .frame(minWidth: width, minHeight: height)
         .frame(height: dynamicHeight, alignment: .top)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(isCollapsed ? colors[index % colors.count] : Color.clear)
         )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius)) // Mask
-        .contentShape(RoundedRectangle(cornerRadius: cornerRadius))// Prevents touch inputs
-        .overlay(
-            Button(action: isCollapsed ? {} : onPushNewView) {
-                Text(isCollapsed ? "Collapsed" : "Push New View")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(isCollapsed ? Color.gray : Color.blue)
-                    .cornerRadius(10)
-            }
-        )
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
         .simultaneousGesture(
-            DragGesture()
+            DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { value in
                     guard index > 0 else { return }
                     let dragY = value.translation.height
                     
+                    // Slowly uncollapse the previous layer if there is one if the user drags down.
                     if isOffsetAtTop, dragY > 0 {
+                        if !scrollDisabled {
+                            scrollDisabled = true
+                        }
                         if case .collapsed = layerManager.layers[index - 1].state {
                             let newHeight = collapsedHeight + dragY / 2
-                            layerManager.layers[index - 1].state = .collapsed(height: newHeight)
-                            print(layerManager.layers[index - 1])
                             
+                            layerManager.layers[index - 1].state = .collapsed(height: newHeight)
+                            
+                            withAnimation(.spring()) {
+                                blurRadius = dragY / 100
+                                scale = 1 - dragY / 1000
+                            }
                         }
                     }
                 }
@@ -189,14 +200,16 @@ struct LayerView: View {
                     let verticalDrag = value.translation.height
                     let verticalVelocity = value.velocity.height
                     let velocityThreshold: CGFloat = 500
+                    scrollDisabled = false
                     
                     if isOffsetAtTop, verticalDrag > 0 {
                         if case .collapsed = layerManager.layers[index - 1].state,
                            verticalDrag > heightCenter  || verticalVelocity > velocityThreshold
                         {
+                            // On a successful drag down, collapse the previous layer & animate the current.
                             withAnimation(.spring()) {
                                 layerManager.layers[index - 1].state = .expanded
-                                layerManager.layers[index - 1].offsetY = 0
+                                layerManager.layers[index - 1].offsetY = 0 // Reset the previous view offset.
                                 layerManager.layers[index].offsetY = height // Slide the current view down.
                             } completion: {
                                 layerManager.popLayer(at: index)
@@ -204,6 +217,8 @@ struct LayerView: View {
                         } else {
                             withAnimation(.spring()) {
                                 layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight)
+                                blurRadius = 0
+                                scale = 1
                             }
                         }
                     }

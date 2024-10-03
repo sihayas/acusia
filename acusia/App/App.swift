@@ -99,7 +99,7 @@ struct AcusiaAppView: View {
             let baseHomeHeight: CGFloat = size.height * 0.4
             
             let maxReplyHeight: CGFloat = size.height * 1.0
-            let minHomeHeight: CGFloat = size.height * 0.18
+            let minHomeHeight: CGFloat = size.height * 0.21
 
             let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
             let replyOpacity = 1.0 - heightProgress
@@ -135,7 +135,7 @@ struct AcusiaAppView: View {
                     )
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.thickMaterial)
+                    .background(.yellow.opacity(homeOverlayOpacity))
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
