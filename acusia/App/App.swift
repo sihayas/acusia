@@ -81,6 +81,12 @@ class FloatingBarPresenter {
     }
 }
 
+/// The general idea for the split layout is there is a ZStack container that holds
+/// the RepliesView below the HomeView. When the user triggers a split,
+/// the HomeView mask frame shrinks to the baseHomeHeight
+/// and the RepliesView mask frame expands to the baseReplyHeight.
+/// As the user drags down the RepliesView mask expands to full, and the
+/// HomeView mask shrinks to the minHomeHeight.
 struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKit
@@ -88,6 +94,8 @@ struct AcusiaAppView: View {
 
     @State private var homePath = NavigationPath()
     @State private var dragOffset: CGFloat = 0
+    @State private var selectedBlendMode: BlendMode = .colorDodge
+
 
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
@@ -97,51 +105,62 @@ struct AcusiaAppView: View {
 
             let baseReplyHeight: CGFloat = size.height * 0.7
             let baseHomeHeight: CGFloat = size.height * 0.4
-            
-            let maxReplyHeight: CGFloat = size.height * 1.0
+
+            let maxReplyHeight: CGFloat = size.height
             let minHomeHeight: CGFloat = size.height * 0.21
 
             let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
-            let replyOpacity = 1.0 - heightProgress
-            let homeOverlayOpacity = heightProgress * 0.1
+            let replyOpacity = 0.05 - heightProgress * 0.05
+            let homeOverlayOpacity = heightProgress * 0.05
 
             let replySplitHeight: CGFloat = windowState.isSplit ? baseReplyHeight + dragOffset : 0
             let homeSplitHeight = max(windowState.isSplit ? baseHomeHeight - dragOffset : size.height, minHomeHeight)
 
             ZStack(alignment: .bottom) {
-                VStack(alignment: .leading) { // Align to top.
+                VStack(alignment: .leading) { // Align to top. This contains the clipped view. It has a bg.
                     RepliesSheet(size: CGSize(width: size.width, height: maxReplyHeight))
                         .frame(minWidth: size.width, minHeight: size.height)
                         .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
+                        .overlay(
+                            Color.white.opacity(Double(replyOpacity))
+                                .blendMode(.exclusion)
+                                .animation(.spring(), value: replyOpacity)
+                                .allowsHitTesting(false)
+                        )
                         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                         .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                        .background(Color(UIColor.systemGray6).opacity(replyOpacity))
                         .animation(.spring(), value: replySplitHeight)
                 }
                 .frame(minWidth: size.width, minHeight: size.height, alignment: .top)
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
                     .overlay(
-                        Button {
-                            windowState.isSplit.toggle()
-                        } label: {
-                            Image(systemName: "chevron.up")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.black.opacity(0.5))
-                                .clipShape(Circle())
+                        ZStack {
+                            Color.white.opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
+                                .blendMode(.exclusion)
+                                .animation(.spring(), value: homeOverlayOpacity)
+                                .allowsHitTesting(false)
+                            
+                            Button {
+                                windowState.isSplit.toggle()
+                            } label: {
+                                Image(systemName: "chevron.up")
+                                    .font(.system(size: 24, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background(Color.black.opacity(0.5))
+                                    .clipShape(Circle())
+                            }
                         }
                     )
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.yellow.opacity(homeOverlayOpacity))
+                    .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
                     .animation(.spring(), value: homeSplitHeight)
             }
-            
             // Add the drag gesture here
             .simultaneousGesture(
                 DragGesture()
@@ -151,7 +170,7 @@ struct AcusiaAppView: View {
 
                         let verticalDrag = value.translation.height
 
-                        // Determine if the user is dragging down at the top or if the window is not fully expanded
+                        // Determine if the user is dragging down at the top or if the window is not fully.
                         let isDraggingDownAtTop = verticalDrag > 0 && windowState.isOffsetAtTop
 
                         // Adjust dragOffset for expanding upwards or collapsing downwards
