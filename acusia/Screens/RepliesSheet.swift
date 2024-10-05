@@ -21,12 +21,12 @@ class LayerManager: ObservableObject {
     }
 
     func updateOffsets(collapsedOffset: CGFloat) {
-        var totalOffset: CGFloat = 0
+        var offset: CGFloat = 0
 
         for index in 0 ..< layers.count {
             if layers[index].isCollapsed {
-                totalOffset -= collapsedOffset
-                layers[index].offsetY = totalOffset
+                offset -= collapsedOffset
+                layers[index].offsetY = offset
             }
         }
     }
@@ -35,7 +35,8 @@ class LayerManager: ObservableObject {
         let id = UUID()
         var state: LayerState = .expanded
         var offsetY: CGFloat = 0
-        var isVisible: Bool = true
+        var selectedReply: Reply?
+        var isHidden: Bool = false
 
         var isCollapsed: Bool {
             state.isCollapsed
@@ -73,26 +74,24 @@ struct RepliesSheet: View {
     @StateObject private var layerManager = LayerManager()
 
     var size: CGSize
+    var minHomeHeight: CGFloat
 
     var body: some View {
-        let heightCenter = size.height / 2
-        let collapsedHeight = size.height * 0.21
-        let collapsedOffset = size.height * 0.04
-
         ZStack(alignment: .bottom) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, layer in
                 LayerView(
                     layerManager: layerManager,
-                    sampleComments: sampleComments,
                     width: size.width,
                     height: size.height,
-                    heightCenter: heightCenter,
-                    collapsedHeight: collapsedHeight,
-                    collapsedOffset: collapsedOffset,
+                    collapsedHeight: minHomeHeight,
+                    collapsedOffset: minHomeHeight,
                     layer: layer,
                     index: index
                 )
                 .zIndex(Double(layerManager.layers.count - index))
+                .onAppear {
+                    print("Collapsed height: \(minHomeHeight)")
+                }
             }
         }
         .onReceive(layerManager.$layers) { layers in
@@ -110,13 +109,11 @@ struct LayerView: View {
     @State private var isOffsetAtTop = true
     @State private var blurRadius: CGFloat = 0
     @State private var scale: CGFloat = 1
-    @State private var dimmingOpacity: CGFloat = 0
+    @Namespace private var namespace
 
     let colors: [Color] = [.red, .green, .blue, .orange, .purple, .pink, .yellow]
-    let sampleComments: [Reply]
     let width: CGFloat
     let height: CGFloat
-    let heightCenter: CGFloat
     let collapsedHeight: CGFloat
     let collapsedOffset: CGFloat
     let layer: LayerManager.Layer
@@ -131,43 +128,45 @@ struct LayerView: View {
                 isOffsetAtTop: $isOffsetAtTop,
                 blurRadius: $blurRadius,
                 scale: $scale,
-                dimmingOpacity: $dimmingOpacity,
-                sampleComments: sampleComments,
                 width: width,
                 height: height,
                 index: index,
                 collapsedHeight: collapsedHeight,
                 collapsedOffset: collapsedOffset,
                 layerManager: layerManager,
-                layer: layer
+                layer: layer,
+                namespace: namespace
             )
 
-            Button {
-                withAnimation(.spring()) {
-                    layerManager.pushLayer()
-                    layerManager.layers[index].state = .collapsed(height: collapsedHeight)
-                    layerManager.updateOffsets(collapsedOffset: collapsedOffset)
-                } completion: {
-                    layerManager.layers[index].isVisible = false
+            VStack(alignment: .leading) { // Make sure it's always top leading aligned.
+                VStack(alignment: .leading) { // Reserve space for match geometry to work.
+                    if layer.selectedReply != nil {
+                        ReplyView(reply: layer.selectedReply!)
+                            .matchedGeometryEffect(id: layer.selectedReply!.id, in: namespace)
+                            .border(Color.white, width: 2)
+                            .onTapGesture {
+                                withAnimation(.spring()) {
+                                    layerManager.popLayer(at: index)
+                                    layerManager.layers[index].selectedReply = nil
+                                }
+                            }
+                            .transition(.scale(1.0))
+                    }
                 }
-            } label: {
-                Image(systemName: "arrow.up")
-                    .font(.system(size: 16, weight: .bold))
-                    .padding(12)
-                    .background(Color.white)
-                    .clipShape(Circle())
-                    .shadow(radius: 4)
+                .frame(width: width)
+                .transition(.scale(1.0))
+
+                Spacer()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .allowsHitTesting(false)
         }
         .edgesIgnoringSafeArea(.all)
         .frame(minWidth: width, minHeight: height)
         .frame(height: layer.state.dynamicHeight, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(layer.isCollapsed ? colors[index % colors.count] : .black)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .background(layer.isCollapsed ? colors[index % colors.count].opacity(0.5) : .black)
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
+        .contentShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
         .offset(y: layer.offsetY)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
@@ -180,7 +179,7 @@ struct LayerView: View {
                         if !scrollDisabled {
                             scrollDisabled = true
                         }
-                        
+
                         if case .collapsed = layerManager.layers[index - 1].state {
                             let newHeight = collapsedHeight + dragY / 2
 
@@ -190,8 +189,6 @@ struct LayerView: View {
                             // Animated through .animation.
                             blurRadius = min(max(dragY / 100, 0), 4)
                             scale = 1 - dragY / 1000
-
-                            dimmingOpacity = min(dragY / 1000, 0.3)
                         }
                     }
                 }
@@ -204,13 +201,14 @@ struct LayerView: View {
 
                     if isOffsetAtTop, verticalDrag > 0 {
                         if case .collapsed = layerManager.layers[index - 1].state,
-                           verticalDrag > heightCenter || verticalVelocity > velocityThreshold
+                           verticalDrag > height / 2 || verticalVelocity > velocityThreshold
                         {
                             // On a successful drag down, expand the previous layer & animate the current.
                             withAnimation(.spring()) {
                                 layerManager.layers[index - 1].state = .expanded
                                 layerManager.layers[index - 1].offsetY = 0 // Reset the previous view offset.
-                                layerManager.layers[index - 1].isVisible = true
+                                layerManager.layers[index - 1].selectedReply = nil
+                                layerManager.layers[index - 1].isHidden = false
                             } completion: {
                                 layerManager.popLayer(at: index)
                             }
@@ -218,7 +216,6 @@ struct LayerView: View {
                             // Reset
                             withAnimation(.spring()) {
                                 layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight)
-                                dimmingOpacity = 0
                             }
                             blurRadius = 0
                             scale = 1
@@ -229,6 +226,52 @@ struct LayerView: View {
     }
 }
 
+struct LayerScrollViewWrapper: UIViewControllerRepresentable {
+    @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
+    @Binding var scrollDisabled: Bool
+    @Binding var isOffsetAtTop: Bool
+    @Binding var blurRadius: CGFloat
+    @Binding var scale: CGFloat
+
+    let width: CGFloat
+    let height: CGFloat
+    let index: Int
+    let collapsedHeight: CGFloat
+    let collapsedOffset: CGFloat
+    let layerManager: LayerManager
+    let layer: LayerManager.Layer
+    let namespace: Namespace.ID
+
+    func makeUIViewController(context: Context) -> UIHostingController<LayerScrollView> {
+        let layerScrollView = LayerScrollView(
+            scrollState: $scrollState,
+            scrollDisabled: $scrollDisabled,
+            isOffsetAtTop: $isOffsetAtTop,
+            blurRadius: $blurRadius,
+            scale: $scale,
+            width: width,
+            height: height,
+            index: index,
+            collapsedHeight: collapsedHeight,
+            collapsedOffset: collapsedOffset,
+            layerManager: layerManager,
+            namespace: namespace
+        )
+
+        let hostingController = UIHostingController(rootView: layerScrollView)
+        hostingController.view.backgroundColor = .clear
+        hostingController.safeAreaRegions = []
+//        hostingController.sizingOptions = .intrinsicContentSize
+        return hostingController
+    }
+
+    func updateUIViewController(_ uiViewController: UIHostingController<LayerScrollView>, context: Context) {
+        uiViewController.view.isHidden = layer.isHidden
+    }
+
+    typealias UIViewControllerType = UIHostingController<LayerScrollView>
+}
+
 struct LayerScrollView: View {
     @EnvironmentObject private var windowState: WindowState
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
@@ -236,21 +279,36 @@ struct LayerScrollView: View {
     @Binding var isOffsetAtTop: Bool
     @Binding var blurRadius: CGFloat
     @Binding var scale: CGFloat
-    @Binding var dimmingOpacity: CGFloat
 
-    let sampleComments: [Reply]
     let width: CGFloat
     let height: CGFloat
     let index: Int
     let collapsedHeight: CGFloat
     let collapsedOffset: CGFloat
     let layerManager: LayerManager
+    let namespace: Namespace.ID
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(sampleComments) { reply in
-                    ReplyView(reply: reply)
+                    if index < layerManager.layers.count {
+                        ReplyView(reply: reply)
+                            .matchedGeometryEffect(id: reply.id, in: namespace)
+                            .opacity(layerManager.layers[index].selectedReply == reply ? 0 : 1)
+                            .onTapGesture {
+                                withAnimation(.spring()) {
+                                    layerManager.layers[index].state = .collapsed(height: collapsedHeight)
+                                    print("collapsedHeight: \(collapsedHeight)")
+                                    layerManager.updateOffsets(collapsedOffset: collapsedOffset)
+                                    layerManager.layers[index].selectedReply = reply
+                                    layerManager.pushLayer()
+                                } completion: {
+                                    layerManager.layers[index].isHidden = true
+                                }
+                            }
+                            .transition(.scale(1.0))
+                    }
                 }
             }
             .padding(24)
@@ -275,53 +333,4 @@ struct LayerScrollView: View {
             }
         })
     }
-}
-
-struct LayerScrollViewWrapper: UIViewControllerRepresentable {
-    @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
-    @Binding var scrollDisabled: Bool
-    @Binding var isOffsetAtTop: Bool
-    @Binding var blurRadius: CGFloat
-    @Binding var scale: CGFloat
-    @Binding var dimmingOpacity: CGFloat
-    
-    let sampleComments: [Reply]
-    let width: CGFloat
-    let height: CGFloat
-    let index: Int
-    let collapsedHeight: CGFloat
-    let collapsedOffset: CGFloat
-    let layerManager: LayerManager
-    let layer: LayerManager.Layer // Add the layer to access its `isVisible` property
-
-    func makeUIViewController(context: Context) -> UIHostingController<LayerScrollView> {
-        let layerScrollView = LayerScrollView(
-            scrollState: $scrollState,
-            scrollDisabled: $scrollDisabled,
-            isOffsetAtTop: $isOffsetAtTop,
-            blurRadius: $blurRadius,
-            scale: $scale,
-            dimmingOpacity: $dimmingOpacity,
-            sampleComments: sampleComments,
-            width: width,
-            height: height,
-            index: index,
-            collapsedHeight: collapsedHeight,
-            collapsedOffset: collapsedOffset,
-            layerManager: layerManager
-        )
-
-        let hostingController = UIHostingController(rootView: layerScrollView)
-        hostingController.view.backgroundColor = .clear
-        hostingController.safeAreaRegions = []
-//        hostingController.sizingOptions = .intrinsicContentSize
-        return hostingController
-    }
-
-    func updateUIViewController(_ uiViewController: UIHostingController<LayerScrollView>, context: Context) {
-        // Update visibility based on layer.isVisible property
-        uiViewController.view.isHidden = !layer.isVisible
-    }
-
-    typealias UIViewControllerType = UIHostingController<LayerScrollView>
 }

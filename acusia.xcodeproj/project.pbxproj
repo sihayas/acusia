@@ -17,6 +17,7 @@
 		CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CD17C1032CA8FC520014D3FD /* Transmission */; };
 		CD17C1072CAC77670014D3FD /* ReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C1062CAC77650014D3FD /* ReplyView.swift */; };
 		CD17C10C2CAF37440014D3FD /* LayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C10B2CAF37420014D3FD /* LayerManager.swift */; };
+		CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C10D2CB195400014D3FD /* SafeArea.swift */; };
 		CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD27939B2C7B883C00486C1D /* AvatarView.swift */; };
 		CD43324F2C82A856009ADBF0 /* RecentlyPlayedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */; };
 		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
@@ -128,6 +129,7 @@
 		CD17C1052CA8FCC20014D3FD /* transmission */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = transmission; path = /Users/decoherence/Downloads/transmission; sourceTree = "<absolute>"; };
 		CD17C1062CAC77650014D3FD /* ReplyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyView.swift; sourceTree = "<group>"; };
 		CD17C10B2CAF37420014D3FD /* LayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerManager.swift; sourceTree = "<group>"; };
+		CD17C10D2CB195400014D3FD /* SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeArea.swift; sourceTree = "<group>"; };
 		CD27939B2C7B883C00486C1D /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyPlayedView.swift; sourceTree = "<group>"; };
 		CD4BAA9F2C950A570005F3DB /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CD17C10D2CB195400014D3FD /* SafeArea.swift */,
 				CD0D90502CA3C31A004FD674 /* Notification.swift */,
 				CD4BAAA32C9524D50005F3DB /* AnimatableVector.swift */,
 				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
@@ -664,6 +667,7 @@
 				CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */,
 				CDDED78F2C195B2700958B39 /* FeedView.swift in Sources */,
 				CDEB4E922C44AB5800DFF026 /* EntryAPI.swift in Sources */,
+				CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */,
 				CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */,
 				CD17C1072CAC77670014D3FD /* ReplyView.swift in Sources */,
 				CDDED77F2C19520300958B39 /* UserModel.swift in Sources */,

@@ -110,6 +110,3 @@ struct Home: View {
     }
 }
 
-#Preview {
-    AcusiaAppView()
-}

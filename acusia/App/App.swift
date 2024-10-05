@@ -28,6 +28,7 @@ struct AcusiaApp: App {
 
     let persistenceController = PersistenceController.shared
     private var floatingBarPresenter = FloatingBarPresenter()
+    private var safeAreaInsets: UIEdgeInsets = .init()
 
     var body: some Scene {
         WindowGroup {
@@ -44,72 +45,35 @@ struct AcusiaApp: App {
     }
 }
 
-class FloatingBarPresenter {
-    private var floatingBarWindow: UIWindow?
-
-    func showFloatingBar() {
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return
-        }
-
-        // Get safe area insets from the scene's window
-        let safeAreaInsets = scene.windows.first?.safeAreaInsets ?? UIEdgeInsets.zero
-
-        // Pass the insets to the SwiftUI view
-        let view = FloatingBarView(safeAreaInsets: safeAreaInsets)
-            .environmentObject(WindowState.shared)
-            .environmentObject(Auth.shared)
-            .environmentObject(MusicKit.shared)
-            .environmentObject(HomeState.shared)
-
-        let hostingController = UIHostingController(rootView: view)
-        hostingController.view.backgroundColor = .clear
-
-        // Remove safe area from the hosting controller
-        hostingController.safeAreaRegions = SafeAreaRegions()
-
-        floatingBarWindow = PassThroughWindow(windowScene: scene)
-        floatingBarWindow?.backgroundColor = .clear
-
-        let screenBounds = UIScreen.main.bounds
-        floatingBarWindow?.frame = CGRect(x: 0, y: screenBounds.height / 2,
-                                          width: screenBounds.width, height: screenBounds.height / 2)
-        floatingBarWindow?.rootViewController = hostingController
-
-        floatingBarWindow?.windowLevel = UIWindow.Level.alert + 1
-        floatingBarWindow?.isHidden = false
-    }
-}
-
 /// The general idea for the split layout is there is a ZStack container that holds
 /// the RepliesView below the HomeView. When the user triggers a split,
 /// the HomeView mask frame shrinks to the baseHomeHeight
 /// and the RepliesView mask frame expands to the baseReplyHeight.
-/// As the user drags down the RepliesView mask expands to full, and the
+/// As the user drags up the RepliesView mask expands to full, and the
 /// HomeView mask shrinks to the minHomeHeight.
 struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKit
     @EnvironmentObject private var windowState: WindowState
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     @State private var homePath = NavigationPath()
     @State private var dragOffset: CGFloat = 0
-    @State private var selectedBlendMode: BlendMode = .colorDodge
-
 
     let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
+            let height = size.height
+            // let width = size.width
 
             let baseReplyHeight: CGFloat = size.height * 0.7
             let baseHomeHeight: CGFloat = size.height * 0.4
 
-            let maxReplyHeight: CGFloat = size.height
-            let minHomeHeight: CGFloat = size.height * 0.21
+            let minHomeHeight: CGFloat = safeAreaInsets.bottom * 2
 
-            let heightProgress = min(max(dragOffset / (maxReplyHeight - baseReplyHeight), 0), 1)
+            let heightProgress = min(max(dragOffset / (height - baseReplyHeight), 0), 1)
             let replyOpacity = 0.05 - heightProgress * 0.05
             let homeOverlayOpacity = heightProgress * 0.05
 
@@ -118,7 +82,7 @@ struct AcusiaAppView: View {
 
             ZStack(alignment: .bottom) {
                 VStack(alignment: .leading) { // Align to top. This contains the clipped view. It has a bg.
-                    RepliesSheet(size: CGSize(width: size.width, height: maxReplyHeight))
+                    RepliesSheet(size: size, minHomeHeight: minHomeHeight)
                         .frame(minWidth: size.width, minHeight: size.height)
                         .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
                         .overlay(
@@ -140,7 +104,7 @@ struct AcusiaAppView: View {
                                 .blendMode(.exclusion)
                                 .animation(.spring(), value: homeOverlayOpacity)
                                 .allowsHitTesting(false)
-                            
+
                             Button {
                                 windowState.isSplit.toggle()
                             } label: {
@@ -155,7 +119,7 @@ struct AcusiaAppView: View {
                     )
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.black)
+                    .background(.yellow.opacity(0.5))
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
@@ -193,7 +157,7 @@ struct AcusiaAppView: View {
 
                         if isQuickUpwardSwipe || hasDraggedPastHalfwayUp {
                             // Expand the split fully
-                            dragOffset = maxReplyHeight - baseReplyHeight
+                            dragOffset = height - baseReplyHeight
                             windowState.isSplitFull = true
                         } else if verticalDrag > 0 {
                             // User is dragging downwards
@@ -233,10 +197,46 @@ struct AcusiaAppView: View {
                         await musicKitManager.loadRecentlyPlayedSongs()
                     }
                 }
-                print("safeAreaInsets: \(proxy.safeAreaInsets)")
             }
         }
         .ignoresSafeArea()
+    }
+}
+
+class FloatingBarPresenter {
+    private var floatingBarWindow: UIWindow?
+
+    func showFloatingBar() {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            return
+        }
+
+        // Get safe area insets from the scene's window
+        let safeAreaInsets = scene.windows.first?.safeAreaInsets ?? UIEdgeInsets.zero
+
+        // Pass the insets to the SwiftUI view
+        let view = FloatingBarView(safeAreaInsets: safeAreaInsets)
+            .environmentObject(WindowState.shared)
+            .environmentObject(Auth.shared)
+            .environmentObject(MusicKit.shared)
+            .environmentObject(HomeState.shared)
+
+        let hostingController = UIHostingController(rootView: view)
+        hostingController.view.backgroundColor = .clear
+
+        // Remove safe area from the hosting controller
+        hostingController.safeAreaRegions = SafeAreaRegions()
+
+        floatingBarWindow = PassThroughWindow(windowScene: scene)
+        floatingBarWindow?.backgroundColor = .clear
+
+        let screenBounds = UIScreen.main.bounds
+        floatingBarWindow?.frame = CGRect(x: 0, y: screenBounds.height / 2,
+                                          width: screenBounds.width, height: screenBounds.height / 2)
+        floatingBarWindow?.rootViewController = hostingController
+
+        floatingBarWindow?.windowLevel = UIWindow.Level.alert + 1
+        floatingBarWindow?.isHidden = false
     }
 }
 
