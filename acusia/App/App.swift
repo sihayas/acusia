@@ -71,14 +71,22 @@ struct AcusiaAppView: View {
             let baseReplyHeight: CGFloat = size.height * 0.7
             let baseHomeHeight: CGFloat = size.height * 0.4
 
-            let minHomeHeight: CGFloat = safeAreaInsets.bottom * 2
+            let minHomeHeight: CGFloat = safeAreaInsets.bottom * 4
 
+            let replySplitHeight: CGFloat = windowState.isSplit
+                ? baseReplyHeight + dragOffset
+                : 0
+
+            let homeSplitHeight: CGFloat = max(
+                windowState.isSplit
+                    ? baseHomeHeight - dragOffset
+                    : size.height,
+                minHomeHeight
+            )
+            
             let heightProgress = min(max(dragOffset / (height - baseReplyHeight), 0), 1)
             let replyOpacity = 0.05 - heightProgress * 0.05
             let homeOverlayOpacity = heightProgress * 0.05
-
-            let replySplitHeight: CGFloat = windowState.isSplit ? baseReplyHeight + dragOffset : 0
-            let homeSplitHeight = max(windowState.isSplit ? baseHomeHeight - dragOffset : size.height, minHomeHeight)
 
             ZStack(alignment: .bottom) {
                 VStack(alignment: .leading) { // Align to top. This contains the clipped view. It has a bg.
@@ -119,13 +127,12 @@ struct AcusiaAppView: View {
                     )
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.yellow.opacity(0.5))
+                    .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
                     .animation(.spring(), value: homeSplitHeight)
             }
-            // Add the drag gesture here
             .simultaneousGesture(
                 DragGesture()
                     .onChanged { value in
@@ -157,7 +164,7 @@ struct AcusiaAppView: View {
 
                         if isQuickUpwardSwipe || hasDraggedPastHalfwayUp {
                             // Expand the split fully
-                            dragOffset = height - baseReplyHeight
+                            dragOffset = baseHomeHeight
                             windowState.isSplitFull = true
                         } else if verticalDrag > 0 {
                             // User is dragging downwards

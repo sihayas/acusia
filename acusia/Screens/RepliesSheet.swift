@@ -10,6 +10,43 @@ import Transmission
 class LayerManager: ObservableObject {
     @Published var layers: [Layer] = [Layer()]
 
+    struct Layer: Identifiable {
+        let id = UUID()
+        var state: LayerState = .expanded
+        var offsetY: CGFloat = 0
+        var selectedReply: Reply?
+        var isHidden: Bool = false
+
+        var isCollapsed: Bool {
+            state.isCollapsed
+        }
+
+        var dynamicHeight: CGFloat? {
+            state.maskHeight
+        }
+    }
+
+    enum LayerState {
+        case expanded
+        case collapsed(height: CGFloat)
+
+        var isCollapsed: Bool {
+            if case .collapsed = self {
+                return true
+            }
+            return false
+        }
+
+        var maskHeight: CGFloat? {
+            switch self {
+            case .expanded:
+                return nil
+            case .collapsed(let height):
+                return height
+            }
+        }
+    }
+
     func pushLayer() {
         layers.append(Layer())
     }
@@ -30,43 +67,6 @@ class LayerManager: ObservableObject {
             }
         }
     }
-
-    struct Layer: Identifiable {
-        let id = UUID()
-        var state: LayerState = .expanded
-        var offsetY: CGFloat = 0
-        var selectedReply: Reply?
-        var isHidden: Bool = false
-
-        var isCollapsed: Bool {
-            state.isCollapsed
-        }
-
-        var dynamicHeight: CGFloat? {
-            state.dynamicHeight
-        }
-    }
-
-    enum LayerState {
-        case expanded
-        case collapsed(height: CGFloat)
-
-        var isCollapsed: Bool {
-            if case .collapsed = self {
-                return true
-            }
-            return false
-        }
-
-        var dynamicHeight: CGFloat? {
-            switch self {
-            case .expanded:
-                return nil
-            case .collapsed(let height):
-                return height
-            }
-        }
-    }
 }
 
 struct RepliesSheet: View {
@@ -84,19 +84,14 @@ struct RepliesSheet: View {
                     width: size.width,
                     height: size.height,
                     collapsedHeight: minHomeHeight,
-                    collapsedOffset: minHomeHeight,
+                    collapsedOffset: minHomeHeight / 2,
                     layer: layer,
                     index: index
                 )
                 .zIndex(Double(layerManager.layers.count - index))
-                .onAppear {
-                    print("Collapsed height: \(minHomeHeight)")
-                }
             }
         }
-        .onReceive(layerManager.$layers) { layers in
-            windowState.isLayered = layers.count > 1
-        }
+        .frame(width: size.width, height: size.height, alignment: .bottom) // Make sure it's always bottom aligned.
     }
 }
 
@@ -143,7 +138,6 @@ struct LayerView: View {
                     if layer.selectedReply != nil {
                         ReplyView(reply: layer.selectedReply!)
                             .matchedGeometryEffect(id: layer.selectedReply!.id, in: namespace)
-                            .border(Color.white, width: 2)
                             .onTapGesture {
                                 withAnimation(.spring()) {
                                     layerManager.popLayer(at: index)
@@ -153,6 +147,7 @@ struct LayerView: View {
                             .transition(.scale(1.0))
                     }
                 }
+                .padding(.horizontal, 24)
                 .frame(width: width)
                 .transition(.scale(1.0))
 
@@ -163,10 +158,12 @@ struct LayerView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .frame(minWidth: width, minHeight: height)
-        .frame(height: layer.state.dynamicHeight, alignment: .top)
-        .background(layer.isCollapsed ? colors[index % colors.count].opacity(0.5) : .black)
+        .frame(height: layer.state.maskHeight, alignment: .top)
+        .background(.black.opacity(layer.isCollapsed ? 0 : 1.0))
+        .background(.thinMaterial)
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
         .contentShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
+        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
         .offset(y: layer.offsetY)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
@@ -261,7 +258,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
         let hostingController = UIHostingController(rootView: layerScrollView)
         hostingController.view.backgroundColor = .clear
         hostingController.safeAreaRegions = []
-//        hostingController.sizingOptions = .intrinsicContentSize
+        // hostingController.sizingOptions = .intrinsicContentSize
         return hostingController
     }
 
@@ -294,12 +291,11 @@ struct LayerScrollView: View {
                 ForEach(sampleComments) { reply in
                     if index < layerManager.layers.count {
                         ReplyView(reply: reply)
-                            .matchedGeometryEffect(id: reply.id, in: namespace)
                             .opacity(layerManager.layers[index].selectedReply == reply ? 0 : 1)
+                            .matchedGeometryEffect(id: reply.id, in: namespace)
                             .onTapGesture {
                                 withAnimation(.spring()) {
                                     layerManager.layers[index].state = .collapsed(height: collapsedHeight)
-                                    print("collapsedHeight: \(collapsedHeight)")
                                     layerManager.updateOffsets(collapsedOffset: collapsedOffset)
                                     layerManager.layers[index].selectedReply = reply
                                     layerManager.pushLayer()
@@ -307,7 +303,6 @@ struct LayerScrollView: View {
                                     layerManager.layers[index].isHidden = true
                                 }
                             }
-                            .transition(.scale(1.0))
                     }
                 }
             }

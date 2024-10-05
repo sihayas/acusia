@@ -48,13 +48,6 @@ struct ReplyView: View {
                     }
                     .padding([.leading], 8)
                     .padding([.bottom], 4)
-                    .overlay(
-                        ZStack {
-                            HeartTapSmall(isTapped: false, count: 0)
-                                .offset(x: 12, y: -14)
-                        },
-                        alignment: .topTrailing
-                    )
                 }
             }
 
