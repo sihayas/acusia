@@ -129,7 +129,7 @@ struct AcusiaAppView: View {
                     }
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.black)
+                    .background(.yellow.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
                     .shadow(radius: 10)

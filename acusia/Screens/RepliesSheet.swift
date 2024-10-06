@@ -60,7 +60,7 @@ class LayerManager: ObservableObject {
     func updateOffsets(collapsedOffset: CGFloat) {
         var offset: CGFloat = 0
 
-        for index in 1 ..< layers.count {
+        for index in 0 ..< layers.count {
             if layers[index].isCollapsed {
                 offset -= collapsedOffset
                 layers[index].offsetY = offset
@@ -77,8 +77,9 @@ struct RepliesSheet: View {
     var minHomeHeight: CGFloat
 
     var body: some View {
-        let collapsedHeight = minHomeHeight * 2.25
-        let collapsedOffset = minHomeHeight * 1.25
+        let collapsedHeight = minHomeHeight
+        let collapsedOffset = minHomeHeight
+        
         ZStack(alignment: .bottom) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, layer in
                 LayerView(
@@ -91,6 +92,16 @@ struct RepliesSheet: View {
                     index: index
                 )
                 .zIndex(Double(layerManager.layers.count - index))
+            }
+
+            if layerManager.layers.count > 1 {
+                Rectangle()
+                    .background(
+                        VariableBlurView(radius: 6, mask: Image(.gradient))
+                    )
+                    .foregroundColor(.clear)
+                    .frame(width: size.width, height: collapsedHeight * CGFloat(layerManager.layers.count))
+                    .zIndex(1.5)
             }
         }
         .frame(width: size.width, height: size.height, alignment: .bottom) // Make sure it's always bottom aligned.
@@ -151,7 +162,6 @@ struct LayerView: View {
                     }
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, 12)
                 .frame(width: width)
                 .transition(.scale(1.0))
 
@@ -164,11 +174,11 @@ struct LayerView: View {
         .frame(minWidth: width, minHeight: height)
         .frame(height: layer.state.maskHeight, alignment: .top)
         // .background(layer.isCollapsed ? colors[index % colors.count] : .clear)
-        .background(.black.opacity(layer.isCollapsed ? 0 : 1.0))
-        .background(
-            BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.5)
-                .edgesIgnoringSafeArea(.all)
-        )
+        .background(.black.opacity(layer.isCollapsed ? 0.5 : 1.0))
+        // .background(
+        //     BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.5)
+        //         .edgesIgnoringSafeArea(.all)
+        // )
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
         .contentShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius)) // Prevent touch inputs beyond.
         .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
@@ -314,7 +324,7 @@ struct LayerScrollView: View {
                                     print("Selected reply \(layerManager.layers[index].selectedReply?.id ?? UUID())")
                                 }
                             }
-                            .onChange(of: layerManager.layers[index].selectedReply) { reply in
+                            .onChange(of: layerManager.layers[index].selectedReply) { _ in
                                 print("Selected reply")
                             }
                     }
