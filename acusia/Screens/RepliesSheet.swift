@@ -60,9 +60,9 @@ class LayerManager: ObservableObject {
     func updateOffsets(collapsedOffset: CGFloat) {
         var offset: CGFloat = 0
 
-        for index in 0 ..< layers.count {
+        for index in 1 ..< layers.count {
             if layers[index].isCollapsed {
-                offset -= collapsedOffset
+                offset += collapsedOffset
                 layers[index].offsetY = offset
             }
         }
@@ -77,10 +77,10 @@ struct RepliesSheet: View {
     var minHomeHeight: CGFloat
 
     var body: some View {
-        let collapsedHeight = minHomeHeight
-        let collapsedOffset = minHomeHeight
-        
-        ZStack(alignment: .bottom) {
+        let collapsedHeight = minHomeHeight * 4
+        let collapsedOffset = minHomeHeight * 2
+        let blurHeight = minHomeHeight * 2.5
+        ZStack(alignment: .top) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, layer in
                 LayerView(
                     layerManager: layerManager,
@@ -98,17 +98,19 @@ struct RepliesSheet: View {
                 Rectangle()
                     .background(
                         VariableBlurView(radius: 6, mask: Image(.gradient))
+                            .scaleEffect(y: -1)
                     )
                     .foregroundColor(.clear)
-                    .frame(width: size.width, height: collapsedHeight * CGFloat(layerManager.layers.count))
+                    .frame(width: size.width, height: blurHeight * CGFloat(layerManager.layers.count))
                     .zIndex(1.5)
             }
         }
-        .frame(width: size.width, height: size.height, alignment: .bottom) // Make sure it's always bottom aligned.
+        .frame(width: size.width, height: size.height, alignment: .top) // Important to align collapsed layers.
     }
 }
 
 struct LayerView: View {
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: WindowState
     @ObservedObject var layerManager: LayerManager
 
@@ -152,16 +154,11 @@ struct LayerView: View {
                     if layer.selectedReply != nil {
                         ReplyView(reply: layer.selectedReply!)
                             .matchedGeometryEffect(id: layer.selectedReply!.id, in: namespace)
-                            .onTapGesture {
-                                withAnimation(.spring()) {
-                                    layerManager.popLayer(at: index)
-                                    layerManager.layers[index].selectedReply = nil
-                                }
-                            }
                             .transition(.scale(1.0))
                     }
                 }
                 .padding(.horizontal, 24)
+                .padding(.top, safeAreaInsets.top)
                 .frame(width: width)
                 .transition(.scale(1.0))
 
@@ -174,14 +171,19 @@ struct LayerView: View {
         .frame(minWidth: width, minHeight: height)
         .frame(height: layer.state.maskHeight, alignment: .top)
         // .background(layer.isCollapsed ? colors[index % colors.count] : .clear)
-        .background(.black.opacity(layer.isCollapsed ? 0.5 : 1.0))
-        // .background(
-        //     BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.5)
-        //         .edgesIgnoringSafeArea(.all)
-        // )
-        .clipShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
-        .contentShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius)) // Prevent touch inputs beyond.
-        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+        .background(.black.opacity(layer.isCollapsed ? 0 : 1.0))
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0))
+        .contentShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0)) // Prevent touch inputs beyond.
+        .overlay(
+            PartialStrokeRoundedRectangle(cornerRadius: 20)
+                .strokeBorder(
+                    Color(UIColor.systemGray6),
+                    style: StrokeStyle(
+                        lineWidth: 8,
+                        lineCap: .round
+                    )
+                )
+        )
         .offset(y: layer.offsetY)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
@@ -321,11 +323,7 @@ struct LayerScrollView: View {
                                     layerManager.pushLayer()
                                 } completion: {
                                     layerManager.layers[index].isHidden = true
-                                    print("Selected reply \(layerManager.layers[index].selectedReply?.id ?? UUID())")
                                 }
-                            }
-                            .onChange(of: layerManager.layers[index].selectedReply) { _ in
-                                print("Selected reply")
                             }
                     }
                 }
@@ -353,3 +351,75 @@ struct LayerScrollView: View {
         })
     }
 }
+
+struct PartialStrokeRoundedRectangle: InsettableShape {
+    var cornerRadius: CGFloat
+    var insetAmount: CGFloat = 0
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        // Adjust the rect and corner radius based on the inset amount
+        let adjustedRect = rect.insetBy(dx: insetAmount, dy: insetAmount)
+        let adjustedCornerRadius = cornerRadius - insetAmount
+
+        // Bottom-left corner arc
+        path.move(to: CGPoint(x: adjustedRect.minX, y: adjustedRect.maxY - adjustedCornerRadius))
+        path.addArc(
+            center: CGPoint(x: adjustedRect.minX + adjustedCornerRadius, y: adjustedRect.maxY - adjustedCornerRadius),
+            radius: adjustedCornerRadius,
+            startAngle: Angle(degrees: 180),
+            endAngle: Angle(degrees: 90),
+            clockwise: true
+        )
+
+        // Bottom-right corner arc
+        path.move(to: CGPoint(x: adjustedRect.maxX - adjustedCornerRadius, y: adjustedRect.maxY))
+        path.addArc(
+            center: CGPoint(x: adjustedRect.maxX - adjustedCornerRadius, y: adjustedRect.maxY - adjustedCornerRadius),
+            radius: adjustedCornerRadius,
+            startAngle: Angle(degrees: 90),
+            endAngle: Angle(degrees: 0),
+            clockwise: true
+        )
+
+        return path
+    }
+
+    func inset(by amount: CGFloat) -> some InsettableShape {
+        var newShape = self
+        newShape.insetAmount += amount
+        return newShape
+    }
+}
+
+// 
+// struct PartialStrokeRoundedRectangle: Shape {
+//     var cornerRadius: CGFloat
+// 
+//     func path(in rect: CGRect) -> Path {
+//         var path = Path()
+// 
+//         // Bottom-left corner arc
+//         path.move(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
+//         path.addArc(
+//             center: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY - cornerRadius),
+//             radius: cornerRadius,
+//             startAngle: Angle(degrees: 180),
+//             endAngle: Angle(degrees: 90),
+//             clockwise: true
+//         )
+// 
+//         // Move to the start point of the bottom-right corner arc
+//         path.move(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY))
+//         path.addArc(
+//             center: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY - cornerRadius),
+//             radius: cornerRadius,
+//             startAngle: Angle(degrees: 90),
+//             endAngle: Angle(degrees: 0),
+//             clockwise: true
+//         )
+// 
+//         return path
+//     }
+// }

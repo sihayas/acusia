@@ -71,7 +71,7 @@ struct AcusiaAppView: View {
             let baseReplyHeight: CGFloat = size.height * 0.8
             let baseHomeHeight: CGFloat = size.height * 0.3
 
-            let minHomeHeight: CGFloat = safeAreaInsets.bottom * 2
+            let minHomeHeight: CGFloat = safeAreaInsets.bottom
 
             let replySplitHeight: CGFloat = windowState.isSplit
                 ? baseReplyHeight + dragOffset
@@ -110,7 +110,9 @@ struct AcusiaAppView: View {
                         ZStack {
                             Rectangle()
                                 .foregroundStyle(.clear)
-                                .background(.ultraThinMaterial)
+                                .background(
+                                    BlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.25)
+                                )
                                 .opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
                                 .animation(.spring(), value: homeOverlayOpacity)
                                 .allowsHitTesting(false)
@@ -129,10 +131,10 @@ struct AcusiaAppView: View {
                     }
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
-                    .background(.yellow.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
-                    .contentShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
-                    .shadow(radius: 10)
+                    .background(.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 0, style: .continuous))
+                    .contentShape(RoundedRectangle(cornerRadius: 0, style: .continuous))
+                    // .shadow(radius: 10)
                     .animation(.spring(), value: homeSplitHeight)
             }
             .simultaneousGesture(
