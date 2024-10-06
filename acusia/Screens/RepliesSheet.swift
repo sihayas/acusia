@@ -158,7 +158,7 @@ struct LayerView: View {
                     }
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, safeAreaInsets.top * 0.75)
+                .padding(.top, safeAreaInsets.top)
                 .frame(width: width)
                 .transition(.scale(1.0))
 

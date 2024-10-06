@@ -21,7 +21,7 @@ struct ReplyView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(reply.username)
-                        .font(.system(size: isCollapsed ? 11 : 13))
+                        .font(.system(size: isCollapsed ? 9 : 11))
                         .foregroundColor(.secondary)
                         .padding(.leading, 20)
 
@@ -33,7 +33,7 @@ struct ReplyView: View {
                             .offset(x: -6, y: 4)
 
                         HStack(alignment: .lastTextBaseline, spacing: 0) {
-                            Text("love me love me, you make it far too easy love me love me, you make it far too easy love me love me, you make it far too easy love me love me, you make it far too easy love me love me, you make it far too easy ")
+                            Text(reply.text ?? "")
                                 .foregroundColor(isCollapsed ? .secondary : .white)
                                 .font(isCollapsed ? .footnote : .body)
                                 .multilineTextAlignment(.leading)
@@ -55,24 +55,24 @@ struct ReplyView: View {
             .animation(.spring(), value: isCollapsed)
 
             // Children
-            if !reply.children.isEmpty {
-                Capsule()
-                    .fill(Color(UIColor.systemGray6))
-                    .frame(width: 3)
-                    .frame(width: 32)
-                // Expand thread capsule
-                HStack(spacing: -4) {
-                    LoopPath()
-                        .stroke(Color(UIColor.systemGray6),
-                                style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                        .frame(width: 30, height: 20)
-                        .frame(width: 32)
-                        .transition(.scale)
-                    Text("4 threads")
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundColor(.secondary)
-                }
-            }
+            // if !reply.children.isEmpty {
+            //     Capsule()
+            //         .fill(Color(UIColor.systemGray6))
+            //         .frame(width: 3)
+            //         .frame(width: 32)
+            //     // Expand thread capsule
+            //     HStack(spacing: -4) {
+            //         LoopPath()
+            //             .stroke(Color(UIColor.systemGray6),
+            //                     style: StrokeStyle(lineWidth: 3, lineCap: .round))
+            //             .frame(width: 30, height: 20)
+            //             .frame(width: 32)
+            //             .transition(.scale)
+            //         Text("4 threads")
+            //             .font(.system(size: 11, weight: .medium, design: .rounded))
+            //             .foregroundColor(.secondary)
+            //     }
+            // }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -242,7 +242,7 @@ let sampleComments: [Reply] = [
     ),
     Reply(
         username: "mike",
-        text: "i don’t think it’s that simple",
+        text: "i don’t think it’s that simple. also there is a lot of other stuff, like this. if you want to know more, ask me. otherwise, i’m happy to help",
         avatarURL: "https://picsum.photos/200/200",
         children: [
             Reply(
