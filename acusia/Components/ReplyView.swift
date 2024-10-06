@@ -14,7 +14,7 @@ struct ReplyView: View {
     var body: some View {
         let background: Color = isCollapsed ? .black : Color(UIColor.systemGray6)
         let strokeColor: Color = isCollapsed ? Color(UIColor.systemGray6) : .black
-        
+
         VStack(alignment: .leading) {
             HStack(alignment: .bottom, spacing: 0) {
                 AvatarView(size: 32, imageURL: reply.avatarURL)
@@ -35,7 +35,7 @@ struct ReplyView: View {
                         HStack(alignment: .lastTextBaseline, spacing: 0) {
                             Text(reply.text ?? "")
                                 .foregroundColor(isCollapsed ? .secondary : .white)
-                                .font(isCollapsed ? .footnote : .body)
+                                .font(isCollapsed ? .system(size: 11) : .system(size: 16))
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .lineLimit(isCollapsed ? 2 : nil)
@@ -78,6 +78,34 @@ struct ReplyView: View {
     }
 }
 
+struct BubbleWithTail: Shape {
+    func path(in rect: CGRect) -> Path {
+        // Create the main bubble (rounded rectangle)
+        let bubbleRect = rect
+        let bubble = RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .path(in: bubbleRect)
+
+        // Define the size and position of the tail
+        let tailSize: CGFloat = 12
+        let tailOffsetX: CGFloat = 0 // Aligns tail's left edge with bubble's left edge
+        let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 2)
+
+        // Create the tail (circle)
+        let tailRect = CGRect(
+            x: bubbleRect.minX + tailOffsetX,
+            y: bubbleRect.minY + tailOffsetY,
+            width: tailSize,
+            height: tailSize
+        )
+        let tail = Circle().path(in: tailRect)
+
+        // Combine the bubble and the tail
+        let combined = bubble.union(tail)
+
+        return combined
+    }
+}
+
 class Reply: Identifiable, Equatable {
     let id = UUID()
     let username: String
@@ -94,35 +122,6 @@ class Reply: Identifiable, Equatable {
 
     static func == (lhs: Reply, rhs: Reply) -> Bool {
         return lhs.id == rhs.id
-    }
-}
-
-
-struct BubbleWithTail: Shape {
-    func path(in rect: CGRect) -> Path {
-        // Create the main bubble (rounded rectangle)
-        let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .path(in: bubbleRect)
-        
-        // Define the size and position of the tail
-        let tailSize: CGFloat = 12
-        let tailOffsetX: CGFloat = 0  // Aligns tail's left edge with bubble's left edge
-        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
-        
-        // Create the tail (circle)
-        let tailRect = CGRect(
-            x: bubbleRect.minX + tailOffsetX,
-            y: bubbleRect.minY + tailOffsetY,
-            width: tailSize,
-            height: tailSize
-        )
-        let tail = Circle().path(in: tailRect)
-        
-        // Combine the bubble and the tail
-        let combined = bubble.union(tail)
-        
-        return combined
     }
 }
 

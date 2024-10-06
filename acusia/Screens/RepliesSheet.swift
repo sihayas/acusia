@@ -85,7 +85,7 @@ struct RepliesSheet: View {
     var body: some View {
         let collapsedHeight = minHomeHeight * 4
         let collapsedOffset = minHomeHeight * 2
-        let blurHeight = minHomeHeight * 2.5
+
         ZStack(alignment: .top) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, layer in
                 LayerView(
@@ -107,11 +107,14 @@ struct RepliesSheet: View {
                             .scaleEffect(y: -1)
                     )
                     .foregroundColor(.clear)
-                    .frame(width: size.width, height: blurHeight * CGFloat(layerManager.layers.count))
+                    .frame(width: size.width, height: collapsedOffset * CGFloat(layerManager.layers.count))
                     .zIndex(1.5)
             }
         }
         .frame(width: size.width, height: size.height, alignment: .top) // Important to align collapsed layers.
+        .onReceive(layerManager.$layers) { layers in
+            windowState.isLayered = layers.count > 1
+        }
     }
 }
 
@@ -179,6 +182,7 @@ struct LayerView: View {
         .frame(height: layer.state.maskHeight, alignment: .top)
         // .background(layer.isCollapsed ? colors[index % colors.count] : .clear)
         .background(.black.opacity(layer.isHidden ? 0 : 1.0))
+        .animation(.spring(), value: layer.isHidden)
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0))
         .contentShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0)) // Prevent touch inputs beyond.
         .overlay(
@@ -355,6 +359,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
 
 struct LayerScrollView: View {
     @EnvironmentObject private var windowState: WindowState
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     @Binding var scrollDisabled: Bool
     @Binding var isOffsetAtTop: Bool
@@ -374,28 +379,29 @@ struct LayerScrollView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(sampleComments) { reply in
-                    if index < layerManager.layers.count {
-                        ReplyView(reply: reply, isCollapsed: false)
-                            .matchedGeometryEffect(id: reply.id, in: namespace)
-                            // .opacity(layer.selectedReply == reply ? 0 : 1)
-                            .onTapGesture {
-                                withAnimation(.spring()) {
-                                    layerManager.layers[index].state = .collapsed(height: collapsedHeight)
-                                    layerManager.updateOffsets(collapsedOffset: collapsedOffset)
-                                    layerManager.layers[index].selectedReply = reply
-                                    layerManager.pushLayer()
-                                } completion: {
-                                    // Unrender content after animating away the other replies for effect.
-                                    layerManager.layers[index].isHidden = true
-                                }
+                    ReplyView(reply: reply, isCollapsed: false)
+                        .matchedGeometryEffect(id: reply.id, in: namespace)
+                        .opacity(layer.selectedReply?.id == reply.id ? 0 : 1)
+                        .onTapGesture {
+                            withAnimation(.spring()) {
+                                layerManager.layers[index].state = .collapsed(height: collapsedHeight)
+                                layerManager.updateOffsets(collapsedOffset: collapsedOffset)
+                                layerManager.layers[index].selectedReply = reply
+                                layerManager.pushLayer()
+                            } completion: {
+                                // Unrender content after animating away the other replies for effect.
+                                layerManager.layers[index].isHidden = true
                             }
-                    }
+                        }
                 }
             }
             .padding(24)
-            .padding(.top, 64)
+            .padding(.top, index == 0 ? safeAreaInsets.top : safeAreaInsets.top + (collapsedOffset * CGFloat(index)))
             .scaleEffect(scale)
             .animation(.spring(), value: scale)
+            .onAppear {
+                print("padding top: \(collapsedOffset * CGFloat(index))")
+            }
         }
         .frame(minWidth: width, minHeight: height)
         .blur(radius: blurRadius) // Blur and scale are separate because scale breaks drag gesture.
