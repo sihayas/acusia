@@ -60,7 +60,7 @@ class LayerManager: ObservableObject {
     func updateOffsets(collapsedOffset: CGFloat) {
         var offset: CGFloat = 0
 
-        for index in 0 ..< layers.count {
+        for index in 1 ..< layers.count {
             if layers[index].isCollapsed {
                 offset -= collapsedOffset
                 layers[index].offsetY = offset
@@ -77,14 +77,16 @@ struct RepliesSheet: View {
     var minHomeHeight: CGFloat
 
     var body: some View {
+        let collapsedHeight = minHomeHeight * 2.25
+        let collapsedOffset = minHomeHeight * 1.25
         ZStack(alignment: .bottom) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, layer in
                 LayerView(
                     layerManager: layerManager,
                     width: size.width,
                     height: size.height,
-                    collapsedHeight: minHomeHeight,
-                    collapsedOffset: minHomeHeight / 2,
+                    collapsedHeight: collapsedHeight,
+                    collapsedOffset: collapsedOffset,
                     layer: layer,
                     index: index
                 )
@@ -113,7 +115,8 @@ struct LayerView: View {
     let collapsedOffset: CGFloat
     let layer: LayerManager.Layer
     let index: Int
-    let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
+    // let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
+    let cornerRadius: CGFloat = 45
 
     var body: some View {
         ZStack {
@@ -148,6 +151,7 @@ struct LayerView: View {
                     }
                 }
                 .padding(.horizontal, 24)
+                .padding(.top, 12)
                 .frame(width: width)
                 .transition(.scale(1.0))
 
@@ -159,10 +163,14 @@ struct LayerView: View {
         .edgesIgnoringSafeArea(.all)
         .frame(minWidth: width, minHeight: height)
         .frame(height: layer.state.maskHeight, alignment: .top)
+        // .background(layer.isCollapsed ? colors[index % colors.count] : .clear)
         .background(.black.opacity(layer.isCollapsed ? 0 : 1.0))
-        .background(.thinMaterial)
+        .background(
+            BlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 0.5)
+                .edgesIgnoringSafeArea(.all)
+        )
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
-        .contentShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius))
+        .contentShape(UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: cornerRadius)) // Prevent touch inputs beyond.
         .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
         .offset(y: layer.offsetY)
         .simultaneousGesture(
@@ -180,7 +188,7 @@ struct LayerView: View {
                         if case .collapsed = layerManager.layers[index - 1].state {
                             let newHeight = collapsedHeight + dragY / 2
 
-                            // Expand
+                            // Expand previous layer.
                             layerManager.layers[index - 1].state = .collapsed(height: newHeight)
 
                             // Animated through .animation.
@@ -200,7 +208,7 @@ struct LayerView: View {
                         if case .collapsed = layerManager.layers[index - 1].state,
                            verticalDrag > height / 2 || verticalVelocity > velocityThreshold
                         {
-                            // On a successful drag down, expand the previous layer & animate the current.
+                            // Expand the previous layer & animate the current.
                             withAnimation(.spring()) {
                                 layerManager.layers[index - 1].state = .expanded
                                 layerManager.layers[index - 1].offsetY = 0 // Reset the previous view offset.
@@ -252,6 +260,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
             collapsedHeight: collapsedHeight,
             collapsedOffset: collapsedOffset,
             layerManager: layerManager,
+            layer: layer,
             namespace: namespace
         )
 
@@ -283,6 +292,7 @@ struct LayerScrollView: View {
     let collapsedHeight: CGFloat
     let collapsedOffset: CGFloat
     let layerManager: LayerManager
+    let layer: LayerManager.Layer
     let namespace: Namespace.ID
 
     var body: some View {
@@ -291,7 +301,7 @@ struct LayerScrollView: View {
                 ForEach(sampleComments) { reply in
                     if index < layerManager.layers.count {
                         ReplyView(reply: reply)
-                            .opacity(layerManager.layers[index].selectedReply == reply ? 0 : 1)
+                            .opacity(layer.selectedReply == reply ? 0 : 1)
                             .matchedGeometryEffect(id: reply.id, in: namespace)
                             .onTapGesture {
                                 withAnimation(.spring()) {
@@ -301,7 +311,11 @@ struct LayerScrollView: View {
                                     layerManager.pushLayer()
                                 } completion: {
                                     layerManager.layers[index].isHidden = true
+                                    print("Selected reply \(layerManager.layers[index].selectedReply?.id ?? UUID())")
                                 }
+                            }
+                            .onChange(of: layerManager.layers[index].selectedReply) { reply in
+                                print("Selected reply")
                             }
                     }
                 }

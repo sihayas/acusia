@@ -17,9 +17,9 @@ struct ReplyView: View {
                 AvatarView(size: 32, imageURL: reply.avatarURL)
 
                 // Text bubble
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(reply.username)
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(size: 11))
                         .foregroundColor(.secondary)
                         .padding(.leading, 20)
 
@@ -37,7 +37,7 @@ struct ReplyView: View {
                         HStack(alignment: .lastTextBaseline, spacing: 0) {
                             Text(reply.text ?? "")
                                 .foregroundColor(.white)
-                                .font(.system(size: 15, weight: .regular))
+                                .font(.body)
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
                         }

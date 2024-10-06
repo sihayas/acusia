@@ -39,7 +39,7 @@ struct GridView: View {
 
             VStack {
                 Text("Alia")
-                    .font(.system(size: 27, weight: .ultraLight))
+                    .font(.system(size: 27, weight: .regular))
                     .foregroundColor(.primary)
 
                 Spacer()

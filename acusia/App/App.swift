@@ -68,10 +68,10 @@ struct AcusiaAppView: View {
             let height = size.height
             // let width = size.width
 
-            let baseReplyHeight: CGFloat = size.height * 0.7
-            let baseHomeHeight: CGFloat = size.height * 0.4
+            let baseReplyHeight: CGFloat = size.height * 0.8
+            let baseHomeHeight: CGFloat = size.height * 0.3
 
-            let minHomeHeight: CGFloat = safeAreaInsets.bottom * 4
+            let minHomeHeight: CGFloat = safeAreaInsets.bottom * 2
 
             let replySplitHeight: CGFloat = windowState.isSplit
                 ? baseReplyHeight + dragOffset
@@ -83,10 +83,10 @@ struct AcusiaAppView: View {
                     : size.height,
                 minHomeHeight
             )
-            
+
             let heightProgress = min(max(dragOffset / (height - baseReplyHeight), 0), 1)
             let replyOpacity = 0.05 - heightProgress * 0.05
-            let homeOverlayOpacity = heightProgress * 0.05
+            let homeOverlayOpacity = heightProgress * 1.0
 
             ZStack(alignment: .bottom) {
                 VStack(alignment: .leading) { // Align to top. This contains the clipped view. It has a bg.
@@ -106,10 +106,12 @@ struct AcusiaAppView: View {
                 .frame(minWidth: size.width, minHeight: size.height, alignment: .top)
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
-                    .overlay(
+                    .overlay(alignment: .top) {
                         ZStack {
-                            Color.white.opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
-                                .blendMode(.exclusion)
+                            Rectangle()
+                                .foregroundStyle(.clear)
+                                .background(.ultraThinMaterial)
+                                .opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
                                 .animation(.spring(), value: homeOverlayOpacity)
                                 .allowsHitTesting(false)
 
@@ -124,12 +126,12 @@ struct AcusiaAppView: View {
                                     .clipShape(Circle())
                             }
                         }
-                    )
+                    }
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
                     .background(.black)
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
+                    .contentShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
                     .shadow(radius: 10)
                     .animation(.spring(), value: homeSplitHeight)
             }
@@ -260,6 +262,7 @@ struct FloatingBarView: View {
         ZStack {
             ApertureView()
                 .padding(.bottom, safeAreaInsets.bottom) // Use safe area insets
+                .opacity(0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }
