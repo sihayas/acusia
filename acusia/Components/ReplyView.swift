@@ -9,47 +9,50 @@ import SwiftUI
 
 struct ReplyView: View {
     let reply: Reply
+    let isCollapsed: Bool
 
     var body: some View {
+        let background: Color = isCollapsed ? .black : Color(UIColor.systemGray6)
+        let strokeColor: Color = isCollapsed ? Color(UIColor.systemGray6) : .black
+        
         VStack(alignment: .leading) {
-            // Comment
             HStack(alignment: .bottom, spacing: 0) {
                 AvatarView(size: 32, imageURL: reply.avatarURL)
 
-                // Text bubble
                 VStack(alignment: .leading, spacing: 2) {
                     Text(reply.username)
-                        .font(.system(size: 11))
+                        .font(.system(size: isCollapsed ? 11 : 13))
                         .foregroundColor(.secondary)
                         .padding(.leading, 20)
 
                     ZStack(alignment: .bottomLeading) {
                         Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 12, height: 12)
-                            .offset(x: 0, y: 2)
-
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
+                            .stroke(strokeColor, lineWidth: 1)
+                            .fill(background)
                             .frame(width: 6, height: 6)
                             .offset(x: -6, y: 4)
 
                         HStack(alignment: .lastTextBaseline, spacing: 0) {
-                            Text(reply.text ?? "")
-                                .foregroundColor(.white)
-                                .font(.body)
+                            Text("love me love me, you make it far too easy love me love me, you make it far too easy love me love me, you make it far too easy love me love me, you make it far too easy love me love me, you make it far too easy ")
+                                .foregroundColor(isCollapsed ? .secondary : .white)
+                                .font(isCollapsed ? .footnote : .body)
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
+                                .lineLimit(isCollapsed ? 2 : nil)
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Color(UIColor.systemGray6))
-                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .overlay(
+                            BubbleWithTail()
+                                .stroke(strokeColor, lineWidth: 1)
+                        )
+                        .background(background, in: BubbleWithTail())
                     }
                     .padding([.leading], 8)
                     .padding([.bottom], 4)
                 }
             }
+            .animation(.spring(), value: isCollapsed)
 
             // Children
             if !reply.children.isEmpty {
@@ -91,6 +94,35 @@ class Reply: Identifiable, Equatable {
 
     static func == (lhs: Reply, rhs: Reply) -> Bool {
         return lhs.id == rhs.id
+    }
+}
+
+
+struct BubbleWithTail: Shape {
+    func path(in rect: CGRect) -> Path {
+        // Create the main bubble (rounded rectangle)
+        let bubbleRect = rect
+        let bubble = RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .path(in: bubbleRect)
+        
+        // Define the size and position of the tail
+        let tailSize: CGFloat = 12
+        let tailOffsetX: CGFloat = 0  // Aligns tail's left edge with bubble's left edge
+        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
+        
+        // Create the tail (circle)
+        let tailRect = CGRect(
+            x: bubbleRect.minX + tailOffsetX,
+            y: bubbleRect.minY + tailOffsetY,
+            width: tailSize,
+            height: tailSize
+        )
+        let tail = Circle().path(in: tailRect)
+        
+        // Combine the bubble and the tail
+        let combined = bubble.union(tail)
+        
+        return combined
     }
 }
 

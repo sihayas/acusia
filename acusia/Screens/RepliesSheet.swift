@@ -109,6 +109,7 @@ struct RepliesSheet: View {
     }
 }
 
+// MARK: LayerView
 struct LayerView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: WindowState
@@ -128,8 +129,7 @@ struct LayerView: View {
     let collapsedOffset: CGFloat
     let layer: LayerManager.Layer
     let index: Int
-    // let cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
-    let cornerRadius: CGFloat = 45
+    let cornerRadius: CGFloat = 20
 
     var body: some View {
         ZStack {
@@ -152,13 +152,13 @@ struct LayerView: View {
             VStack(alignment: .leading) { // Make sure it's always top leading aligned.
                 VStack(alignment: .leading) { // Reserve space for match geometry to work.
                     if layer.selectedReply != nil {
-                        ReplyView(reply: layer.selectedReply!)
+                        ReplyView(reply: layer.selectedReply!, isCollapsed: layer.isHidden)
                             .matchedGeometryEffect(id: layer.selectedReply!.id, in: namespace)
                             .transition(.scale(1.0))
                     }
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, safeAreaInsets.top)
+                .padding(.top, safeAreaInsets.top * 0.75)
                 .frame(width: width)
                 .transition(.scale(1.0))
 
@@ -175,23 +175,23 @@ struct LayerView: View {
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0))
         .contentShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0)) // Prevent touch inputs beyond.
         .overlay(
-            PartialStrokeRoundedRectangle(cornerRadius: 20)
+            BottomLeftRightArcPath(cornerRadius: cornerRadius)
                 .strokeBorder(
                     Color(UIColor.systemGray6),
                     style: StrokeStyle(
-                        lineWidth: 8,
+                        lineWidth: 6,
                         lineCap: .round
                     )
                 )
         )
         .offset(y: layer.offsetY)
-        .simultaneousGesture(
+        .simultaneousGesture( // MARK: Layer Drag Gestures
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { value in
                     guard index > 0 else { return }
                     let dragY = value.translation.height
 
-                    // Slowly expands the previous layer if the user drags down.
+                    // If the user drags down while the scroll offset is at the top, begin to expand prev.
                     if isOffsetAtTop, dragY > 0 {
                         if !scrollDisabled {
                             scrollDisabled = true
@@ -203,9 +203,14 @@ struct LayerView: View {
                             // Expand previous layer.
                             layerManager.layers[index - 1].state = .collapsed(height: newHeight)
 
-                            // Animated through .animation.
+                            // Obscure the current, animated through .animation.
                             blurRadius = min(max(dragY / 100, 0), 4)
                             scale = 1 - dragY / 1000
+                            
+                            if dragY > 100 {
+                                // Prepare the previous layer, render the content.
+                                layerManager.layers[index - 1].isHidden = false
+                            }
                         }
                     }
                 }
@@ -220,18 +225,19 @@ struct LayerView: View {
                         if case .collapsed = layerManager.layers[index - 1].state,
                            verticalDrag > height / 2 || verticalVelocity > velocityThreshold
                         {
-                            // Expand the previous layer & animate the current.
+                            // Expand the previous layer & scale away the current.
                             withAnimation(.spring()) {
+                                layerManager.layers[index - 1].isHidden = false
+                                layerManager.layers[index - 1].selectedReply = nil
                                 layerManager.layers[index - 1].state = .expanded
                                 layerManager.layers[index - 1].offsetY = 0 // Reset the previous view offset.
-                                layerManager.layers[index - 1].selectedReply = nil
-                                layerManager.layers[index - 1].isHidden = false
                             } completion: {
                                 layerManager.popLayer(at: index)
                             }
                         } else {
                             // Reset
                             withAnimation(.spring()) {
+                                layerManager.layers[index - 1].isHidden = true
                                 layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight)
                             }
                             blurRadius = 0
@@ -243,6 +249,7 @@ struct LayerView: View {
     }
 }
 
+// MARK: LayerScrollViewWrapper
 struct LayerScrollViewWrapper: UIViewControllerRepresentable {
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     @Binding var scrollDisabled: Bool
@@ -290,6 +297,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIHostingController<LayerScrollView>
 }
 
+// MARK: LayerScrollView
 struct LayerScrollView: View {
     @EnvironmentObject private var windowState: WindowState
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
@@ -312,9 +320,9 @@ struct LayerScrollView: View {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(sampleComments) { reply in
                     if index < layerManager.layers.count {
-                        ReplyView(reply: reply)
-                            .opacity(layer.selectedReply == reply ? 0 : 1)
+                        ReplyView(reply: reply, isCollapsed: false)
                             .matchedGeometryEffect(id: reply.id, in: namespace)
+                            // .opacity(layer.selectedReply == reply ? 0 : 1)
                             .onTapGesture {
                                 withAnimation(.spring()) {
                                     layerManager.layers[index].state = .collapsed(height: collapsedHeight)
@@ -322,6 +330,7 @@ struct LayerScrollView: View {
                                     layerManager.layers[index].selectedReply = reply
                                     layerManager.pushLayer()
                                 } completion: {
+                                    // Unrender content after animating away the other replies for effect.
                                     layerManager.layers[index].isHidden = true
                                 }
                             }
@@ -352,7 +361,7 @@ struct LayerScrollView: View {
     }
 }
 
-struct PartialStrokeRoundedRectangle: InsettableShape {
+struct BottomLeftRightArcPath: InsettableShape {
     var cornerRadius: CGFloat
     var insetAmount: CGFloat = 0
 
