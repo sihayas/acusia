@@ -21,6 +21,10 @@ class LayerManager: ObservableObject {
             state.isCollapsed
         }
 
+        var isExpanded: Bool {
+            state.isExpanded
+        }
+
         var dynamicHeight: CGFloat? {
             state.maskHeight
         }
@@ -31,9 +35,12 @@ class LayerManager: ObservableObject {
         case collapsed(height: CGFloat)
 
         var isCollapsed: Bool {
-            if case .collapsed = self {
-                return true
-            }
+            if case .collapsed = self { return true }
+            return false
+        }
+
+        var isExpanded: Bool {
+            if case .expanded = self { return true }
             return false
         }
 
@@ -52,9 +59,8 @@ class LayerManager: ObservableObject {
     }
 
     func popLayer(at index: Int) {
-        if layers.indices.contains(index) {
-            layers.remove(at: index)
-        }
+        guard layers.indices.contains(index) else { return }
+        layers.remove(at: index)
     }
 
     func updateOffsets(collapsedOffset: CGFloat) {
@@ -110,6 +116,7 @@ struct RepliesSheet: View {
 }
 
 // MARK: LayerView
+
 struct LayerView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: WindowState
@@ -171,7 +178,7 @@ struct LayerView: View {
         .frame(minWidth: width, minHeight: height)
         .frame(height: layer.state.maskHeight, alignment: .top)
         // .background(layer.isCollapsed ? colors[index % colors.count] : .clear)
-        .background(.black.opacity(layer.isCollapsed ? 0 : 1.0))
+        .background(.black.opacity(layer.isHidden ? 0 : 1.0))
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0))
         .contentShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: 0)) // Prevent touch inputs beyond.
         .overlay(
@@ -188,60 +195,106 @@ struct LayerView: View {
         .simultaneousGesture( // MARK: Layer Drag Gestures
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { value in
-                    guard index > 0 else { return }
-                    let dragY = value.translation.height
+                    let verticalDrag = value.translation.height
+                    guard verticalDrag > 0 else { return }
 
-                    // If the user drags down while the scroll offset is at the top, begin to expand prev.
-                    if isOffsetAtTop, dragY > 0 {
-                        if !scrollDisabled {
-                            scrollDisabled = true
-                        }
+                    let newHeight = collapsedHeight + verticalDrag / 2
+                    let currentLayer = layerManager.layers[index]
 
-                        if case .collapsed = layerManager.layers[index - 1].state {
-                            let newHeight = collapsedHeight + dragY / 2
+                    if isOffsetAtTop, currentLayer.isExpanded {
+                        // Dragging down on an expanded layer & the scroll offset is at the top,
+                        // disable scrolling, expand the previous layer, animate away the current layer
+                        guard index > 0 else { return }
+                        if !scrollDisabled { scrollDisabled = true }
 
+                        let previousIndex = index - 1
+                        let previousLayer = layerManager.layers[previousIndex]
+
+                        if previousLayer.isCollapsed {
                             // Expand previous layer.
-                            layerManager.layers[index - 1].state = .collapsed(height: newHeight)
+                            layerManager.layers[previousIndex].state = .collapsed(height: newHeight)
 
                             // Obscure the current, animated through .animation.
-                            blurRadius = min(max(dragY / 100, 0), 4)
-                            scale = 1 - dragY / 1000
-                            
-                            if dragY > 100 {
+                            blurRadius = min(max(verticalDrag / 100, 0), 4)
+                            scale = 1 - verticalDrag / 1000
+
+                            if verticalDrag > 100 {
                                 // Prepare the previous layer, render the content.
-                                layerManager.layers[index - 1].isHidden = false
+                                layerManager.layers[previousIndex].isHidden = false
                             }
+                        }
+                    }
+
+                    // If the user drags down on a collapsed layer, expand the layer
+                    if currentLayer.isCollapsed {
+                        layerManager.layers[index].state = .collapsed(height: newHeight)
+
+                        if verticalDrag > 100 {
+                            // Prepare the layer, render the content.
+                            layerManager.layers[index].isHidden = false
                         }
                     }
                 }
                 .onEnded { value in
-                    guard index > 0 else { return }
                     let verticalDrag = value.translation.height
                     let verticalVelocity = value.velocity.height
                     let velocityThreshold: CGFloat = 500
-                    scrollDisabled = false
+                    let shouldExpand = verticalDrag > height / 2 || verticalVelocity > velocityThreshold
 
-                    if isOffsetAtTop, verticalDrag > 0 {
-                        if case .collapsed = layerManager.layers[index - 1].state,
-                           verticalDrag > height / 2 || verticalVelocity > velocityThreshold
-                        {
-                            // Expand the previous layer & scale away the current.
+                    scrollDisabled = false
+                    guard verticalDrag > 0 else { return }
+
+                    let currentLayer = layerManager.layers[index]
+
+                    // Pop current
+                    if isOffsetAtTop, currentLayer.isExpanded {
+                        guard index > 0 else { return }
+                        let previousIndex = index - 1
+                        let previousLayer = layerManager.layers[previousIndex]
+
+                        if previousLayer.isCollapsed {
+                            if shouldExpand {
+                                // Expand the previous layer & scale away the current.
+                                withAnimation(.spring()) {
+                                    layerManager.layers[previousIndex].state = .expanded
+                                    layerManager.layers[previousIndex].offsetY = 0 // Reset the previous view offset.
+                                    layerManager.layers[previousIndex].selectedReply = nil
+                                } completion: {
+                                    // Pop the current layer.
+                                    layerManager.popLayer(at: index)
+                                }
+                            } else {
+                                // Cancel the expansion.
+                                withAnimation(.spring()) {
+                                    layerManager.layers[previousIndex].isHidden = true
+                                    layerManager.layers[previousIndex].state = .collapsed(height: collapsedHeight)
+                                }
+                                blurRadius = 0
+                                scale = 1
+                            }
+                        }
+                    }
+
+                    // Pop all after current
+                    if currentLayer.isCollapsed {
+                        if shouldExpand {
+                            // Expand the layer.
                             withAnimation(.spring()) {
-                                layerManager.layers[index - 1].isHidden = false
-                                layerManager.layers[index - 1].selectedReply = nil
-                                layerManager.layers[index - 1].state = .expanded
-                                layerManager.layers[index - 1].offsetY = 0 // Reset the previous view offset.
+                                layerManager.layers[index].state = .expanded
+                                layerManager.layers[index].offsetY = 0 // Reset the view offset.
+                                layerManager.layers[index].selectedReply = nil
                             } completion: {
-                                layerManager.popLayer(at: index)
+                                // Pop all layers after the current one.
+                                for i in stride(from: layerManager.layers.count - 1, through: index + 1, by: -1) {
+                                    layerManager.popLayer(at: i)
+                                }
                             }
                         } else {
-                            // Reset
+                            // Cancel the expansion.
                             withAnimation(.spring()) {
-                                layerManager.layers[index - 1].isHidden = true
-                                layerManager.layers[index - 1].state = .collapsed(height: collapsedHeight)
+                                layerManager.layers[index].isHidden = true
+                                layerManager.layers[index].state = .collapsed(height: collapsedHeight)
                             }
-                            blurRadius = 0
-                            scale = 1
                         }
                     }
                 }
@@ -250,6 +303,7 @@ struct LayerView: View {
 }
 
 // MARK: LayerScrollViewWrapper
+
 struct LayerScrollViewWrapper: UIViewControllerRepresentable {
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     @Binding var scrollDisabled: Bool
@@ -298,6 +352,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
 }
 
 // MARK: LayerScrollView
+
 struct LayerScrollView: View {
     @EnvironmentObject private var windowState: WindowState
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
@@ -343,7 +398,7 @@ struct LayerScrollView: View {
             .animation(.spring(), value: scale)
         }
         .frame(minWidth: width, minHeight: height)
-        .blur(radius: blurRadius)
+        .blur(radius: blurRadius) // Blur and scale are separate because scale breaks drag gesture.
         .animation(.spring(), value: blurRadius)
         .scrollDisabled(scrollDisabled)
         .onScrollPhaseChange { _, newPhase, context in
@@ -402,13 +457,13 @@ struct BottomLeftRightArcPath: InsettableShape {
     }
 }
 
-// 
+//
 // struct PartialStrokeRoundedRectangle: Shape {
 //     var cornerRadius: CGFloat
-// 
+//
 //     func path(in rect: CGRect) -> Path {
 //         var path = Path()
-// 
+//
 //         // Bottom-left corner arc
 //         path.move(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
 //         path.addArc(
@@ -418,7 +473,7 @@ struct BottomLeftRightArcPath: InsettableShape {
 //             endAngle: Angle(degrees: 90),
 //             clockwise: true
 //         )
-// 
+//
 //         // Move to the start point of the bottom-right corner arc
 //         path.move(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY))
 //         path.addArc(
@@ -428,7 +483,7 @@ struct BottomLeftRightArcPath: InsettableShape {
 //             endAngle: Angle(degrees: 0),
 //             clockwise: true
 //         )
-// 
+//
 //         return path
 //     }
 // }
