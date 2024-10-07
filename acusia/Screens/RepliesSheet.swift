@@ -13,9 +13,8 @@ class LayerManager: ObservableObject {
     struct Layer: Identifiable {
         let id = UUID()
         var state: LayerState = .expanded
-        var offsetY: CGFloat = 0
-        var baseHeight: CGFloat = 0
-        var selectedReply: Reply?
+        var baseHeight: CGFloat = 0 // Store the calculated height
+        var selectedReply: Reply? // Match geometry
         var isHidden: Bool = false // Controls reply collapse & hiding hosting content.
 
         var maskHeight: CGFloat? {
@@ -56,17 +55,6 @@ class LayerManager: ObservableObject {
         layers.remove(at: index)
     }
 
-    func updateOffsets(collapsedOffset: CGFloat) {
-        var offset: CGFloat = 0
-
-        for index in 1 ..< layers.count {
-            if layers[index].state.isCollapsed {
-                offset += collapsedOffset
-                layers[index].offsetY = offset
-            }
-        }
-    }
-    
     func previousLayer(before index: Int) -> Layer? {
         let previousIndex = index - 1
         guard layers.indices.contains(previousIndex) else { return nil }
@@ -292,7 +280,6 @@ struct LayerView: View {
                                     layerManager.popLayer(at: i)
                                 }
                                 layerManager.layers[index].state = .expanded
-                                layerManager.layers[index].offsetY = 0 // Reset the view offset.
                                 layerManager.layers[index].selectedReply = nil
                             } completion: {}
                         } else {
