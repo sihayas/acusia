@@ -35,7 +35,7 @@ struct ReplyView: View {
                         HStack(alignment: .lastTextBaseline, spacing: 0) {
                             Text(reply.text ?? "")
                                 .foregroundColor(isCollapsed ? .secondary : .white)
-                                .font(isCollapsed ? .system(size: 11) : .system(size: 16))
+                                .font(isCollapsed ? .system(size: 11) : .system(size: 17))
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .lineLimit(isCollapsed ? 2 : nil)
@@ -307,68 +307,69 @@ let sampleComments: [Reply] = [
             )
         ]
     ),
+
     Reply(
         username: "alex_b",
-        text: "I disagree with you, janey.",
+        text: "I disagree with you, Janey. I believe your perspective doesn't fully consider all the variables involved in this situation.",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Reply(
         username: "jessica_w",
-        text: "mike, you’re oversimplifying this.",
+        text: "Mike, you're oversimplifying this issue. There are multiple layers we need to delve into before drawing any conclusions.",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Reply(
         username: "daniel_r",
-        text: "Interesting point, but I don’t see it that way.",
+        text: "That's an interesting point, but I don't see it that way. Perhaps there's another angle we should explore to get a better understanding.",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Reply(
         username: "emma_k",
-        text: "janey has a point, mike.",
+        text: "Janey has a valid point, Mike. Maybe we should take her thoughts into consideration before moving forward.",
         avatarURL: "https://picsum.photos/200/200",
         children: [
             Reply(
                 username: "mike",
-                text: "I hear you, but I still think I’m right.",
+                text: "I hear you, but I still think I'm right. I've looked into it extensively and believe my stance holds.",
                 avatarURL: "https://picsum.photos/200/200"
             )
         ]
     ),
     Reply(
         username: "george",
-        text: "This conversation is going in circles.",
+        text: "This conversation is going in circles. Perhaps we should take a step back and reassess our approaches.",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Reply(
         username: "john_doe",
-        text: "sarah_123, I agree with you.",
+        text: "Sarah_123, I agree with you wholeheartedly. Your insights really highlight the core of the issue.",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Reply(
         username: "jane_d",
-        text: "I think everyone’s missing the main point here.",
+        text: "I think everyone's missing the main point here. Let's try to refocus on what's truly important in this discussion.",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Reply(
         username: "tina_l",
-        text: "Can we all just agree to disagree?",
+        text: "Can we all just agree to disagree? It seems we're not going to reach a consensus anytime soon.",
         avatarURL: "https://picsum.photos/200/200"
     ),
     Reply(
         username: "matt_w",
-        text: "mike, you’re totally missing the bigger picture.",
+        text: "Mike, you're totally missing the bigger picture. There's more at stake here than what you're considering.",
         avatarURL: "https://picsum.photos/200/200",
         children: [
             Reply(
                 username: "mike",
-                text: "That’s fair, matt. But consider this...",
+                text: "That's fair, Matt. But consider this perspective, which I think sheds new light on the matter...",
                 avatarURL: "https://picsum.photos/200/200"
             )
         ]
     ),
     Reply(
         username: "lucy_h",
-        text: "This is getting way too heated.",
+        text: "This is getting way too heated. Maybe we should all take a moment to cool down before continuing.",
         avatarURL: "https://picsum.photos/200/200"
     )
 ]

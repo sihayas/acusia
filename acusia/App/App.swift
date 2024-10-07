@@ -66,35 +66,34 @@ struct AcusiaAppView: View {
         GeometryReader { proxy in
             let size = proxy.size
             let height = size.height
-            // let width = size.width
 
-            let baseReplyHeight: CGFloat = size.height * 0.8
-            let baseHomeHeight: CGFloat = size.height * 0.3
+            let collapsedReplyHeight: CGFloat = size.height * 0.7
+            let collapsedHomeHeight: CGFloat = size.height * 0.4
 
-            let minHomeHeight: CGFloat = safeAreaInsets.bottom
+            let expandedReplyHeight: CGFloat = size.height * 0.8
+            let expandedHomeHeight: CGFloat = size.height * 0.2
 
             let replySplitHeight: CGFloat = windowState.isSplit
-                ? baseReplyHeight + dragOffset
+                ? collapsedReplyHeight + dragOffset
                 : 0
 
-            let homeSplitHeight: CGFloat = max(
-                windowState.isSplit
-                    ? baseHomeHeight - dragOffset
-                    : size.height,
-                minHomeHeight
-            )
+            let homeSplitHeight: CGFloat = windowState.isSplit
+                ? (windowState.isSplitFull // Check if fully expanded
+                    ? expandedHomeHeight // If yes, use expandedHomeHeight
+                    : max(collapsedHomeHeight - dragOffset, expandedHomeHeight)) // Otherwise, use the previous calculation
+                : size.height
 
-            let heightProgress = min(max(dragOffset / (height - baseReplyHeight), 0), 1)
+            let heightProgress = min(max(dragOffset / (height - collapsedReplyHeight), 0), 1)
             let replyOpacity = 0.05 - heightProgress * 0.05
             let homeOverlayOpacity = heightProgress * 1.0
 
-            ZStack(alignment: .bottom) {
+            ZStack(alignment: .top) {
                 VStack(alignment: .leading) { // Align to top. This contains the clipped view. It has a bg.
-                    RepliesSheet(size: size, minHomeHeight: minHomeHeight)
+                    RepliesSheet(size: size, minHomeHeight: expandedHomeHeight)
                         .frame(minWidth: size.width, minHeight: size.height)
                         .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
                         .overlay(
-                            Color.white.opacity(Double(replyOpacity))
+                            Color.white.opacity(windowState.isSplitFull ? 0 : 0.05)
                                 .blendMode(.exclusion)
                                 .animation(.spring(), value: replyOpacity)
                                 .allowsHitTesting(false)
@@ -103,15 +102,15 @@ struct AcusiaAppView: View {
                         .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                         .animation(.spring(), value: replySplitHeight)
                 }
-                .frame(minWidth: size.width, minHeight: size.height, alignment: .top)
+                .frame(minWidth: size.width, minHeight: size.height, alignment: .bottom)
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
-                    .overlay(alignment: .top) {
+                    .overlay {
                         ZStack {
                             Rectangle()
                                 .foregroundStyle(.clear)
                                 .background(
-                                    BlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.25)
+                                    .thinMaterial
                                 )
                                 .opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
                                 .animation(.spring(), value: homeOverlayOpacity)
@@ -132,9 +131,9 @@ struct AcusiaAppView: View {
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
                     .background(.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 0, style: .continuous))
-                    .contentShape(RoundedRectangle(cornerRadius: 0, style: .continuous))
-                    // .shadow(radius: 10)
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .shadow(radius: 10)
                     .animation(.spring(), value: homeSplitHeight)
             }
             .simultaneousGesture(
@@ -167,14 +166,14 @@ struct AcusiaAppView: View {
                         let hasDraggedPastHalfwayUp = dragOffset >= expandHalfwayPoint
 
                         if isQuickUpwardSwipe || hasDraggedPastHalfwayUp {
-                            // Expand the split fully
-                            dragOffset = baseHomeHeight
+                            // Set splitHeights to their expanded state
+                            dragOffset = expandedReplyHeight - collapsedReplyHeight
                             windowState.isSplitFull = true
                         } else if verticalDrag > 0 {
                             // User is dragging downwards
                             guard windowState.isOffsetAtTop else { return }
 
-                            let collapseHalfwayPoint = baseReplyHeight / 2
+                            let collapseHalfwayPoint = collapsedReplyHeight / 2
                             let totalDragDown = -dragOffset
 
                             let isQuickDownwardSwipe = verticalVelocity > velocityThreshold
