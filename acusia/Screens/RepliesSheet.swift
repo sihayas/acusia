@@ -8,48 +8,24 @@ import SwiftUI
 import Transmission
 
 class LayerManager: ObservableObject {
-    @Published var layers: [Layer] = [Layer()]
+    @Published var layers: [Layer] = [Layer(maskHeight: 0)]
+    @Published var viewSize: CGSize = .zero
 
     struct Layer: Identifiable {
         let id = UUID()
-        var state: LayerState = .expanded
-        var baseHeight: CGFloat = 0 // Store the calculated height
         var selectedReply: Reply? // Match geometry
+        
         var isHidden: Bool = false // Controls reply collapse & hiding hosting content.
+        var isCollapsed: Bool = false // Indicates if the layer is collapsed.
 
-        var maskHeight: CGFloat? {
-            state.maskHeight
-        }
-    }
-
-    enum LayerState {
-        case expanded
-        case collapsed(height: CGFloat)
-
-        var isCollapsed: Bool {
-            if case .collapsed = self { return true }
-            return false
-        }
-
-        var isExpanded: Bool {
-            if case .expanded = self { return true }
-            return false
-        }
-
-        var maskHeight: CGFloat? {
-            switch self {
-            case .expanded:
-                return nil
-            case .collapsed(let height):
-                return height
-            }
-        }
+        var baseHeight: CGFloat = 0 // Store the calculated height
+        var maskHeight: CGFloat // Mask height for the layer
     }
 
     func pushLayer() {
-        layers.append(Layer())
+        layers.append(Layer(maskHeight: viewSize.height))
     }
-
+    
     func popLayer(at index: Int) {
         guard layers.indices.contains(index) else { return }
         layers.remove(at: index)
@@ -104,6 +80,10 @@ struct RepliesSheet: View {
         .onReceive(layerManager.$layers) { layers in
             windowState.isLayered = layers.count > 1
         }
+        .onAppear {
+            layerManager.viewSize = size
+            layerManager.layers[0].maskHeight = size.height // Set initial mask height
+        }
     }
 }
 
@@ -150,7 +130,7 @@ struct LayerView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .frame(minWidth: width, minHeight: height)
-        .frame(height: layer.state.maskHeight, alignment: .top)
+        .frame(height: layer.maskHeight, alignment: .top)
         .overlay(alignment: .bottom) {
             VStack(alignment: .leading) { // Make sure it's always top leading aligned.
                 VStack(alignment: .leading) { // Reserve space for match geometry to work.
@@ -187,28 +167,28 @@ struct LayerView: View {
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { value in
                     let verticalDrag = value.translation.height
-                    
+
                     guard verticalDrag > 0 else { return }
 
                     let currentLayer = layer
 
                     // Pop the current layer, push the previous.
-                    if isOffsetAtTop, currentLayer.state.isExpanded {
+                    if isOffsetAtTop, !currentLayer.isCollapsed {
                         // Can't push a previous layer if it's the first layer.
                         guard index > 0 else { return }
                         print("Popping previous layer")
-                        
+
                         if !scrollDisabled { scrollDisabled = true }
 
                         let previousIndex = index - 1
                         let previousLayer = layerManager.layers[previousIndex]
 
-                        let previousHeight = previousLayer.maskHeight ?? 0
+                        let previousHeight = previousLayer.maskHeight
                         let newHeight = previousHeight + verticalDrag / 20
-                        
-                        if previousLayer.state.isCollapsed {
+
+                        if previousLayer.isCollapsed {
                             // Push previous layer.
-                            layerManager.layers[previousIndex].state = .collapsed(height: newHeight)
+                            layerManager.layers[previousIndex].maskHeight = newHeight
 
                             // Pop the current, animated through .animation.
                             blurRadius = min(max(verticalDrag / 100, 0), 4)
@@ -217,11 +197,11 @@ struct LayerView: View {
                     }
 
                     // Push the current layer.
-                    if currentLayer.state.isCollapsed {
-                        let currentHeight = currentLayer.maskHeight ?? 0
+                    if currentLayer.isCollapsed {
+                        let currentHeight = currentLayer.maskHeight
                         let newHeight = currentHeight + verticalDrag / 20
-                        
-                        layerManager.layers[index].state = .collapsed(height: newHeight)
+
+                        layerManager.layers[index].maskHeight = newHeight
 
                         if verticalDrag > 80 {
                             layerManager.layers[index].isHidden = false
@@ -235,35 +215,36 @@ struct LayerView: View {
                     let shouldExpand = verticalDrag > height / 2 || verticalVelocity > velocityThreshold
 
                     scrollDisabled = false
-    
+
                     guard verticalDrag > 0 else { return }
 
                     let currentLayer = layer
 
                     // Pop the current layer, push the previous.
-                    if isOffsetAtTop, currentLayer.state.isExpanded {
+                    if isOffsetAtTop, !currentLayer.isCollapsed {
                         guard index > 0 else { return }
-                        
+
                         let previousIndex = index - 1
                         let previousLayer = layerManager.layers[previousIndex]
 
-                        if previousLayer.state.isCollapsed {
+                        if previousLayer.isCollapsed {
                             if shouldExpand {
                                 // Expand the previous layer & scale away the current.
                                 layerManager.layers[previousIndex].isHidden = false
 
                                 withAnimation(.spring()) {
                                     layerManager.popLayer(at: index) // Pop the current layer.
-                                    layerManager.layers[previousIndex].state = .expanded
-                                    // layerManager.layers[previousIndex].offsetY = 0 // Reset the previous view offset.
+                                    layerManager.layers[previousIndex].isCollapsed = false
                                     layerManager.layers[previousIndex].selectedReply = nil
+                                    layerManager.layers[previousIndex].maskHeight = height
                                 }
                             } else {
                                 // Cancel the push.
                                 withAnimation(.spring()) {
                                     layerManager.layers[previousIndex].isHidden = true
-                                    layerManager.layers[previousIndex].state = .collapsed(height: previousLayer.baseHeight)
+                                    layerManager.layers[previousIndex].maskHeight = previousLayer.baseHeight
                                 }
+                                
                                 blurRadius = 0
                                 scale = 1
                             }
@@ -271,7 +252,7 @@ struct LayerView: View {
                     }
 
                     // Push the current layer, pop all layers after.
-                    if currentLayer.state.isCollapsed {
+                    if currentLayer.isCollapsed {
                         if shouldExpand {
                             // Expand the layer.
                             withAnimation(.spring()) {
@@ -279,14 +260,15 @@ struct LayerView: View {
                                 for i in stride(from: layerManager.layers.count - 1, through: index + 1, by: -1) {
                                     layerManager.popLayer(at: i)
                                 }
-                                layerManager.layers[index].state = .expanded
+                                layerManager.layers[index].isCollapsed = false
                                 layerManager.layers[index].selectedReply = nil
+                                layerManager.layers[index].maskHeight = height
                             } completion: {}
                         } else {
                             // Cancel the expansion.
                             withAnimation(.spring()) {
                                 layerManager.layers[index].isHidden = true
-                                layerManager.layers[index].state = .collapsed(height: currentLayer.baseHeight)
+                                layerManager.layers[index].maskHeight = currentLayer.baseHeight
                             }
                         }
                     }
@@ -339,7 +321,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIHostingController<LayerScrollView>, context: Context) {
         // Use the UIView extension to animate hidden state
-        uiViewController.view.animateSetHidden(layer.state.isCollapsed,
+        uiViewController.view.animateSetHidden(layer.isCollapsed,
                                                duration: 0.3)
     }
 
@@ -365,7 +347,7 @@ struct LayerScrollView: View {
     let layerManager: LayerManager
     let layer: LayerManager.Layer
     let namespace: Namespace.ID
-    
+
     private var baseHeight: CGFloat {
         collapsedHeight + ((collapsedHeight / 1.75) * CGFloat(index))
     }
@@ -383,13 +365,12 @@ struct LayerScrollView: View {
                                     layerManager.layers[index].selectedReply = reply
                                 }
                                 withAnimation(.spring()) {
+                                    layerManager.layers[index].isCollapsed = true
                                     layerManager.layers[index].baseHeight = baseHeight
-                                    layerManager.layers[index].state = .collapsed(height: baseHeight)
+                                    layerManager.layers[index].maskHeight = baseHeight
                                     layerManager.pushLayer()
-                                    // layerManager.updateOffsets(collapsedOffset: collapsedOffset)
                                 } completion: {
                                     layerManager.layers[index].isHidden = true
-                                    // Unrender content after animating away the other replies for effect.
                                 }
                             }
                     }
