@@ -200,6 +200,7 @@
 				UIImageView.swift,
 				UINavigationBar.swift,
 				UIScreen.swift,
+				UIView.swift,
 			);
 			target = CDDED7312C194C8400958B39 /* acusia */;
 		};

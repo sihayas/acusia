@@ -205,9 +205,9 @@ struct LayerView: View {
                     let newHeight = collapsedHeight + verticalDrag / 2
                     let currentLayer = layerManager.layers[index]
 
+                    // Dragging down on an expanded layer & offset is at the top,
+                    // Disable scrolling, expand the previous layer, animate away the current layer
                     if isOffsetAtTop, currentLayer.isExpanded {
-                        // Dragging down on an expanded layer & the scroll offset is at the top,
-                        // disable scrolling, expand the previous layer, animate away the current layer
                         guard index > 0 else { return }
                         if !scrollDisabled { scrollDisabled = true }
 
@@ -233,7 +233,7 @@ struct LayerView: View {
                     if currentLayer.isCollapsed {
                         layerManager.layers[index].state = .collapsed(height: newHeight)
 
-                        if verticalDrag > 100 {
+                        if verticalDrag > 80 {
                             // Prepare the layer, render the content.
                             layerManager.layers[index].isHidden = false
                         }
@@ -262,19 +262,20 @@ struct LayerView: View {
                                 withAnimation(.spring()) {
                                     layerManager.layers[previousIndex].state = .expanded
                                     layerManager.layers[previousIndex].offsetY = 0 // Reset the previous view offset.
-                                    layerManager.layers[previousIndex].selectedReply = nil
                                 } completion: {
                                     // Pop the current layer.
+                                    layerManager.layers[previousIndex].selectedReply = nil
                                     layerManager.popLayer(at: index)
                                 }
                             } else {
                                 // Cancel the expansion.
+                                blurRadius = 0
+                                scale = 1
+                                
                                 withAnimation(.spring()) {
                                     layerManager.layers[previousIndex].isHidden = true
                                     layerManager.layers[previousIndex].state = .collapsed(height: collapsedHeight)
                                 }
-                                blurRadius = 0
-                                scale = 1
                             }
                         }
                     }
@@ -314,7 +315,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
     @Binding var isOffsetAtTop: Bool
     @Binding var blurRadius: CGFloat
     @Binding var scale: CGFloat
-
+    
     let width: CGFloat
     let height: CGFloat
     let index: Int
@@ -344,12 +345,13 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
         let hostingController = UIHostingController(rootView: layerScrollView)
         hostingController.view.backgroundColor = .clear
         hostingController.safeAreaRegions = []
-        // hostingController.sizingOptions = .intrinsicContentSize
         return hostingController
     }
 
     func updateUIViewController(_ uiViewController: UIHostingController<LayerScrollView>, context: Context) {
-        uiViewController.view.isHidden = layer.isHidden
+        // Use the UIView extension to animate hidden state
+        uiViewController.view.animateSetHidden(layer.isCollapsed
+                                               , duration: 0.3)
     }
 
     typealias UIViewControllerType = UIHostingController<LayerScrollView>
@@ -379,29 +381,28 @@ struct LayerScrollView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(sampleComments) { reply in
-                    ReplyView(reply: reply, isCollapsed: false)
-                        .matchedGeometryEffect(id: reply.id, in: namespace)
-                        .opacity(layer.selectedReply?.id == reply.id ? 0 : 1)
-                        .onTapGesture {
-                            withAnimation(.spring()) {
-                                layerManager.layers[index].state = .collapsed(height: collapsedHeight)
-                                layerManager.updateOffsets(collapsedOffset: collapsedOffset)
-                                layerManager.layers[index].selectedReply = reply
-                                layerManager.pushLayer()
-                            } completion: {
-                                // Unrender content after animating away the other replies for effect.
-                                layerManager.layers[index].isHidden = true
+                    ZStack {
+                        ReplyView(reply: reply, isCollapsed: false)
+                            .matchedGeometryEffect(id: reply.id, in: namespace)
+                            .opacity(layer.selectedReply?.id == reply.id ? 0 : 1)
+                            .onTapGesture {
+                                withAnimation(.spring()) {
+                                    layerManager.layers[index].state = .collapsed(height: collapsedHeight)
+                                    layerManager.updateOffsets(collapsedOffset: collapsedOffset)
+                                    layerManager.layers[index].selectedReply = reply
+                                    layerManager.pushLayer()
+                                } completion: {
+                                    // Unrender content after animating away the other replies for effect.
+                                    layerManager.layers[index].isHidden = true
+                                }
                             }
-                        }
+                    }
                 }
             }
             .padding(24)
             .padding(.top, index == 0 ? safeAreaInsets.top : safeAreaInsets.top + (collapsedOffset * CGFloat(index)))
             .scaleEffect(scale)
             .animation(.spring(), value: scale)
-            .onAppear {
-                print("padding top: \(collapsedOffset * CGFloat(index))")
-            }
         }
         .frame(minWidth: width, minHeight: height)
         .blur(radius: blurRadius) // Blur and scale are separate because scale breaks drag gesture.
