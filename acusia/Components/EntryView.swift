@@ -173,7 +173,14 @@ struct WispView: View {
     var body: some View {
         let imageUrl = entry.imageUrl
 
-        VStack(spacing: 12) {
+        VStack(spacing: 0) {
+            Text(entry.username)
+                .foregroundColor(.secondary)
+                .font(.system(size: 11, weight: .regular))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 2)
+                .padding(.horizontal, 16)
+            
             VStack(spacing: -12) {
                 ZStack(alignment: .bottomLeading) {
                     HStack(alignment: .lastTextBaseline, spacing: 0) {
@@ -194,7 +201,6 @@ struct WispView: View {
                     )
                     .clipShape(WispBubbleWithTail(scale: scale))
                 }
-                .padding(.horizontal, 64)
                 .zIndex(1)
 
                 HStack(alignment: .bottom, spacing: -32) {
@@ -220,12 +226,8 @@ struct WispView: View {
             }
 
             VStack {
-                Text(entry.username)
-                    .foregroundColor(.secondary)
-                    .font(.system(size: 11, weight: .regular))
-
                 Spacer()
-                    .frame(height: 4)
+                    .frame(height: 12)
 
                 Text(entry.artistName)
                     .foregroundColor(.secondary)
@@ -238,7 +240,8 @@ struct WispView: View {
                     .lineLimit(1)
             }
         }
-        .onAppear { // Add the animation in onAppear
+        .padding(.horizontal, 64)
+        .onAppear {
             withAnimation(
                 .easeInOut(duration: 1)
                 .repeatForever()
@@ -249,7 +252,7 @@ struct WispView: View {
     }
 }
 struct WispBubbleWithTail: Shape {
-    var scale: CGFloat // Add scale as a parameter
+    var scale: CGFloat
 
     func path(in rect: CGRect) -> Path {
         let bubbleRect = rect
@@ -269,8 +272,8 @@ struct WispBubbleWithTail: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 6 * scale // Scale the second circle size
-        let secondCircleOffsetX = tailRect.maxX // Align top-leading with bottom-trailing
+        let secondCircleSize: CGFloat = 6 * scale
+        let secondCircleOffsetX = tailRect.maxX
         let secondCircleOffsetY = tailRect.maxY
         let secondCircleRect = CGRect(
             x: secondCircleOffsetX,
@@ -290,16 +293,6 @@ struct WispBubbleWithTail: Shape {
         set { scale = newValue }
     }
 }
-
-// VStack(alignment: .leading) {
-//     Text(entry.artistName)
-//         .foregroundColor(.secondary)
-//         .font(.system(size: 13, weight: .regular, design: .rounded))
-//     Text(entry.name)
-//         .foregroundColor(.white)
-//         .font(.system(size: 13, weight: .regular, design: .rounded))
-// }
-// .lineLimit(1)
 
 struct VerticalSquigglyLineShape: Shape {
     func path(in rect: CGRect) -> Path {
