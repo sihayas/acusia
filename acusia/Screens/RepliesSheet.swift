@@ -14,7 +14,7 @@ class LayerManager: ObservableObject {
     struct Layer: Identifiable {
         let id = UUID()
         var selectedReply: Reply? // Match geometry
-        
+
         var isHidden: Bool = false // Controls reply collapse & hiding hosting content.
         var isCollapsed: Bool = false // Indicates if the layer is collapsed.
 
@@ -25,7 +25,7 @@ class LayerManager: ObservableObject {
     func pushLayer() {
         layers.append(Layer(maskHeight: viewSize.height))
     }
-    
+
     func popLayer(at index: Int) {
         guard layers.indices.contains(index) else { return }
         layers.remove(at: index)
@@ -140,6 +140,7 @@ struct LayerView: View {
                             .transition(.scale(1.0))
                             .padding(.horizontal, 24)
                             .padding(.bottom, 12)
+                            .scaleEffect(layer.isHidden ? 13 / 17 : 1, anchor: .bottomLeading)
                     }
                 }
                 .frame(width: width, height: collapsedHeight, alignment: .bottom)
@@ -244,7 +245,7 @@ struct LayerView: View {
                                     layerManager.layers[previousIndex].isHidden = true
                                     layerManager.layers[previousIndex].maskHeight = previousLayer.baseHeight
                                 }
-                                
+
                                 blurRadius = 0
                                 scale = 1
                             }
@@ -358,21 +359,26 @@ struct LayerScrollView: View {
                 ForEach(sampleComments) { reply in
                     ZStack {
                         ReplyView(reply: reply, isCollapsed: false)
-                            .matchedGeometryEffect(id: reply.id, in: namespace)
-                            .opacity(layer.selectedReply?.id == reply.id ? 0 : 1)
-                            .onTapGesture {
-                                withAnimation(.smooth) {
-                                    layerManager.layers[index].selectedReply = reply
+                            .hidden()
+
+                        if layer.selectedReply?.id != reply.id {
+                            ReplyView(reply: reply, isCollapsed: false)
+                                .matchedGeometryEffect(id: reply.id, in: namespace)
+                                .animation(nil, value: layer.selectedReply?.id)
+                                .onTapGesture {
+                                    withAnimation(.smooth) {
+                                        layerManager.layers[index].selectedReply = reply
+                                    }
+                                    withAnimation(.spring()) {
+                                        layerManager.layers[index].isCollapsed = true
+                                        layerManager.layers[index].baseHeight = baseHeight
+                                        layerManager.layers[index].maskHeight = baseHeight
+                                        layerManager.pushLayer()
+                                    } completion: {
+                                        layerManager.layers[index].isHidden = true
+                                    }
                                 }
-                                withAnimation(.spring()) {
-                                    layerManager.layers[index].isCollapsed = true
-                                    layerManager.layers[index].baseHeight = baseHeight
-                                    layerManager.layers[index].maskHeight = baseHeight
-                                    layerManager.pushLayer()
-                                } completion: {
-                                    layerManager.layers[index].isHidden = true
-                                }
-                            }
+                        }
                     }
                 }
             }

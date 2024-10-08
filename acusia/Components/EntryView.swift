@@ -11,7 +11,7 @@ import Transmission
 
 struct ArtifactView: View {
     @EnvironmentObject private var windowState: WindowState
-    
+
     let entry: EntryModel
 
     @Binding var showReplySheet: Bool
@@ -26,13 +26,13 @@ struct ArtifactView: View {
         VStack(alignment: .leading) {
             Text(entry.username)
                 .foregroundColor(.secondary)
-                .font(.system(size: 13, weight: .regular))
+                .font(.system(size: 11, weight: .regular))
                 .multilineTextAlignment(.leading)
-                .padding(.leading, 64)
-                .padding(.bottom, -2)
+                .padding(.leading, 68)
+                .padding(.bottom, -6)
 
             HStack(alignment: .bottom, spacing: 8) {
-                AvatarView(size: 48, imageURL: entry.userImage)
+                AvatarView(size: 40, imageURL: entry.userImage)
                     .zIndex(1)
                     .onTapGesture {
                         showReplySheet = true
@@ -59,7 +59,7 @@ struct ArtifactView: View {
                                             VStack {
                                                 Text(entry.text)
                                                     .foregroundColor(.white)
-                                                    .font(.system(size: 15, weight: .semibold))
+                                                    .font(.system(size: 17, weight: .semibold))
                                                     .multilineTextAlignment(.leading)
                                             }
                                             .padding([.horizontal, .top], 20)
@@ -80,20 +80,20 @@ struct ArtifactView: View {
 
                                         HStack {
                                             VStack(alignment: .leading) {
-                                                Text(entry.name)
+                                                Text(entry.artistName)
                                                     .foregroundColor(.secondary)
                                                     .font(.system(size: 11, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
-                                                Text(entry.artistName)
-                                                    .foregroundColor(.secondary)
-                                                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                                Text(entry.name)
+                                                    .foregroundColor(.white)
+                                                    .font(.system(size: 11, weight: .regular, design: .rounded))
                                                     .lineLimit(1)
                                             }
 
                                             Spacer()
 
                                             HeartPath()
-                                                .fill(.pink)
+                                                .fill(.black)
                                                 .frame(width: 28, height: 28)
                                                 .frame(height: 28)
                                                 .shadow(radius: 4)
@@ -215,46 +215,48 @@ struct WispView: View {
         VStack(alignment: .leading) {
             Text(entry.username)
                 .foregroundColor(.secondary)
-                .font(.system(size: 13, weight: .regular))
+                .font(.system(size: 11, weight: .regular))
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 40)
                 .padding(.bottom, -2)
 
             ZStack(alignment: .bottomLeading) {
-                HStack() {
-                    AvatarView(size: 48, imageURL: entry.userImage)
+                HStack {
+                    AvatarView(size: 40, imageURL: entry.userImage)
 
                     HStack {
-                        // Audiowave image in white
-                        Image(systemName: "waveform")
-                            .symbolEffect(.variableColor.iterative, options: .repeating)
-                            .font(.system(size: 13, weight: .bold))
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 11))
                             .foregroundColor(.secondary)
 
                         AsyncImage(url: URL(string: imageUrl)) { image in
                             image
                                 .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(Color.white, lineWidth: 2)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         } placeholder: {
                             Rectangle()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(Color.white, lineWidth: 2)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .frame(width: 42, height: 42)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                        )
+                        .frame(width: 36, height: 36)
 
                         VStack(alignment: .leading) {
-                            Text(entry.name)
+                            Text(entry.artistName)
                                 .foregroundColor(.secondary)
                                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                            Text(entry.artistName)
+                            Text(entry.name)
                                 .foregroundColor(.white)
                                 .font(.system(size: 13, weight: .regular, design: .rounded))
                         }
-                        .lineLimit(1) // Restrict to a single line
-                        .truncationMode(.tail) // Truncate if it's too long
+                        .lineLimit(1)
 
                         Spacer()
                     }
@@ -284,24 +286,24 @@ struct WispView: View {
                 } else {
                     ZStack(alignment: .bottomLeading) {
                         Circle()
+                            .stroke(Color(UIColor.systemGray6), lineWidth: 1)
                             .fill(Color(UIColor.systemGray6))
-                            .frame(width: 5, height: 5)
-                            .offset(x: 8, y: 6)
-                        Circle()
-                            .fill(Color(UIColor.systemGray6))
-                            .frame(width: 12, height: 12)
-                            .offset(x: -2, y: 2)
-                        Text(entry.text)
-                            .foregroundColor(.white)
-                            .font(.system(size: 15, weight: .regular))
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 10)
-                            .background(Color(UIColor.systemGray6),
-                                        in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .frame(width: 6, height: 6)
+                            .offset(x: 12, y: 8)
+
+                        HStack(alignment: .lastTextBaseline, spacing: 0) {
+                            Text(entry.text)
+                                .foregroundColor(.white)
+                                .font(.system(size: 17))
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color(UIColor.systemGray6), in: BubbleWithTail())
                     }
-                    .padding(.bottom, 48)
-                    .padding(.leading, 36)
+                    .padding(.leading, 24)
+                    .padding(.bottom, 44)
                     .padding(.trailing, 64)
                 }
             }

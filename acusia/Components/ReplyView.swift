@@ -21,7 +21,7 @@ struct ReplyView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(reply.username)
-                        .font(.system(size: isCollapsed ? 9 : 11))
+                        .font(.system(size: 11))
                         .foregroundColor(.secondary)
                         .padding(.leading, 20)
 
@@ -34,8 +34,8 @@ struct ReplyView: View {
 
                         HStack(alignment: .lastTextBaseline, spacing: 0) {
                             Text(reply.text ?? "")
-                                .foregroundColor(isCollapsed ? .secondary : .white)
-                                .font(isCollapsed ? .system(size: 11) : .system(size: 17))
+                                .foregroundColor(.white)
+                                .font(.system(size: 17))
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .lineLimit(isCollapsed ? 2 : nil)

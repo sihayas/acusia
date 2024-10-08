@@ -116,15 +116,19 @@ struct AcusiaAppView: View {
                                 .animation(.spring(), value: homeOverlayOpacity)
                                 .allowsHitTesting(false)
 
-                            Button {
-                                windowState.isSplit.toggle()
-                            } label: {
-                                Image(systemName: "chevron.up")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .background(Color.black.opacity(0.5))
-                                    .clipShape(Circle())
+                            VStack {
+                                Spacer()
+                                
+                                Button {
+                                    windowState.isSplit.toggle()
+                                } label: {
+                                    Image(systemName: "chevron.up")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .background(Color.black.opacity(0.5))
+                                        .clipShape(Circle())
+                                }
                             }
                         }
                     }
