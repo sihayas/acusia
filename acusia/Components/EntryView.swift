@@ -167,90 +167,91 @@ struct ArtifactView: View {
 struct WispView: View {
     let entry: EntryModel
     let type: String = "none"
-    
+
     @State private var scale: CGFloat = 1
 
     var body: some View {
         let imageUrl = entry.imageUrl
 
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             Text(entry.username)
                 .foregroundColor(.secondary)
                 .font(.system(size: 11, weight: .regular))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 2)
-                .padding(.horizontal, 16)
-            
-            VStack(spacing: -12) {
-                ZStack(alignment: .bottomLeading) {
-                    HStack(alignment: .lastTextBaseline, spacing: 0) {
-                        Text(entry.text)
-                            .foregroundColor(.white)
-                            .font(.system(size: 16))
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .background(
-                        .ultraThinMaterial
-                            .shadow(
-                                .inner(color: .white.opacity(0.1), radius: 8, x: 0, y: 0)
-                            ),
-                        in: WispBubbleWithTail(scale: scale)
-                    )
-                    .clipShape(WispBubbleWithTail(scale: scale))
+                .padding(.horizontal, 40)
+
+            VStack(alignment: .leading, spacing: -12) {
+                
+                HStack(alignment: .lastTextBaseline, spacing: 0) {
+                    Text(entry.text)
+                        .foregroundColor(.white)
+                        .font(.system(size: 15))
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(
+                    .ultraThinMaterial
+                        .shadow(
+                            .inner(color: .white.opacity(0.1), radius: 8, x: 0, y: 0)
+                        ),
+                    in: WispBubbleWithTail(scale: scale)
+                )
+                .clipShape(WispBubbleWithTail(scale: scale))
+                .padding(.horizontal, 24)
                 .zIndex(1)
 
                 HStack(alignment: .bottom, spacing: -32) {
                     AvatarView(size: 96, imageURL: entry.userImage)
 
-                    AsyncImage(url: URL(string: imageUrl)) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 56, height: 56)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .background(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .stroke(Color.white,
-                                            lineWidth: 4)
-                            )
-                    } placeholder: {
-                        Rectangle()
+                    HStack {
+                        AsyncImage(url: URL(string: imageUrl)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 56, height: 56)
+                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                        .stroke(Color.white,
+                                                lineWidth: 4)
+                                )
+                        } placeholder: {
+                            Rectangle()
+                        }
+                        .frame(width: 56, height: 56)
+                        .shadow(color: .black.opacity(0.4), radius: 8)
+                        
+                        
+                        VStack(alignment: .leading) {
+                            Text(entry.artistName)
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 13, weight: .semibold))
+                                .lineLimit(1)
+                            
+                            Text(entry.name)
+                                .foregroundColor(.white)
+                                .font(.system(size: 13, weight: .semibold))
+                                .lineLimit(1)
+                        }
                     }
-                    .frame(width: 56, height: 56)
-                    .shadow(color: .black.opacity(0.4), radius: 8)
                 }
             }
-
-            VStack {
-                Spacer()
-                    .frame(height: 12)
-
-                Text(entry.artistName)
-                    .foregroundColor(.secondary)
-                    .font(.system(size: 13, weight: .semibold))
-                    .lineLimit(1)
-
-                Text(entry.name)
-                    .foregroundColor(.white)
-                    .font(.system(size: 13, weight: .semibold))
-                    .lineLimit(1)
-            }
         }
-        .padding(.horizontal, 64)
+        .padding(.horizontal, 24)
         .onAppear {
             withAnimation(
                 .easeInOut(duration: 1)
-                .repeatForever()
+                    .repeatForever()
             ) {
                 scale = 1.2
             }
         }
     }
 }
+
 struct WispBubbleWithTail: Shape {
     var scale: CGFloat
 
@@ -260,7 +261,7 @@ struct WispBubbleWithTail: Shape {
             .path(in: bubbleRect)
 
         let tailSize: CGFloat = 12 * scale // Scale the tail size
-        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - 48
+        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - 112
         let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
 
         // Create the tail (circle)
@@ -273,7 +274,7 @@ struct WispBubbleWithTail: Shape {
         let tail = Circle().path(in: tailRect)
 
         let secondCircleSize: CGFloat = 6 * scale
-        let secondCircleOffsetX = tailRect.maxX
+        let secondCircleOffsetX = tailRect.minX - secondCircleSize
         let secondCircleOffsetY = tailRect.maxY
         let secondCircleRect = CGRect(
             x: secondCircleOffsetX,
