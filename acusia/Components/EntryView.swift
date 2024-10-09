@@ -4,10 +4,7 @@
 //
 //  Created by decoherence on 8/25/24.
 //
-
-import BigUIPaging
 import SwiftUI
-import Transmission
 
 enum RotationAxis: Equatable {
     case topRight, topLeft, bottomLeft, bottomRight
@@ -24,15 +21,8 @@ enum RotationAxis: Equatable {
 
 struct ArtifactView: View {
     @EnvironmentObject private var windowState: WindowState
-    let entry: EntryModel
-    @Binding var showReplySheet: Bool
-    @State private var showPopover = false
-    @State private var showPopoverAnimate = false
-    @State private var showEmojiTextField = false
-    @State private var selection: Int = 1
-    @State private var animationAngle: Double = 0
-    @State private var isAnimating = false
     @State private var scale: CGFloat = 1
+    let entry: EntryModel
 
     var body: some View {
         let imageUrl = entry.imageUrl
@@ -79,7 +69,7 @@ struct ArtifactView: View {
                     HStack(alignment: .lastTextBaseline, spacing: 0) {
                         Text(entry.text)
                             .foregroundColor(.white)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 17, weight: .semibold))
                             .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
                             .lineLimit(3)
@@ -88,6 +78,7 @@ struct ArtifactView: View {
                     .padding(.vertical, 12)
                     .background(.thickMaterial,
                                 in: ArtifactBubbleWithTail(scale: scale))
+                    .foregroundStyle(.secondary)
                     .clipShape(ArtifactBubbleWithTail(scale: scale))
                     .overlay(
                         ArtifactBubbleWithTail(scale: scale)
@@ -148,9 +139,16 @@ struct WispView: View {
                     HStack(alignment: .lastTextBaseline, spacing: 0) {
                         Text(entry.text)
                             .foregroundColor(.white)
-                            .font(.system(size: 16))
+                            .font(.system(size: 17))
+                            .shadow(
+                                color: Color.black.opacity(0.3),
+                                radius: 3,
+                                x: 0,
+                                y: 2
+                            )
                             .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(6)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
@@ -159,15 +157,15 @@ struct WispView: View {
                             print("Reply")
                         }
                     }
-                    // .clipShape(WispBubbleWithTail(scale: scale))
                     // .contentShape(.contextMenuPreview, WispBubbleWithTail(scale: scale).padding(.horizontal, 16))
                     .background(
                         .ultraThinMaterial
                             .shadow(
-                                .inner(color: .white.opacity(0.1), radius: 8, x: 0, y: 0)
+                                .inner(color: .white.opacity(0.1), radius: 4, x: 0, y: 0)
                             ),
                         in: WispBubbleWithTail(scale: scale)
                     )
+                    .foregroundStyle(.secondary)
 
                     if !sampleComments.isEmpty {
                         ZStack {

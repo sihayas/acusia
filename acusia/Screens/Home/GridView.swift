@@ -38,22 +38,16 @@ struct GridView: View {
             // MARK: User Data & Buttons
 
             VStack {
-                Text("Alia")
-                    .font(.system(size: 27, weight: .regular))
-                    .foregroundColor(.primary)
-
                 Spacer()
 
-                AsyncImage(url: URL(string: "https://i.pinimg.com/474x/ce/7e/af/ce7eafb66f1d7edf58ef4d4b284d677a.jpg")) { image in
-                    image
-                        .resizable()
-                } placeholder: {
-                    ProgressView()
+                ZStack {
+                    AvatarView(size: 96, imageURL: "https://i.pinimg.com/474x/45/cb/21/45cb219eecb8feccc9771577666d00c6.jpg")
+                    
+                    Text("Alia")
+                        .font(.callout)
+                        .foregroundColor(Color.white)
+                        .offset(y: 96 / 2 + 16)
                 }
-                .frame(width: 112, height: 112)
-                .clipShape(Circle())
-                .blur(radius: showRecents ? 12 : 0)
-                .animation(.spring(), value: showRecents)
 
                 Spacer()
             }

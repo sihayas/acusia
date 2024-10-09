@@ -64,6 +64,15 @@ let entries: [EntryModel] = [
         artistName: "Beyonce",
         text: "Florence is a queen. I can go on and on about what she means to me but I won’t",
         rating: 0
+    ),
+    EntryModel(
+        username: "bey",
+        userImage: "https://wallpapers.com/images/hd/oscar-zahn-skeleton-headphones-unique-cool-pfp-rboah21ctf7m37o0.jpg",
+        imageUrl: "https://i.scdn.co/image/ab67616d0000b2736c7112082b63beefffe40151",
+        name: "Kid A",
+        artistName: "Radiohead",
+        text: "This album is closest a band can get to perfection. Abstract yet poignant, Kid A is an album filled with contradiction fusing elements of acid, rock, folk, trance and house together to create a truly experimental and epic album.",
+        rating: 0
     )
 ]
 
@@ -74,41 +83,18 @@ struct FeedView: View {
         ScrollView {
             VStack(spacing: 64) {
                 ForEach(entries) { entry in
-                    Entry(
-                        entry: entry
-                    )
+                    VStack {
+                        if entry.rating == 2 {
+                            WispView(entry: entry)
+                        } else {
+                            ArtifactView(entry: entry)
+                        }
+                    }
                 }
             }
             .frame(maxWidth: .infinity)
         }
         .scrollClipDisabled(true)
         // .onAppear { Task { await viewModel.fetchEntries() } }
-    }
-}
-
-struct Entry: View {
-    let entry: EntryModel
-
-    // Entry is halfway past scrollview.
-    @State private var isVisible: Bool = false
-
-    // First controls the sheet visibility. Second controls animation.
-    @State private var showReplySheet = false
-    @State private var animateReplySheet = false
-
-    var body: some View {
-        // Entry
-        VStack {
-            if entry.rating == 2 {
-                WispView(entry: entry)
-            } else {
-                ArtifactView(entry: entry, showReplySheet: $showReplySheet)
-                    .scaleEffect(animateReplySheet ? 0.4 : 1, anchor: .topLeading)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .onScrollVisibilityChange(threshold: 0.5) { visibility in
-            isVisible = visibility
-        }
     }
 }

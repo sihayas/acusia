@@ -198,12 +198,12 @@ struct SymmetryView: View {
 
                 // MARK: Buttons
 
-                ControlButtons(
-                    resetState: resetState,
-                    expandLeftBlob: expandLeftBlob,
-                    expandSearchBar: expandSearchBar,
-                    expandReply: expandReply
-                )
+                // ControlButtons(
+                //     resetState: resetState,
+                //     expandLeftBlob: expandLeftBlob,
+                //     expandSearchBar: expandSearchBar,
+                //     expandReply: expandReply
+                // )
             }
             .onAppear {
                 // Store the geometry values when the view appears
