@@ -249,7 +249,7 @@ struct FloatingBarView: View {
 
     var body: some View {
         ZStack {
-            ApertureView()
+            SymmetryView()
                 .padding(.bottom, safeAreaInsets.bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)

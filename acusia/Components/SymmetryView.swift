@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CapsuleState {
+struct SymmetryState {
     var leading: CapsuleProperties
     var center: CapsuleProperties
     var trailing: CapsuleProperties
@@ -8,63 +8,41 @@ struct CapsuleState {
     struct CapsuleProperties {
         var offset: CGPoint
         var size: CGSize
-        var isExpanded: Bool
-        var text: String
-        var blurRadius: CGFloat
-        var cornerRadius: CGFloat
-        var backgroundColor: Color
-        var textColor: Color
-        var font: Font
-        var alignment: Alignment
-        
-        // Function to get the appropriate size based on expansion state
-        func currentSize(for width: CGFloat, horizontalPadding: CGFloat) -> CGSize {
-            isExpanded ? CGSize(width: width - horizontalPadding, height: 48) : size
-        }
     }
 }
 
-struct ApertureView: View {
+struct SymmetryView: View {
+    @State var symmetryState = SymmetryState(
+        leading: .init(
+            offset: .zero,
+            size: CGSize(width: 128, height: 40)
+        ),
+        center: .init(
+            offset: .zero,
+            size: CGSize(width: 128, height: 40)
+        ),
+        trailing: .init(
+            offset: .zero,
+            size: CGSize(width: 128, height: 40)
+        )
+    )
+    
     @State var blurRadius: CGFloat = 4
     @State var isExpanded: Bool = false
     
-    @State var leadingOffset = CGPoint(x: 0, y: 0)
-    @State var leadingMinimal: Bool = false
-    
-    @State var centerOffset = CGPoint(x: 0, y: 0)
-    @State var centerExpanded: Bool = false
     @State var searchText: String = ""
-
-    @State var trailingOffset = CGPoint(x: 0, y: 0)
-    @State var trailingExpanded: Bool = false
     @State var replyText: String = ""
+    
+    @State private var width: CGFloat = 0
+    @State private var height: CGFloat = 0
+    @State private var centerWidth: CGFloat = 0
+    
+    let horizontalPadding: CGFloat = 48
+    let gap: CGFloat = 18
     
     var body: some View {
         GeometryReader { geometry in
-            let width = geometry.size.width
-            let height = geometry.size.height
-            let centerWidth = width / 2
             let centerPoint = CGPoint(x: width / 2, y: height / 2)
-            let blobHeight: CGFloat = 40
-            let blobWidth: CGFloat = 128
-            
-            let gap: CGFloat = 18
-            let horizontalPadding: CGFloat = 48
-            
-            let leadingSize: CGSize = leadingMinimal
-                ? CGSize(width: blobHeight, height: blobHeight)
-                : trailingExpanded ? CGSize(width: blobHeight, height: blobHeight)
-                : CGSize(width: blobWidth, height: blobHeight)
-            
-            let centerSize: CGSize = centerExpanded
-                ? CGSize(width: width - horizontalPadding, height: 48)
-                : CGSize(width: blobWidth, height: blobHeight)
-            
-            let trailingSize: CGSize = trailingExpanded
-                ? CGSize(width: width - horizontalPadding - blobHeight - gap, height: 40)
-                : CGSize(width: blobWidth, height: blobHeight)
-            
-            let trailingRadius: CGFloat = 20
             
             ZStack {
                 // MARK: Canvas
@@ -91,8 +69,14 @@ struct ApertureView: View {
                             }
                         } symbols: {
                             Capsule()
-                                .frame(width: leadingSize.width, height: leadingSize.height)
-                                .offset(x: leadingOffset.x, y: leadingOffset.y)
+                                .frame(
+                                    width: symmetryState.leading.size.width,
+                                    height: symmetryState.leading.size.height
+                                )
+                                .offset(
+                                    x: symmetryState.leading.offset.x,
+                                    y: symmetryState.leading.offset.y
+                                )
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(0)
 
@@ -100,23 +84,34 @@ struct ApertureView: View {
                                 .font(.system(size: 15, weight: .regular))
                                 .foregroundColor(.white)
                                 .background(.black)
-                                .frame(width: trailingSize.width)
-                                .frame(minHeight: trailingSize.height, alignment: .leading)
+                                .frame(width: symmetryState.trailing.size.width)
+                                .frame(
+                                    minHeight: symmetryState.trailing.size.height,
+                                    alignment: .leading
+                                )
                                 .frame(maxHeight: 124)
-                                .cornerRadius(trailingRadius, antialiased: true)
+                                .cornerRadius(20, antialiased: true)
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .offset(x: trailingOffset.x, y: trailingOffset.y)
+                                .offset(
+                                    x: symmetryState.trailing.offset.x,
+                                    y: symmetryState.trailing.offset.y
+                                )
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(1)
                             
                             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .frame(width: centerSize.width, height: centerSize.height)
-                                .offset(x: centerOffset.x, y: centerOffset.y)
+                                .frame(
+                                    width: symmetryState.center.size.width,
+                                    height: symmetryState.center.size.height
+                                )
+                                .offset(
+                                    x: symmetryState.center.offset.x,
+                                    y: symmetryState.center.offset.y
+                                )
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(2)
                         }
-                        .allowsHitTesting(false)
                     }
                     .allowsHitTesting(false)
                 
@@ -124,7 +119,10 @@ struct ApertureView: View {
 
                 Group {
                     Capsule()
-                        .frame(width: leadingSize.width, height: leadingSize.height)
+                        .frame(
+                            width: symmetryState.leading.size.width,
+                            height: symmetryState.leading.size.height
+                        )
                         .overlay(alignment: .trailing) {
                             AsyncImage(url: URL(string: "https://i.pinimg.com/474x/7a/18/20/7a1820d818d3601fb92c59a84d458428.jpg")) { image in
                                 image
@@ -134,16 +132,22 @@ struct ApertureView: View {
                             }
                             .frame(width: 24, height: 24)
                             .clipShape(Circle())
-                            .frame(width: leadingSize.width, height: leadingSize.height)
-                            .opacity(leadingMinimal || trailingExpanded ? 1 : 0)
+                            .opacity(0) //! !!
                         }
                         .clipShape(Capsule())
-                        .offset(x: leadingOffset.x, y: leadingOffset.y)
+                        .offset(
+                            x: symmetryState.leading.offset.x,
+                            y: symmetryState.leading.offset.y
+                        )
                         .frame(width: width, height: height, alignment: .bottom)
                         .foregroundColor(.clear)
+                        .opacity(0)
                     
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .frame(width: centerSize.width, height: centerSize.height)
+                        .frame(
+                            width: symmetryState.center.size.width,
+                            height: symmetryState.center.size.height
+                        )
                         .overlay {
                             HStack {
                                 Image(systemName: "magnifyingglass")
@@ -158,26 +162,36 @@ struct ApertureView: View {
                                     .transition(.blurReplace)
                             }
                             .padding(.horizontal, 16)
-                            .opacity(centerExpanded ? 1 : 0)
+                            .opacity(0)
                         }
-                        .offset(x: centerOffset.x, y: centerOffset.y)
+                        .offset(
+                            x: symmetryState.center.offset.x,
+                            y: symmetryState.center.offset.y
+                        )
                         .frame(width: width, height: height, alignment: .bottom)
                         .foregroundColor(.clear)
+                        .opacity(0)
                     
                     TextEditor(text: $replyText)
                         .textEditorStyle(PlainTextEditorStyle()) // ???
                         .font(.system(size: 15, weight: .regular))
                         .foregroundColor(.white)
                         .background(.clear)
-                        .frame(width: trailingSize.width)
-                        .frame(minHeight: trailingSize.height, alignment: .leading)
+                        .frame(width: symmetryState.trailing.size.width)
+                        .frame(
+                            minHeight: symmetryState.trailing.size.height,
+                            alignment: .leading
+                        )
                         .frame(maxHeight: 124)
-                        .cornerRadius(trailingRadius, antialiased: true)
+                        .cornerRadius(20, antialiased: true)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
-                        .offset(x: trailingOffset.x, y: trailingOffset.y)
+                        .offset(
+                            x: symmetryState.trailing.offset.x,
+                            y: symmetryState.trailing.offset.y
+                        )
                         .frame(width: width, height: height, alignment: .bottom)
-                        .opacity(trailingExpanded ? 1 : 0)
+                        .opacity(0)
                 }
 
                 // MARK: Buttons
@@ -185,10 +199,21 @@ struct ApertureView: View {
                 ControlButtons(
                     isExpanded: $isExpanded,
                     resetState: resetState,
-                    expandLeftBlob: { expandLeftBlob(centerWidth: centerWidth) },
+                    expandLeftBlob: expandLeftBlob,
                     expandSearchBar: expandSearchBar,
-                    expandReply: { expandReply(centerWidth: centerWidth, gap: gap) }
+                    expandReply: expandReply
                 )
+            }
+            .onAppear {
+                // Store the geometry values when the view appears
+                self.width = geometry.size.width
+                self.height = geometry.size.height
+                self.centerWidth = geometry.size.width / 2
+            }
+            .onChange(of: geometry.size) { _, newSize in
+                self.width = newSize.width
+                self.height = newSize.height
+                self.centerWidth = newSize.width / 2
             }
         }
     }
@@ -201,20 +226,29 @@ struct ApertureView: View {
             initialVelocity: 0.0
         )) {
             blurRadius = 4
-            leadingOffset = .zero
-            trailingOffset = .zero
-            centerOffset = .zero
-            leadingMinimal = false
-            centerExpanded = false
-            trailingExpanded = false
-            isExpanded = false
+            symmetryState = SymmetryState(
+                leading: .init(
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                ),
+                center: .init(
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                ),
+                trailing: .init(
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                )
+            )
         } completion: {
             blurRadius = 0
             completion()
         }
     }
     
-    func expandReply(centerWidth: CGFloat, gap: CGFloat) {
+    /// Move the trailing capsule to the right, expand
+    /// Move the leading capsule to the left, shrink
+    func expandReply() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
             stiffness: pow(2 * .pi / 0.5, 2),
@@ -222,15 +256,27 @@ struct ApertureView: View {
             initialVelocity: 0.0
         )) {
             blurRadius = 4
-            leadingOffset = CGPoint(x: -(centerWidth - gap) + 24, y: 0)
-            trailingOffset = CGPoint(x: 24, y: 0)
-            trailingExpanded = true
-            isExpanded = true
+            symmetryState = SymmetryState(
+                leading: .init(
+                    offset: CGPoint(x: -(centerWidth - gap) + 24, y: 0),
+                    size: CGSize(width: 40, height: 40)
+                ),
+                center: .init(
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                ),
+                trailing: .init(
+                    offset: CGPoint(x: 24, y: 0),
+                    size: CGSize(width: width - 48 - 40 - 18, height: 40)
+                )
+            )
+            
         } completion: {
             blurRadius = 0
         }
     }
     
+    /// Expand the center capsule
     func expandSearchBar() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
@@ -238,12 +284,26 @@ struct ApertureView: View {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
-            centerExpanded = true
-            isExpanded = true
+            symmetryState = SymmetryState(
+                leading: .init(
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                ),
+                center: .init(
+                    offset: .zero,
+                    size: CGSize(width: width - horizontalPadding, height: 48)
+                ),
+                trailing: .init(
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                )
+            )
         }
     }
     
-    func expandLeftBlob(centerWidth: CGFloat) {
+    /// Move the leading capsule to the left, shrink
+    /// Move the trailing capsule to the right a bit for symmetry
+    func expandLeftBlob() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
             stiffness: pow(2 * .pi / 0.5, 2),
@@ -251,10 +311,20 @@ struct ApertureView: View {
             initialVelocity: 0.0
         )) {
             blurRadius = 4
-            leadingOffset = CGPoint(x: -(centerWidth - 126) - 16, y: 0)
-            trailingOffset = CGPoint(x: 46, y: 0)
-            leadingMinimal = true
-            isExpanded = true
+            symmetryState = SymmetryState(
+                leading: .init(
+                    offset: CGPoint(x: -(centerWidth - 126) - 16, y: 0),
+                    size: CGSize(width: 40, height: 40)
+                ),
+                center: .init(
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                ),
+                trailing: .init(
+                    offset: CGPoint(x: 46, y: 0),
+                    size: CGSize(width: 128, height: 40)
+                )
+            )
         } completion: {
             blurRadius = 0
         }
@@ -334,6 +404,6 @@ struct ControlButtons: View {
 }
 
 #Preview {
-    ApertureView()
+    SymmetryView()
         .background(.black)
 }
