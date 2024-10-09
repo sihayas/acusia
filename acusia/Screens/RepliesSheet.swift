@@ -446,34 +446,3 @@ struct BottomLeftRightArcPath: InsettableShape {
         return newShape
     }
 }
-
-//
-// struct PartialStrokeRoundedRectangle: Shape {
-//     var cornerRadius: CGFloat
-//
-//     func path(in rect: CGRect) -> Path {
-//         var path = Path()
-//
-//         // Bottom-left corner arc
-//         path.move(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
-//         path.addArc(
-//             center: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY - cornerRadius),
-//             radius: cornerRadius,
-//             startAngle: Angle(degrees: 180),
-//             endAngle: Angle(degrees: 90),
-//             clockwise: true
-//         )
-//
-//         // Move to the start point of the bottom-right corner arc
-//         path.move(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY))
-//         path.addArc(
-//             center: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY - cornerRadius),
-//             radius: cornerRadius,
-//             startAngle: Angle(degrees: 90),
-//             endAngle: Angle(degrees: 0),
-//             clockwise: true
-//         )
-//
-//         return path
-//     }
-// }

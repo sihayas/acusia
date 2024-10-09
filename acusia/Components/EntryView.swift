@@ -126,6 +126,7 @@ struct ArtifactView: View {
 }
 
 struct WispView: View {
+    @EnvironmentObject private var windowState: WindowState
     let entry: EntryModel
     let type: String = "none"
 
@@ -191,6 +192,9 @@ struct WispView: View {
                                 .frame(width: 36, height: 36)
                             }
                             .offset(x: 0, y: 44)
+                        }
+                        .onTapGesture {
+                            windowState.isSplit.toggle()
                         }
                     }
                 }

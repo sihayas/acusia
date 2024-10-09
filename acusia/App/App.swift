@@ -88,49 +88,33 @@ struct AcusiaAppView: View {
             let homeOverlayOpacity = heightProgress * 1.0
 
             ZStack(alignment: .top) {
-                VStack(alignment: .leading) { // Align to top. This contains the clipped view. It has a bg.
-                    RepliesSheet(size: size, minHomeHeight: expandedHomeHeight)
-                        .frame(minWidth: size.width, minHeight: size.height)
-                        .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
-                        .overlay(
-                            Color.white.opacity(windowState.isSplitFull ? 0 : 0.05)
-                                .blendMode(.exclusion)
-                                .animation(.spring(), value: replyOpacity)
-                                .allowsHitTesting(false)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                        .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                        .animation(.spring(), value: replySplitHeight)
+                // Replies view
+                if windowState.isSplit {
+                    VStack(alignment: .leading) { // Align to top. This contains the clipped view.
+                        RepliesSheet(size: size, minHomeHeight: expandedHomeHeight)
+                            .frame(minWidth: size.width, minHeight: size.height)
+                            .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
+                            .overlay(
+                                Color.white.opacity(windowState.isSplitFull ? 0 : 0.05)
+                                    .blendMode(.exclusion)
+                                    .animation(.spring(), value: replyOpacity)
+                                    .allowsHitTesting(false)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                            .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                            .animation(.spring(), value: replySplitHeight)
+                    }
+                    .frame(minWidth: size.width, minHeight: size.height, alignment: .bottom)
                 }
-                .frame(minWidth: size.width, minHeight: size.height, alignment: .bottom)
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
                     .overlay {
-                        ZStack {
-                            Rectangle()
-                                .foregroundStyle(.clear)
-                                .background(
-                                    .thinMaterial
-                                )
-                                .opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
-                                .animation(.spring(), value: homeOverlayOpacity)
-                                .allowsHitTesting(false)
-
-                            VStack {
-                                Spacer()
-                                
-                                Button {
-                                    windowState.isSplit.toggle()
-                                } label: {
-                                    Image(systemName: "chevron.up")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color.black.opacity(0.5))
-                                        .clipShape(Circle())
-                                }
-                            }
-                        }
+                        Rectangle()
+                            .foregroundStyle(.clear)
+                            .background(.thinMaterial)
+                            .opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
+                            .animation(.spring(), value: homeOverlayOpacity)
+                            .allowsHitTesting(false)
                     }
                     .frame(minWidth: size.width, minHeight: size.height)
                     .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.

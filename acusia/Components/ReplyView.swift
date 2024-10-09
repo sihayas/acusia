@@ -430,19 +430,6 @@ struct LoopPath: Shape {
     }
 }
 
-func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
-    switch index {
-    case 0: // Top Center
-        return CGSize(width: 0, height: -radius)
-    case 1: // Bottom Left
-        return CGSize(width: -radius*cos(.pi / 6), height: radius*sin(.pi / 6))
-    case 2: // Bottom Right
-        return CGSize(width: radius*cos(.pi / 6), height: radius*sin(.pi / 6))
-    default:
-        return .zero
-    }
-}
-
 struct RadialLayout: Layout {
     var radius: CGFloat
     var offset: CGFloat
