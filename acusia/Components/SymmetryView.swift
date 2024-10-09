@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct SymmetryState {
-    var leading: CapsuleProperties
-    var center: CapsuleProperties
-    var trailing: CapsuleProperties
+    var leading: Properties
+    var center: Properties
+    var trailing: Properties
     
-    struct CapsuleProperties {
+    struct Properties {
+        var showContent: Bool
         var offset: CGPoint
         var size: CGSize
     }
@@ -14,28 +15,32 @@ struct SymmetryState {
 struct SymmetryView: View {
     @State var symmetryState = SymmetryState(
         leading: .init(
+            showContent: false,
             offset: .zero,
             size: CGSize(width: 128, height: 40)
         ),
         center: .init(
+            showContent: false,
             offset: .zero,
             size: CGSize(width: 128, height: 40)
         ),
         trailing: .init(
+            showContent: false,
             offset: .zero,
             size: CGSize(width: 128, height: 40)
         )
     )
     
-    @State var blurRadius: CGFloat = 4
-    @State var isExpanded: Bool = false
-    
-    @State var searchText: String = ""
-    @State var replyText: String = ""
-    
+    // MARK: Appear State
+
     @State private var width: CGFloat = 0
     @State private var height: CGFloat = 0
     @State private var centerWidth: CGFloat = 0
+    
+    @State var blurRadius: CGFloat = 4
+    
+    @State var searchText: String = "" // Center
+    @State var replyText: String = "" // Trailing
     
     let horizontalPadding: CGFloat = 48
     let gap: CGFloat = 18
@@ -50,7 +55,7 @@ struct SymmetryView: View {
                 Rectangle()
                     .foregroundColor(.clear)
                     .background(
-                        BlurView(style: .systemUltraThinMaterialLight, backgroundColor: .black, blurMutingFactor: 0.25)
+                        BlurView(style: .systemUltraThinMaterialLight, backgroundColor: .black, blurMutingFactor: 0.2)
                     )
                     .mask {
                         Canvas { ctx, _ in
@@ -80,6 +85,18 @@ struct SymmetryView: View {
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(0)
 
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .frame(
+                                    width: symmetryState.center.size.width,
+                                    height: symmetryState.center.size.height
+                                )
+                                .offset(
+                                    x: symmetryState.center.offset.x,
+                                    y: symmetryState.center.offset.y
+                                )
+                                .frame(width: width, height: height, alignment: .bottom)
+                                .tag(2)
+                            
                             TextEditor(text: $replyText)
                                 .font(.system(size: 15, weight: .regular))
                                 .foregroundColor(.white)
@@ -99,18 +116,6 @@ struct SymmetryView: View {
                                 )
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(1)
-                            
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .frame(
-                                    width: symmetryState.center.size.width,
-                                    height: symmetryState.center.size.height
-                                )
-                                .offset(
-                                    x: symmetryState.center.offset.x,
-                                    y: symmetryState.center.offset.y
-                                )
-                                .frame(width: width, height: height, alignment: .bottom)
-                                .tag(2)
                         }
                     }
                     .allowsHitTesting(false)
@@ -119,58 +124,55 @@ struct SymmetryView: View {
 
                 Group {
                     Capsule()
+                        .fill(.clear)
                         .frame(
                             width: symmetryState.leading.size.width,
                             height: symmetryState.leading.size.height
                         )
-                        .overlay(alignment: .trailing) {
-                            AsyncImage(url: URL(string: "https://i.pinimg.com/474x/7a/18/20/7a1820d818d3601fb92c59a84d458428.jpg")) { image in
+                        .overlay {
+                            AsyncImage(url: URL(string: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")) { image in
                                 image
                                     .resizable()
                             } placeholder: {
                                 ProgressView()
                             }
-                            .frame(width: 24, height: 24)
+                            .frame(width: 32, height: 32)
                             .clipShape(Circle())
-                            .opacity(0) //! !!
+                            .opacity(symmetryState.leading.showContent ? 1 : 0)
                         }
-                        .clipShape(Capsule())
                         .offset(
                             x: symmetryState.leading.offset.x,
                             y: symmetryState.leading.offset.y
                         )
                         .frame(width: width, height: height, alignment: .bottom)
-                        .foregroundColor(.clear)
-                        .opacity(0)
                     
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(.clear)
                         .frame(
                             width: symmetryState.center.size.width,
                             height: symmetryState.center.size.height
                         )
                         .overlay {
                             HStack {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundColor(.secondary)
-                                    .font(.system(size: 15))
-                                    .transition(.blurReplace)
-                    
-                                TextField("Index", text: $searchText, axis: .horizontal)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .foregroundColor(.white)
-                                    .font(.system(size: 15))
-                                    .transition(.blurReplace)
+                                // Image(systemName: "magnifyingglass")
+                                //     .foregroundColor(.secondary)
+                                //     .font(.system(size: 15))
+                                //     .transition(.blurReplace)
+                                //
+                                // TextField("Index", text: $searchText, axis: .horizontal)
+                                //     .textFieldStyle(PlainTextFieldStyle())
+                                //     .foregroundColor(.white)
+                                //     .font(.system(size: 15))
+                                //     .transition(.blurReplace)
                             }
                             .padding(.horizontal, 16)
-                            .opacity(0)
+                            .opacity(symmetryState.center.showContent ? 1 : 0)
                         }
                         .offset(
                             x: symmetryState.center.offset.x,
                             y: symmetryState.center.offset.y
                         )
                         .frame(width: width, height: height, alignment: .bottom)
-                        .foregroundColor(.clear)
-                        .opacity(0)
                     
                     TextEditor(text: $replyText)
                         .textEditorStyle(PlainTextEditorStyle()) // ???
@@ -191,13 +193,12 @@ struct SymmetryView: View {
                             y: symmetryState.trailing.offset.y
                         )
                         .frame(width: width, height: height, alignment: .bottom)
-                        .opacity(0)
+                        .opacity(symmetryState.trailing.showContent ? 1 : 0)
                 }
 
                 // MARK: Buttons
 
                 ControlButtons(
-                    isExpanded: $isExpanded,
                     resetState: resetState,
                     expandLeftBlob: expandLeftBlob,
                     expandSearchBar: expandSearchBar,
@@ -217,7 +218,11 @@ struct SymmetryView: View {
             }
         }
     }
-    
+}
+
+// MARK: Control Buttons
+
+extension SymmetryView {
     func resetState(completion: @escaping () -> Void = {}) {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
@@ -228,14 +233,17 @@ struct SymmetryView: View {
             blurRadius = 4
             symmetryState = SymmetryState(
                 leading: .init(
+                    showContent: false,
                     offset: .zero,
                     size: CGSize(width: 128, height: 40)
                 ),
                 center: .init(
+                    showContent: false,
                     offset: .zero,
                     size: CGSize(width: 128, height: 40)
                 ),
                 trailing: .init(
+                    showContent: false,
                     offset: .zero,
                     size: CGSize(width: 128, height: 40)
                 )
@@ -243,6 +251,38 @@ struct SymmetryView: View {
         } completion: {
             blurRadius = 0
             completion()
+        }
+    }
+    
+    /// Move the leading capsule to the left, shrink
+    /// Move the trailing capsule to the right a bit for symmetry
+    func expandLeftBlob() {
+        withAnimation(.interpolatingSpring(
+            mass: 1.0,
+            stiffness: pow(2 * .pi / 0.5, 2),
+            damping: 4 * .pi * 0.7 / 0.5,
+            initialVelocity: 0.0
+        )) {
+            blurRadius = 4
+            symmetryState = SymmetryState(
+                leading: .init(
+                    showContent: true,
+                    offset: CGPoint(x: -centerWidth + 20 + 32, y: 0),
+                    size: CGSize(width: 40, height: 40)
+                ),
+                center: .init(
+                    showContent: false,
+                    offset: .zero,
+                    size: CGSize(width: 128, height: 40)
+                ),
+                trailing: .init(
+                    showContent: true,
+                    offset: CGPoint(x: centerWidth - 20 - 32, y: 0),
+                    size: CGSize(width: 40, height: 40)
+                )
+            )
+        } completion: {
+            blurRadius = 0
         }
     }
     
@@ -258,14 +298,17 @@ struct SymmetryView: View {
             blurRadius = 4
             symmetryState = SymmetryState(
                 leading: .init(
+                    showContent: true,
                     offset: CGPoint(x: -(centerWidth - gap) + 24, y: 0),
                     size: CGSize(width: 40, height: 40)
                 ),
                 center: .init(
+                    showContent: false,
                     offset: .zero,
                     size: CGSize(width: 128, height: 40)
                 ),
                 trailing: .init(
+                    showContent: true,
                     offset: CGPoint(x: 24, y: 0),
                     size: CGSize(width: width - 48 - 40 - 18, height: 40)
                 )
@@ -286,53 +329,26 @@ struct SymmetryView: View {
         )) {
             symmetryState = SymmetryState(
                 leading: .init(
+                    showContent: false,
                     offset: .zero,
                     size: CGSize(width: 128, height: 40)
                 ),
                 center: .init(
+                    showContent: true,
                     offset: .zero,
                     size: CGSize(width: width - horizontalPadding, height: 48)
                 ),
                 trailing: .init(
+                    showContent: false,
                     offset: .zero,
                     size: CGSize(width: 128, height: 40)
                 )
             )
-        }
-    }
-    
-    /// Move the leading capsule to the left, shrink
-    /// Move the trailing capsule to the right a bit for symmetry
-    func expandLeftBlob() {
-        withAnimation(.interpolatingSpring(
-            mass: 1.0,
-            stiffness: pow(2 * .pi / 0.5, 2),
-            damping: 4 * .pi * 0.7 / 0.5,
-            initialVelocity: 0.0
-        )) {
-            blurRadius = 4
-            symmetryState = SymmetryState(
-                leading: .init(
-                    offset: CGPoint(x: -(centerWidth - 126) - 16, y: 0),
-                    size: CGSize(width: 40, height: 40)
-                ),
-                center: .init(
-                    offset: .zero,
-                    size: CGSize(width: 128, height: 40)
-                ),
-                trailing: .init(
-                    offset: CGPoint(x: 46, y: 0),
-                    size: CGSize(width: 128, height: 40)
-                )
-            )
-        } completion: {
-            blurRadius = 0
         }
     }
 }
 
 struct ControlButtons: View {
-    @Binding var isExpanded: Bool
     let resetState: (@escaping () -> Void) -> Void
     let expandLeftBlob: () -> Void
     let expandSearchBar: () -> Void
@@ -342,13 +358,7 @@ struct ControlButtons: View {
         VStack {
             HStack {
                 Button(action: {
-                    if isExpanded {
-                        resetState {
-                            expandLeftBlob()
-                        }
-                    } else {
-                        expandLeftBlob()
-                    }
+                    expandLeftBlob()
                 }) {
                     Image(systemName: "arrowshape.turn.up.left.fill")
                         .font(.system(size: 17))
@@ -368,13 +378,7 @@ struct ControlButtons: View {
                 }
                 
                 Button(action: {
-                    if isExpanded {
-                        resetState {
-                            expandSearchBar()
-                        }
-                    } else {
-                        expandSearchBar()
-                    }
+                    expandSearchBar()
                 }) {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 13))
@@ -384,13 +388,8 @@ struct ControlButtons: View {
                 }
                 
                 Button(action: {
-                    if isExpanded {
-                        resetState {
-                            expandReply()
-                        }
-                    } else {
-                        expandReply()
-                    }
+                    expandReply()
+                
                 }) {
                     Image(systemName: "arrowshape.turn.up.right.fill")
                         .font(.system(size: 17))
