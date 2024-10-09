@@ -41,9 +41,9 @@ let entries: [EntryModel] = [
     EntryModel(
         username: "indie_fan",
         userImage: "https://i.pinimg.com/474x/fb/d1/a7/fbd1a7f6066b1c94da2cf5ffdd9dba3d.jpg",
-        imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/df/8d/f1/df8df1a2-34b2-9588-b059-ff81d1525dd5/656605144269.jpg/600x600bb.jpg",
-        name: "Stranger In The Alps",
-        artistName: "Phoebe Bridgers",
+        imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/09/7d/b0/097db06f-8403-3cf7-7510-139e570ca66b/196871341882.jpg/1000x1000bb.jpg",
+        name: "Utopia",
+        artistName: "Travis Scott",
         text: "Don't get the big deal with this one tbh",
         rating: 0
     ),
@@ -55,6 +55,15 @@ let entries: [EntryModel] = [
         artistName: "Florence + The Machine",
         text: "Florence is a queen. I can go on and on about what she means to me but I won’t",
         rating: 2
+    ),
+    EntryModel(
+        username: "florence_fanatic",
+        userImage: "https://i.pinimg.com/474x/43/07/28/430728c5b11e576df3e85652a96b7afb.jpg",
+        imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/bd/f6/83/bdf683a5-28de-08cb-cb91-2940c1e6270b/196871853729.jpg/1000x1000bb.jpg",
+        name: "Cowboy Carter",
+        artistName: "Beyonce",
+        text: "Florence is a queen. I can go on and on about what she means to me but I won’t",
+        rating: 0
     )
 ]
 
@@ -97,7 +106,7 @@ struct Entry: View {
                     .scaleEffect(animateReplySheet ? 0.4 : 1, anchor: .topLeading)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .bottomLeading)
+        .frame(maxWidth: .infinity)
         .onScrollVisibilityChange(threshold: 0.5) { visibility in
             isVisible = visibility
         }

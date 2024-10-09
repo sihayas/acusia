@@ -374,7 +374,7 @@ let sampleComments: [Reply] = [
     )
 ]
 
-struct BottomCurvePath: Shape {
+struct TopCenterToTrailingCenterPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
@@ -392,7 +392,7 @@ struct BottomCurvePath: Shape {
     }
 }
 
-struct TopBottomCurvePath: Shape {
+struct ConnectedRepliesPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
@@ -440,5 +440,33 @@ func tricornOffset(for index: Int, radius: CGFloat = 12) -> CGSize {
         return CGSize(width: radius*cos(.pi / 6), height: radius*sin(.pi / 6))
     default:
         return .zero
+    }
+}
+
+struct RadialLayout: Layout {
+    var radius: CGFloat
+    var offset: CGFloat
+    
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        // Use the container’s proposal to find a concrete size
+        let size = proposal.replacingUnspecifiedDimensions()
+        return size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let angle = 2 * .pi / CGFloat(subviews.count)
+
+        for (index, subview) in subviews.enumerated() {
+            // Find a point using the angle and offset
+            var point = CGPoint(x: 0, y: -radius)
+                .applying(CGAffineTransform(rotationAngle: angle * CGFloat(index) + offset))
+
+            // Shift to the middle of the bounds
+            point.x += bounds.midX
+            point.y += bounds.midY
+
+            // Place the subview
+            subview.place(at: point, anchor: .center, proposal: .unspecified)
+        }
     }
 }

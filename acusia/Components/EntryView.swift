@@ -9,157 +9,118 @@ import BigUIPaging
 import SwiftUI
 import Transmission
 
+enum RotationAxis: Equatable {
+    case topRight, topLeft, bottomLeft, bottomRight
+
+    var value: (x: CGFloat, y: CGFloat, z: CGFloat) {
+        switch self {
+        case .topRight: return (1, 1, 0)
+        case .topLeft: return (-1, 1, 0)
+        case .bottomLeft: return (-1, -1, 0)
+        case .bottomRight: return (1, -1, 0)
+        }
+    }
+}
+
 struct ArtifactView: View {
     @EnvironmentObject private var windowState: WindowState
-
     let entry: EntryModel
-
     @Binding var showReplySheet: Bool
     @State private var showPopover = false
     @State private var showPopoverAnimate = false
     @State private var showEmojiTextField = false
     @State private var selection: Int = 1
+    @State private var animationAngle: Double = 0
+    @State private var isAnimating = false
+    @State private var scale: CGFloat = 1
 
     var body: some View {
         let imageUrl = entry.imageUrl
 
-        VStack {
-            // Card stack
-            PageView(selection: $selection) {
-                ForEach([1, 2], id: \.self) { index in
-                    if index == 1 {
-                        RoundedRectangle(cornerRadius: 32, style: .continuous)
-                            .foregroundStyle(.ultraThickMaterial)
-                            .background(
-                                AsyncImage(url: URL(string: imageUrl)) { image in
-                                    image
-                                        .resizable()
-                                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            )
-                            .overlay {
-                                ZStack(alignment: .bottomTrailing) {
-                                    if !showPopover {
-                                        VStack {
-                                            Text(entry.text)
-                                                .foregroundColor(.white)
-                                                .font(.system(size: 16, weight: .semibold))
-                                                .multilineTextAlignment(.leading)
-                                        }
-                                        .padding([.horizontal, .top], 20)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                                        .mask(
-                                            LinearGradient(
-                                                gradient: Gradient(stops: [
-                                                    .init(color: .black, location: 0),
-                                                    .init(color: .black, location: 0.75),
-                                                    .init(color: .clear, location: 0.825)
-                                                ]),
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                            )
-                                            .frame(maxHeight: .infinity)
-                                        )
-                                    }
+        VStack(spacing: 0) {
+            Text(entry.username)
+                .foregroundColor(.secondary)
+                .font(.system(size: 11, weight: .regular))
+                .frame(maxWidth: 240, alignment: .leading)
+                .padding(.bottom, 10)
+                .padding(.leading, 32)
 
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(entry.artistName)
-                                                .foregroundColor(.secondary)
-                                                .font(.system(size: 11, weight: .regular, design: .rounded))
-                                                .lineLimit(1)
-                                            Text(entry.name)
-                                                .foregroundColor(.white)
-                                                .font(.system(size: 11, weight: .regular, design: .rounded))
-                                                .lineLimit(1)
-                                        }
-
-                                        Spacer()
-
-                                        HeartPath()
-                                            .fill(.black)
-                                            .frame(width: 28, height: 28)
-                                            .frame(height: 28)
-                                            .shadow(radius: 4)
-                                            .rotationEffect(.degrees(4))
-                                    }
-                                    .padding(20)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                }
-                            }
-                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                            .contextMenu {
-                                Button {
-                                    showEmojiTextField = true
-                                } label: {
-                                    Label("Open Emoji Keyboard", systemImage: "keyboard")
-                                }
-                            }
-                            .popover(isPresented: $showPopover, attachmentAnchor: .point(.topLeading), arrowEdge: .bottom) {
-                                ScrollView {
-                                    Text(entry.text)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .font(.system(size: 15, weight: .regular))
-                                        .padding(.vertical, 8)
-                                        .padding(.horizontal, 12)
-                                        .foregroundColor(.primary)
-                                }
-                                .frame(width: 272)
-                                .presentationCompactAdaptation(.popover)
-                                .presentationBackground(.ultraThinMaterial)
-                            }
-                            .onTapGesture {
-                                withAnimation(.spring()) {
-                                    showPopoverAnimate.toggle()
-                                }
-
-                                // Delay the popover presentation or dismissal after the animation starts
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                                    showPopover = showPopoverAnimate
-                                }
-                            }
-                            .onChange(of: showPopover) { _, value in
-                                // If the popover is dismissed (showPopover = false), reverse the animation state
-                                if !value {
-                                    withAnimation(.spring()) {
-                                        showPopoverAnimate = false
-                                    }
-                                }
-                            }
-                            .frame(height: showPopoverAnimate ? 68 : 280)
-
-                    } else {
-                        Rectangle()
-                            .foregroundStyle(.clear)
-                            .background(.clear)
-                            .overlay(alignment: .bottom) {
-                                AsyncImage(url: URL(string: imageUrl)) { image in
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            }
-                    }
+            ZStack {
+                AsyncImage(url: URL(string: imageUrl)) { image in
+                    image
+                        .resizable()
+                } placeholder: {
+                    Rectangle()
                 }
-            }
-            .pageViewStyle(.customCardDeck)
-            .pageViewCardShadow(.visible)
-            .frame(width: 204, height: 280)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, 24)
-    }
+                .clipShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
+                .frame(width: 240, height: 240)
+                .background(
+                    RoundedRectangle(cornerRadius: 45, style: .continuous)
+                        .stroke(.white,
+                                lineWidth: 4)
+                )
+                .phaseAnimator(
+                    [RotationAxis.topRight, RotationAxis.topLeft, RotationAxis.bottomLeft, RotationAxis.bottomRight]
+                ) { content, phase in
+                    content.rotation3DEffect(Angle.degrees(6), axis: phase.value, perspective: 0.5)
+                } animation: { _ in
+                    .spring(duration: 4, bounce: 0, blendDuration: 4)
+                }
 
-    var indicatorSelection: Binding<Int> {
-        .init {
-            selection - 1
-        } set: { newValue in
-            selection = newValue + 1
+                ZStack(alignment: .bottomTrailing) {
+                    AvatarView(size: 56, imageURL: entry.userImage)
+                        .background(
+                            Circle()
+                                .stroke(.thinMaterial,
+                                        lineWidth: 2)
+                        )
+                        .offset(x: 12, y: 12)
+
+                    HStack(alignment: .lastTextBaseline, spacing: 0) {
+                        Text(entry.text)
+                            .foregroundColor(.white)
+                            .font(.system(size: 16, weight: .semibold))
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(3)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .background(.thickMaterial,
+                                in: ArtifactBubbleWithTail(scale: scale))
+                    .clipShape(ArtifactBubbleWithTail(scale: scale))
+                    .overlay(
+                        ArtifactBubbleWithTail(scale: scale)
+                            .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                    )
+                    .padding(.bottom, 24)
+                    .padding(.trailing, 12)
+                }
+                .frame(width: 240, height: 240, alignment: .bottomTrailing)
+                .shadow(color: .black.opacity(0.4), radius: 8)
+            }
+
+            VStack {
+                Spacer()
+                    .frame(height: 12)
+                Text(entry.artistName)
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 13, weight: .semibold))
+                    .lineLimit(1)
+
+                Text(entry.name)
+                    .foregroundColor(.white)
+                    .font(.system(size: 13, weight: .semibold))
+                    .lineLimit(1)
+            }
+        }
+        .onAppear {
+            withAnimation(
+                .easeInOut(duration: 1)
+                    .repeatForever()
+            ) {
+                scale = 1.2
+            }
         }
     }
 }
@@ -182,25 +143,58 @@ struct WispView: View {
                 .padding(.horizontal, 40)
 
             VStack(alignment: .leading, spacing: -12) {
-                
-                HStack(alignment: .lastTextBaseline, spacing: 0) {
-                    Text(entry.text)
-                        .foregroundColor(.white)
-                        .font(.system(size: 15))
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
+                HStack {
+                    HStack(alignment: .lastTextBaseline, spacing: 0) {
+                        Text(entry.text)
+                            .foregroundColor(.white)
+                            .font(.system(size: 16))
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .contextMenu {
+                        Button("Reply") {
+                            print("Reply")
+                        }
+                    }
+                    // .clipShape(WispBubbleWithTail(scale: scale))
+                    // .contentShape(.contextMenuPreview, WispBubbleWithTail(scale: scale).padding(.horizontal, 16))
+                    .background(
+                        .ultraThinMaterial
+                            .shadow(
+                                .inner(color: .white.opacity(0.1), radius: 8, x: 0, y: 0)
+                            ),
+                        in: WispBubbleWithTail(scale: scale)
+                    )
+
+                    if !sampleComments.isEmpty {
+                        ZStack {
+                            VStack {
+                                Spacer()
+
+                                TopCenterToTrailingCenterPath()
+                                    .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                                    .frame(maxWidth: 36, maxHeight: 18)
+                                    .scaleEffect(x: -1, y: -1)
+                            }
+                            .frame(width: 36, height: 36)
+
+                            VStack {
+                                ZStack {
+                                    RadialLayout(radius: 12, offset: 5).callAsFunction {
+                                        ForEach(0 ..< 3) { index in
+                                            AvatarView(size: [14, 16, 12][index], imageURL: "https://picsum.photos/200/300")
+                                        }
+                                    }
+                                }
+                                .frame(width: 36, height: 36)
+                            }
+                            .offset(x: 0, y: 44)
+                        }
+                    }
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .background(
-                    .ultraThinMaterial
-                        .shadow(
-                            .inner(color: .white.opacity(0.1), radius: 8, x: 0, y: 0)
-                        ),
-                    in: WispBubbleWithTail(scale: scale)
-                )
-                .clipShape(WispBubbleWithTail(scale: scale))
-                .padding(.horizontal, 24)
+                .padding(.leading, 24)
                 .zIndex(1)
 
                 HStack(alignment: .bottom, spacing: -32) {
@@ -223,14 +217,13 @@ struct WispView: View {
                         }
                         .frame(width: 56, height: 56)
                         .shadow(color: .black.opacity(0.4), radius: 8)
-                        
-                        
+
                         VStack(alignment: .leading) {
                             Text(entry.artistName)
                                 .foregroundColor(.secondary)
                                 .font(.system(size: 13, weight: .semibold))
                                 .lineLimit(1)
-                            
+
                             Text(entry.name)
                                 .foregroundColor(.white)
                                 .font(.system(size: 13, weight: .semibold))
@@ -240,6 +233,7 @@ struct WispView: View {
                 }
             }
         }
+
         .padding(.horizontal, 24)
         .onAppear {
             withAnimation(
@@ -261,7 +255,7 @@ struct WispBubbleWithTail: Shape {
             .path(in: bubbleRect)
 
         let tailSize: CGFloat = 12 * scale // Scale the tail size
-        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - 112
+        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - 88
         let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
 
         // Create the tail (circle)
@@ -295,28 +289,45 @@ struct WispBubbleWithTail: Shape {
     }
 }
 
-struct VerticalSquigglyLineShape: Shape {
+struct ArtifactBubbleWithTail: Shape {
+    var scale: CGFloat
+
     func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let amplitude: CGFloat = 5 // Lower amplitude for less squiggle
-        let wavelength: CGFloat = 40 // Higher wavelength for gentler squiggle
+        let bubbleRect = rect
+        let bubble = RoundedRectangle(cornerRadius: 24, style: .continuous)
+            .path(in: bubbleRect)
 
-        // Start straight
-        path.move(to: CGPoint(x: rect.midX, y: 0))
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.height * 0.1)) // 10% of the height as straight
+        let tailSize: CGFloat = 12 * scale // Scale the tail size
+        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 + bubbleRect.width / 3
+        let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
 
-        // Draw squiggly part
-        var y: CGFloat = rect.height * 0.1
-        while y < rect.height * 0.9 {
-            let x = sin(y / wavelength * .pi * 2) * amplitude + rect.midX
-            path.addLine(to: CGPoint(x: x, y: y))
-            y += 1
-        }
+        let tailRect = CGRect(
+            x: bubbleRect.minX + tailOffsetX,
+            y: bubbleRect.minY + tailOffsetY,
+            width: tailSize,
+            height: tailSize
+        )
+        let tail = Circle().path(in: tailRect)
 
-        // End straight
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.height))
+        let secondCircleSize: CGFloat = 6 * scale
+        let secondCircleOffsetX = tailRect.maxX
+        let secondCircleOffsetY = tailRect.maxY
+        let secondCircleRect = CGRect(
+            x: secondCircleOffsetX,
+            y: secondCircleOffsetY,
+            width: secondCircleSize,
+            height: secondCircleSize
+        )
+        let secondCircle = Circle().path(in: secondCircleRect)
 
-        return path
+        let combined = bubble.union(tail).union(secondCircle)
+
+        return combined
+    }
+
+    var animatableData: CGFloat {
+        get { scale }
+        set { scale = newValue }
     }
 }
 

@@ -266,8 +266,7 @@ struct FloatingBarView: View {
     var body: some View {
         ZStack {
             ApertureView()
-                .padding(.bottom, safeAreaInsets.bottom) // Use safe area insets
-                .opacity(0)
+                .padding(.bottom, safeAreaInsets.bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }
