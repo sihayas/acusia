@@ -147,7 +147,7 @@ struct AcusiaAppView: View {
                         } else if yOffset > 0 { // User is dragging downwards
                             guard homeState.isOffsetAtTop else { return }
 
-                            if (yVelocity > 1000) || yOffset >= (height / 2) {
+                            if yVelocity > 1000 || yOffset >= (height / 2) {
                                 withAnimation {
                                     homeState.isSplit = false
                                     homeState.isSplitFull = false
