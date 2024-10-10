@@ -192,7 +192,9 @@ struct WispView: View {
                             .offset(x: 0, y: 44)
                         }
                         .onTapGesture {
-                            windowState.isSplit.toggle()
+                            withAnimation {
+                                windowState.isSplit.toggle()
+                            }
                         }
                     }
                 }

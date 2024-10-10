@@ -54,7 +54,7 @@ struct AcusiaApp: App {
 struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKit
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var homeState: WindowState
     @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     @State private var homePath = NavigationPath()
@@ -73,114 +73,95 @@ struct AcusiaAppView: View {
             let expandedReplyHeight: CGFloat = size.height * 0.8
             let expandedHomeHeight: CGFloat = size.height * 0.2
 
-            let replySplitHeight: CGFloat = windowState.isSplit
-                ? collapsedReplyHeight + dragOffset
-                : 0
-
-            let homeSplitHeight: CGFloat = windowState.isSplit
-                ? (windowState.isSplitFull // Check if fully expanded
-                    ? expandedHomeHeight // If yes, use expandedHomeHeight
-                    : max(collapsedHomeHeight - dragOffset, expandedHomeHeight)) // Otherwise, use the previous calculation
+            let homeHeight: CGFloat = homeState.isSplitFull ?
+                expandedHomeHeight + dragOffset
+                : homeState.isSplit ?
+                collapsedHomeHeight + dragOffset
                 : size.height
 
-            let heightProgress = min(max(dragOffset / (height - collapsedReplyHeight), 0), 1)
-            let replyOpacity = 0.05 - heightProgress * 0.05
-            let homeOverlayOpacity = heightProgress * 1.0
+            let replyHeight: CGFloat = homeState.isSplitFull ?
+                expandedReplyHeight - dragOffset
+                : homeState.isSplit ?
+                collapsedReplyHeight - dragOffset
+                : 0
 
             ZStack(alignment: .top) {
                 // Replies view
-                if windowState.isSplit {
-                    VStack(alignment: .leading) { // Align to top. This contains the clipped view.
-                        RepliesSheet(size: size, minHomeHeight: expandedHomeHeight)
-                            .frame(minWidth: size.width, minHeight: size.height)
-                            .frame(height: replySplitHeight, alignment: .top) // Align content inside to top.
-                            .overlay(
-                                Color.white.opacity(windowState.isSplitFull ? 0 : 0.05)
-                                    .blendMode(.exclusion)
-                                    .animation(.spring(), value: replyOpacity)
-                                    .allowsHitTesting(false)
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                            .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                            .animation(.spring(), value: replySplitHeight)
+                VStack {
+                    if homeState.isSplit {
+                        VStack(alignment: .leading) { // Align to top. This contains the clipped view.
+                            RepliesSheet(size: size, minHomeHeight: expandedHomeHeight)
+                                .frame(minWidth: size.width, minHeight: size.height)
+                                .frame(height: replyHeight, alignment: .top) // Align content inside to top.
+                                .overlay(
+                                    Color.white.opacity(homeState.isSplitFull ? 0 : 0.05)
+                                        .blendMode(.exclusion)
+                                    // .animation(.spring(), value: replyOpacity)
+                                        .allowsHitTesting(false)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                                .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                                .animation(.spring(), value: replyHeight)
+                        }
+                        .frame(minWidth: size.width, minHeight: size.height, alignment: .bottom)
                     }
-                    .frame(minWidth: size.width, minHeight: size.height, alignment: .bottom)
                 }
+                .transition(.blurReplace)
 
                 Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
-                    .overlay {
-                        Rectangle()
-                            .foregroundStyle(.clear)
-                            .background(.thinMaterial)
-                            .opacity(Double(windowState.isSplit ? homeOverlayOpacity : 0))
-                            .animation(.spring(), value: homeOverlayOpacity)
-                            .allowsHitTesting(false)
-                    }
+                    // .overlay {
+                    //     Rectangle()
+                    //         .foregroundStyle(.clear)
+                    //         .background(.thinMaterial)
+                    //         // .opacity(Double(homeState.isSplit ? homeOverlayOpacity : 0))
+                    //         // .animation(.spring(), value: homeOverlayOpacity)
+                    //         .allowsHitTesting(false)
+                    // }
                     .frame(minWidth: size.width, minHeight: size.height)
-                    .frame(height: homeSplitHeight, alignment: .top) // Align content inside to top.
+                    .frame(height: homeHeight, alignment: .top) // Align content inside to top.
                     .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .shadow(radius: 10)
-                    .animation(.spring(), value: homeSplitHeight)
+                    .animation(.spring(), value: homeHeight)
             }
             .simultaneousGesture(
                 DragGesture()
                     .onChanged { value in
-                        // Only proceed if the window is split and not layered
-                        guard windowState.isSplit && !windowState.isLayered else { return }
+                        /// Only allow gesture input to modify split progress if not fully split or if fully split and root scroll offset is at the top.
+                        guard homeState.isSplit, !homeState.isLayered, homeState.isOffsetAtTop else { return }
 
-                        let verticalDrag = value.translation.height
-
-                        // Determine if the user is dragging down at the top or if the window is not fully.
-                        let isDraggingDownAtTop = verticalDrag > 0 && windowState.isOffsetAtTop
-
-                        // Adjust dragOffset for expanding upwards or collapsing downwards
-                        if isDraggingDownAtTop || !windowState.isSplitFull {
-                            dragOffset = -verticalDrag
-                        }
+                        /// Dragging up, means scrolling down, negative offset.
+                        /// Dragging down, means scrolling up, positive offset.
+                        dragOffset = value.translation.height
                     }
                     .onEnded { value in
-                        // Only proceed if the window is split
-                        guard windowState.isSplit else { return }
+                        guard homeState.isSplit else { return }
 
-                        let verticalDrag = value.translation.height
-                        let verticalVelocity = value.velocity.height
+                        let yOffset = value.translation.height
+                        let yVelocity = value.velocity.height
 
-                        let velocityThreshold: CGFloat = 1000
-                        let expandHalfwayPoint: CGFloat = 25
+                        if yVelocity < -1000 || yOffset <= -50 { // User is dragging upwards
+                            dragOffset = 0
+                            homeState.isSplitFull = true
+                        } else if yOffset > 0 { // User is dragging downwards
+                            guard homeState.isOffsetAtTop else { return }
 
-                        let isQuickUpwardSwipe = verticalVelocity < -velocityThreshold
-                        let hasDraggedPastHalfwayUp = dragOffset >= expandHalfwayPoint
-
-                        if isQuickUpwardSwipe || hasDraggedPastHalfwayUp {
-                            // Set splitHeights to their expanded state
-                            dragOffset = expandedReplyHeight - collapsedReplyHeight
-                            windowState.isSplitFull = true
-                        } else if verticalDrag > 0 {
-                            // User is dragging downwards
-                            guard windowState.isOffsetAtTop else { return }
-
-                            let collapseHalfwayPoint = collapsedReplyHeight / 2
-                            let totalDragDown = -dragOffset
-
-                            let isQuickDownwardSwipe = verticalVelocity > velocityThreshold
-                            let hasDraggedPastHalfwayDown = totalDragDown >= collapseHalfwayPoint
-
-                            if isQuickDownwardSwipe || hasDraggedPastHalfwayDown {
-                                // Collapse the window fully
-                                windowState.isSplit = false
-                                windowState.isSplitFull = false
-                                dragOffset = 0
+                            if (yVelocity > 1000) || yOffset >= (height / 2) {
+                                withAnimation {
+                                    homeState.isSplit = false
+                                    homeState.isSplitFull = false
+                                    dragOffset = 0
+                                }
                             } else {
                                 // Reset to base height without fully collapsing
                                 dragOffset = 0
-                                windowState.isSplitFull = false
+                                homeState.isSplitFull = false
                             }
                         } else {
                             // Reset to base height if no significant drag occurred
                             dragOffset = 0
-                            windowState.isSplitFull = false
+                            homeState.isSplitFull = false
                         }
                     }
             )
@@ -190,7 +171,6 @@ struct AcusiaAppView: View {
                 Task {
                     await musicKitManager.requestMusicAuthorization()
 
-                    // Load recently played songs if authorized
                     if musicKitManager.isAuthorizedForMusicKit {
                         await musicKitManager.loadRecentlyPlayedSongs()
                     }
