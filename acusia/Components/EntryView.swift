@@ -237,7 +237,6 @@ struct WispView: View {
                 }
             }
         }
-
         .padding(.horizontal, 24)
         .onAppear {
             withAnimation(

@@ -32,6 +32,7 @@
 		CD6438C92C92829000D7436E /* HoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloManager.swift */; };
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
+		CD720E4E2CB8714100CEEE00 /* IDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* IDK.swift */; };
 		CD7D87E12C9A5A9D00F0E67B /* CustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7D87E02C9A5A9300F0E67B /* CustomTransition.swift */; };
 		CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* ImprintPreview.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
@@ -146,6 +147,7 @@
 		CD6438C82C92828900D7436E /* HoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloManager.swift; sourceTree = "<group>"; };
 		CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloShaderView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
+		CD720E4D2CB8713A00CEEE00 /* IDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDK.swift; sourceTree = "<group>"; };
 		CD7D87E02C9A5A9300F0E67B /* CustomTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransition.swift; sourceTree = "<group>"; };
 		CD85AB092C891F4400A61FBB /* ImprintPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprintPreview.swift; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
@@ -401,6 +403,7 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
+				CD720E4D2CB8713A00CEEE00 /* IDK.swift */,
 				CD7D87DB2C99559B00F0E67B /* Transmission */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
 				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
@@ -713,6 +716,7 @@
 				CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */,
 				CDD77DA32C8F956200D5BCC1 /* Squeeze.metal in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
+				CD720E4E2CB8714100CEEE00 /* IDK.swift in Sources */,
 				CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
