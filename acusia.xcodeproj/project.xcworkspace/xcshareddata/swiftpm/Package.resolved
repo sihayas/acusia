@@ -1,4 +1,5 @@
 {
+  "originHash" : "26180e07b5590e34cb641d7edaff205ea5770f70a260dd5fe9ab7ad2e0815792",
   "pins" : [
     {
       "identity" : "biguipaging",
@@ -14,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/nathantannar4/Engine",
       "state" : {
-        "revision" : "3eae8f636a3bd1379fd77b3df1e47cd12b9d52fe",
-        "version" : "1.8.5"
+        "revision" : "96ca8098a333f9cf9260264a3d7294b2fa6f57a6",
+        "version" : "1.8.7"
       }
     },
     {
@@ -37,6 +38,15 @@
       }
     },
     {
+      "identity" : "transmission",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nathantannar4/Transmission.git",
+      "state" : {
+        "revision" : "1ebbca564c7de107e5d91d18de133fdef2c99df3",
+        "version" : "1.5.1"
+      }
+    },
+    {
       "identity" : "turbocharger",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/nathantannar4/Turbocharger",
@@ -55,5 +65,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

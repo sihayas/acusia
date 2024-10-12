@@ -32,7 +32,7 @@
 		CD6438C92C92829000D7436E /* HoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438C82C92828900D7436E /* HoloManager.swift */; };
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
-		CD720E4E2CB8714100CEEE00 /* IDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* IDK.swift */; };
+		CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* BlipView.swift */; };
 		CD7D87E12C9A5A9D00F0E67B /* CustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7D87E02C9A5A9300F0E67B /* CustomTransition.swift */; };
 		CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* ImprintPreview.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
@@ -129,7 +129,6 @@
 		CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		CD132AA62C6DE76900C16804 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CD132AA82C6DE7B100C16804 /* Loupe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loupe.swift; sourceTree = "<group>"; };
-		CD17C1052CA8FCC20014D3FD /* transmission */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = transmission; path = /Users/decoherence/Downloads/transmission; sourceTree = "<absolute>"; };
 		CD17C1062CAC77650014D3FD /* ReplyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyView.swift; sourceTree = "<group>"; };
 		CD17C10B2CAF37420014D3FD /* LayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerManager.swift; sourceTree = "<group>"; };
 		CD17C10D2CB195400014D3FD /* SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeArea.swift; sourceTree = "<group>"; };
@@ -147,7 +146,7 @@
 		CD6438C82C92828900D7436E /* HoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloManager.swift; sourceTree = "<group>"; };
 		CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloShaderView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
-		CD720E4D2CB8713A00CEEE00 /* IDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDK.swift; sourceTree = "<group>"; };
+		CD720E4D2CB8713A00CEEE00 /* BlipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlipView.swift; sourceTree = "<group>"; };
 		CD7D87E02C9A5A9300F0E67B /* CustomTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransition.swift; sourceTree = "<group>"; };
 		CD85AB092C891F4400A61FBB /* ImprintPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprintPreview.swift; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
@@ -382,7 +381,6 @@
 		CDDED7292C194C8400958B39 = {
 			isa = PBXGroup;
 			children = (
-				CD17C1052CA8FCC20014D3FD /* transmission */,
 				CDDED7342C194C8400958B39 /* acusia */,
 				CDDED74A2C194C8600958B39 /* acusiaTests */,
 				CDDED7542C194C8600958B39 /* acusiaUITests */,
@@ -403,7 +401,7 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
-				CD720E4D2CB8713A00CEEE00 /* IDK.swift */,
+				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
 				CD7D87DB2C99559B00F0E67B /* Transmission */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
 				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
@@ -716,7 +714,7 @@
 				CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */,
 				CDD77DA32C8F956200D5BCC1 /* Squeeze.metal in Sources */,
 				CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */,
-				CD720E4E2CB8714100CEEE00 /* IDK.swift in Sources */,
+				CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */,
 				CDDED7842C1953F800958B39 /* UserAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

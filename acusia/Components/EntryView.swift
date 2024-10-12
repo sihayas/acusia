@@ -76,8 +76,10 @@ struct ArtifactView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-                    .background(.thickMaterial,
-                                in: ArtifactBubbleWithTail(scale: scale))
+                    .background(.thickMaterial.shadow(
+                        .inner(color: .white.opacity(0.1), radius: 8, x: 0, y: 0)
+                    ),
+                    in: ArtifactBubbleWithTail(scale: scale))
                     .foregroundStyle(.secondary)
                     .clipShape(ArtifactBubbleWithTail(scale: scale))
                     .overlay(
@@ -125,6 +127,7 @@ struct WispView: View {
 
     var body: some View {
         let imageUrl = entry.imageUrl
+        let blipSize: CGFloat = 52
 
         VStack(alignment: .leading, spacing: 0) {
             Text(entry.username)
@@ -135,37 +138,36 @@ struct WispView: View {
                 .padding(.horizontal, 40)
 
             VStack(alignment: .leading, spacing: -12) {
+                // Text Bubble, Blip & Replies
                 HStack {
-                    HStack(alignment: .lastTextBaseline, spacing: 0) {
-                        Text(entry.text)
-                            .foregroundColor(.white)
-                            .font(.system(size: 17))
-                            .shadow(
-                                color: Color.black.opacity(0.3),
-                                radius: 3,
-                                x: 0,
-                                y: 2
-                            )
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .lineLimit(6)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .contextMenu {
-                        Button("Reply") {
-                            print("Reply")
+                    ZStack(alignment: .topTrailing) {
+                        HStack(alignment: .lastTextBaseline, spacing: 0) {
+                            Text(entry.text)
+                                .foregroundColor(.white)
+                                .font(.system(size: 17))
+                                .shadow(
+                                    color: Color.black.opacity(0.3),
+                                    radius: 3,
+                                    x: 0,
+                                    y: 2
+                                )
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .lineLimit(6)
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .background(
+                            .ultraThinMaterial,
+                            in: WispBubbleWithTail(scale: scale)
+                        )
+                        .clipShape(WispBubbleWithTail(scale: scale))
+                        .foregroundStyle(.secondary)
+
+                        BlipView(size: CGSize(width: blipSize, height: blipSize))
+                            .padding(.top, -blipSize / 1.5)
+                            .padding(.trailing, -18)
                     }
-                    // .contentShape(.contextMenuPreview, WispBubbleWithTail(scale: scale).padding(.horizontal, 16))
-                    .background(
-                        .ultraThinMaterial
-                            .shadow(
-                                .inner(color: .white.opacity(0.1), radius: 4, x: 0, y: 0)
-                            ),
-                        in: WispBubbleWithTail(scale: scale)
-                    )
-                    .foregroundStyle(.secondary)
 
                     if !sampleComments.isEmpty {
                         ZStack {
@@ -201,6 +203,7 @@ struct WispView: View {
                 .padding(.leading, 24)
                 .zIndex(1)
 
+                // Avatar & Sound
                 HStack(alignment: .bottom, spacing: -32) {
                     AvatarView(size: 96, imageURL: entry.userImage)
 
@@ -258,7 +261,7 @@ struct WispBubbleWithTail: Shape {
             .path(in: bubbleRect)
 
         let tailSize: CGFloat = 12 * scale // Scale the tail size
-        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - 88
+        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - bubbleRect.width / 3
         let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
 
         // Create the tail (circle)
