@@ -119,7 +119,7 @@ struct AcusiaAppView: View {
                         }
                         .transition(.blurReplace)
 
-                        Home(size: size, safeArea: proxy.safeAreaInsets, homePath: $homePath)
+                        Home(size: size, homePath: $homePath)
                             // .overlay {
                             //     Rectangle()
                             //         .foregroundStyle(.clear)

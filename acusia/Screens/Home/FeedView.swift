@@ -77,18 +77,14 @@ let entries: [EntryModel] = [
 ]
 
 struct FeedView: View {
-    let userId: String
-
     var body: some View {
         ScrollView {
             VStack(spacing: 64) {
                 ForEach(entries) { entry in
-                    VStack {
-                        if entry.rating == 2 {
-                            WispView(entry: entry)
-                        } else {
-                            ArtifactView(entry: entry)
-                        }
+                    if entry.rating == 2 {
+                        WispView(entry: entry)
+                    } else {
+                        ArtifactView(entry: entry)
                     }
                 }
             }

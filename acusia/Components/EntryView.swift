@@ -157,10 +157,7 @@ struct WispView: View {
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
-                        .background(
-                            .ultraThinMaterial,
-                            in: WispBubbleWithTail(scale: scale)
-                        )
+                        .background(.ultraThinMaterial, in: WispBubbleWithTail(scale: scale))
                         .clipShape(WispBubbleWithTail(scale: scale))
                         .foregroundStyle(.secondary)
 

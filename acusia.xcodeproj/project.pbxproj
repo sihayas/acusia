@@ -37,7 +37,6 @@
 		CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* ImprintPreview.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* PastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* PastView.swift */; };
-		CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA92C6F030100D7DEA7 /* FeedBarView.swift */; };
 		CD8D197F2C24E3D300FDC979 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D197E2C24E3CD00FDC979 /* Auth.swift */; };
 		CD8D19832C27973D00FDC979 /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8D19822C27973800FDC979 /* NotificationModel.swift */; };
 		CD8E0BDB2C8D6C8C003A6F91 /* BlackBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */; };
@@ -151,7 +150,6 @@
 		CD85AB092C891F4400A61FBB /* ImprintPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprintPreview.swift; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		CD8CFDA72C6F02F100D7DEA7 /* PastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastView.swift; sourceTree = "<group>"; };
-		CD8CFDA92C6F030100D7DEA7 /* FeedBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBarView.swift; sourceTree = "<group>"; };
 		CD8D197E2C24E3CD00FDC979 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		CD8D19822C27973800FDC979 /* NotificationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModel.swift; sourceTree = "<group>"; };
 		CD8D19842C29C5FF00FDC979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -285,15 +283,6 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
-		CD4332532C82B216009ADBF0 /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */,
-				CD8CFDA92C6F030100D7DEA7 /* FeedBarView.swift */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
 		CD4BAA9E2C950A3F0005F3DB /* Ripple */ = {
 			isa = PBXGroup;
 			children = (
@@ -401,7 +390,6 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
-				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
 				CD7D87DB2C99559B00F0E67B /* Transmission */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
 				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
@@ -469,12 +457,13 @@
 				CD4BAAAF2C96495F0005F3DB /* SettingsButtonView.swift */,
 				CD8E0BDA2C8D6C83003A6F91 /* BlackBlurView.swift */,
 				CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */,
+				CD43324E2C82A852009ADBF0 /* RecentlyPlayedView.swift */,
 				CD85AB0D2C8922A000A61FBB /* Imprint */,
-				CD4332532C82B216009ADBF0 /* Home */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
 				CDE14A442C8118C400D0F172 /* PathViews.swift */,
 				CDA330AD2C39EFEE00622779 /* TapbackView.swift */,
 				CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */,
+				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -662,7 +651,6 @@
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
 				CD4BAAA42C9524DA0005F3DB /* AnimatableVector.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* EntryView.swift in Sources */,
-				CD8CFDAA2C6F030100D7DEA7 /* FeedBarView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,
 				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,

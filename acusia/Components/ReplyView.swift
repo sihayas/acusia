@@ -433,7 +433,7 @@ struct LoopPath: Shape {
 struct RadialLayout: Layout {
     var radius: CGFloat
     var offset: CGFloat
-    
+
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         // Use the container’s proposal to find a concrete size
         let size = proposal.replacingUnspecifiedDimensions()
@@ -446,7 +446,7 @@ struct RadialLayout: Layout {
         for (index, subview) in subviews.enumerated() {
             // Find a point using the angle and offset
             var point = CGPoint(x: 0, y: -radius)
-                .applying(CGAffineTransform(rotationAngle: angle * CGFloat(index) + offset))
+                .applying(CGAffineTransform(rotationAngle: angle*CGFloat(index) + offset))
 
             // Shift to the middle of the bounds
             point.x += bounds.midX

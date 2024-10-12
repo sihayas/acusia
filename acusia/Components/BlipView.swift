@@ -58,7 +58,6 @@ struct BlipView: View {
     }
 }
 
-
 #Preview {
     BlipView(size: CGSize(width: 56, height: 56))
 }
@@ -68,9 +67,9 @@ struct BlipView: View {
 // struct BlipView: View {
 //     let size: CGSize
 //     let emojis = ["😡", "💀", "🔥", "🎉", "😎", "👻", "🚀", "🌈", "🦄", "🍕", "🎸", "🌊", "🍦", "🌺", "🦋", "🌙"]
-//     
+//
 //     @State private var selectedEmojis: [String] = []
-//     
+//
 //     init(size: CGSize) {
 //         self.size = size
 //         let circleSizes = BlipShape.calculateCircleSizes(for: size)
@@ -78,16 +77,16 @@ struct BlipView: View {
 //             emojis.randomElement() ?? "😊"
 //         })
 //     }
-//     
+//
 //     var body: some View {
 //         ZStack {
 //             Rectangle()
 //                 .background(.ultraThinMaterial)
 //                 .foregroundStyle(.clear)
 //                 .clipShape(BlipShape(size: size))
-//             
+//
 //             let circleSizes = BlipShape.calculateCircleSizes(for: size)
-//             
+//
 //             ForEach(0 ..< circleSizes.count, id: \.self) { index in
 //                 Text(selectedEmojis[index])
 //                     .font(.system(size: circleSizes[index]/2.5))
@@ -96,7 +95,7 @@ struct BlipView: View {
 //         }
 //         .frame(width: size.height, height: size.height)
 //     }
-//     
+//
 //     private func circlePosition(for index: Int, in size: CGSize, circleSizes: [CGFloat]) -> CGPoint {
 //         BlipShape
 //             .circleCenter(
@@ -106,26 +105,26 @@ struct BlipView: View {
 //             )
 //     }
 // }
-// 
+//
 // struct BlipShape: Shape {
 //     let size: CGSize
 //     static let baseCircleSizes: [CGFloat] = [30, 26, 22]
-//     
+//
 //     func path(in rect: CGRect) -> Path {
 //         var path = Path()
-//         
+//
 //         let circleSizes = BlipShape.calculateCircleSizes(for: rect.size)
-//         
+//
 //         // Main circles
 //         for (index, size) in circleSizes.enumerated() {
 //             let center = BlipShape.circleCenter(for: index, in: rect, circleSizes: circleSizes)
 //             path.addEllipse(in: CGRect(x: center.x - size/2, y: center.y - size/2, width: size, height: size))
 //         }
-//         
+//
 //         // Tail bubbles
 //         let bigTailSize: CGFloat = 8
 //         let smallTailSize: CGFloat = 4
-//         
+//
 //         // Position larger tail circle
 //         let bigTailCenter = CGPoint(
 //             x: rect.maxX - bigTailSize,
@@ -137,22 +136,22 @@ struct BlipView: View {
 //             width: bigTailSize,
 //             height: bigTailSize
 //         ))
-//         
+//
 //         // Position smaller tail circle
 //         let smallTailCenter = CGPoint(
 //             x: bigTailCenter.x + bigTailSize/2 + smallTailSize/2,
 //             y: bigTailCenter.y + bigTailSize/2 + smallTailSize/2
 //         )
 //         path.addEllipse(in: CGRect(x: smallTailCenter.x - smallTailSize/2, y: smallTailCenter.y - smallTailSize/2, width: smallTailSize, height: smallTailSize))
-//         
+//
 //         return path
 //     }
-//     
+//
 //     static func calculateCircleSizes(for frameSize: CGSize) -> [CGFloat] {
 //         let scaleFactor = frameSize.width/56 // Base frame size is 56x56
 //         return baseCircleSizes.map { $0 * scaleFactor }
 //     }
-//     
+//
 //     static func circleCenter(for index: Int, in rect: CGRect, circleSizes: [CGFloat]) -> CGPoint {
 //         let angle = CGFloat(index) * (2 * .pi/CGFloat(circleSizes.count)) + .pi/4
 //         let maxSize = circleSizes.max() ?? 0

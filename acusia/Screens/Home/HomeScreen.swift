@@ -9,18 +9,18 @@ class HomeState: ObservableObject {
 
     // Your shared properties go here
     @Published var isExpanded: Bool = false
-    
+
     // ScrollView Properties
     @Published var mainScrollValue: CGFloat = 0
     @Published var topScrollViewValue: CGFloat = 0
-    
+
     // These properties will be used to evaluate the drag conditions,
     // whether the scroll view can either be pulled up or down for expanding/minimizing the photos scrollview
     @Published var canPullDown: Bool = false
     @Published var canPullUp: Bool = false
-    
+
     @Published var gestureProgress: CGFloat = 0
-    
+
     @Published var showReplies: Bool = false
     @Published var repliesOffset: CGFloat = 0
 }
@@ -29,32 +29,33 @@ struct Home: View {
     @EnvironmentObject private var windowState: WindowState
     @EnvironmentObject private var shareData: HomeState
     @EnvironmentObject private var auth: Auth
-    
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+
     let size: CGSize
-    let safeArea: EdgeInsets
     @Binding var homePath: NavigationPath
 
     var body: some View {
         // Main Feed + User + User History View
         ScrollView(.vertical) {
             VStack(spacing: 0) {
-                PastView(size: size, safeArea: safeArea)
-                            
+                PastView(size: size, safeArea: safeAreaInsets)
+
                 GridView(homePath: $homePath,
-                             initialUserData: nil,
-                             userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af",
-                                                    username: "decoherence",
-                                                    image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"),
-                             size: size
-                )
-                            
-                FeedView(userId: auth.user?.id ?? "")
-                    .padding(.top, safeArea.bottom + 40)
-                    .padding(.bottom, size.height)
+                         initialUserData: nil,
+                         userResult: UserResult(id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af",
+                                                username: "decoherence",
+                                                image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"),
+                         size: size)
+
+                FeedView()
+                    .padding(.top, safeAreaInsets.bottom + 40)
+                    .padding(.bottom, safeAreaInsets.top * 2)
             }
         }
         .scrollDisabled(shareData.isExpanded)
+
         // MARK: - Search Sheet
+
         .sheet(isPresented: $windowState.showSearchSheet) {
             IndexSheet()
         }
@@ -103,10 +104,9 @@ struct Home: View {
                 VariableBlurView(radius: 1, mask: Image(.gradient))
                     .scaleEffect(x: 1, y: -1)
                     .ignoresSafeArea()
-                    .frame(maxWidth: .infinity, maxHeight: safeArea.top * 1.5)
+                    .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
                 Spacer()
             }
         }
     }
 }
-
