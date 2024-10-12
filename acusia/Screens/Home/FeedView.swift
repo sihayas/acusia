@@ -5,10 +5,71 @@
 //  Created by decoherence on 6/12/24.
 //
 
-import Combine
 import SwiftUI
 
-struct EntryModel: Identifiable {
+struct FeedView: View {
+    @State private var tappedEntry: EntryModel?
+    @State private var tappedPosition: CGPoint = .zero
+    @State private var tappedSize: CGSize = .zero
+
+    let size: CGSize
+
+    var body: some View {
+        ZStack {
+            ScrollView {
+                LazyVStack(spacing: 64) {
+                    ForEach(entries) { entry in
+                        ZStack {
+                            if entry.rating == 2 {
+                                WispView(entry: entry)
+                            } else {
+                                ArtifactView(entry: entry)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            GeometryReader { geometry in
+                                Color.black.onTapGesture {
+                                    if tappedEntry != nil {
+                                        withAnimation(.spring()) {
+                                            tappedEntry = nil
+                                        }
+                                    } else {
+                                        withAnimation(.spring()) {
+                                            tappedEntry = (tappedEntry == entry) ? nil : entry
+                                        }
+                                        tappedPosition = CGPoint(x: geometry.frame(in: .global).midX, y: geometry.frame(in: .global).midY)
+                                        tappedSize = geometry.size
+
+                                        print("Tapped position: \(tappedPosition)")
+                                        print("Tapped size: \(tappedSize)")
+                                    }
+                                }
+                            })
+                        .scaleEffect(tappedEntry == entry ? 1.05 : 1)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .frame(width: size.width, height: size.height)
+        // .border(.green, width: 1)
+        .overlay(
+            ZStack {
+                if tappedEntry != nil {
+                    RadialVariableBlurView(radius: 4, position: tappedPosition, size: tappedSize)
+                        .ignoresSafeArea()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            }
+            .allowsHitTesting(false)
+        )
+    }
+}
+
+// another thing to note is that the actual frame of the radial variable blur/radial gradient mask is the size of the screen. our goal is to position the radial/clear part itself not to be centered or a specific size, but to sort of move around in the frame depending on where the x/y of the tapped entry is and adjust the gradient start/end based on the size of the entry.
+
+struct EntryModel: Equatable, Identifiable {
     let id = UUID()
     let username: String
     let userImage: String
@@ -75,22 +136,3 @@ let entries: [EntryModel] = [
         rating: 0
     )
 ]
-
-struct FeedView: View {
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 64) {
-                ForEach(entries) { entry in
-                    if entry.rating == 2 {
-                        WispView(entry: entry)
-                    } else {
-                        ArtifactView(entry: entry)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-        }
-        .scrollClipDisabled(true)
-        // .onAppear { Task { await viewModel.fetchEntries() } }
-    }
-}

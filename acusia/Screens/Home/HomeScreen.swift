@@ -47,15 +47,12 @@ struct Home: View {
                                                 image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"),
                          size: size)
 
-                FeedView()
+                FeedView(size: size)
                     .padding(.top, safeAreaInsets.bottom + 40)
-                    .padding(.bottom, safeAreaInsets.top * 2)
             }
         }
         .scrollDisabled(shareData.isExpanded)
-
-        // MARK: - Search Sheet
-
+        // Search Sheet
         .sheet(isPresented: $windowState.showSearchSheet) {
             IndexSheet()
         }

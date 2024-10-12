@@ -78,34 +78,6 @@ struct ReplyView: View {
     }
 }
 
-struct BubbleWithTail: Shape {
-    func path(in rect: CGRect) -> Path {
-        // Create the main bubble (rounded rectangle)
-        let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .path(in: bubbleRect)
-
-        // Define the size and position of the tail
-        let tailSize: CGFloat = 12
-        let tailOffsetX: CGFloat = 0 // Aligns tail's left edge with bubble's left edge
-        let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 2)
-
-        // Create the tail (circle)
-        let tailRect = CGRect(
-            x: bubbleRect.minX + tailOffsetX,
-            y: bubbleRect.minY + tailOffsetY,
-            width: tailSize,
-            height: tailSize
-        )
-        let tail = Circle().path(in: tailRect)
-
-        // Combine the bubble and the tail
-        let combined = bubble.union(tail)
-
-        return combined
-    }
-}
-
 class Reply: Identifiable, Equatable {
     let id = UUID()
     let username: String
@@ -125,7 +97,6 @@ class Reply: Identifiable, Equatable {
     }
 }
 
-// Sample comments with nesting
 let sampleComments: [Reply] = [
     Reply(
         username: "johnnyD",
@@ -373,87 +344,3 @@ let sampleComments: [Reply] = [
         avatarURL: "https://picsum.photos/200/200"
     )
 ]
-
-struct TopCenterToTrailingCenterPath: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-
-        // Start at the top center
-        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-
-        // Draw the vertical line downwards, leaving space for the curve
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY - rect.width / 2))
-
-        // Draw the rounded corner curve to the right center
-        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.maxY),
-                          control: CGPoint(x: rect.midX, y: rect.maxY))
-
-        return path
-    }
-}
-
-struct ConnectedRepliesPath: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-
-        // Start at the top center
-        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-
-        // Draw the top curve to the right
-        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + rect.width / 2),
-                          control: CGPoint(x: rect.maxX, y: rect.minY))
-
-        // Draw the vertical line downwards, leaving space for the bottom curve
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - rect.width / 2))
-
-        // Draw the bottom curve to the left
-        path.addQuadCurve(to: CGPoint(x: rect.midX, y: rect.maxY),
-                          control: CGPoint(x: rect.maxX, y: rect.maxY))
-
-        return path
-    }
-}
-
-struct LoopPath: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let width = rect.size.width
-        let height = rect.size.height
-        path.move(to: CGPoint(x: 0.5*width, y: 0.95*height))
-        path.addLine(to: CGPoint(x: 0.5*width, y: 0.75*height))
-        path.addCurve(to: CGPoint(x: 0.20953*width, y: 0.26027*height), control1: CGPoint(x: 0.5*width, y: 0.51429*height), control2: CGPoint(x: 0.36032*width, y: 0.26027*height))
-        path.addCurve(to: CGPoint(x: 0.03333*width, y: 0.50961*height), control1: CGPoint(x: 0.05874*width, y: 0.26027*height), control2: CGPoint(x: 0.03333*width, y: 0.41697*height))
-        path.addCurve(to: CGPoint(x: 0.20956*width, y: 0.74652*height), control1: CGPoint(x: 0.03333*width, y: 0.60226*height), control2: CGPoint(x: 0.06435*width, y: 0.74652*height))
-        path.addCurve(to: CGPoint(x: 0.5*width, y: 0.25*height), control1: CGPoint(x: 0.3771*width, y: 0.74652*height), control2: CGPoint(x: 0.5*width, y: 0.50267*height))
-        path.addLine(to: CGPoint(x: 0.5*width, y: 0.05*height))
-        return path
-    }
-}
-
-struct RadialLayout: Layout {
-    var radius: CGFloat
-    var offset: CGFloat
-
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        // Use the container’s proposal to find a concrete size
-        let size = proposal.replacingUnspecifiedDimensions()
-        return size
-    }
-
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let angle = 2 * .pi / CGFloat(subviews.count)
-
-        for (index, subview) in subviews.enumerated() {
-            // Find a point using the angle and offset
-            var point = CGPoint(x: 0, y: -radius)
-                .applying(CGAffineTransform(rotationAngle: angle*CGFloat(index) + offset))
-
-            // Shift to the middle of the bounds
-            point.x += bounds.midX
-            point.y += bounds.midY
-
-            // Place the subview
-            subview.place(at: point, anchor: .center, proposal: .unspecified)
-        }
-    }
-}
