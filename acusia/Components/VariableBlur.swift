@@ -9,60 +9,40 @@ import Foundation
 import SwiftUI
 import UIKit
 
-extension UIBlurEffect {
-  public static func variableBlurEffect(radius: Double, imageMask: UIImage) -> UIBlurEffect? {
-    let methodType = (@convention(c) (AnyClass, Selector, Double, UIImage) -> UIBlurEffect).self
-    let selectorName = ["imageMask:", "effectWithVariableBlurRadius:"].reversed().joined()
-    let selector = NSSelectorFromString(selectorName)
+public extension UIBlurEffect {
+    static func variableBlurEffect(radius: Double, imageMask: UIImage) -> UIBlurEffect? {
+        let methodType = (@convention(c) (AnyClass, Selector, Double, UIImage) -> UIBlurEffect).self
+        let selectorName = ["imageMask:", "effectWithVariableBlurRadius:"].reversed().joined()
+        let selector = NSSelectorFromString(selectorName)
 
-    guard UIBlurEffect.responds(to: selector) else { return nil }
+        guard UIBlurEffect.responds(to: selector) else { return nil }
 
-    let implementation = UIBlurEffect.method(for: selector)
-    let method = unsafeBitCast(implementation, to: methodType)
+        let implementation = UIBlurEffect.method(for: selector)
+        let method = unsafeBitCast(implementation, to: methodType)
 
-    return method(UIBlurEffect.self, selector, radius, imageMask)
-  }
+        return method(UIBlurEffect.self, selector, radius, imageMask)
+    }
 }
 
 struct VariableBlurView: UIViewRepresentable {
-  let radius: Double
-  let mask: Image
+    let radius: Double
+    let mask: Image
 
-  func makeUIView(context: Context) -> UIVisualEffectView {
-    let maskImage = ImageRenderer(content: mask).uiImage
-    let effect = maskImage.flatMap {
-      UIBlurEffect.variableBlurEffect(radius: radius, imageMask: $0)
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        let maskImage = ImageRenderer(content: mask).uiImage
+        let effect = maskImage.flatMap {
+            UIBlurEffect.variableBlurEffect(radius: radius, imageMask: $0)
+        }
+        return UIVisualEffectView(effect: effect)
     }
-    return UIVisualEffectView(effect: effect)
-  }
 
-  func updateUIView(_ view: UIVisualEffectView, context: Context) {
-    let maskImage = ImageRenderer(content: mask).uiImage
-    view.effect = maskImage.flatMap {
-      UIBlurEffect.variableBlurEffect(radius: radius, imageMask: $0)
+    func updateUIView(_ view: UIVisualEffectView, context: Context) {
+        let maskImage = ImageRenderer(content: mask).uiImage
+        view.effect = maskImage.flatMap {
+            UIBlurEffect.variableBlurEffect(radius: radius, imageMask: $0)
+        }
     }
-  }
 }
-
-// Vertical Gradient
-#Preview {
-  VStack(spacing: 0) {
-    Circle()
-      .foregroundStyle(.red)
-    Circle()
-      .foregroundStyle(.green)
-    Circle()
-      .foregroundStyle(.blue)
-  }
-  .frame(maxWidth: .infinity, alignment: .center)
-  .overlay(
-    VariableBlurView(radius: 10, mask: Image(.gradient))
-      .ignoresSafeArea()
-      .frame(maxWidth: .infinity, maxHeight: 240)
-      .border(Color.black, width: 1)
-  )
-}
-
 
 struct RadialGradientMask: View {
     var center: CGPoint
@@ -70,19 +50,18 @@ struct RadialGradientMask: View {
 
     var body: some View {
         RadialGradient(
-            gradient: Gradient(colors: [Color.clear, Color.black]),
+            gradient: Gradient(colors: [.clear, .black]),
             center: UnitPoint(
                 x: center.x / UIScreen.main.bounds.width,
                 y: center.y / UIScreen.main.bounds.height
             ),
-            startRadius: size.width / 2,  // Adjust the gradient radius based on entry size
+            startRadius: size.width / 2,
             endRadius: size.width
         )
-        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height) // Full screen frame
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
     }
 }
 
-// RadialVariableBlurView for dynamic positioning
 struct RadialVariableBlurView: UIViewRepresentable {
     let radius: Double
     let position: CGPoint
@@ -107,4 +86,22 @@ struct RadialVariableBlurView: UIViewRepresentable {
             view.effect = UIBlurEffect.variableBlurEffect(radius: radius, imageMask: maskImage)
         }
     }
+}
+
+
+#Preview {
+    VStack(spacing: 0) {
+        ForEach(0 ..< 3) { _ in
+            Circle()
+                .foregroundStyle(.red)
+        }
+    }
+    .frame(maxWidth: .infinity, alignment: .center)
+    .overlay(
+        // Vertical Preview
+        VariableBlurView(radius: 10, mask: Image(.gradient))
+            .ignoresSafeArea()
+            .frame(maxWidth: .infinity, maxHeight: 240)
+            .border(Color.black, width: 1)
+    )
 }

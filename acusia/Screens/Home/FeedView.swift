@@ -15,51 +15,49 @@ struct FeedView: View {
     let size: CGSize
 
     var body: some View {
-        ZStack {
-            ScrollView {
-                LazyVStack(spacing: 64) {
-                    ForEach(entries) { entry in
-                        ZStack {
-                            if entry.rating == 2 {
-                                WispView(entry: entry)
-                            } else {
-                                ArtifactView(entry: entry)
-                            }
+        ScrollView {
+            LazyVStack(spacing: 64) {
+                ForEach(entries) { entry in
+                    ZStack {
+                        if entry.rating == 2 {
+                            WispView(entry: entry)
+                        } else {
+                            ArtifactView(entry: entry)
                         }
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            GeometryReader { geometry in
-                                Color.black.onTapGesture {
-                                    if tappedEntry != nil {
-                                        withAnimation(.spring()) {
-                                            tappedEntry = nil
-                                        }
-                                    } else {
-                                        withAnimation(.spring()) {
-                                            tappedEntry = (tappedEntry == entry) ? nil : entry
-                                        }
-                                        tappedPosition = CGPoint(x: geometry.frame(in: .global).midX, y: geometry.frame(in: .global).midY)
-                                        tappedSize = geometry.size
-
-                                        print("Tapped position: \(tappedPosition)")
-                                        print("Tapped size: \(tappedSize)")
-                                    }
-                                }
-                            })
-                        .scaleEffect(tappedEntry == entry ? 1.05 : 1)
                     }
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        GeometryReader { geometry in
+                            Color.black.onTapGesture {
+                                if tappedEntry != nil {
+                                    withAnimation(.smooth) {
+                                        tappedEntry = nil
+                                    }
+                                } else {
+                                    withAnimation(.smooth) {
+                                        tappedEntry = (tappedEntry == entry) ? nil : entry
+                                    }
+                                    tappedPosition = CGPoint(x: geometry.frame(in: .global).midX, y: geometry.frame(in: .global).midY)
+                                    tappedSize = geometry.size
+                                }
+                            }
+                        })
+                    .scaleEffect(tappedEntry != nil && tappedEntry != entry ? 0.96 : 1)
+                    .animation(.interactiveSpring(duration: 0.4, extraBounce: 0.5), value: tappedEntry)
                 }
-                .frame(maxWidth: .infinity)
             }
+            .frame(maxWidth: .infinity)
         }
+        .scrollClipDisabled(true)
         .frame(width: size.width, height: size.height)
-        // .border(.green, width: 1)
         .overlay(
             ZStack {
                 if tappedEntry != nil {
                     RadialVariableBlurView(radius: 4, position: tappedPosition, size: tappedSize)
                         .ignoresSafeArea()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                    RadialGradientMask(center: tappedPosition, size: tappedSize)
                 }
             }
             .allowsHitTesting(false)
