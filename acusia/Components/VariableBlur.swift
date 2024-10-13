@@ -4,6 +4,8 @@
 //
 //  Created by decoherence on 8/17/24.
 //
+/// In case this ends up being a private API, use Janum Trivdei's implementation
+/// outlined here ` https://designcode.io/swiftui-handbook-progressive-blur `
 
 import Foundation
 import SwiftUI
