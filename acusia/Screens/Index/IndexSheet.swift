@@ -23,7 +23,7 @@ struct IndexSheet: View {
             UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
                 .foregroundStyle(.clear)
                 .background(
-                    BlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.5)
+                    TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.5)
                         .edgesIgnoringSafeArea(.all)
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -120,7 +120,7 @@ struct ResultCell: View {
                             Rectangle()
                                 .foregroundStyle(.clear)
                                 .background(
-                                    BlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.5)
+                                    TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.5)
                                         .edgesIgnoringSafeArea(.all)
                                 )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

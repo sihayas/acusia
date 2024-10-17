@@ -55,7 +55,7 @@ struct SymmetryView: View {
                 Rectangle()
                     .foregroundColor(.clear)
                     .background(
-                        BlurView(style: .systemUltraThinMaterialLight, backgroundColor: .black, blurMutingFactor: 0.2)
+                        TintedBlurView(style: .systemUltraThinMaterialLight, backgroundColor: .black, blurMutingFactor: 0.2)
                     )
                     .mask {
                         Canvas { ctx, _ in

@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct BlurView: UIViewRepresentable {
+struct TintedBlurView: UIViewRepresentable {
     var style: UIBlurEffect.Style
     var backgroundColor: UIColor
     var blurMutingFactor: CGFloat = 0.5

@@ -22,7 +22,6 @@ class WindowState: ObservableObject {
 @main
 struct AcusiaApp: App {
     @ObservedObject private var windowState = WindowState.shared
-    @ObservedObject private var auth = Auth.shared
     @ObservedObject private var musicKit = MusicKit.shared
     @ObservedObject private var homeState = HomeState.shared
 
@@ -35,7 +34,6 @@ struct AcusiaApp: App {
             AcusiaAppView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(windowState)
-                .environmentObject(auth)
                 .environmentObject(musicKit)
                 .environmentObject(homeState)
                 .onAppear {
@@ -52,7 +50,6 @@ struct AcusiaApp: App {
 /// As the user drags up the RepliesView mask expands to full, and the
 /// HomeView mask shrinks to the minHomeHeight.
 struct AcusiaAppView: View {
-    @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var musicKitManager: MusicKit
     @EnvironmentObject private var homeState: WindowState
     @Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -224,7 +221,6 @@ class FloatingBarPresenter {
         // Pass the insets to the SwiftUI view
         let view = FloatingBarView(safeAreaInsets: safeAreaInsets)
             .environmentObject(WindowState.shared)
-            .environmentObject(Auth.shared)
             .environmentObject(MusicKit.shared)
             .environmentObject(HomeState.shared)
 

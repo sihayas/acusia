@@ -24,8 +24,9 @@ struct GridView: View {
 
     // Parameters
     @Binding var homePath: NavigationPath
-    let initialUserData: APIUser?
-    let userResult: UserResult?
+    let id: String
+    let username: String
+    let image: String
     let size: CGSize
 
     var body: some View {
