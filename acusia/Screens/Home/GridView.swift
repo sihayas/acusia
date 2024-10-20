@@ -23,7 +23,6 @@ struct GridView: View {
     @State var showRecents = false
 
     // Parameters
-    @Binding var homePath: NavigationPath
     let id: String
     let username: String
     let image: String

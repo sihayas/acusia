@@ -13,13 +13,16 @@ class LayerManager: ObservableObject {
 
     struct Layer: Identifiable {
         let id = UUID()
-        var selectedReply: Reply? // Match geometry
+        // Match geometry
+        var selectedReply: Reply?
 
-        var isHidden: Bool = false // Controls reply collapse & hiding hosting content.
-        var isCollapsed: Bool = false // Indicates if the layer is collapsed.
+        // Controls reply collapse & hiding hosting content
+        var isHidden: Bool = false
+        var isCollapsed: Bool = false
 
-        var baseHeight: CGFloat = 0 // Store the calculated height
-        var maskHeight: CGFloat // Mask height for the layer
+        // Store the calculated height
+        var collapsedHeight: CGFloat = 0
+        var maskHeight: CGFloat
     }
 
     func pushLayer() {
@@ -39,25 +42,15 @@ class LayerManager: ObservableObject {
 }
 
 struct RepliesSheet: View {
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: WindowState
     @StateObject private var layerManager = LayerManager()
-    @Environment(\.safeAreaInsets) private var safeAreaInsets
-
-    var size: CGSize
-    var minHomeHeight: CGFloat
 
     var body: some View {
-        let collapsedHeight = safeAreaInsets.bottom * 3
-        let collapsedOffset = safeAreaInsets.bottom * 2
-
         ZStack(alignment: .top) {
             ForEach(Array(layerManager.layers.enumerated()), id: \.element.id) { index, layer in
                 LayerView(
                     layerManager: layerManager,
-                    width: size.width,
-                    height: size.height,
-                    collapsedHeight: collapsedHeight,
-                    collapsedOffset: collapsedOffset,
                     layer: layer,
                     index: index
                 )
@@ -71,18 +64,21 @@ struct RepliesSheet: View {
                             .scaleEffect(y: -1)
                     )
                     .foregroundColor(.clear)
-                    .frame(width: size.width, height: collapsedOffset * CGFloat(layerManager.layers.count))
+                    .frame(
+                        width: windowState.size.width,
+                        height:  windowState.collapsedHomeHeight + (safeAreaInsets.top * CGFloat(layerManager.layers.count))
+                    )
                     .animation(.spring(), value: layerManager.layers.count)
                     .zIndex(1.5)
             }
         }
-        .frame(width: size.width, height: size.height, alignment: .top) // Important to align collapsed layers.
+        .frame(width: windowState.size.width, height: windowState.size.height, alignment: .top) // Important to align collapsed layers.
         .onReceive(layerManager.$layers) { layers in
             windowState.isLayered = layers.count > 1
         }
         .onAppear {
-            layerManager.viewSize = size
-            layerManager.layers[0].maskHeight = size.height // Set initial mask height
+            layerManager.viewSize = windowState.size
+            layerManager.layers[0].maskHeight = windowState.size.height // Set initial mask height
         }
     }
 }
@@ -96,16 +92,12 @@ struct LayerView: View {
 
     @State private var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     @State private var scrollDisabled = false
-    @State private var isOffsetAtTop = true
+    @State private var scrollOffsetAtTop = true
     @State private var blurRadius: CGFloat = 0
     @State private var scale: CGFloat = 1
     @Namespace private var namespace
 
     let colors: [Color] = [.red, .green, .blue, .orange, .purple, .pink, .yellow]
-    let width: CGFloat
-    let height: CGFloat
-    let collapsedHeight: CGFloat
-    let collapsedOffset: CGFloat
     let layer: LayerManager.Layer
     let index: Int
     let cornerRadius: CGFloat = 20
@@ -115,35 +107,34 @@ struct LayerView: View {
             LayerScrollViewWrapper(
                 scrollState: $scrollState,
                 scrollDisabled: $scrollDisabled,
-                isOffsetAtTop: $isOffsetAtTop,
-                blurRadius: $blurRadius,
-                scale: $scale,
-                width: width,
-                height: height,
+                isOffsetAtTop: $scrollOffsetAtTop,
                 index: index,
-                collapsedHeight: collapsedHeight,
-                collapsedOffset: collapsedOffset,
                 layerManager: layerManager,
                 layer: layer,
                 namespace: namespace
             )
+            .blur(radius: blurRadius)
         }
         .edgesIgnoringSafeArea(.all)
-        .frame(minWidth: width, minHeight: height)
+        .frame(minWidth: windowState.size.width, minHeight: windowState.size.height)
         .frame(height: layer.maskHeight, alignment: .top)
         .overlay(alignment: .bottom) {
-            VStack(alignment: .leading) { // Make sure it's always top leading aligned.
-                VStack(alignment: .leading) { // Reserve space for match geometry to work.
+            // Make sure it's always top leading aligned.
+            VStack(alignment: .leading) {
+                // Reserve space for match geometry to work.
+                VStack(alignment: .leading) {
                     if layer.selectedReply != nil {
                         ReplyView(reply: layer.selectedReply!, isCollapsed: layer.isHidden)
                             .matchedGeometryEffect(id: layer.selectedReply!.id, in: namespace)
                             .transition(.scale(1.0))
-                            .padding(.horizontal, 24)
-                            .padding(.bottom, 12)
-                            .scaleEffect(layer.isHidden ? 13 / 17 : 1, anchor: .bottomLeading)
                     }
                 }
-                .frame(width: width, height: collapsedHeight, alignment: .bottom)
+                .padding(.bottom, 12)
+                .padding(.horizontal, 24)
+                .frame(
+                    width: windowState.size.width,
+                    height: layer.collapsedHeight, alignment: .bottom
+                )
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             .allowsHitTesting(false)
@@ -173,11 +164,10 @@ struct LayerView: View {
 
                     let currentLayer = layer
 
-                    // Pop the current layer, push the previous.
-                    if isOffsetAtTop, !currentLayer.isCollapsed {
+                    // Begin to pop, animate the current layer, push the previous.
+                    if scrollOffsetAtTop, !currentLayer.isCollapsed {
                         // Can't push a previous layer if it's the first layer.
                         guard index > 0 else { return }
-                        print("Popping previous layer")
 
                         if !scrollDisabled { scrollDisabled = true }
 
@@ -197,7 +187,7 @@ struct LayerView: View {
                         }
                     }
 
-                    // Push the current layer.
+                    // Begin to push, animate the current layer.
                     if currentLayer.isCollapsed {
                         let currentHeight = currentLayer.maskHeight
                         let newHeight = currentHeight + verticalDrag / 20
@@ -213,7 +203,7 @@ struct LayerView: View {
                     let verticalDrag = value.translation.height
                     let verticalVelocity = value.velocity.height
                     let velocityThreshold: CGFloat = 500
-                    let shouldExpand = verticalDrag > height / 2 || verticalVelocity > velocityThreshold
+                    let shouldExpand = verticalDrag > windowState.size.height / 2 || verticalVelocity > velocityThreshold
 
                     scrollDisabled = false
 
@@ -222,7 +212,7 @@ struct LayerView: View {
                     let currentLayer = layer
 
                     // Pop the current layer, push the previous.
-                    if isOffsetAtTop, !currentLayer.isCollapsed {
+                    if scrollOffsetAtTop, !currentLayer.isCollapsed {
                         guard index > 0 else { return }
 
                         let previousIndex = index - 1
@@ -237,13 +227,13 @@ struct LayerView: View {
                                     layerManager.popLayer(at: index) // Pop the current layer.
                                     layerManager.layers[previousIndex].isCollapsed = false
                                     layerManager.layers[previousIndex].selectedReply = nil
-                                    layerManager.layers[previousIndex].maskHeight = height
+                                    layerManager.layers[previousIndex].maskHeight = windowState.size.height
                                 }
                             } else {
                                 // Cancel the push.
                                 withAnimation(.spring()) {
                                     layerManager.layers[previousIndex].isHidden = true
-                                    layerManager.layers[previousIndex].maskHeight = previousLayer.baseHeight
+                                    layerManager.layers[previousIndex].maskHeight = previousLayer.collapsedHeight
                                 }
 
                                 blurRadius = 0
@@ -263,13 +253,13 @@ struct LayerView: View {
                                 }
                                 layerManager.layers[index].isCollapsed = false
                                 layerManager.layers[index].selectedReply = nil
-                                layerManager.layers[index].maskHeight = height
+                                layerManager.layers[index].maskHeight = windowState.size.height
                             } completion: {}
                         } else {
                             // Cancel the expansion.
                             withAnimation(.spring()) {
                                 layerManager.layers[index].isHidden = true
-                                layerManager.layers[index].maskHeight = currentLayer.baseHeight
+                                layerManager.layers[index].maskHeight = currentLayer.collapsedHeight
                             }
                         }
                     }
@@ -284,14 +274,8 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     @Binding var scrollDisabled: Bool
     @Binding var isOffsetAtTop: Bool
-    @Binding var blurRadius: CGFloat
-    @Binding var scale: CGFloat
 
-    let width: CGFloat
-    let height: CGFloat
     let index: Int
-    let collapsedHeight: CGFloat
-    let collapsedOffset: CGFloat
     let layerManager: LayerManager
     let layer: LayerManager.Layer
     let namespace: Namespace.ID
@@ -301,13 +285,7 @@ struct LayerScrollViewWrapper: UIViewControllerRepresentable {
             scrollState: $scrollState,
             scrollDisabled: $scrollDisabled,
             isOffsetAtTop: $isOffsetAtTop,
-            blurRadius: $blurRadius,
-            scale: $scale,
-            width: width,
-            height: height,
             index: index,
-            collapsedHeight: collapsedHeight,
-            collapsedOffset: collapsedOffset,
             layerManager: layerManager,
             layer: layer,
             namespace: namespace
@@ -337,20 +315,14 @@ struct LayerScrollView: View {
     @Binding var scrollState: (phase: ScrollPhase, context: ScrollPhaseChangeContext)?
     @Binding var scrollDisabled: Bool
     @Binding var isOffsetAtTop: Bool
-    @Binding var blurRadius: CGFloat
-    @Binding var scale: CGFloat
 
-    let width: CGFloat
-    let height: CGFloat
     let index: Int
-    let collapsedHeight: CGFloat
-    let collapsedOffset: CGFloat
     let layerManager: LayerManager
     let layer: LayerManager.Layer
     let namespace: Namespace.ID
 
     private var baseHeight: CGFloat {
-        collapsedHeight + ((collapsedHeight / 1.75) * CGFloat(index))
+        windowState.collapsedHomeHeight + (safeAreaInsets.top * CGFloat(index + 1))
     }
 
     var body: some View {
@@ -358,6 +330,7 @@ struct LayerScrollView: View {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(sampleComments) { reply in
                     ZStack {
+                        // Ghost to occupy space.
                         ReplyView(reply: reply, isCollapsed: false)
                             .hidden()
 
@@ -371,7 +344,7 @@ struct LayerScrollView: View {
                                     }
                                     withAnimation(.spring()) {
                                         layerManager.layers[index].isCollapsed = true
-                                        layerManager.layers[index].baseHeight = baseHeight
+                                        layerManager.layers[index].collapsedHeight = baseHeight
                                         layerManager.layers[index].maskHeight = baseHeight
                                         layerManager.pushLayer()
                                     } completion: {
@@ -382,14 +355,10 @@ struct LayerScrollView: View {
                     }
                 }
             }
-            .padding(24)
-            .padding(.top, index == 0 ? safeAreaInsets.bottom : safeAreaInsets.bottom + (collapsedOffset * CGFloat(index)))
-            .scaleEffect(scale)
-            .animation(.spring(), value: scale)
+            .padding([.horizontal, .bottom], 24)
+            .padding(.top, baseHeight)
         }
-        .frame(minWidth: width, minHeight: height)
-        .blur(radius: blurRadius) // Blur and scale are separate because scale breaks drag gesture.
-        .animation(.spring(), value: blurRadius)
+        .frame(minWidth: windowState.size.width, minHeight: windowState.size.height)
         .scrollDisabled(scrollDisabled)
         .onScrollPhaseChange { _, newPhase, context in
             scrollState = (newPhase, context)

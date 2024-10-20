@@ -20,7 +20,7 @@ enum RotationAxis: Equatable {
 }
 
 struct ArtifactView: View {
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: HomeState
     @State private var scale: CGFloat = 1
     let entry: EntryModel
 
@@ -191,7 +191,7 @@ struct WispView: View {
                             .offset(x: 0, y: 44)
                         }
                         .onTapGesture {
-                            withAnimation {
+                            withAnimation(.spring()) {
                                 windowState.isSplit.toggle()
                             }
                         }

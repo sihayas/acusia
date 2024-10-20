@@ -12,7 +12,7 @@ import Transmission
 
 struct IndexSheet: View {
     // Global state
-    @EnvironmentObject var windowState: WindowState
+    @EnvironmentObject var windowState: HomeState
     @StateObject private var musicKitManager = MusicKit.shared
 
     @State private var keyboardOffset: CGFloat = 0

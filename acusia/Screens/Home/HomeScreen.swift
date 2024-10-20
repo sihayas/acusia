@@ -30,23 +30,13 @@ struct Home: View {
     @EnvironmentObject private var shareData: HomeState
     @Environment(\.safeAreaInsets) private var safeAreaInsets
 
-    let size: CGSize
-    @Binding var homePath: NavigationPath
-
     var body: some View {
         // Main Feed + User + User History View
         ScrollView(.vertical) {
             VStack(spacing: 0) {
-                PastView(size: size, safeArea: safeAreaInsets)
+                // PastView(size: size)
 
-                GridView(homePath: $homePath,
-                          id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af",
-                        username: "decoherence",
-                        image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg",
-                         size: size)
-
-                FeedView(size: size)
-                    .padding(.top, safeAreaInsets.bottom + 40)
+                FeedView(size: windowState.size)
             }
         }
         .scrollDisabled(shareData.isExpanded)

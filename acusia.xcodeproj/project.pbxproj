@@ -30,6 +30,8 @@
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
 		CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* BlipView.swift */; };
+		CD796C982CC1F48400342376 /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = CD796C972CC1F48400342376 /* LLM */; };
+		CD796C9A2CC1F48400342376 /* MNIST in Frameworks */ = {isa = PBXBuildFile; productRef = CD796C992CC1F48400342376 /* MNIST */; };
 		CD85AB0A2C891F5300A61FBB /* ImprintPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85AB092C891F4400A61FBB /* ImprintPreview.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* PastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* PastView.swift */; };
@@ -37,6 +39,11 @@
 		CD8E0BDF2C8D7EF8003A6F91 /* RepliesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDE2C8D7EF2003A6F91 /* RepliesSheet.swift */; };
 		CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9245092CA6713100635716 /* SymmetryView.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
+		CDAB51212CC1FF08000CACF0 /* LoRAExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB511E2CC1FF08000CACF0 /* LoRAExample.swift */; };
+		CDAB51282CC2001C000CACF0 /* test.jsonl in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51222CC2001C000CACF0 /* test.jsonl */; };
+		CDAB51292CC2001C000CACF0 /* train.jsonl in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51232CC2001C000CACF0 /* train.jsonl */; };
+		CDAB512A2CC2001C000CACF0 /* valid.jsonl in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51242CC2001C000CACF0 /* valid.jsonl */; };
+		CDAB512B2CC2001C000CACF0 /* wikisql.py in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51252CC2001C000CACF0 /* wikisql.py */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
 		CDC882712CC02E5100DFE533 /* CustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC882702CC02E5100DFE533 /* CustomTransition.swift */; };
@@ -139,6 +146,11 @@
 		CD8E0BDE2C8D7EF2003A6F91 /* RepliesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesSheet.swift; sourceTree = "<group>"; };
 		CD9245092CA6713100635716 /* SymmetryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetryView.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
+		CDAB511E2CC1FF08000CACF0 /* LoRAExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoRAExample.swift; sourceTree = "<group>"; };
+		CDAB51222CC2001C000CACF0 /* test.jsonl */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.jsonl; sourceTree = "<group>"; };
+		CDAB51232CC2001C000CACF0 /* train.jsonl */ = {isa = PBXFileReference; lastKnownFileType = text; path = train.jsonl; sourceTree = "<group>"; };
+		CDAB51242CC2001C000CACF0 /* valid.jsonl */ = {isa = PBXFileReference; lastKnownFileType = text; path = valid.jsonl; sourceTree = "<group>"; };
+		CDAB51252CC2001C000CACF0 /* wikisql.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = wikisql.py; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDC882702CC02E5100DFE533 /* CustomTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransition.swift; sourceTree = "<group>"; };
@@ -194,9 +206,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD796C9A2CC1F48400342376 /* MNIST in Frameworks */,
 				CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */,
 				CDD48E1B2C62C26B0001C4E8 /* Wave in Frameworks */,
 				CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */,
+				CD796C982CC1F48400342376 /* LLM in Frameworks */,
 				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,6 +258,7 @@
 				CD4BAA9E2C950A3F0005F3DB /* Ripple */,
 				CDC37D442C6067FA002D2709 /* Iridescent */,
 				CD132AA42C6DE75800C16804 /* Loupe */,
+				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -314,6 +329,41 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		CDAB511C2CC1FDE7000CACF0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CDAB511D2CC1FEF6000CACF0 /* MLXTest */ = {
+			isa = PBXGroup;
+			children = (
+				CDAB51272CC2001C000CACF0 /* Data */,
+				CDAB511E2CC1FF08000CACF0 /* LoRAExample.swift */,
+			);
+			path = MLXTest;
+			sourceTree = "<group>";
+		};
+		CDAB51262CC2001C000CACF0 /* lora */ = {
+			isa = PBXGroup;
+			children = (
+				CDAB51222CC2001C000CACF0 /* test.jsonl */,
+				CDAB51232CC2001C000CACF0 /* train.jsonl */,
+				CDAB51242CC2001C000CACF0 /* valid.jsonl */,
+				CDAB51252CC2001C000CACF0 /* wikisql.py */,
+			);
+			path = lora;
+			sourceTree = "<group>";
+		};
+		CDAB51272CC2001C000CACF0 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				CDAB51262CC2001C000CACF0 /* lora */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		CDC37D442C6067FA002D2709 /* Iridescent */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +390,7 @@
 				CDDED7342C194C8400958B39 /* acusia */,
 				CDDED74A2C194C8600958B39 /* acusiaTests */,
 				CDDED7542C194C8600958B39 /* acusiaUITests */,
+				CDAB511C2CC1FDE7000CACF0 /* Frameworks */,
 				CDDED7332C194C8400958B39 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -358,10 +409,10 @@
 			isa = PBXGroup;
 			children = (
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
-				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
 				CD8D19842C29C5FF00FDC979 /* Info.plist */,
 				CDDED7392C194C8500958B39 /* Assets.xcassets */,
 				CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */,
+				CDAB511D2CC1FEF6000CACF0 /* MLXTest */,
 				CD8CFDA42C6F02AC00D7DEA7 /* App */,
 				CDDED7712C1951BE00958B39 /* Components */,
 				CD13D5252C3FAD84007E3120 /* Metal */,
@@ -473,6 +524,8 @@
 				CD132AA22C6DDB7200C16804 /* BigUIPaging */,
 				CD0D90532CA40434004FD674 /* Kingfisher */,
 				CD17C1032CA8FC520014D3FD /* Transmission */,
+				CD796C972CC1F48400342376 /* LLM */,
+				CD796C992CC1F48400342376 /* MNIST */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -551,6 +604,7 @@
 				CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */,
 				CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */,
+				CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
 			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
@@ -568,6 +622,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDAB51282CC2001C000CACF0 /* test.jsonl in Resources */,
+				CDAB51292CC2001C000CACF0 /* train.jsonl in Resources */,
+				CDAB512A2CC2001C000CACF0 /* valid.jsonl in Resources */,
+				CDAB512B2CC2001C000CACF0 /* wikisql.py in Resources */,
 				CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */,
 				CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */,
 			);
@@ -626,6 +684,7 @@
 				CDD77DA52C8F966000D5BCC1 /* SqueezePreview.swift in Sources */,
 				CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */,
 				CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */,
+				CDAB51212CC1FF08000CACF0 /* LoRAExample.swift in Sources */,
 				CD132AA72C6DE76900C16804 /* Loupe.metal in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
@@ -999,6 +1058,14 @@
 				minimumVersion = 0.0.3;
 			};
 		};
+		CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.16.0;
+			};
+		};
 		CDD48E192C62C26B0001C4E8 /* XCRemoteSwiftPackageReference "Wave" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jtrivedi/Wave";
@@ -1024,6 +1091,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */;
 			productName = Transmission;
+		};
+		CD796C972CC1F48400342376 /* LLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = LLM;
+		};
+		CD796C992CC1F48400342376 /* MNIST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MNIST;
 		};
 		CDD48E1A2C62C26B0001C4E8 /* Wave */ = {
 			isa = XCSwiftPackageProductDependency;

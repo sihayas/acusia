@@ -16,6 +16,12 @@ struct FeedView: View {
 
     var body: some View {
         ScrollView {
+            GridView(
+                     id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af",
+                     username: "decoherence",
+                     image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg",
+                     size: size)
+
             LazyVStack(spacing: 64) {
                 ForEach(entries) { entry in
                     ZStack {

@@ -35,10 +35,10 @@ struct ReplyView: View {
                         HStack(alignment: .lastTextBaseline, spacing: 0) {
                             Text(reply.text ?? "")
                                 .foregroundColor(.white)
-                                .font(.system(size: 17))
+                                .font(.system(size: isCollapsed ? 13 : 17))
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .lineLimit(isCollapsed ? 2 : nil)
+                                .lineLimit(isCollapsed ? 1 : nil)
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
