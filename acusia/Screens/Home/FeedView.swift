@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct FeedView: View {
+    @EnvironmentObject private var windowState: WindowState
+
     @State private var tappedEntry: EntryModel?
     @State private var tappedPosition: CGPoint = .zero
     @State private var tappedSize: CGSize = .zero
 
-    let size: CGSize
-
     var body: some View {
         ScrollView {
             GridView(
-                     id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af",
-                     username: "decoherence",
-                     image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg",
-                     size: size)
+                id: "3f6a2219-8ea1-4ff1-9057-6578ae3252af",
+                username: "decoherence",
+                image: "https://i.pinimg.com/474x/45/8a/ce/458ace69027303098cccb23e3a43e524.jpg"
+            )
 
             LazyVStack(spacing: 64) {
                 ForEach(entries) { entry in
@@ -55,7 +55,7 @@ struct FeedView: View {
             .frame(maxWidth: .infinity)
         }
         .scrollClipDisabled(true)
-        .frame(width: size.width, height: size.height)
+        .frame(width: windowState.size.width, height: windowState.size.height)
         .overlay(
             ZStack {
                 if tappedEntry != nil {
@@ -68,10 +68,17 @@ struct FeedView: View {
             }
             .allowsHitTesting(false)
         )
+        .onScrollGeometryChange(for: CGFloat.self) { proxy in
+            proxy.contentOffset.y
+        } action: { _, newValue in
+            if newValue > windowState.size.height {
+                windowState.symmetryState = .feed
+            } else {
+                windowState.symmetryState = .collapsed
+            }
+        }
     }
 }
-
-// another thing to note is that the actual frame of the radial variable blur/radial gradient mask is the size of the screen. our goal is to position the radial/clear part itself not to be centered or a specific size, but to sort of move around in the frame depending on where the x/y of the tapped entry is and adjust the gradient start/end based on the size of the entry.
 
 struct EntryModel: Equatable, Identifiable {
     let id = UUID()

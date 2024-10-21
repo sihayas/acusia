@@ -11,6 +11,7 @@ import SwiftUI
 
 struct GridView: View {
     // Global Properties
+    @EnvironmentObject private var windowState: WindowState
     @EnvironmentObject var musicKitManager: MusicKit
 
     // Local Properties
@@ -26,7 +27,6 @@ struct GridView: View {
     let id: String
     let username: String
     let image: String
-    let size: CGSize
 
     var body: some View {
         ZStack {
@@ -100,6 +100,6 @@ struct GridView: View {
                 )
             }
         }
-        .frame(minWidth: size.width, minHeight: size.height)
+        .frame(minWidth: windowState.size.width, minHeight: windowState.size.height)
     }
 }

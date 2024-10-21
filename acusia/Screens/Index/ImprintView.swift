@@ -34,96 +34,42 @@ struct ImprintView: View {
     @State private var velocity: CGFloat = 1.0
     
     // Parameters
-    @Binding var result: SearchResult
+    var result: SearchResult
 
     var body: some View {
         VStack {
             Spacer()
             GeometryReader { geometry in
-                // Card stack
-                PageView(selection: $selection) {
-                    ForEach([1, 2], id: \.self) { index in
-                        if index == 1 {
-                            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                                .fill(Color(UIColor.systemGray6))
-                                .overlay {
-                                    ZStack(alignment: .bottomTrailing) {
-                                        VStack {
-                                            Text("")
-                                                .foregroundColor(.white)
-                                                .font(.system(size: 15, weight: .semibold))
-                                                .multilineTextAlignment(.leading)
-                                        }
-                                        .padding([.horizontal, .top], 20)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                                        .mask(
-                                            LinearGradient(
-                                                gradient: Gradient(stops: [
-                                                    .init(color: .black, location: 0),
-                                                    .init(color: .black, location: 0.75),
-                                                    .init(color: .clear, location: 0.825)
-                                                ]),
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                            )
-                                        )
-                                    
-                                        HStack {
-                                            VStack(alignment: .leading) {
-                                                Text(result.artistName)
-                                                    .foregroundColor(.secondary)
-                                                    .font(.system(size: 11, weight: .regular, design: .rounded))
-                                                    .lineLimit(1)
-                                                Text(result.title)
-                                                    .foregroundColor(.secondary)
-                                                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                                                    .lineLimit(1)
-                                            }
-                                        
-                                            Spacer()
-                                        }
-                                        .padding(20)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                    }
-                                }
-                                .frame(height: 280)
-                        } else {
+                Rectangle()
+                    .foregroundStyle(.clear)
+                    .background(.clear)
+                    .overlay(alignment: .bottom) {
+                        ZStack(alignment: .bottomTrailing) {
+                            AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                            .aspectRatio(contentMode: .fit)
+                        
+                            // Second GeometryReader inside overlay to get frame of smaller rectangle
                             Rectangle()
-                                .foregroundStyle(.clear)
-                                .background(.clear)
-                                .overlay(alignment: .bottom) {
-                                    ZStack(alignment: .bottomTrailing) {
-                                        AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
-                                            image
-                                                .resizable()
-                                        } placeholder: {
-                                            Rectangle()
-                                        }
-                                        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                                        .aspectRatio(contentMode: .fit)
-                                    
-                                        // Second GeometryReader inside overlay to get frame of smaller rectangle
-                                        Rectangle()
-                                            .fill(.clear)
-                                            .frame(width: 28, height: 28)
-                                            .padding(20)
-                                    }
-                                }
-                                .modifier(RippleEffect(at: shapeTargetPosition, trigger: rippleTrigger, velocity: velocity))
-                                .frame(height: 280)
+                                .fill(.clear)
+                                .frame(width: 28, height: 28)
+                                .padding(20)
                         }
                     }
-                }
-                .pageViewStyle(.customCardDeck)
-                .pageViewCardShadow(.visible)
-                .onAppear {
-                    shapeTargetPosition = CGPoint(
-                        x: geometry.frame(in: .global).maxX - 54 - 20, // 20 padding from the right
-                        y: geometry.frame(in: .global).maxY - 54 - 20  // 20 padding from the bottom
-                    )
-                }
+                    .modifier(RippleEffect(at: shapeTargetPosition, trigger: rippleTrigger, velocity: velocity))
+                    .onAppear {
+                        shapeTargetPosition = CGPoint(
+                            x: geometry.frame(in: .global).maxX - 54 - 20, // 20 padding from the right
+                            y: geometry.frame(in: .global).maxY - 54 - 20 // 20 padding from the bottom
+                        )
+                    }
             }
-            .frame(width: 204, height: 280)
+            .frame(width: 336, height: 336)
                 
             // MARK: - Imprint Ball
 
@@ -135,13 +81,15 @@ struct ImprintView: View {
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .trailing)
 
+                    // Spacer between the texts
                     Spacer()
-                        .frame(width: 80, height: 80) // Spacer between the texts
+                        .frame(width: 80, height: 80)
 
+                    // Align to the left
                     Image(systemName: "heart.fill")
                         .font(.system(size: 15, weight: .regular))
                         .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading) // Align to the left
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity)
                 

@@ -11,82 +11,71 @@ import SwiftUI
 import Transmission
 
 struct IndexSheet: View {
-    // Global state
-    @EnvironmentObject var windowState: HomeState
-    @StateObject private var musicKitManager = MusicKit.shared
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var musicKitManager: MusicKit
 
     @State private var keyboardOffset: CGFloat = 0
     @State private var selectedResult: SearchResult?
+
+    let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
 
     var body: some View {
         ZStack {
             UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
                 .foregroundStyle(.clear)
-                .background(
-                    TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.5)
-                        .edgesIgnoringSafeArea(.all)
-                )
+                .background(.thinMaterial)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .ignoresSafeArea()
-            
+
             ScrollView {
-                VStack(spacing: 16) {
+                LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(musicKitManager.searchResults.indices, id: \.self) { index in
                         ResultCell(
                             searchResult: $musicKitManager.searchResults[index],
                             selectedResult: $selectedResult
-                        ) {
-                            /// Having the environment object directly in the cell breaks Wave animator.
-                        }
+                        )
                     }
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, 80)
-                .padding(.bottom, 64)
+                .padding(.top, safeAreaInsets.top)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .presentationBackground(.clear)
-        .presentationDetents([.large])
+        .presentationDetents([.fraction(0.93)])
         .presentationDragIndicator(.hidden)
         .presentationCornerRadius(40)
-        .overlay(
-            // Search Bar
-            VStack {
-                HStack {
-                    Text("Index")
-                        .font(.system(size: 25, weight: .bold))
-                        .foregroundColor(.white)
-
-                    Spacer()
-                }
-                .padding(.leading, 24)
-                .padding(.top, 24)
-
+        .overlay(alignment: .topLeading) {
+            HStack {
+                Text("Index")
+                    .font(.system(size: 19, weight: .bold))
+                    .foregroundColor(.white)
+                    .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                
                 Spacer()
             }
-            .frame(width: UIScreen.main.bounds.width, alignment: .bottom)
-        )
+            .padding(.horizontal, 24)
+            .frame(height: safeAreaInsets.top)
+        }
     }
 }
 
 struct ResultCell: View {
+    @EnvironmentObject private var windowState: WindowState
     @Binding var searchResult: SearchResult
     @Binding var selectedResult: SearchResult?
-    
-    var onShowSheetChange: () -> Void
 
     // Custom Sheet Transition
-    @State private var showSheet = false
     @State private var isImageVisible = false
     @State private var progress: CGFloat = 0
 
     var body: some View {
         HStack(spacing: 12) {
             if let artwork = searchResult.artwork {
-                let backgroundColor = artwork.backgroundColor.map { Color($0) } ?? Color.clear
-                let isSong = searchResult.type == "Song"
-
                 KFImage(artwork.url(width: 1000, height: 1000))
                     .placeholder {
                         Image("placeholderImage")
@@ -99,43 +88,15 @@ struct ResultCell: View {
                     .serialize(by: FormatIndicatedCacheSerializer.png)
                     .cacheOriginalImage()
                     .scaleFactor(UIScreen.main.scale)
-                    .resizable() // Make the image resizable to fit the view
+                    .resizable()
                     .onSuccess { result in
                         print("Task done for: \(result.source.url?.absoluteString ?? "")")
                     }
                     .onFailure { error in
                         print("Job failed: \(error.localizedDescription)")
                     }
-                    .forceRefresh()
-                    .frame(width: 48, height: 48) // Adjust the frame as needed
-                    .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                    .frame(width: 56, height: 56)
                     .opacity(progress > 0 ? 0 : 1)
-                    .presentation(
-                        transition: .custom(CustomTransition {
-                            isImageVisible = true
-                        }),
-                        isPresented: $showSheet
-                    ) {
-                        ZStack {
-                            Rectangle()
-                                .foregroundStyle(.clear)
-                                .background(
-                                    TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.5)
-                                        .edgesIgnoringSafeArea(.all)
-                                )
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                                .ignoresSafeArea()
-                            
-
-                            VStack {
-                                ImprintView(result: $searchResult)
-                            }
-
-                            ImageViewFromCache(url: artwork.url(width: 1000, height: 1000))
-                                .opacity(0)
-                        }
-                        .edgesIgnoringSafeArea(.vertical)
-                    }
             }
 
             VStack(alignment: .leading) {
@@ -145,19 +106,21 @@ struct ResultCell: View {
                     .foregroundColor(.white.opacity(0.6))
 
                 Text(searchResult.title)
-                    .font(.system(size: 15, weight: .regular, design: .rounded))
-                    .lineLimit(1)
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .lineLimit(2)
                     .foregroundColor(.white)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .padding(12)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
         .onTapGesture {
             withAnimation {
-                showSheet.toggle()
+                windowState.symmetryState = .form
+                windowState.selectedResult = searchResult
             }
-        }
-        .onChange(of: showSheet) { _, _ in
-              onShowSheetChange()
         }
     }
 }
@@ -175,17 +138,3 @@ struct ImageViewFromCache: View {
             .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
     }
 }
-
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-//                        .strokeBorder(
-//                            style: StrokeStyle(
-//                                lineWidth: 1,
-//                                lineCap: .round,
-//                                dash: [5]
-//                            )
-//                        )
-//                        .foregroundColor(
-//                            isSong ? Color.white.opacity(0) : backgroundColor
-//                        )
-//                )

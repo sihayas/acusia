@@ -13,6 +13,10 @@ struct SymmetryState {
 }
 
 struct SymmetryView: View {
+    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var musicKitManager: MusicKit
+    
+    // MARK: Appear State
     @State var symmetryState = SymmetryState(
         leading: .init(
             showContent: false,
@@ -31,16 +35,19 @@ struct SymmetryView: View {
         )
     )
     
-    // MARK: Appear State
-
     @State private var width: CGFloat = 0
     @State private var height: CGFloat = 0
     @State private var centerWidth: CGFloat = 0
+    @State private var blurRadius: CGFloat = 4
     
-    @State var blurRadius: CGFloat = 4
+    // Center
+    @FocusState var searchFocusState: Bool
+    @State var searchText: String = ""
     
-    @State var searchText: String = "" // Center
-    @State var replyText: String = "" // Trailing
+    // Trailing
+    @State var replyText: String = ""
+    
+    @State var keyboardHeight: CGFloat = 0
     
     let horizontalPadding: CGFloat = 48
     let gap: CGFloat = 18
@@ -54,12 +61,9 @@ struct SymmetryView: View {
 
                 Rectangle()
                     .foregroundColor(.clear)
-                    .background(
-                        TintedBlurView(style: .systemUltraThinMaterialLight, backgroundColor: .black, blurMutingFactor: 0.2)
-                    )
+                    .background(.ultraThinMaterial)
                     .mask {
                         Canvas { ctx, _ in
-                
                             let leading = ctx.resolveSymbol(id: 0)!
                             let trailing = ctx.resolveSymbol(id: 1)!
                             let center = ctx.resolveSymbol(id: 2)!
@@ -154,18 +158,16 @@ struct SymmetryView: View {
                         )
                         .overlay {
                             HStack {
-                                // Image(systemName: "magnifyingglass")
-                                //     .foregroundColor(.secondary)
-                                //     .font(.system(size: 15))
-                                //     .transition(.blurReplace)
-                                //
-                                // TextField("Index", text: $searchText, axis: .horizontal)
-                                //     .textFieldStyle(PlainTextFieldStyle())
-                                //     .foregroundColor(.white)
-                                //     .font(.system(size: 15))
-                                //     .transition(.blurReplace)
+                                if windowState.symmetryState == .search {
+                                    TextField("Index", text: $searchText, axis: .horizontal)
+                                        .textFieldStyle(PlainTextFieldStyle())
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 17))
+                                        .focused($searchFocusState)
+                                }
                             }
                             .padding(.horizontal, 16)
+                            .frame(maxWidth: symmetryState.center.size.width)
                             .opacity(symmetryState.center.showContent ? 1 : 0)
                         }
                         .offset(
@@ -176,7 +178,7 @@ struct SymmetryView: View {
                     
                     TextEditor(text: $replyText)
                         .textEditorStyle(PlainTextEditorStyle()) // ???
-                        .font(.system(size: 15, weight: .regular))
+                        .font(.system(size: 17, weight: .regular))
                         .foregroundColor(.white)
                         .background(.clear)
                         .frame(width: symmetryState.trailing.size.width)
@@ -188,12 +190,21 @@ struct SymmetryView: View {
                         .cornerRadius(20, antialiased: true)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
+                        .disabled(windowState.symmetryState != .reply)
+                        .overlay(
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 15))
+                                .opacity(symmetryState.trailing.showContent ? 1 : 0)
+                        )
+                        .onTapGesture {
+                            windowState.symmetryState = .search
+                        }
                         .offset(
                             x: symmetryState.trailing.offset.x,
                             y: symmetryState.trailing.offset.y
                         )
                         .frame(width: width, height: height, alignment: .bottom)
-                        .opacity(symmetryState.trailing.showContent ? 1 : 0)
                 }
 
                 // MARK: Buttons
@@ -206,15 +217,30 @@ struct SymmetryView: View {
                 // )
             }
             .onAppear {
-                // Store the geometry values when the view appears
                 self.width = geometry.size.width
                 self.height = geometry.size.height
                 self.centerWidth = geometry.size.width / 2
             }
-            .onChange(of: geometry.size) { _, newSize in
-                self.width = newSize.width
-                self.height = newSize.height
-                self.centerWidth = newSize.width / 2
+            .onChange(of: windowState.symmetryState) { _, _ in
+                switch windowState.symmetryState {
+                case .collapsed:
+                    resetState()
+                case .feed:
+                    feedState()
+                case .search:
+                    searchState()
+                case .reply:
+                    replyState()
+                case .form:
+                    resetState {}
+                default:
+                    resetState {}
+                }
+            }
+            .onChange(of: searchText) {oV, newValue in
+                Task {
+                    await MusicKit.shared.loadCatalogSearchTopResults(searchTerm: newValue)
+                }
             }
         }
     }
@@ -231,6 +257,7 @@ extension SymmetryView {
             initialVelocity: 0.0
         )) {
             blurRadius = 4
+            searchFocusState = false
             symmetryState = SymmetryState(
                 leading: .init(
                     showContent: false,
@@ -256,7 +283,7 @@ extension SymmetryView {
     
     /// Move the leading capsule to the left, shrink
     /// Move the trailing capsule to the right a bit for symmetry
-    func expandLeftBlob() {
+    func feedState() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
             stiffness: pow(2 * .pi / 0.5, 2),
@@ -271,7 +298,7 @@ extension SymmetryView {
                     size: CGSize(width: 40, height: 40)
                 ),
                 center: .init(
-                    showContent: false,
+                    showContent: true,
                     offset: .zero,
                     size: CGSize(width: 128, height: 40)
                 ),
@@ -288,7 +315,7 @@ extension SymmetryView {
     
     /// Move the trailing capsule to the right, expand
     /// Move the leading capsule to the left, shrink
-    func expandReply() {
+    func replyState() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
             stiffness: pow(2 * .pi / 0.5, 2),
@@ -320,13 +347,14 @@ extension SymmetryView {
     }
     
     /// Expand the center capsule
-    func expandSearchBar() {
+    func searchState() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
             stiffness: pow(2 * .pi / 0.5, 2),
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
+            searchFocusState = true
             symmetryState = SymmetryState(
                 leading: .init(
                     showContent: false,

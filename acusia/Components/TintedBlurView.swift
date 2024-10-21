@@ -57,3 +57,7 @@ struct TintedBlurView: UIViewRepresentable {
 //    )
 //    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 //    .edgesIgnoringSafeArea(.all)
+
+
+// TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.5)
+//     .edgesIgnoringSafeArea(.all)

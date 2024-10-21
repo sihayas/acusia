@@ -26,9 +26,9 @@ class HomeState: ObservableObject {
 }
 
 struct Home: View {
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: WindowState
     @EnvironmentObject private var shareData: HomeState
-    @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     var body: some View {
         // Main Feed + User + User History View
@@ -36,20 +36,17 @@ struct Home: View {
             VStack(spacing: 0) {
                 // PastView(size: size)
 
-                FeedView(size: windowState.size)
+                FeedView()
             }
         }
         .scrollDisabled(shareData.isExpanded)
-        // Search Sheet
-        .sheet(isPresented: $windowState.showSearchSheet) {
-            IndexSheet()
-        }
-//                    .onScrollGeometryChange(for: CGFloat.self) { proxy in
-//                        proxy.contentOffset.y
-//                    } action: { oldValue, newValue in
-//                        shareData.mainScrollValue = newValue
-//                        print("Main Scroll Value: \(newValue)")
-//                    }
+        // .onScrollGeometryChange(for: CGFloat.self) { proxy in
+        //     proxy.contentOffset.y
+        // } action: { _, newValue in
+        //     shareData.mainScrollValue = newValue
+        //     
+        //     print("Main Scroll Value: \(newValue)")
+        // }
 //                    .simultaneousGesture(
 //                        DragGesture()
 //                            .onChanged { value in
