@@ -118,7 +118,7 @@ struct ResultCell: View {
         .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
         .onTapGesture {
             withAnimation {
-                windowState.symmetryState = .form
+                windowState.symmetryState = .reply
                 windowState.selectedResult = searchResult
             }
         }

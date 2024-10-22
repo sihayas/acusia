@@ -1,5 +1,10 @@
 import SwiftUI
 
+enum Field: Hashable {
+    case search
+    case reply
+}
+
 struct SymmetryState {
     var leading: Properties
     var center: Properties
@@ -9,14 +14,17 @@ struct SymmetryState {
         var showContent: Bool
         var offset: CGPoint
         var size: CGSize
+        var cornerRadius: CGFloat = 20
     }
 }
 
 struct SymmetryView: View {
     @EnvironmentObject private var windowState: WindowState
     @EnvironmentObject private var musicKitManager: MusicKit
+    @FocusState var focusedField: Field?
     
     // MARK: Appear State
+
     @State var symmetryState = SymmetryState(
         leading: .init(
             showContent: false,
@@ -41,11 +49,11 @@ struct SymmetryView: View {
     @State private var blurRadius: CGFloat = 4
     
     // Center
-    @FocusState var searchFocusState: Bool
     @State var searchText: String = ""
     
     // Trailing
     @State var replyText: String = ""
+    @State var replyHeight: CGFloat = .zero
     
     @State var keyboardHeight: CGFloat = 0
     
@@ -58,7 +66,6 @@ struct SymmetryView: View {
             
             ZStack {
                 // MARK: Canvas
-
                 Rectangle()
                     .foregroundColor(.clear)
                     .background(.ultraThinMaterial)
@@ -77,6 +84,7 @@ struct SymmetryView: View {
                                 ctx1.draw(center, at: centerPoint)
                             }
                         } symbols: {
+                            // Leading
                             Capsule()
                                 .frame(
                                     width: symmetryState.leading.size.width,
@@ -89,7 +97,8 @@ struct SymmetryView: View {
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(0)
 
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            // Center
+                            RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous)
                                 .frame(
                                     width: symmetryState.center.size.width,
                                     height: symmetryState.center.size.height
@@ -101,19 +110,25 @@ struct SymmetryView: View {
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(2)
                             
-                            TextEditor(text: $replyText)
-                                .font(.system(size: 15, weight: .regular))
+                            // Trailing
+                            TextField("", text: $replyText, axis: .vertical)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .font(.system(size: 17))
+                                .focused($focusedField, equals: .reply)
                                 .foregroundColor(.white)
-                                .background(.black)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 12)
                                 .frame(width: symmetryState.trailing.size.width)
                                 .frame(
                                     minHeight: symmetryState.trailing.size.height,
                                     alignment: .leading
                                 )
-                                .frame(maxHeight: 124)
+                                .background(.black)
                                 .cornerRadius(20, antialiased: true)
-                                .multilineTextAlignment(.leading)
-                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxHeight: 124)
+                                .disabled(windowState.symmetryState != .reply)
+                                .fixedSize(horizontal: false, vertical: true) // Placement is important!
+                                .background(viewHeight(for: $replyHeight))
                                 .offset(
                                     x: symmetryState.trailing.offset.x,
                                     y: symmetryState.trailing.offset.y
@@ -124,9 +139,9 @@ struct SymmetryView: View {
                     }
                     .allowsHitTesting(false)
                 
-                // MARK: Content
-
+                // MARK: Overlay
                 Group {
+                    // Leading
                     Capsule()
                         .fill(.clear)
                         .frame(
@@ -150,6 +165,7 @@ struct SymmetryView: View {
                         )
                         .frame(width: width, height: height, alignment: .bottom)
                     
+                    // Center
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
                         .fill(.clear)
                         .frame(
@@ -157,17 +173,31 @@ struct SymmetryView: View {
                             height: symmetryState.center.size.height
                         )
                         .overlay {
-                            HStack {
+                            ZStack {
                                 if windowState.symmetryState == .search {
-                                    TextField("Index", text: $searchText, axis: .horizontal)
-                                        .textFieldStyle(PlainTextFieldStyle())
-                                        .foregroundColor(.white)
-                                        .font(.system(size: 17))
-                                        .focused($searchFocusState)
+                                    HStack {
+                                        TextField("Index", text: $searchText, axis: .horizontal)
+                                            .textFieldStyle(PlainTextFieldStyle())
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 17))
+                                            .focused($focusedField, equals: .search)
+                                    }
+                                    .padding(.horizontal, 16)
+                                }
+                                
+                                if windowState.symmetryState == .reply, let result = windowState.selectedResult {
+                                    AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
+                                        image
+                                            .resizable()
+                                    } placeholder: {
+                                        Rectangle()
+                                    }
+                                    .clipShape(RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous))
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(2)
                                 }
                             }
-                            .padding(.horizontal, 16)
-                            .frame(maxWidth: symmetryState.center.size.width)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .opacity(symmetryState.center.showContent ? 1 : 0)
                         }
                         .offset(
@@ -176,45 +206,47 @@ struct SymmetryView: View {
                         )
                         .frame(width: width, height: height, alignment: .bottom)
                     
-                    TextEditor(text: $replyText)
-                        .textEditorStyle(PlainTextEditorStyle()) // ???
-                        .font(.system(size: 17, weight: .regular))
+                    // Trailing
+                    TextField("", text: $replyText, axis: .vertical)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .font(.system(size: 17))
+                        .focused($focusedField, equals: .reply)
                         .foregroundColor(.white)
-                        .background(.clear)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
                         .frame(width: symmetryState.trailing.size.width)
                         .frame(
                             minHeight: symmetryState.trailing.size.height,
                             alignment: .leading
                         )
-                        .frame(maxHeight: 124)
+                        .background(.clear)
                         .cornerRadius(20, antialiased: true)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxHeight: 124)
                         .disabled(windowState.symmetryState != .reply)
+                        .fixedSize(horizontal: false, vertical: true) // Placement is important!
+                        .background(viewHeight(for: $replyHeight))
                         .overlay(
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.secondary)
-                                .font(.system(size: 15))
-                                .opacity(symmetryState.trailing.showContent ? 1 : 0)
+                            ZStack {
+                                if windowState.symmetryState == .feed {
+                                    Button(action: {
+                                        windowState.symmetryState = .search
+                                    }) {
+                                        Image(systemName: "magnifyingglass")
+                                            .foregroundColor(.secondary)
+                                            .font(.system(size: 15))
+                                    }
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .opacity(symmetryState.trailing.showContent ? 1 : 0)
                         )
-                        .onTapGesture {
-                            windowState.symmetryState = .search
-                        }
                         .offset(
                             x: symmetryState.trailing.offset.x,
                             y: symmetryState.trailing.offset.y
                         )
                         .frame(width: width, height: height, alignment: .bottom)
                 }
-
-                // MARK: Buttons
-
-                // ControlButtons(
-                //     resetState: resetState,
-                //     expandLeftBlob: expandLeftBlob,
-                //     expandSearchBar: expandSearchBar,
-                //     expandReply: expandReply
-                // )
             }
             .onAppear {
                 self.width = geometry.size.width
@@ -232,14 +264,27 @@ struct SymmetryView: View {
                 case .reply:
                     replyState()
                 case .form:
-                    resetState {}
-                default:
-                    resetState {}
+                    resetState()
                 }
             }
-            .onChange(of: searchText) {oV, newValue in
+            .onChange(of: searchText) { _, newValue in
                 Task {
                     await MusicKit.shared.loadCatalogSearchTopResults(searchTerm: newValue)
+                }
+            }
+            .onChange(of: replyHeight) { _, newHeight in
+                if windowState.symmetryState == .reply {
+                    withAnimation(.interpolatingSpring(
+                        mass: 1.0,
+                        stiffness: pow(2 * .pi / 0.5, 2),
+                        damping: 4 * .pi * 0.7 / 0.5,
+                        initialVelocity: 0.0
+                    )) {
+                        blurRadius = 1
+                        symmetryState.center.offset = CGPoint(x: 24, y: -newHeight - 4)
+                    } completion: {
+                        blurRadius = 0
+                    }
                 }
             }
         }
@@ -249,15 +294,17 @@ struct SymmetryView: View {
 // MARK: Control Buttons
 
 extension SymmetryView {
-    func resetState(completion: @escaping () -> Void = {}) {
+    func resetState() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
             stiffness: pow(2 * .pi / 0.5, 2),
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
+            focusedField = nil
+            replyText = ""
+            searchText = ""
             blurRadius = 4
-            searchFocusState = false
             symmetryState = SymmetryState(
                 leading: .init(
                     showContent: false,
@@ -267,7 +314,8 @@ extension SymmetryView {
                 center: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40)
+                    size: CGSize(width: 128, height: 40),
+                    cornerRadius: 20
                 ),
                 trailing: .init(
                     showContent: false,
@@ -277,11 +325,11 @@ extension SymmetryView {
             )
         } completion: {
             blurRadius = 0
-            completion()
         }
     }
     
-    /// Move the leading capsule to the left, shrink
+    /// Move the leading capsule to the left & shrink
+    /// Show the center capsule content, content is FeedState
     /// Move the trailing capsule to the right a bit for symmetry
     func feedState() {
         withAnimation(.interpolatingSpring(
@@ -290,6 +338,7 @@ extension SymmetryView {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
+            focusedField = nil
             blurRadius = 4
             symmetryState = SymmetryState(
                 leading: .init(
@@ -300,7 +349,8 @@ extension SymmetryView {
                 center: .init(
                     showContent: true,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40)
+                    size: CGSize(width: 128, height: 40),
+                    cornerRadius: 20
                 ),
                 trailing: .init(
                     showContent: true,
@@ -313,8 +363,9 @@ extension SymmetryView {
         }
     }
     
-    /// Move the trailing capsule to the right, expand
+    /// Move the trailing capsule to the right & expand
     /// Move the leading capsule to the left, shrink
+    /// Show the center capsule up, content is the selected result.
     func replyState() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
@@ -323,6 +374,7 @@ extension SymmetryView {
             initialVelocity: 0.0
         )) {
             blurRadius = 4
+            focusedField = .reply
             symmetryState = SymmetryState(
                 leading: .init(
                     showContent: true,
@@ -330,9 +382,10 @@ extension SymmetryView {
                     size: CGSize(width: 40, height: 40)
                 ),
                 center: .init(
-                    showContent: false,
-                    offset: .zero,
-                    size: CGSize(width: 128, height: 40)
+                    showContent: true,
+                    offset: CGPoint(x: 24, y: -self.replyHeight - 4),
+                    size: CGSize(width: width - 48 - 40 - 18, height: width - 48 - 40 - 18),
+                    cornerRadius: 40
                 ),
                 trailing: .init(
                     showContent: true,
@@ -354,7 +407,7 @@ extension SymmetryView {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
-            searchFocusState = true
+            focusedField = .search
             symmetryState = SymmetryState(
                 leading: .init(
                     showContent: false,
@@ -364,7 +417,8 @@ extension SymmetryView {
                 center: .init(
                     showContent: true,
                     offset: .zero,
-                    size: CGSize(width: width - horizontalPadding, height: 48)
+                    size: CGSize(width: width - horizontalPadding, height: 48),
+                    cornerRadius: 20
                 ),
                 trailing: .init(
                     showContent: false,
@@ -377,7 +431,17 @@ extension SymmetryView {
 }
 
 struct ControlButtons: View {
-    let resetState: (@escaping () -> Void) -> Void
+    
+    // MARK: Buttons
+
+    // ControlButtons(
+    //     resetState: resetState,
+    //     expandLeftBlob: expandLeftBlob,
+    //     expandSearchBar: expandSearchBar,
+    //     expandReply: expandReply
+    // )
+    
+    let resetState: () -> Void
     let expandLeftBlob: () -> Void
     let expandSearchBar: () -> Void
     let expandReply: () -> Void
@@ -396,7 +460,7 @@ struct ControlButtons: View {
                 }
                 
                 Button(action: {
-                    resetState {}
+                    resetState()
                 }) {
                     Image(systemName: "arrow.counterclockwise")
                         .font(.system(size: 13))
@@ -433,4 +497,15 @@ struct ControlButtons: View {
 #Preview {
     SymmetryView()
         .background(.black)
+}
+
+private func viewHeight(for binding: Binding<CGFloat>) -> some View {
+    GeometryReader { geometry -> Color in
+        let rect = geometry.frame(in: .local)
+
+        DispatchQueue.main.async {
+            binding.wrappedValue = rect.size.height
+        }
+        return .clear
+    }
 }

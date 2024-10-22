@@ -198,38 +198,22 @@ struct AcusiaAppView: View {
             // .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
         .ignoresSafeArea()
+        .overlay(
+            Color
+                .black
+                .opacity(windowState.symmetryState == .reply ? 0.3 : 0.0)
+                .allowsHitTesting(false)
+        )
+        .animation(.smooth, value: windowState.symmetryState)
         .sheet(isPresented: Binding(
             get: { windowState.symmetryState == .search },
             set: { newValue in
-                if !newValue, windowState.symmetryState != .form { windowState.symmetryState = .feed }
+                if !newValue {
+                    print("Dismissing Search")
+                }
             }
         )) {
             IndexSheet()
-        }
-        .sheet(isPresented: Binding(
-            get: { windowState.symmetryState == .form },
-            set: { newValue in
-                if !newValue { windowState.symmetryState = .feed }
-            }
-        )) {
-            ZStack {
-                Rectangle()
-                    .foregroundStyle(.clear)
-                    .background(
-                        .thinMaterial
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .ignoresSafeArea()
-
-                if let selectedResult = windowState.selectedResult {
-                    ImprintView(result: selectedResult)
-                }
-            }
-            .edgesIgnoringSafeArea(.vertical)
-            .presentationBackground(.clear)
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
-            .presentationCornerRadius(40)
         }
     }
 }
@@ -247,9 +231,9 @@ class FloatingBarPresenter {
             .environmentObject(MusicKit.shared)
             .environmentObject(HomeState.shared)
 
+        // Remove safe area from the hosting controller
         let hostingController = UIHostingController(rootView: view)
         hostingController.view.backgroundColor = .clear
-        // Remove safe area from the hosting controller
         hostingController.safeAreaRegions = SafeAreaRegions()
 
         floatingBarWindow = PassThroughWindow(windowScene: scene)
@@ -267,21 +251,12 @@ class FloatingBarPresenter {
 /// NOTE: Putting a border on the outer stack prevents touch inputs from being passed through.
 struct FloatingBarView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
+    @EnvironmentObject private var windowState: WindowState
 
     @State private var keyboardHeight: CGFloat = 0
 
     var body: some View {
         ZStack {
-            if keyboardHeight > safeAreaInsets.bottom {
-                Color.white.opacity(0.01)
-                    .contentShape(Rectangle())
-                    .edgesIgnoringSafeArea(.all)
-                    .simultaneousGesture(DragGesture().onChanged { _ in
-                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    }
-                    )
-            }
-
             SymmetryView()
                 .offset(y: -keyboardHeight)
                 .animation(.snappy, value: keyboardHeight)
