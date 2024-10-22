@@ -66,6 +66,7 @@ struct SymmetryView: View {
             
             ZStack {
                 // MARK: Canvas
+
                 Rectangle()
                     .foregroundColor(.clear)
                     .background(.ultraThinMaterial)
@@ -110,36 +111,53 @@ struct SymmetryView: View {
                                 .frame(width: width, height: height, alignment: .bottom)
                                 .tag(2)
                             
-                            // Trailing
-                            TextField("", text: $replyText, axis: .vertical)
-                                .textFieldStyle(PlainTextFieldStyle())
-                                .font(.system(size: 17))
-                                .focused($focusedField, equals: .reply)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 12)
-                                .frame(width: symmetryState.trailing.size.width)
-                                .frame(
-                                    minHeight: symmetryState.trailing.size.height,
-                                    alignment: .leading
-                                )
-                                .background(.black)
-                                .cornerRadius(20, antialiased: true)
-                                .frame(maxHeight: 124)
-                                .disabled(windowState.symmetryState != .reply)
-                                .fixedSize(horizontal: false, vertical: true) // Placement is important!
-                                .background(viewHeight(for: $replyHeight))
-                                .offset(
-                                    x: symmetryState.trailing.offset.x,
-                                    y: symmetryState.trailing.offset.y
-                                )
-                                .frame(width: width, height: height, alignment: .bottom)
-                                .tag(1)
+                            // Trailing (Modifier placement is very important here)
+                            VStack() {
+                                TextEditor(text: $replyText)
+                                    .textEditorStyle(.plain)
+                                    .font(.system(size: 17))
+                                    .focused($focusedField, equals: .reply)
+                                    .foregroundColor(.white)
+                                    .disabled(windowState.symmetryState != .reply)
+                                    .frame(
+                                        minHeight: symmetryState.trailing.size.height,
+                                        alignment: .leading
+                                    )
+                            }
+                            .frame(width: symmetryState.trailing.size.width)
+                            .frame(
+                                minHeight: symmetryState.trailing.size.height,
+                                alignment: .leading
+                            )
+                            .background(.black, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                            .fixedSize(horizontal: false, vertical: true) // Placement is important!
+                            .background(viewHeight(for: $replyHeight))
+                            .overlay(alignment: .bottomLeading) {
+                                ZStack {
+                                    if windowState.symmetryState == .reply {
+                                        Circle()
+                                            .fill(.black)
+                                            .frame(width: 12, height: 12)
+                                        
+                                        Circle()
+                                            .fill(.black)
+                                            .frame(width: 6, height: 6)
+                                            .offset(x: -12, y: 0)
+                                    }
+                                }
+                            }
+                            .offset(
+                                x: symmetryState.trailing.offset.x,
+                                y: symmetryState.trailing.offset.y
+                            )
+                            .frame(width: width, height: height, alignment: .bottom)
+                            .tag(1)
                         }
                     }
                     .allowsHitTesting(false)
                 
                 // MARK: Overlay
+
                 Group {
                     // Leading
                     Capsule()
@@ -158,6 +176,7 @@ struct SymmetryView: View {
                             .frame(width: 32, height: 32)
                             .clipShape(Circle())
                             .opacity(symmetryState.leading.showContent ? 1 : 0)
+                            .animation(nil, value: symmetryState.trailing.showContent)
                         }
                         .offset(
                             x: symmetryState.leading.offset.x,
@@ -207,45 +226,48 @@ struct SymmetryView: View {
                         .frame(width: width, height: height, alignment: .bottom)
                     
                     // Trailing
-                    TextField("", text: $replyText, axis: .vertical)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .font(.system(size: 17))
-                        .focused($focusedField, equals: .reply)
-                        .foregroundColor(.white)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 12)
-                        .frame(width: symmetryState.trailing.size.width)
-                        .frame(
-                            minHeight: symmetryState.trailing.size.height,
-                            alignment: .leading
-                        )
-                        .background(.clear)
-                        .cornerRadius(20, antialiased: true)
-                        .frame(maxHeight: 124)
-                        .disabled(windowState.symmetryState != .reply)
-                        .fixedSize(horizontal: false, vertical: true) // Placement is important!
-                        .background(viewHeight(for: $replyHeight))
-                        .overlay(
-                            ZStack {
-                                if windowState.symmetryState == .feed {
-                                    Button(action: {
-                                        windowState.symmetryState = .search
-                                    }) {
-                                        Image(systemName: "magnifyingglass")
-                                            .foregroundColor(.secondary)
-                                            .font(.system(size: 15))
-                                    }
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    VStack() {
+                        TextEditor(text: $replyText)
+                            .textEditorStyle(.plain)
+                            .font(.system(size: 17))
+                            .focused($focusedField, equals: .reply)
+                            .foregroundColor(.white)
+                            .disabled(windowState.symmetryState != .reply)
+                            .lineLimit(2)
+                            .frame(
+                                minHeight: symmetryState.trailing.size.height,
+                                alignment: .leading
+                            )
+                    }
+                    .frame(width: symmetryState.trailing.size.width)
+                    .frame(
+                        minHeight: symmetryState.trailing.size.height,
+                        alignment: .leading
+                    )
+                    .background(.clear, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .fixedSize(horizontal: false, vertical: true) // Placement is important!
+                    .overlay(
+                        ZStack {
+                            if windowState.symmetryState == .feed {
+                                Button(action: {
+                                    windowState.symmetryState = .search
+                                }) {
+                                    Image(systemName: "magnifyingglass")
+                                        .foregroundColor(.secondary)
+                                        .font(.system(size: 15))
                                 }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                             }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .opacity(symmetryState.trailing.showContent ? 1 : 0)
-                        )
-                        .offset(
-                            x: symmetryState.trailing.offset.x,
-                            y: symmetryState.trailing.offset.y
-                        )
-                        .frame(width: width, height: height, alignment: .bottom)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .opacity(symmetryState.trailing.showContent ? 1 : 0)
+                        .animation(nil, value: symmetryState.trailing.showContent)
+                    )
+                    .offset(
+                        x: symmetryState.trailing.offset.x,
+                        y: symmetryState.trailing.offset.y
+                    )
+                    .frame(width: width, height: height, alignment: .bottom)
                 }
             }
             .onAppear {
@@ -275,7 +297,7 @@ struct SymmetryView: View {
             .onChange(of: replyHeight) { _, newHeight in
                 if windowState.symmetryState == .reply {
                     withAnimation(.interpolatingSpring(
-                        mass: 1.0,
+                        mass: 2.0,
                         stiffness: pow(2 * .pi / 0.5, 2),
                         damping: 4 * .pi * 0.7 / 0.5,
                         initialVelocity: 0.0
@@ -431,7 +453,6 @@ extension SymmetryView {
 }
 
 struct ControlButtons: View {
-    
     // MARK: Buttons
 
     // ControlButtons(
