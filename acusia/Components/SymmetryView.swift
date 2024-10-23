@@ -50,6 +50,13 @@ struct SymmetryView: View {
     
     // Center
     @State var searchText: String = ""
+    @State var rippleTrigger: Int = 0
+    @State var origin: CGPoint = .zero
+    @State var velocity: CGFloat = 1.0
+    // Re-targeting
+    @State var target: CGPoint = .zero
+    @State var position: CGPoint = .zero
+    @State var loved: Bool = false
     
     // Trailing
     @State var replyText: String = ""
@@ -85,73 +92,35 @@ struct SymmetryView: View {
                                 ctx1.draw(center, at: centerPoint)
                             }
                         } symbols: {
-                            // Leading
-                            Capsule()
-                                .frame(
-                                    width: symmetryState.leading.size.width,
-                                    height: symmetryState.leading.size.height
-                                )
-                                .offset(
-                                    x: symmetryState.leading.offset.x,
-                                    y: symmetryState.leading.offset.y
-                                )
-                                .frame(width: width, height: height, alignment: .bottom)
-                                .tag(0)
+                            createSymbol(
+                                shape: Capsule(),
+                                fillColor: .black,
+                                overlayContent: EmptyView(),
+                                size: symmetryState.leading.size,
+                                offset: symmetryState.leading.offset,
+                                width: width,
+                                height: height,
+                                tag: 0
+                            )
 
-                            // Center
-                            RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous)
-                                .frame(
-                                    width: symmetryState.center.size.width,
-                                    height: symmetryState.center.size.height
-                                )
-                                .offset(
-                                    x: symmetryState.center.offset.x,
-                                    y: symmetryState.center.offset.y
-                                )
-                                .frame(width: width, height: height, alignment: .bottom)
-                                .tag(2)
-                            
-                            // Trailing (Modifier placement is very important here)
-                            VStack() {
-                                TextEditor(text: $replyText)
-                                    .textEditorStyle(.plain)
-                                    .font(.system(size: 17))
-                                    .focused($focusedField, equals: .reply)
-                                    .foregroundColor(.white)
-                                    .disabled(windowState.symmetryState != .reply)
-                                    .frame(
-                                        minHeight: symmetryState.trailing.size.height,
-                                        alignment: .leading
-                                    )
-                            }
-                            .frame(width: symmetryState.trailing.size.width)
-                            .frame(
-                                minHeight: symmetryState.trailing.size.height,
-                                alignment: .leading
+                            createSymbol(
+                                shape: RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous),
+                                fillColor: .black,
+                                overlayContent: EmptyView(),
+                                size: symmetryState.center.size,
+                                offset: symmetryState.center.offset,
+                                width: width,
+                                height: height,
+                                tag: 2
                             )
-                            .background(.black, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                            .fixedSize(horizontal: false, vertical: true) // Placement is important!
-                            .background(viewHeight(for: $replyHeight))
-                            .overlay(alignment: .bottomLeading) {
-                                ZStack {
-                                    if windowState.symmetryState == .reply {
-                                        Circle()
-                                            .fill(.black)
-                                            .frame(width: 12, height: 12)
-                                        
-                                        Circle()
-                                            .fill(.black)
-                                            .frame(width: 6, height: 6)
-                                            .offset(x: -12, y: 0)
-                                    }
-                                }
-                            }
-                            .offset(
-                                x: symmetryState.trailing.offset.x,
-                                y: symmetryState.trailing.offset.y
+
+                            createTrailingSymbol(
+                                fillColor: .black,
+                                overlayContent: EmptyView(),
+                                width: width,
+                                height: height,
+                                tag: 1
                             )
-                            .frame(width: width, height: height, alignment: .bottom)
-                            .tag(1)
                         }
                     }
                     .allowsHitTesting(false)
@@ -159,94 +128,148 @@ struct SymmetryView: View {
                 // MARK: Overlay
 
                 Group {
-                    // Leading
-                    Capsule()
-                        .fill(.clear)
-                        .frame(
-                            width: symmetryState.leading.size.width,
-                            height: symmetryState.leading.size.height
-                        )
-                        .overlay {
-                            AsyncImage(url: URL(string: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                ProgressView()
+                    createSymbol(
+                        shape: Capsule(),
+                        fillColor: .clear,
+                        overlayContent:
+                        ZStack {
+                            if windowState.symmetryState == .feed {
+                                AvatarView(size: 32, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
                             }
-                            .frame(width: 32, height: 32)
-                            .clipShape(Circle())
-                            .opacity(symmetryState.leading.showContent ? 1 : 0)
-                            .animation(nil, value: symmetryState.trailing.showContent)
+                            
+                            if windowState.symmetryState == .reply {
+                                Image(systemName: "paperclip")
+                                    .foregroundColor(.secondary)
+                                    .font(.system(size: 15))
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            }
                         }
-                        .offset(
-                            x: symmetryState.leading.offset.x,
-                            y: symmetryState.leading.offset.y
-                        )
-                        .frame(width: width, height: height, alignment: .bottom)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .opacity(symmetryState.leading.showContent ? 1 : 0)
+                        .animation(nil, value: symmetryState.leading.showContent),
+                        size: symmetryState.leading.size,
+                        offset: symmetryState.leading.offset,
+                        width: width,
+                        height: height,
+                        tag: 0
+                    )
                     
-                    // Center
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.clear)
-                        .frame(
-                            width: symmetryState.center.size.width,
-                            height: symmetryState.center.size.height
-                        )
-                        .overlay {
-                            ZStack {
-                                if windowState.symmetryState == .search {
-                                    HStack {
-                                        TextField("Index", text: $searchText, axis: .horizontal)
-                                            .textFieldStyle(PlainTextFieldStyle())
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 17))
-                                            .focused($focusedField, equals: .search)
-                                    }
-                                    .padding(.horizontal, 16)
+                    createSymbol(
+                        shape: RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous),
+                        fillColor: .clear,
+                        overlayContent:
+                        ZStack {
+                            if windowState.symmetryState == .search {
+                                HStack {
+                                    TextField("Index", text: $searchText, axis: .horizontal)
+                                        .textFieldStyle(PlainTextFieldStyle())
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 17))
+                                        .focused($focusedField, equals: .search)
                                 }
+                                .padding(.horizontal, 16)
+                            }
                                 
-                                if windowState.symmetryState == .reply, let result = windowState.selectedResult {
+                            if windowState.symmetryState == .reply, let result = windowState.selectedResult {
+                                GeometryReader { _ in
                                     AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
                                         image
                                             .resizable()
                                     } placeholder: {
                                         Rectangle()
                                     }
-                                    .clipShape(RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous))
+                                    .clipShape(RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius - 2, style: .continuous))
                                     .aspectRatio(contentMode: .fit)
-                                    .padding(2)
+                                    .padding(4)
+                                    .coordinateSpace(name: "AsyncImage")
+                                    .onTapGesture(count: 2) { location in
+                                        loved = true
+                                        origin = location
+                                        velocity = 1.5
+                                        rippleTrigger += 1
+                                    }
+                                    .onTapGesture(count: 1) { location in
+                                        loved = false
+                                        position = location
+                                        origin = location // Ripple
+
+                                        Task {
+                                            // Initial curve upward (blue path)
+                                            withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                                                position = CGPoint(x: location.x + 40, y: location.y - 100)
+                                            }
+
+                                            try? await Task.sleep(for: .milliseconds(50))
+
+                                            // Smoothly chaining loop animation without hard stops
+                                            withAnimation(.interpolatingSpring(stiffness: 100, damping: 10)) {
+                                                // Add more gradual position changes with springy behavior
+                                                position = CGPoint(x: location.x + 120, y: location.y - 180)
+                                            }
+
+                                            try? await Task.sleep(for: .milliseconds(80))
+
+                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.9)) {
+                                                // Bring the curve down more fluidly to match natural physics
+                                                position = CGPoint(x: location.x + 180, y: location.y - 120)
+                                            }
+
+                                            try? await Task.sleep(for: .milliseconds(50))
+
+                                            // Finally, exit smoothly
+                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                                                position = target
+                                            }
+                                        }
+
+                                        velocity = 0.5
+                                        rippleTrigger += 1
+                                    }
+                                    .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
+                                    .onAppear {
+                                        target = CGPoint(x: 316 - 48, y: 316 - 48) // bottom right
+                                    }
                                 }
+                                
+                                ZStack {
+                                    if origin != .zero {
+                                        if loved {
+                                            HeartPath()
+                                                .stroke(.white, lineWidth: 1)
+                                                .fill(.white)
+                                                .frame(width: 28, height: 28)
+                                                .opacity(1)
+                                        } else {
+                                            HeartbreakLeftPath()
+                                                .stroke(.white, lineWidth: 1)
+                                                .fill(.white)
+                                                .frame(width: 28, height: 28)
+                                                .opacity(1)
+                                                
+                                            HeartbreakRightPath()
+                                                .stroke(.white, lineWidth: 1)
+                                                .fill(.white)
+                                                .frame(width: 28, height: 28)
+                                                .opacity(1)
+                                        }
+                                    }
+                                }
+                                .frame(width: 28, height: 28)
+                                .position(position)
                             }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .opacity(symmetryState.center.showContent ? 1 : 0)
                         }
-                        .offset(
-                            x: symmetryState.center.offset.x,
-                            y: symmetryState.center.offset.y
-                        )
-                        .frame(width: width, height: height, alignment: .bottom)
-                    
-                    // Trailing
-                    VStack() {
-                        TextEditor(text: $replyText)
-                            .textEditorStyle(.plain)
-                            .font(.system(size: 17))
-                            .focused($focusedField, equals: .reply)
-                            .foregroundColor(.white)
-                            .disabled(windowState.symmetryState != .reply)
-                            .lineLimit(2)
-                            .frame(
-                                minHeight: symmetryState.trailing.size.height,
-                                alignment: .leading
-                            )
-                    }
-                    .frame(width: symmetryState.trailing.size.width)
-                    .frame(
-                        minHeight: symmetryState.trailing.size.height,
-                        alignment: .leading
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .opacity(symmetryState.center.showContent ? 1 : 0),
+                        size: symmetryState.center.size,
+                        offset: symmetryState.center.offset,
+                        width: width,
+                        height: height,
+                        tag: 2
                     )
-                    .background(.clear, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .fixedSize(horizontal: false, vertical: true) // Placement is important!
-                    .overlay(
+                    
+                    createTrailingSymbol(
+                        fillColor: .clear,
+                        overlayContent:
                         ZStack {
                             if windowState.symmetryState == .feed {
                                 Button(action: {
@@ -261,13 +284,11 @@ struct SymmetryView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .opacity(symmetryState.trailing.showContent ? 1 : 0)
-                        .animation(nil, value: symmetryState.trailing.showContent)
+                        .animation(nil, value: symmetryState.trailing.showContent),
+                        width: width,
+                        height: height,
+                        tag: 1
                     )
-                    .offset(
-                        x: symmetryState.trailing.offset.x,
-                        y: symmetryState.trailing.offset.y
-                    )
-                    .frame(width: width, height: height, alignment: .bottom)
                 }
             }
             .onAppear {
@@ -310,6 +331,73 @@ struct SymmetryView: View {
                 }
             }
         }
+    }
+    
+    func createSymbol<ShapeType: Shape, Content: View>(
+        shape: ShapeType,
+        fillColor: Color,
+        overlayContent: Content,
+        size: CGSize,
+        offset: CGPoint,
+        width: CGFloat,
+        height: CGFloat,
+        tag: Int
+    ) -> some View {
+        shape
+            .fill(fillColor)
+            .frame(width: size.width, height: size.height)
+            .overlay(overlayContent)
+            .offset(x: offset.x, y: offset.y)
+            .frame(width: width, height: height, alignment: .bottom)
+            .tag(tag)
+    }
+    
+    func createTrailingSymbol<Content: View>(
+        fillColor: Color,
+        overlayContent: Content,
+        width: CGFloat,
+        height: CGFloat,
+        tag: Int
+    ) -> some View {
+        HStack(alignment: .lastTextBaseline) {
+            TextField("", text: $replyText, axis: .vertical)
+                .padding(.horizontal, 12)
+                .textFieldStyle(PlainTextFieldStyle())
+                .font(.system(size: 17))
+                .foregroundColor(.white)
+                .focused($focusedField, equals: .reply)
+                .disabled(windowState.symmetryState != .reply)
+                .lineLimit(2)
+        }
+        .frame(width: symmetryState.trailing.size.width)
+        .frame(minHeight: symmetryState.trailing.size.height, alignment: .leading)
+        .background(fillColor, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .fixedSize(horizontal: false, vertical: true)
+        .background(viewHeight(for: $replyHeight))
+        .overlay(alignment: .bottomLeading) {
+            if windowState.symmetryState == .reply {
+                Circle()
+                    .fill(fillColor)
+                    .frame(width: 12, height: 12)
+                Circle()
+                    .fill(fillColor)
+                    .frame(width: 6, height: 6)
+                    .offset(x: -12, y: 0)
+            }
+        }
+        .overlay(overlayContent)
+        .offset(x: symmetryState.trailing.offset.x, y: symmetryState.trailing.offset.y)
+        .frame(width: width, height: height, alignment: .bottom)
+        .tag(tag)
+    }
+}
+
+struct OvalTextFieldStyle: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding(.vertical, 8)
+            .scrollClipDisabled()
+            .background(.red)
     }
 }
 

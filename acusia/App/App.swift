@@ -203,8 +203,8 @@ struct AcusiaAppView: View {
                 .black
                 .opacity(windowState.symmetryState == .reply ? 0.3 : 0.0)
                 .allowsHitTesting(false)
+                .ignoresSafeArea()
         )
-        .animation(.smooth, value: windowState.symmetryState)
         .sheet(isPresented: Binding(
             get: { windowState.symmetryState == .search },
             set: { newValue in
