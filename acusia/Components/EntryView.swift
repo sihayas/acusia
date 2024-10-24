@@ -167,32 +167,18 @@ struct WispView: View {
                     }
 
                     if !sampleComments.isEmpty {
-                        ZStack {
+                        GeometryReader { geometry in
                             VStack {
                                 Spacer()
-
-                                TopCenterToTrailingCenterPath()
+                                LeadingCenterToBottomCenterPath()
                                     .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                                    .frame(maxWidth: 36, maxHeight: 18)
-                                    .scaleEffect(x: -1, y: -1)
+                                    .frame(height: geometry.size.height / 2)
                             }
-                            .frame(width: 36, height: 36)
-
-                            VStack {
-                                ZStack {
-                                    RadialLayout(radius: 12, offset: 5).callAsFunction {
-                                        ForEach(0 ..< 3) { index in
-                                            AvatarView(size: [14, 16, 12][index], imageURL: "https://picsum.photos/200/300")
-                                        }
-                                    }
-                                }
-                                .frame(width: 36, height: 36)
-                            }
-                            .offset(x: 0, y: 44)
                         }
+                        .frame(maxWidth: 36)
                         .onTapGesture {
                             withAnimation(.spring()) {
-                                windowState.isSplit.toggle()
+                                windowState.isSplit = true
                             }
                         }
                     }
@@ -248,7 +234,6 @@ struct WispView: View {
         }
     }
 }
-
 
 // if !sampleComments.isEmpty {
 //     HStack(spacing: 4) {

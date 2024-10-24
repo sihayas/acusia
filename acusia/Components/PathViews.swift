@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Imprint Paths
+
 /// Mainly for the Imprint.
 struct HeartPath: Shape {
     func path(in rect: CGRect) -> Path {
@@ -143,6 +144,7 @@ struct NoodleIcon: Shape {
 }
 
 // MARK: - Reply Paths
+
 /// Mainly for replies/threads
 struct BubbleWithTail: Shape {
     func path(in rect: CGRect) -> Path {
@@ -172,7 +174,27 @@ struct BubbleWithTail: Shape {
     }
 }
 
-struct TopCenterToTrailingCenterPath: Shape {
+struct LeadingCenterToBottomCenterPath: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        // Start at the bottom center
+        path.move(to: CGPoint(x: rect.midX, y: rect.maxY))
+
+        // Draw the vertical line upwards, leaving space for the curve
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.minY + rect.width / 2))
+
+        // Draw the rounded corner curve to the top left corner
+        path.addQuadCurve(
+            to: CGPoint(x: rect.minX, y: rect.minY),
+            control: CGPoint(x: rect.midX, y: rect.minY)
+        )
+
+        return path
+    }
+}
+
+struct TopCenterToBottomTrailingPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
@@ -229,6 +251,7 @@ struct LoopPath: Shape {
 }
 
 // MARK: Entry Paths
+
 struct WispBubbleWithTail: Shape {
     var scale: CGFloat
 
@@ -237,7 +260,7 @@ struct WispBubbleWithTail: Shape {
         let bubble = RoundedRectangle(cornerRadius: 24, style: .continuous)
             .path(in: bubbleRect)
 
-        let tailSize: CGFloat = 12 * scale // Scale the tail size
+        let tailSize: CGFloat = 12*scale // Scale the tail size
         let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - bubbleRect.width / 3
         let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
 
@@ -250,7 +273,7 @@ struct WispBubbleWithTail: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 6 * scale
+        let secondCircleSize: CGFloat = 6*scale
         let secondCircleOffsetX = tailRect.minX - secondCircleSize
         let secondCircleOffsetY = tailRect.maxY
         let secondCircleRect = CGRect(
@@ -280,7 +303,7 @@ struct ArtifactBubbleWithTail: Shape {
         let bubble = RoundedRectangle(cornerRadius: 24, style: .continuous)
             .path(in: bubbleRect)
 
-        let tailSize: CGFloat = 12 * scale // Scale the tail size
+        let tailSize: CGFloat = 12*scale // Scale the tail size
         let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 + bubbleRect.width / 3
         let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
 
@@ -292,7 +315,7 @@ struct ArtifactBubbleWithTail: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 6 * scale
+        let secondCircleSize: CGFloat = 6*scale
         let secondCircleOffsetX = tailRect.maxX
         let secondCircleOffsetY = tailRect.maxY
         let secondCircleRect = CGRect(

@@ -216,7 +216,7 @@ struct AcusiaAppView: View {
         )) {
             IndexSheet()
                 .presentationBackground(.thinMaterial)
-                .presentationDetents([.large])
+                .presentationDetents([.fraction(0.99)])
                 .presentationDragIndicator(.hidden)
                 .presentationCornerRadius(40)
         }
