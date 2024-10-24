@@ -14,7 +14,7 @@ struct SymmetryState {
         var showContent: Bool
         var offset: CGPoint
         var size: CGSize
-        var cornerRadius: CGFloat = 20
+        var cornerRadius: CGFloat = 22
     }
 }
 
@@ -53,9 +53,6 @@ struct SymmetryView: View {
     @State var rippleTrigger: Int = 0
     @State var origin: CGPoint = .zero
     @State var velocity: CGFloat = 1.0
-    // Re-targeting
-    @State var target: CGPoint = .zero
-    @State var position: CGPoint = .zero
     @State var loved: Bool = false
     
     // Trailing
@@ -63,6 +60,10 @@ struct SymmetryView: View {
     @State var replyHeight: CGFloat = .zero
     
     @State var keyboardHeight: CGFloat = 0
+    
+    let baseHeight: CGFloat = 44
+    let baseWidth: CGFloat = 128
+    let baseRadius: CGFloat = 22
     
     let horizontalPadding: CGFloat = 48
     let gap: CGFloat = 18
@@ -138,9 +139,9 @@ struct SymmetryView: View {
                             }
                             
                             if windowState.symmetryState == .reply {
-                                Image(systemName: "paperclip")
+                                Image(systemName: "plus")
                                     .foregroundColor(.secondary)
-                                    .font(.system(size: 15))
+                                    .font(.system(size: 16, weight: .semibold))
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                             }
                         }
@@ -190,72 +191,12 @@ struct SymmetryView: View {
                                     }
                                     .onTapGesture(count: 1) { location in
                                         loved = false
-                                        position = location
                                         origin = location // Ripple
-
-                                        Task {
-                                            // Initial curve upward (blue path)
-                                            withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                                                position = CGPoint(x: location.x + 40, y: location.y - 100)
-                                            }
-
-                                            try? await Task.sleep(for: .milliseconds(50))
-
-                                            // Smoothly chaining loop animation without hard stops
-                                            withAnimation(.interpolatingSpring(stiffness: 100, damping: 10)) {
-                                                // Add more gradual position changes with springy behavior
-                                                position = CGPoint(x: location.x + 120, y: location.y - 180)
-                                            }
-
-                                            try? await Task.sleep(for: .milliseconds(80))
-
-                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.9)) {
-                                                // Bring the curve down more fluidly to match natural physics
-                                                position = CGPoint(x: location.x + 180, y: location.y - 120)
-                                            }
-
-                                            try? await Task.sleep(for: .milliseconds(50))
-
-                                            // Finally, exit smoothly
-                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
-                                                position = target
-                                            }
-                                        }
-
                                         velocity = 0.5
                                         rippleTrigger += 1
                                     }
                                     .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
-                                    .onAppear {
-                                        target = CGPoint(x: 316 - 48, y: 316 - 48) // bottom right
-                                    }
                                 }
-                                
-                                ZStack {
-                                    if origin != .zero {
-                                        if loved {
-                                            HeartPath()
-                                                .stroke(.white, lineWidth: 1)
-                                                .fill(.white)
-                                                .frame(width: 28, height: 28)
-                                                .opacity(1)
-                                        } else {
-                                            HeartbreakLeftPath()
-                                                .stroke(.white, lineWidth: 1)
-                                                .fill(.white)
-                                                .frame(width: 28, height: 28)
-                                                .opacity(1)
-                                                
-                                            HeartbreakRightPath()
-                                                .stroke(.white, lineWidth: 1)
-                                                .fill(.white)
-                                                .frame(width: 28, height: 28)
-                                                .opacity(1)
-                                        }
-                                    }
-                                }
-                                .frame(width: 28, height: 28)
-                                .position(position)
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -277,9 +218,23 @@ struct SymmetryView: View {
                                 }) {
                                     Image(systemName: "magnifyingglass")
                                         .foregroundColor(.secondary)
-                                        .font(.system(size: 15))
+                                        .font(.system(size: 16, weight: .medium))
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .background(Color.gray.opacity(0.001))
+                            }
+                            
+                            if windowState.symmetryState == .reply {
+                                Button(action: {
+                                    print("Send")
+                                }) {
+                                    Image(systemName: "pencil.and.outline")
+                                        .foregroundColor(replyText.isEmpty ? .gray : .white)
+                                        .font(.system(size: 18))
+                                        .padding(8)
+                                }
+                                .disabled(replyText.isEmpty)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -332,7 +287,11 @@ struct SymmetryView: View {
             }
         }
     }
-    
+}
+
+// MARK: View Builders
+
+extension SymmetryView {
     func createSymbol<ShapeType: Shape, Content: View>(
         shape: ShapeType,
         fillColor: Color,
@@ -359,45 +318,36 @@ struct SymmetryView: View {
         height: CGFloat,
         tag: Int
     ) -> some View {
-        HStack(alignment: .lastTextBaseline) {
-            TextField("", text: $replyText, axis: .vertical)
-                .padding(.horizontal, 12)
-                .textFieldStyle(PlainTextFieldStyle())
-                .font(.system(size: 17))
-                .foregroundColor(.white)
-                .focused($focusedField, equals: .reply)
-                .disabled(windowState.symmetryState != .reply)
-                .lineLimit(2)
-        }
-        .frame(width: symmetryState.trailing.size.width)
-        .frame(minHeight: symmetryState.trailing.size.height, alignment: .leading)
-        .background(fillColor, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .fixedSize(horizontal: false, vertical: true)
-        .background(viewHeight(for: $replyHeight))
-        .overlay(alignment: .bottomLeading) {
-            if windowState.symmetryState == .reply {
-                Circle()
-                    .fill(fillColor)
-                    .frame(width: 12, height: 12)
-                Circle()
-                    .fill(fillColor)
-                    .frame(width: 6, height: 6)
-                    .offset(x: -12, y: 0)
+        TextEditor(text: $replyText)
+            .font(.system(size: 17))
+            .foregroundColor(.white)
+            .padding(.leading, 8)
+            .padding(.trailing, 32)
+            .focused($focusedField, equals: .reply)
+            .disabled(windowState.symmetryState != .reply)
+            .submitLabel(.return)
+            .textEditorBackground(.clear)
+            .frame(width: symmetryState.trailing.size.width)
+            .frame(minHeight: symmetryState.trailing.size.height, alignment: .leading)
+            .background(fillColor, in: RoundedRectangle(cornerRadius: baseRadius, style: .continuous))
+            .frame(maxHeight: 164)
+            .fixedSize(horizontal: false, vertical: true)
+            .background(viewHeight(for: $replyHeight)) // Measure
+            .overlay(alignment: .bottomLeading) {
+                if windowState.symmetryState == .reply {
+                    Circle()
+                        .fill(fillColor)
+                        .frame(width: 12, height: 12)
+                    Circle()
+                        .fill(fillColor)
+                        .frame(width: 6, height: 6)
+                        .offset(x: -12, y: 0)
+                }
             }
-        }
-        .overlay(overlayContent)
-        .offset(x: symmetryState.trailing.offset.x, y: symmetryState.trailing.offset.y)
-        .frame(width: width, height: height, alignment: .bottom)
-        .tag(tag)
-    }
-}
-
-struct OvalTextFieldStyle: TextFieldStyle {
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .padding(.vertical, 8)
-            .scrollClipDisabled()
-            .background(.red)
+            .overlay(overlayContent)
+            .offset(x: symmetryState.trailing.offset.x, y: symmetryState.trailing.offset.y)
+            .frame(width: width, height: height, alignment: .bottom)
+            .tag(tag)
     }
 }
 
@@ -419,18 +369,18 @@ extension SymmetryView {
                 leading: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40)
+                    size: CGSize(width: baseWidth, height: baseHeight)
                 ),
                 center: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40),
-                    cornerRadius: 20
+                    size: CGSize(width: baseWidth, height: baseHeight),
+                    cornerRadius: baseRadius
                 ),
                 trailing: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40)
+                    size: CGSize(width: baseWidth, height: baseHeight)
                 )
             )
         } completion: {
@@ -454,18 +404,18 @@ extension SymmetryView {
                 leading: .init(
                     showContent: true,
                     offset: CGPoint(x: -centerWidth + 20 + 32, y: 0),
-                    size: CGSize(width: 40, height: 40)
+                    size: CGSize(width: baseHeight, height: baseHeight)
                 ),
                 center: .init(
                     showContent: true,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40),
-                    cornerRadius: 20
+                    size: CGSize(width: baseWidth, height: baseHeight),
+                    cornerRadius: baseRadius
                 ),
                 trailing: .init(
                     showContent: true,
                     offset: CGPoint(x: centerWidth - 20 - 32, y: 0),
-                    size: CGSize(width: 40, height: 40)
+                    size: CGSize(width: baseHeight, height: baseHeight)
                 )
             )
         } completion: {
@@ -489,18 +439,18 @@ extension SymmetryView {
                 leading: .init(
                     showContent: true,
                     offset: CGPoint(x: -(centerWidth - gap) + 24, y: 0),
-                    size: CGSize(width: 40, height: 40)
+                    size: CGSize(width: 36, height: 36)
                 ),
                 center: .init(
                     showContent: true,
                     offset: CGPoint(x: 24, y: -self.replyHeight - 4),
-                    size: CGSize(width: width - 48 - 40 - 18, height: width - 48 - 40 - 18),
+                    size: CGSize(width: width - 48 - baseHeight - 18, height: width - 48 - baseHeight - 18),
                     cornerRadius: 40
                 ),
                 trailing: .init(
                     showContent: true,
                     offset: CGPoint(x: 24, y: 0),
-                    size: CGSize(width: width - 48 - 40 - 18, height: 40)
+                    size: CGSize(width: width - 48 - baseHeight - 18, height: 36)
                 )
             )
             
@@ -522,18 +472,18 @@ extension SymmetryView {
                 leading: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40)
+                    size: CGSize(width: baseWidth, height: baseHeight)
                 ),
                 center: .init(
                     showContent: true,
                     offset: .zero,
                     size: CGSize(width: width - horizontalPadding, height: 48),
-                    cornerRadius: 20
+                    cornerRadius: baseRadius
                 ),
                 trailing: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: 128, height: 40)
+                    size: CGSize(width: baseWidth, height: baseHeight)
                 )
             )
         }
@@ -616,5 +566,17 @@ private func viewHeight(for binding: Binding<CGFloat>) -> some View {
             binding.wrappedValue = rect.size.height
         }
         return .clear
+    }
+}
+
+extension View {
+    func textEditorBackground(_ content: Color) -> some View {
+        if #available(iOS 16.0, *) {
+            return self.scrollContentBackground(.hidden)
+                .background(content)
+        } else {
+            UITextView.appearance().backgroundColor = .clear
+            return background(content)
+        }
     }
 }

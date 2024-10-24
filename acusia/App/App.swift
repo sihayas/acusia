@@ -198,6 +198,7 @@ struct AcusiaAppView: View {
             // .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
         .ignoresSafeArea()
+        .blur(radius: windowState.symmetryState == .reply ? 4 : 0)
         .overlay(
             Color
                 .black
@@ -208,12 +209,16 @@ struct AcusiaAppView: View {
         .sheet(isPresented: Binding(
             get: { windowState.symmetryState == .search },
             set: { newValue in
-                if !newValue {
-                    print("Dismissing Search")
+                if !newValue, windowState.symmetryState == .search {
+                    windowState.symmetryState = .collapsed
                 }
             }
         )) {
             IndexSheet()
+                .presentationBackground(.thinMaterial)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.hidden)
+                .presentationCornerRadius(40)
         }
     }
 }

@@ -24,38 +24,26 @@ struct IndexSheet: View {
     ]
 
     var body: some View {
-        ZStack {
-            UnevenRoundedRectangle(topLeadingRadius: 45, bottomLeadingRadius: 55, bottomTrailingRadius: 55, topTrailingRadius: 45, style: .continuous)
-                .foregroundStyle(.clear)
-                .background(.thinMaterial)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .ignoresSafeArea()
-
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(musicKitManager.searchResults.indices, id: \.self) { index in
-                        ResultCell(
-                            searchResult: $musicKitManager.searchResults[index],
-                            selectedResult: $selectedResult
-                        )
-                    }
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(musicKitManager.searchResults.indices, id: \.self) { index in
+                    ResultCell(
+                        searchResult: $musicKitManager.searchResults[index],
+                        selectedResult: $selectedResult
+                    )
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, safeAreaInsets.top)
             }
+            .padding(.horizontal, 24)
+            .padding(.top, safeAreaInsets.top)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .presentationBackground(.clear)
-        .presentationDetents([.fraction(0.93)])
-        .presentationDragIndicator(.hidden)
-        .presentationCornerRadius(40)
         .overlay(alignment: .topLeading) {
             HStack {
                 Text("Index")
                     .font(.system(size: 19, weight: .bold))
                     .foregroundColor(.white)
                     .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
-                
+
                 Spacer()
             }
             .padding(.horizontal, 24)
