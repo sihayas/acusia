@@ -216,19 +216,19 @@ struct ConnectedRepliesPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
-        // Start at the top center
-        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        // Start at the top left corner
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
 
-        // Draw the top curve to the right
-        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + rect.width / 2),
-                          control: CGPoint(x: rect.maxX, y: rect.minY))
+        // Draw the top curve to the center
+        path.addQuadCurve(to: CGPoint(x: rect.midX, y: rect.minY + rect.width / 2),
+                          control: CGPoint(x: rect.midX, y: rect.minY))
 
         // Draw the vertical line downwards, leaving space for the bottom curve
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - rect.width / 2))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY - rect.width / 2))
 
-        // Draw the bottom curve to the left
-        path.addQuadCurve(to: CGPoint(x: rect.midX, y: rect.maxY),
-                          control: CGPoint(x: rect.maxX, y: rect.maxY))
+        // Draw the bottom curve back to the left
+        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY),
+                          control: CGPoint(x: rect.midX, y: rect.maxY))
 
         return path
     }

@@ -174,6 +174,23 @@ struct WispView: View {
                                     .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                                     .frame(height: geometry.size.height / 2)
                             }
+                            .overlay(alignment: .top) {
+                                VStack {
+                                    HStack(alignment: .top, spacing: -4) {
+                                        ForEach(0 ..< 3) { index in
+                                            AvatarView(size: [16, 20, 16][index], imageURL: "https://picsum.photos/200/300")
+                                                .zIndex(index == 1 ? 2 : 1)
+                                                .background(index == 1 ? Circle().stroke(.black, lineWidth: 2) : nil)
+                                                .shadow(color: index == 1 ? .black : .clear, radius: 4)
+                                        }
+                                    }
+                                    
+                                    Text("33")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                }
+                                .offset(x: 0, y: geometry.size.height + 8)
+                            }
                         }
                         .frame(maxWidth: 36)
                         .onTapGesture {
