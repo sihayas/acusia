@@ -257,14 +257,56 @@ struct WispBubbleWithTail: Shape {
 
     func path(in rect: CGRect) -> Path {
         let bubbleRect = rect
+        let bubble = RoundedRectangle(cornerRadius: 20, style: .continuous)
+            .path(in: bubbleRect)
+
+        let firstCircleSize: CGFloat = 12 // Scale the tail size
+        let firstCircleOffsetX: CGFloat = 0
+        let firstCircleOffsetY: CGFloat = bubbleRect.height - firstCircleSize
+
+        // Create the tail (circle)
+        let tailRect = CGRect(
+            x: bubbleRect.minX + firstCircleOffsetX,
+            y: bubbleRect.minY + firstCircleOffsetY,
+            width: firstCircleSize,
+            height: firstCircleSize
+        )
+        let tail = Circle().path(in: tailRect)
+
+        let secondCircleSize: CGFloat = 6
+        let secondCircleOffsetX = tailRect.minX - secondCircleSize
+        let secondCircleOffsetY = tailRect.maxY - secondCircleSize / 2
+        let secondCircleRect = CGRect(
+            x: secondCircleOffsetX,
+            y: secondCircleOffsetY,
+            width: secondCircleSize,
+            height: secondCircleSize
+        )
+        let secondCircle = Circle().path(in: secondCircleRect)
+
+        let combined = bubble.union(tail).union(secondCircle)
+
+        return combined
+    }
+
+    var animatableData: CGFloat {
+        get { scale }
+        set { scale = newValue }
+    }
+}
+
+struct ArtifactBubbleWithTail: Shape {
+    var scale: CGFloat
+
+    func path(in rect: CGRect) -> Path {
+        let bubbleRect = rect
         let bubble = RoundedRectangle(cornerRadius: 24, style: .continuous)
             .path(in: bubbleRect)
 
         let tailSize: CGFloat = 12*scale // Scale the tail size
-        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 - bubbleRect.width / 3
+        let tailOffsetX: CGFloat = 32
         let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
 
-        // Create the tail (circle)
         let tailRect = CGRect(
             x: bubbleRect.minX + tailOffsetX,
             y: bubbleRect.minY + tailOffsetY,
@@ -295,17 +337,14 @@ struct WispBubbleWithTail: Shape {
     }
 }
 
-struct ArtifactBubbleWithTail: Shape {
-    var scale: CGFloat
-
+struct SoundBubbleWithTail: Shape {
     func path(in rect: CGRect) -> Path {
         let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .path(in: bubbleRect)
+        let bubble = Circle().path(in: bubbleRect)
 
-        let tailSize: CGFloat = 12*scale // Scale the tail size
-        let tailOffsetX: CGFloat = bubbleRect.width / 2 - tailSize / 2 + bubbleRect.width / 3
-        let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
+        let tailSize: CGFloat = 12
+        let tailOffsetX: CGFloat = 0
+        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
 
         let tailRect = CGRect(
             x: bubbleRect.minX + tailOffsetX,
@@ -315,7 +354,7 @@ struct ArtifactBubbleWithTail: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 6*scale
+        let secondCircleSize: CGFloat = 6
         let secondCircleOffsetX = tailRect.maxX
         let secondCircleOffsetY = tailRect.maxY
         let secondCircleRect = CGRect(
@@ -329,10 +368,5 @@ struct ArtifactBubbleWithTail: Shape {
         let combined = bubble.union(tail).union(secondCircle)
 
         return combined
-    }
-
-    var animatableData: CGFloat {
-        get { scale }
-        set { scale = newValue }
     }
 }

@@ -26,19 +26,14 @@
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
 		CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* BlipView.swift */; };
-		CD796C982CC1F48400342376 /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = CD796C972CC1F48400342376 /* LLM */; };
-		CD796C9A2CC1F48400342376 /* MNIST in Frameworks */ = {isa = PBXBuildFile; productRef = CD796C992CC1F48400342376 /* MNIST */; };
+		CD7B51432CCB7AAB001B9DB5 /* ContextualMenu in Frameworks */ = {isa = PBXBuildFile; productRef = CD7B51422CCB7AAB001B9DB5 /* ContextualMenu */; };
+		CD7B51452CCB7AB2001B9DB5 /* TestMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* PastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* PastView.swift */; };
 		CD8E0BDB2C8D6C8C003A6F91 /* TintedBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */; };
 		CD8E0BDF2C8D7EF8003A6F91 /* RepliesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDE2C8D7EF2003A6F91 /* RepliesSheet.swift */; };
 		CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9245092CA6713100635716 /* SymmetryView.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
-		CDAB51212CC1FF08000CACF0 /* LoRAExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB511E2CC1FF08000CACF0 /* LoRAExample.swift */; };
-		CDAB51282CC2001C000CACF0 /* test.jsonl in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51222CC2001C000CACF0 /* test.jsonl */; };
-		CDAB51292CC2001C000CACF0 /* train.jsonl in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51232CC2001C000CACF0 /* train.jsonl */; };
-		CDAB512A2CC2001C000CACF0 /* valid.jsonl in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51242CC2001C000CACF0 /* valid.jsonl */; };
-		CDAB512B2CC2001C000CACF0 /* wikisql.py in Resources */ = {isa = PBXBuildFile; fileRef = CDAB51252CC2001C000CACF0 /* wikisql.py */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
 		CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* GridView.swift */; };
@@ -54,7 +49,6 @@
 		CDDED7582C194C8600958B39 /* acusiaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7572C194C8600958B39 /* acusiaUITestsLaunchTests.swift */; };
 		CDDED7862C19543D00958B39 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7852C19543D00958B39 /* CoreData.swift */; };
 		CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7882C1955BD00958B39 /* AuthScreen.swift */; };
-		CDDED78F2C195B2700958B39 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED78E2C195B2400958B39 /* FeedView.swift */; };
 		CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE14A442C8118C400D0F172 /* PathViews.swift */; };
 		CDE43C112C8671280009CB87 /* ReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C102C8671250009CB87 /* ReactionView.swift */; };
 		CDE47E8A2CBADE7000834783 /* RadialLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE47E892CBADE6D00834783 /* RadialLayout.swift */; };
@@ -125,6 +119,7 @@
 		CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloShaderView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CD720E4D2CB8713A00CEEE00 /* BlipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlipView.swift; sourceTree = "<group>"; };
+		CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestMenu.swift; sourceTree = "<group>"; };
 		CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		CD8CFDA72C6F02F100D7DEA7 /* PastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastView.swift; sourceTree = "<group>"; };
 		CD8D19842C29C5FF00FDC979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -132,11 +127,6 @@
 		CD8E0BDE2C8D7EF2003A6F91 /* RepliesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesSheet.swift; sourceTree = "<group>"; };
 		CD9245092CA6713100635716 /* SymmetryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetryView.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
-		CDAB511E2CC1FF08000CACF0 /* LoRAExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoRAExample.swift; sourceTree = "<group>"; };
-		CDAB51222CC2001C000CACF0 /* test.jsonl */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.jsonl; sourceTree = "<group>"; };
-		CDAB51232CC2001C000CACF0 /* train.jsonl */ = {isa = PBXFileReference; lastKnownFileType = text; path = train.jsonl; sourceTree = "<group>"; };
-		CDAB51242CC2001C000CACF0 /* valid.jsonl */ = {isa = PBXFileReference; lastKnownFileType = text; path = valid.jsonl; sourceTree = "<group>"; };
-		CDAB51252CC2001C000CACF0 /* wikisql.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = wikisql.py; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
@@ -156,7 +146,6 @@
 		CDDED7572C194C8600958B39 /* acusiaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = acusiaUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		CDDED7852C19543D00958B39 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		CDDED7882C1955BD00958B39 /* AuthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthScreen.swift; sourceTree = "<group>"; };
-		CDDED78E2C195B2400958B39 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
 		CDE14A442C8118C400D0F172 /* PathViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathViews.swift; sourceTree = "<group>"; };
 		CDE43C102C8671250009CB87 /* ReactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionView.swift; sourceTree = "<group>"; };
@@ -189,10 +178,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD796C9A2CC1F48400342376 /* MNIST in Frameworks */,
 				CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */,
 				CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */,
-				CD796C982CC1F48400342376 /* LLM in Frameworks */,
+				CD7B51432CCB7AAB001B9DB5 /* ContextualMenu in Frameworks */,
 				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -240,7 +228,6 @@
 				CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */,
 				CD8CFDA72C6F02F100D7DEA7 /* PastView.swift */,
 				CDD48E172C62C20B0001C4E8 /* GridView.swift */,
-				CDDED78E2C195B2400958B39 /* FeedView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -278,34 +265,6 @@
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		CDAB511D2CC1FEF6000CACF0 /* MLXTest */ = {
-			isa = PBXGroup;
-			children = (
-				CDAB51272CC2001C000CACF0 /* Data */,
-				CDAB511E2CC1FF08000CACF0 /* LoRAExample.swift */,
-			);
-			path = MLXTest;
-			sourceTree = "<group>";
-		};
-		CDAB51262CC2001C000CACF0 /* lora */ = {
-			isa = PBXGroup;
-			children = (
-				CDAB51222CC2001C000CACF0 /* test.jsonl */,
-				CDAB51232CC2001C000CACF0 /* train.jsonl */,
-				CDAB51242CC2001C000CACF0 /* valid.jsonl */,
-				CDAB51252CC2001C000CACF0 /* wikisql.py */,
-			);
-			path = lora;
-			sourceTree = "<group>";
-		};
-		CDAB51272CC2001C000CACF0 /* Data */ = {
-			isa = PBXGroup;
-			children = (
-				CDAB51262CC2001C000CACF0 /* lora */,
-			);
-			path = Data;
 			sourceTree = "<group>";
 		};
 		CDC37D442C6067FA002D2709 /* Iridescent */ = {
@@ -356,7 +315,6 @@
 				CD8D19842C29C5FF00FDC979 /* Info.plist */,
 				CDDED7392C194C8500958B39 /* Assets.xcassets */,
 				CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */,
-				CDAB511D2CC1FEF6000CACF0 /* MLXTest */,
 				CD8CFDA42C6F02AC00D7DEA7 /* App */,
 				CDDED7712C1951BE00958B39 /* Components */,
 				CD13D5252C3FAD84007E3120 /* Metal */,
@@ -410,6 +368,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */,
 				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
 				CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */,
@@ -465,8 +424,7 @@
 				CD132AA22C6DDB7200C16804 /* BigUIPaging */,
 				CD0D90532CA40434004FD674 /* Kingfisher */,
 				CD17C1032CA8FC520014D3FD /* Transmission */,
-				CD796C972CC1F48400342376 /* LLM */,
-				CD796C992CC1F48400342376 /* MNIST */,
+				CD7B51422CCB7AAB001B9DB5 /* ContextualMenu */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -544,7 +502,7 @@
 				CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */,
 				CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */,
-				CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
+				CD7B51412CCB7AAB001B9DB5 /* XCRemoteSwiftPackageReference "ContextualMenu" */,
 			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
@@ -562,10 +520,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDAB51282CC2001C000CACF0 /* test.jsonl in Resources */,
-				CDAB51292CC2001C000CACF0 /* train.jsonl in Resources */,
-				CDAB512A2CC2001C000CACF0 /* valid.jsonl in Resources */,
-				CDAB512B2CC2001C000CACF0 /* wikisql.py in Resources */,
 				CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */,
 				CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */,
 			);
@@ -607,7 +561,6 @@
 				CDD77DA72C8FD94200D5BCC1 /* HoloPreview.swift in Sources */,
 				CD8CFDA82C6F02F100D7DEA7 /* PastView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */,
-				CDDED78F2C195B2700958B39 /* FeedView.swift in Sources */,
 				CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */,
 				CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */,
 				CD17C1072CAC77670014D3FD /* ReplyView.swift in Sources */,
@@ -618,8 +571,8 @@
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
 				CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */,
 				CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */,
-				CDAB51212CC1FF08000CACF0 /* LoRAExample.swift in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
+				CD7B51452CCB7AB2001B9DB5 /* TestMenu.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */,
@@ -990,12 +943,12 @@
 				minimumVersion = 0.0.3;
 			};
 		};
-		CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+		CD7B51412CCB7AAB001B9DB5 /* XCRemoteSwiftPackageReference "ContextualMenu" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples/";
+			repositoryURL = "https://github.com/Roze-im/ContextualMenu.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.16.0;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1016,15 +969,10 @@
 			package = CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */;
 			productName = Transmission;
 		};
-		CD796C972CC1F48400342376 /* LLM */ = {
+		CD7B51422CCB7AAB001B9DB5 /* ContextualMenu */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
-			productName = LLM;
-		};
-		CD796C992CC1F48400342376 /* MNIST */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CD796C962CC1F48400342376 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
-			productName = MNIST;
+			package = CD7B51412CCB7AAB001B9DB5 /* XCRemoteSwiftPackageReference "ContextualMenu" */;
+			productName = ContextualMenu;
 		};
 /* End XCSwiftPackageProductDependency section */
 

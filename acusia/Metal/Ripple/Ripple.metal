@@ -8,6 +8,8 @@
 #include <SwiftUI/SwiftUI.h>
 using namespace metal;
 
+
+
 [[ stitchable ]]
 half4 Ripple(
     float2 position,
