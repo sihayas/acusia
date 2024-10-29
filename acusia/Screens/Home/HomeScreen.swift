@@ -31,8 +31,6 @@ struct Home: View {
     @EnvironmentObject private var shareData: HomeState
 
     @State private var tappedEntry: EntryModel?
-    @State private var tappedPosition: CGPoint = .zero
-    @State private var tappedSize: CGSize = .zero
 
     var body: some View {
         ScrollView(.vertical) {
@@ -41,28 +39,12 @@ struct Home: View {
                 // PastView(size: size)
 
                 /// Main Feed
-                LazyVStack(spacing: 64) {
+                LazyVStack(spacing: 32) {
                     ForEach(entries) { entry in
                         ZStack {
-                            WispView(entry: entry)
+                            EntryView(entry: entry)
                         }
                         .frame(maxWidth: .infinity)
-                        .background(
-                            GeometryReader { geometry in
-                                Color.black.onTapGesture {
-                                    if tappedEntry != nil {
-                                        withAnimation(.smooth) {
-                                            tappedEntry = nil
-                                        }
-                                    } else {
-                                        withAnimation(.smooth) {
-                                            tappedEntry = (tappedEntry == entry) ? nil : entry
-                                        }
-                                        tappedPosition = CGPoint(x: geometry.frame(in: .global).midX, y: geometry.frame(in: .global).midY)
-                                        tappedSize = geometry.size
-                                    }
-                                }
-                            })
                         .scaleEffect(tappedEntry != nil && tappedEntry != entry ? 0.96 : 1)
                         .animation(.interactiveSpring(duration: 0.4, extraBounce: 0.5), value: tappedEntry)
                     }
@@ -81,18 +63,6 @@ struct Home: View {
             }
         }
         .frame(width: windowState.size.width, height: windowState.size.height)
-        .overlay(
-            ZStack {
-                if tappedEntry != nil {
-                    RadialVariableBlurView(radius: 4, position: tappedPosition, size: tappedSize)
-                        .ignoresSafeArea()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                    RadialGradientMask(center: tappedPosition, size: tappedSize)
-                }
-            }
-            .allowsHitTesting(false)
-        )
         .overlay(alignment: .top) {
             VStack {
                 VariableBlurView(radius: 1, mask: Image(.gradient))

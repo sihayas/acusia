@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BlipView: View {
     let size: CGSize
+    let fill: Color
     let emojis = [
         "😡", "💀", "🔥", "🎉", "😎", "👻", "🚀", "🌈", "🦄",
         "🍕", "🎸", "🌊", "🍦", "🌺", "🦋", "🌙"
@@ -9,8 +10,9 @@ struct BlipView: View {
     
     @State private var selectedEmojis: [String] = []
     
-    init(size: CGSize) {
+    init(size: CGSize, fill: Color) {
         self.size = size
+        self.fill = fill
         _selectedEmojis = State(
             initialValue: (0..<3).map { _ in
                 emojis.randomElement() ?? "😊"
@@ -19,7 +21,6 @@ struct BlipView: View {
     }
     
     var body: some View {
-        // Adjust the radius factor to get desired circle sizes
         let radiusFactor: CGFloat = 0.23
         let radius = size.width * radiusFactor
 
@@ -34,19 +35,19 @@ struct BlipView: View {
                         .background(
                             Circle()
                                 // .stroke(.black, lineWidth: 2)
-                                .fill(.ultraThinMaterial)
+                                .fill(fill)
                         )
                         .zIndex(Double(index))
                 }
             }
             
             Circle()
-                .fill(.ultraThinMaterial)
+                .fill(fill)
                 .frame(width: 10, height: 10)
                 .position(x: size.width * 0.84, y: size.height * 0.84)
             
             Circle()
-                .fill(.ultraThinMaterial)
+                .fill(fill)
                 .frame(width: 5, height: 5)
                 .position(x: size.width * 0.96, y: size.height * 0.96)
         }
@@ -58,8 +59,4 @@ struct BlipView: View {
         let reductionFactor: CGFloat = 0.15
         return maxCircleSize * (1 - CGFloat(index) * reductionFactor)
     }
-}
-
-#Preview {
-    BlipView(size: CGSize(width: 56, height: 56))
 }

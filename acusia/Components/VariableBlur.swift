@@ -47,18 +47,20 @@ struct VariableBlurView: UIViewRepresentable {
 }
 
 struct RadialGradientMask: View {
-    var center: CGPoint
     var size: CGSize
 
     var body: some View {
+        let maxDimension = max(size.width, size.height)
+        let center = CGPoint(x: size.width / 2, y: size.height / 2)
+
         RadialGradient(
             gradient: Gradient(colors: [.clear, .black]),
             center: UnitPoint(
-                x: center.x / UIScreen.main.bounds.width,
-                y: center.y / UIScreen.main.bounds.height
+                x: center.x / size.width,
+                y: center.y / size.height
             ),
-            startRadius: size.width / 2,
-            endRadius: size.width
+            startRadius: maxDimension / 1.5,
+            endRadius: maxDimension
         )
         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
     }
@@ -66,11 +68,10 @@ struct RadialGradientMask: View {
 
 struct RadialVariableBlurView: UIViewRepresentable {
     let radius: Double
-    let position: CGPoint
     let size: CGSize
 
     func makeUIView(context: Context) -> UIVisualEffectView {
-        let maskView = RadialGradientMask(center: position, size: size)
+        let maskView = RadialGradientMask(size: size)
         let renderer = ImageRenderer(content: maskView)
         if let maskImage = renderer.uiImage {
             let effect = UIBlurEffect.variableBlurEffect(radius: radius, imageMask: maskImage)
@@ -82,7 +83,7 @@ struct RadialVariableBlurView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: UIVisualEffectView, context: Context) {
-        let maskView = RadialGradientMask(center: position, size: size)
+        let maskView = RadialGradientMask(size: size)
         let renderer = ImageRenderer(content: maskView)
         if let maskImage = renderer.uiImage {
             view.effect = UIBlurEffect.variableBlurEffect(radius: radius, imageMask: maskImage)
