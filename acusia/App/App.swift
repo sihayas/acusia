@@ -56,14 +56,15 @@ struct AcusiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AcusiaAppView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(windowState)
-                .environmentObject(musicKit)
-                .environmentObject(homeState)
-                .onAppear {
-                    floatingBarPresenter.showFloatingBar()
-                }
+            AuxiliaryPreview()
+            // AcusiaAppView()
+            //     .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            //     .environmentObject(windowState)
+            //     .environmentObject(musicKit)
+            //     .environmentObject(homeState)
+            //     .onAppear {
+            //         floatingBarPresenter.showFloatingBar()
+            //     }
         }
     }
 }
@@ -132,7 +133,7 @@ struct AcusiaAppView: View {
                     VStack {
                         if windowState.isSplit {
                             VStack(alignment: .leading) { // Align to top. This contains the clipped view.
-                                RepliesSheet()
+                                EmptyView()
                                     .frame(minWidth: screenWidth, minHeight: screenHeight)
                                     .frame(height: replyHeight, alignment: .top) // Align content inside to top.
                                     .overlay(

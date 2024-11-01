@@ -14,6 +14,10 @@
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CD17C1032CA8FC520014D3FD /* Transmission */; };
 		CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C10D2CB195400014D3FD /* SafeArea.swift */; };
+		CD264CD32CD3A43B00A74D7E /* Grok.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD264CD22CD3A43800A74D7E /* Grok.swift */; };
+		CD264CD82CD3A6B600A74D7E /* Grok.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD264CD72CD3A6B600A74D7E /* Grok.metal */; };
+		CD264CDB2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CDA2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview */; };
+		CD264CDE2CD4FF1700A74D7E /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CDD2CD4FF1700A74D7E /* SwiftUIX */; };
 		CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD27939B2C7B883C00486C1D /* AvatarView.swift */; };
 		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
 		CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */; };
@@ -25,13 +29,13 @@
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
 		CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* BlipView.swift */; };
-		CD7B51432CCB7AAB001B9DB5 /* ContextualMenu in Frameworks */ = {isa = PBXBuildFile; productRef = CD7B51422CCB7AAB001B9DB5 /* ContextualMenu */; };
 		CD7B51452CCB7AB2001B9DB5 /* TestMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
 		CD8CFDA82C6F02F100D7DEA7 /* PastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA72C6F02F100D7DEA7 /* PastView.swift */; };
 		CD8E0BDB2C8D6C8C003A6F91 /* TintedBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */; };
 		CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9245092CA6713100635716 /* SymmetryView.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
+		CDABF18F2CD1838F00FBE750 /* EntryBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABF18E2CD1838200FBE750 /* EntryBubbleView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
 		CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* GridView.swift */; };
@@ -105,6 +109,8 @@
 		CD0D90502CA3C31A004FD674 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		CD17C10D2CB195400014D3FD /* SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeArea.swift; sourceTree = "<group>"; };
+		CD264CD22CD3A43800A74D7E /* Grok.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grok.swift; sourceTree = "<group>"; };
+		CD264CD72CD3A6B600A74D7E /* Grok.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Grok.metal; sourceTree = "<group>"; };
 		CD27939B2C7B883C00486C1D /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD4BAA9F2C950A570005F3DB /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
 		CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
@@ -123,6 +129,7 @@
 		CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintedBlurView.swift; sourceTree = "<group>"; };
 		CD9245092CA6713100635716 /* SymmetryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetryView.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
+		CDABF18E2CD1838200FBE750 /* EntryBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryBubbleView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
@@ -176,8 +183,9 @@
 			files = (
 				CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */,
 				CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */,
-				CD7B51432CCB7AAB001B9DB5 /* ContextualMenu in Frameworks */,
 				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
+				CD264CDE2CD4FF1700A74D7E /* SwiftUIX in Frameworks */,
+				CD264CDB2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +222,7 @@
 				CD4BAA9E2C950A3F0005F3DB /* Ripple */,
 				CDC37D442C6067FA002D2709 /* Iridescent */,
 				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
+				CD264CD72CD3A6B600A74D7E /* Grok.metal */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -307,6 +316,7 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
+				CD264CD22CD3A43800A74D7E /* Grok.swift */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
 				CD8D19842C29C5FF00FDC979 /* Info.plist */,
 				CDDED7392C194C8500958B39 /* Assets.xcassets */,
@@ -364,6 +374,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CDABF18E2CD1838200FBE750 /* EntryBubbleView.swift */,
 				CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */,
 				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
@@ -418,7 +429,8 @@
 				CD132AA22C6DDB7200C16804 /* BigUIPaging */,
 				CD0D90532CA40434004FD674 /* Kingfisher */,
 				CD17C1032CA8FC520014D3FD /* Transmission */,
-				CD7B51422CCB7AAB001B9DB5 /* ContextualMenu */,
+				CD264CDA2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview */,
+				CD264CDD2CD4FF1700A74D7E /* SwiftUIX */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -496,7 +508,8 @@
 				CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */,
 				CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */,
-				CD7B51412CCB7AAB001B9DB5 /* XCRemoteSwiftPackageReference "ContextualMenu" */,
+				CD264CD92CD3BCD200A74D7E /* XCRemoteSwiftPackageReference "ContextMenuAuxiliaryPreview" */,
+				CD264CDC2CD4FF1700A74D7E /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
@@ -564,13 +577,16 @@
 				CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */,
 				CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
+				CD264CD32CD3A43B00A74D7E /* Grok.swift in Sources */,
 				CD7B51452CCB7AB2001B9DB5 /* TestMenu.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */,
 				CD8E0BDB2C8D6C8C003A6F91 /* TintedBlurView.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
+				CDABF18F2CD1838F00FBE750 /* EntryBubbleView.swift in Sources */,
 				CD54A5712CB72F1200B257EA /* Pixellate.metal in Sources */,
+				CD264CD82CD3A6B600A74D7E /* Grok.metal in Sources */,
 				CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */,
 				CDE47E8A2CBADE7000834783 /* RadialLayout.swift in Sources */,
 				CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */,
@@ -927,20 +943,28 @@
 				minimumVersion = 1.4.9;
 			};
 		};
+		CD264CD92CD3BCD200A74D7E /* XCRemoteSwiftPackageReference "ContextMenuAuxiliaryPreview" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dominicstop/ContextMenuAuxiliaryPreview.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.2;
+			};
+		};
+		CD264CDC2CD4FF1700A74D7E /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftUIX/SwiftUIX.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.3;
+			};
+		};
 		CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/notsobigcompany/BigUIPaging.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.0.3;
-			};
-		};
-		CD7B51412CCB7AAB001B9DB5 /* XCRemoteSwiftPackageReference "ContextualMenu" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Roze-im/ContextualMenu.git";
-			requirement = {
-				branch = main;
-				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -961,10 +985,15 @@
 			package = CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */;
 			productName = Transmission;
 		};
-		CD7B51422CCB7AAB001B9DB5 /* ContextualMenu */ = {
+		CD264CDA2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CD7B51412CCB7AAB001B9DB5 /* XCRemoteSwiftPackageReference "ContextualMenu" */;
-			productName = ContextualMenu;
+			package = CD264CD92CD3BCD200A74D7E /* XCRemoteSwiftPackageReference "ContextMenuAuxiliaryPreview" */;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD264CDD2CD4FF1700A74D7E /* SwiftUIX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD264CDC2CD4FF1700A74D7E /* XCRemoteSwiftPackageReference "SwiftUIX" */;
+			productName = SwiftUIX;
 		};
 /* End XCSwiftPackageProductDependency section */
 

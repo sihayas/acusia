@@ -1,151 +1,185 @@
-//
-//  TestMenu.swift
-//  acusia
-//
-//  Created by decoherence on 10/25/24.
-//
-
+// Created by: Dominic Go
+import ContextMenuAuxiliaryPreview
 import SwiftUI
-import ContextualMenu
+import SwiftUIX
 
-class ViewController: UIViewController {
+#Preview {
+    AuxiliaryPreview()
+        .preferredColorScheme(.dark)
+}
 
-    lazy var smallLabel: UILabel = {
-        let l = UILabel()
-        l.text = "Small Label"
-        l.textColor = .blue
-        l.sizeToFit()
-        l.backgroundColor = .green
-        return l
-    }()
+// define the swift struct
+struct AuxiliaryPreview: View {
+    var body: some View {
+        ScrollView(.vertical) {
+            VStack(spacing: 0) {
+                /// User's Past?
+                // PastView(size: size)
 
-    lazy var bigLabelTopRight: UILabel = {
-        let l = UILabel()
-        l.text = "Top right\nMultiline\nBigLabel"
-        l.textColor = .blue
-        l.numberOfLines = 0
-        l.sizeToFit()
-        l.backgroundColor = .green
-        return l
-    }()
-    lazy var bigLabelBottomLeft: UILabel = {
-        let l = UILabel()
-        l.text = "Bottom Left\nMultiline\nBigLabel"
-        l.textColor = .blue
-        l.numberOfLines = 0
-        l.sizeToFit()
-        l.backgroundColor = .green
-        return l
-    }()
-
-    lazy var largeLabel: UILabel = {
-        let l = UILabel()
-        l.text = "CenteredLargeLabel"
-        l.textColor = .blue
-        l.numberOfLines = 0
-        l.sizeToFit()
-        l.backgroundColor = .red
-        return l
-    }()
-    lazy var highLabel: UILabel = {
-        let l = UILabel()
-        l.text = "CenteredHighLabel"
-        l.textColor = .blue
-        l.numberOfLines = 0
-        l.sizeToFit()
-        l.backgroundColor = .purple
-        return l
-    }()
-
-    lazy var accessoryView: UIView = {
-        let b = UIButton()
-        b.setTitle("Accessory button", for: .normal)
-        b.sizeToFit()
-        b.backgroundColor = .red
-        b.addTarget(self, action: #selector(onTouchUpInsideAccesoryView(_:)), for: .touchUpInside)
-        return b
-    }()
-
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-
-        [highLabel, largeLabel, smallLabel, bigLabelTopRight, bigLabelBottomLeft].forEach { subview in
-            view.addSubview(subview)
-            subview.addInteraction(
-                targetedPreviewProvider: { _ in nil },
-                menuConfigurationProvider: { [weak self] _ in
-                    guard let self else { return nil }
-                    return ContextMenuConfiguration(
-                        accessoryView: self.accessoryView,
-                        menu: Menu(children: [
-                            MenuElement(
-                                title: "Calendar icon",
-                                image: UIImage(systemName: "calendar"),
-                                handler: { _ in print("Tapped") }
-                            ),
-                            MenuElement(title: "Calendar", handler: { _ in print("Tapped") })
-                        ])
-                    )
+                /// Main Feed
+                VStack(spacing: 32) {
+                    ForEach(sampleEntrySets) { sampleEntrySet in
+                        EntryView(entrySet: sampleEntrySet)
+                    }
                 }
-            )
-        }
-
-        view.addInteraction(
-            targetedPreviewProvider: { [weak self] _ in
-                guard let self else { return nil }
-                return .init(view: self.smallLabel)
-            },
-            menuConfigurationProvider: { [weak self] v in
-                guard let self else { return .init(menu: .init(children: [])) }
-                return ContextMenuConfiguration(
-                    accessoryView: self.accessoryView,
-                    menu: Menu(children: [
-                        MenuElement(
-                            title: "View tapped, previewing a subview",
-                            handler: { _ in print("Tapped") }
-                        )
-                    ])
-                )
             }
-        )
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        bigLabelTopRight.frame.origin = .init(x: view.bounds.width - bigLabelTopRight.bounds.width, y: view.safeAreaInsets.top)
-        smallLabel.center = view.center
-        bigLabelBottomLeft.frame.origin = .init(x: 0, y: view.bounds.height - view.safeAreaInsets.bottom - bigLabelTopRight.bounds.height)
-
-        highLabel.frame = CGRect(
-            x: 20, y: view.safeAreaInsets.top + 20, width: 100,
-            height: view.bounds.height - view.safeAreaInsets.top - view.safeAreaInsets.bottom - 20 - bigLabelBottomLeft.bounds.height
-        )
-        largeLabel.frame = CGRect(x: 20, y: view.safeAreaInsets.top, width: view.bounds.width - 40, height: 20)
-    }
-
-    @objc func onTouchUpInsideAccesoryView(_ sender: Any?) {
-        print("onTouchUpInsideAccesoryView")
-        UIView.dismissCurrentContextMenu()
+        }
     }
 }
-struct ViewControllerPreview: UIViewControllerRepresentable {
-    // 2. Create the UIViewController instance
-    func makeUIViewController(context: Context) -> ViewController {
-        return ViewController()
+
+// MARK: - View Modifier
+struct AuxiliaryContextMenuModifier<AuxiliaryContent: View>: ViewModifier {
+    let auxiliaryContent: AuxiliaryContent
+    let menuItems: () -> [UIMenuElement]
+    let config: AuxiliaryPreviewConfig
+    
+    func body(content: Content) -> some View {
+        content.overlay(
+            ContextMenuContainer(
+                content: content,
+                auxiliaryContent: auxiliaryContent,
+                menuItems: menuItems,
+                config: config
+            )
+        )
+    }
+}
+
+// MARK: - Container View
+struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepresentable {
+    let content: Content
+    let auxiliaryContent: AuxiliaryContent
+    let menuItems: () -> [UIMenuElement]
+    let config: AuxiliaryPreviewConfig
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(auxiliaryContent: auxiliaryContent)
     }
     
-    // 3. Update the ViewController if needed
-    func updateUIViewController(_ uiViewController: ViewController, context: Context) {}
+    func makeUIView(context: Context) -> UIView {
+        let container = ContainerView()
+        let hostingController = UIHostingController(rootView: content)
+        hostingController.view.backgroundColor = .clear
+        
+        container.addSubview(hostingController.view)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: container.topAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+        
+        let interaction = UIContextMenuInteraction(delegate: context.coordinator)
+        container.addInteraction(interaction)
+        
+        context.coordinator.contextMenuManager = ContextMenuManager(
+            contextMenuInteraction: interaction,
+            menuTargetView: container
+        )
+        context.coordinator.contextMenuManager?.delegate = context.coordinator
+        context.coordinator.contextMenuManager?.auxiliaryPreviewConfig = config
+        
+        return container
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {
+        context.coordinator.auxiliaryContent = auxiliaryContent
+        context.coordinator.menuItems = menuItems
+    }
+    
+    // MARK: - Coordinator
+    class Coordinator: NSObject, UIContextMenuInteractionDelegate, ContextMenuManagerDelegate {
+        var auxiliaryContent: AuxiliaryContent
+        var menuItems: () -> [UIMenuElement] = { [] }
+        var contextMenuManager: ContextMenuManager?
+        
+        init(auxiliaryContent: AuxiliaryContent) {
+            self.auxiliaryContent = auxiliaryContent
+            super.init()
+        }
+        
+        func contextMenuInteraction(
+            _ interaction: UIContextMenuInteraction,
+            configurationForMenuAtLocation location: CGPoint
+        ) -> UIContextMenuConfiguration? {
+            contextMenuManager?.notifyOnContextMenuInteraction(
+                interaction,
+                configurationForMenuAtLocation: location
+            )
+            
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
+                UIMenu(title: "", children: self?.menuItems() ?? [])
+            }
+        }
+        
+        func contextMenuInteraction(
+            _ interaction: UIContextMenuInteraction,
+            willDisplayMenuFor configuration: UIContextMenuConfiguration,
+            animator: UIContextMenuInteractionAnimating?
+        ) {
+            contextMenuManager?.notifyOnContextMenuInteraction(
+                interaction,
+                willDisplayMenuFor: configuration,
+                animator: animator
+            )
+        }
+        
+        func contextMenuInteraction(
+            _ interaction: UIContextMenuInteraction,
+            willEndFor configuration: UIContextMenuConfiguration,
+            animator: UIContextMenuInteractionAnimating?
+        ) {
+            contextMenuManager?.notifyOnContextMenuInteraction(
+                interaction,
+                willEndFor: configuration,
+                animator: animator
+            )
+        }
+        
+        func onRequestMenuAuxiliaryPreview(sender: ContextMenuManager) -> UIView? {
+            let hostingController = UIHostingController(rootView: auxiliaryContent)
+            return hostingController.view
+        }
+    }
 }
 
-// 4. SwiftUI preview
-struct ViewController_Preview: PreviewProvider {
-    static var previews: some View {
-        // 5. Use the wrapper in a SwiftUI view
-        ViewControllerPreview()
-            .edgesIgnoringSafeArea(.all)
+// MARK: - Container View
+class ContainerView: UIView {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        return view == self ? nil : view
+    }
+}
+
+// MARK: - View Extension
+extension View {
+    func auxiliaryContextMenu<AuxiliaryContent: View>(
+        auxiliaryContent: AuxiliaryContent,
+        config: AuxiliaryPreviewConfig = AuxiliaryPreviewConfig(
+            verticalAnchorPosition: .automatic,
+            horizontalAlignment: .targetCenter,
+            preferredWidth: .constant(100),
+            preferredHeight: .constant(100),
+            marginInner: 10,
+            marginOuter: 10,
+            transitionConfigEntrance: .syncedToMenuEntranceTransition(),
+            transitionExitPreset: .fade
+        ),
+        @MenuBuilder menuItems: @escaping () -> [UIMenuElement]
+    ) -> some View {
+        modifier(AuxiliaryContextMenuModifier(
+            auxiliaryContent: auxiliaryContent,
+            menuItems: menuItems,
+            config: config
+        ))
+    }
+}
+
+// MARK: - Menu Builder
+@resultBuilder
+struct MenuBuilder {
+    static func buildBlock(_ components: UIMenuElement...) -> [UIMenuElement] {
+        components
     }
 }
