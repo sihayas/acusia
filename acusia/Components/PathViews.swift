@@ -174,17 +174,14 @@ struct BubbleWithTail: Shape {
     }
 }
 
-struct LeadingCenterToBottomCenterPath: Shape {
+struct TopLeadingToBottomCenterPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
-        // Start at the bottom center
         path.move(to: CGPoint(x: rect.midX, y: rect.maxY))
 
-        // Draw the vertical line upwards, leaving space for the curve
         path.addLine(to: CGPoint(x: rect.midX, y: rect.minY + rect.width / 2))
 
-        // Draw the rounded corner curve to the top left corner
         path.addQuadCurve(
             to: CGPoint(x: rect.minX, y: rect.minY),
             control: CGPoint(x: rect.midX, y: rect.minY)
@@ -252,15 +249,15 @@ struct LoopPath: Shape {
 
 // MARK: Entry Paths
 
-struct WispBubbleWithTail: Shape {
+struct BubbleWithTailShape: Shape {
     var scale: CGFloat
 
     func path(in rect: CGRect) -> Path {
         let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 24, style: .continuous)
+        let bubble = RoundedRectangle(cornerRadius: 20, style: .continuous)
             .path(in: bubbleRect)
 
-        let firstCircleSize: CGFloat = 12*scale
+        let firstCircleSize: CGFloat = 12
         let firstCircleOffsetX: CGFloat = 0
         let firstCircleOffsetY: CGFloat = bubbleRect.height - firstCircleSize
 
@@ -273,7 +270,7 @@ struct WispBubbleWithTail: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 6*scale
+        let secondCircleSize: CGFloat = 6
         let secondCircleOffsetX = tailRect.minX - secondCircleSize
         let secondCircleOffsetY = tailRect.maxY - secondCircleSize / 2
         let secondCircleRect = CGRect(
@@ -295,45 +292,34 @@ struct WispBubbleWithTail: Shape {
     }
 }
 
-struct ArtifactBubbleWithTail: Shape {
-    var scale: CGFloat
+/// Mainly used for context-auxilliary preview.
+struct BubbleWithTailPath {
+    func path(in rect: CGRect) -> UIBezierPath {
+        let cornerRadius: CGFloat = 20
+        let firstCircleSize: CGFloat = 12
+        let secondCircleSize: CGFloat = 6
 
-    func path(in rect: CGRect) -> Path {
-        let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .path(in: bubbleRect)
-
-        let tailSize: CGFloat = 12*scale // Scale the tail size
-        let tailOffsetX: CGFloat = 32
-        let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 8)
-
-        let tailRect = CGRect(
-            x: bubbleRect.minX + tailOffsetX,
-            y: bubbleRect.minY + tailOffsetY,
-            width: tailSize,
-            height: tailSize
+        let bubblePath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+        
+        // First circle (tail)
+        let firstCircleRect = CGRect(
+            x: rect.minX,
+            y: rect.maxY - firstCircleSize,
+            width: firstCircleSize,
+            height: firstCircleSize
         )
-        let tail = Circle().path(in: tailRect)
-
-        let secondCircleSize: CGFloat = 6*scale
-        let secondCircleOffsetX = tailRect.minX - secondCircleSize
-        let secondCircleOffsetY = tailRect.maxY
+        bubblePath.append(UIBezierPath(ovalIn: firstCircleRect))
+        
+        // Second smaller circle
         let secondCircleRect = CGRect(
-            x: secondCircleOffsetX,
-            y: secondCircleOffsetY,
+            x: firstCircleRect.minX - secondCircleSize,
+            y: firstCircleRect.maxY - secondCircleSize / 2,
             width: secondCircleSize,
             height: secondCircleSize
         )
-        let secondCircle = Circle().path(in: secondCircleRect)
-
-        let combined = bubble.union(tail).union(secondCircle)
-
-        return combined
-    }
-
-    var animatableData: CGFloat {
-        get { scale }
-        set { scale = newValue }
+        bubblePath.append(UIBezierPath(ovalIn: secondCircleRect))
+        
+        return bubblePath
     }
 }
 

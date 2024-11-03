@@ -121,27 +121,18 @@ struct EntryView: View {
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 24)
-            // .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 .thickMaterial,
                 in: RoundedRectangle(cornerRadius: 45, style: .continuous)
             )
             .foregroundStyle(.secondary)
+            .matchedTransitionSource(id: entrySet.entries.first?.id ?? "", in: animation)
             .sheet(item: $selected) { entry in
                 DetailView(entry: entry)
                     .navigationTransition(.zoom(sourceID: entry.id, in: animation))
                     .presentationBackground(.black)
             }
         }
-        // .matchedTransitionSource(id: entrySet.entries.first?.id ?? "", in: animation)
-        // .customContextMenu {
-        //     VStack {
-        //         Text("Auxiliary Preview")
-        //         Image(systemName: "star.fill")
-        //     }
-        //     .frame(width: 100, height: 100)
-        //     .background(Color.yellow)
-        // }
         .padding(.horizontal, 24)
         .onTapGesture {
             selected = entrySet.entries.first
@@ -205,7 +196,7 @@ let entriesOne: [EntryModel] = {
             id: "3",
             username: "starrry",
             avatar: "https://i.pinimg.com/474x/d8/5d/02/d85d022bedcf129ebd23a2b21e97ef19.jpg",
-            text: "? Is the autolux in the room with us",
+            text: "this is a test",
             rating: 2,
             created_at: Date(timeIntervalSinceNow: -1800),
             parent: parentEntry

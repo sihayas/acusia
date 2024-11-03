@@ -55,7 +55,7 @@ struct CircleGridView: View {
                                             .foregroundColor(.secondary)
                                             .padding(.vertical, 8)
                                             .padding(.horizontal, 16)
-                                            .background(.regularMaterial        .shadow(.inner(color: .white.opacity(0.1), radius: 4, x: 1, y: 1)), in: WispBubbleWithTail(scale: 1))
+                                            .background(.regularMaterial        .shadow(.inner(color: .white.opacity(0.1), radius: 4, x: 1, y: 1)), in: BubbleWithTailShape(scale: 1))
                                             .lineLimit(3)
                                             .alignmentGuide(VerticalAlignment.top) { d in d.height / 4 }
                                             .alignmentGuide(HorizontalAlignment.trailing) { d in d.width / 1.75 }
