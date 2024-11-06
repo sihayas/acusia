@@ -12,6 +12,7 @@ struct AcusiaAppView_Previews: PreviewProvider {
         let homeState = HomeState()
 
         AcusiaAppView()
+            .background(DarkModeWindowModifier())
             .environmentObject(windowState)
             .environmentObject(musicKit)
             .environmentObject(homeState)
@@ -56,15 +57,14 @@ struct AcusiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AuxiliaryPreview()
-            // AcusiaAppView()
-            //     .environment(\.managedObjectContext, persistenceController.container.viewContext)
-            //     .environmentObject(windowState)
-            //     .environmentObject(musicKit)
-            //     .environmentObject(homeState)
-            //     .onAppear {
-            //         floatingBarPresenter.showFloatingBar()
-            //     }
+            AcusiaAppView()
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(windowState)
+                .environmentObject(musicKit)
+                .environmentObject(homeState)
+                .onAppear {
+                    floatingBarPresenter.showFloatingBar()
+                }
         }
     }
 }

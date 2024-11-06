@@ -4,45 +4,29 @@
 //
 //  Created by decoherence on 11/2/24.
 //
-/// A SwiftUI implementation of a context menu that can be used to display
-/// auxiliary actions.
 
 import ContextMenuAuxiliaryPreview
 import SwiftUI
 import SwiftUIX
 
-struct AuxiliaryPreview: View {
-    var body: some View {
-        ScrollView(.vertical) {
-            VStack(spacing: 0) {
-                /// User's Past?
-                // PastView(size: size)
-
-                /// Main Feed
-                VStack(spacing: 32) {
-                    ForEach(sampleEntrySets) { sampleEntrySet in
-                        EntryView(entrySet: sampleEntrySet)
-                        EntryView(entrySet: sampleEntrySet)
-                        EntryView(entrySet: sampleEntrySet)
-                    }
-                }
-            }
-        }
-    }
-}
-//FIRST
 // MARK: - View Modifier
+
 struct AuxiliaryContextMenuModifier<AuxiliaryContent: View>: ViewModifier {
     let auxiliaryContent: AuxiliaryContent
     let menuItems: () -> [UIMenuElement]
-    let config: AuxiliaryPreviewConfig
     
+    @Binding var gestureTranslation: CGPoint
+    @Binding var gestureVelocity: CGPoint
+     
+    let config: AuxiliaryPreviewConfig
     func body(content: Content) -> some View {
         content.overlay(
             ContextMenuContainer(
                 content: content,
                 auxiliaryContent: auxiliaryContent,
                 menuItems: menuItems,
+                gestureTranslation:  $gestureTranslation,
+                gestureVelocity: $gestureVelocity,
                 config: config
             )
         )
@@ -50,24 +34,26 @@ struct AuxiliaryContextMenuModifier<AuxiliaryContent: View>: ViewModifier {
 }
 
 // MARK: - Container View
+
 struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepresentable {
     let content: Content
     let auxiliaryContent: AuxiliaryContent
     let menuItems: () -> [UIMenuElement]
+    @Binding var gestureTranslation: CGPoint
+    @Binding var gestureVelocity: CGPoint
     let config: AuxiliaryPreviewConfig
     
-    // Store interaction and manager as properties
     @StateObject private var viewModel = ContainerViewModel()
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(container: self)
+        Coordinator(container: self, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity)
     }
     
     func makeUIView(context: Context) -> UIView {
+        // Create a container view to host the content.
         let container = UIView()
         container.backgroundColor = .clear
         
-        // Setup content view
         let hostingController = UIHostingController(rootView: content)
         hostingController.view.backgroundColor = .clear
         
@@ -80,12 +66,11 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
             hostingController.view.bottomAnchor.constraint(equalTo: container.bottomAnchor)
         ])
         
-        // Create and store interaction
+        // Create a context menu interaction.
         let interaction = UIContextMenuInteraction(delegate: context.coordinator)
         viewModel.interaction = interaction
         container.addInteraction(interaction)
         
-        // Create and store context menu manager
         let contextMenuManager = ContextMenuManager(
             contextMenuInteraction: interaction,
             menuTargetView: container
@@ -104,21 +89,28 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
     }
     
     // MARK: - Container ViewModel
+
     class ContainerViewModel: ObservableObject {
         var interaction: UIContextMenuInteraction?
         var contextMenuManager: ContextMenuManager?
     }
     
-    // MARK: - Coordinator
+    // MARK: - Coordinator / Delegate
+
     class Coordinator: NSObject, UIContextMenuInteractionDelegate, ContextMenuManagerDelegate {
         var container: ContextMenuContainer
         var auxiliaryContent: AuxiliaryContent
         var menuItems: () -> [UIMenuElement]
+        @Binding var gestureTranslation: CGPoint
+        @Binding var gestureVelocity: CGPoint
         
-        init(container: ContextMenuContainer) {
+
+        init(container: ContextMenuContainer, gestureTranslation: Binding<CGPoint>, gestureVelocity: Binding<CGPoint>) {
             self.container = container
             self.auxiliaryContent = container.auxiliaryContent
             self.menuItems = container.menuItems
+            self._gestureTranslation = gestureTranslation
+            self._gestureVelocity = gestureVelocity
             super.init()
         }
         
@@ -146,6 +138,26 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
                 willDisplayMenuFor: configuration,
                 animator: animator
             )
+            
+            /// When the context menu appears, interactions and such are now handled by the root view of ContextMenu.
+            /// Both the menu and the preview share this root view. In ContextMenuManager, this is
+            /// contextMenuContainerViewWrapper. Hook into the pan gesture to read its values.
+            animator?.addAnimations { [weak self] in
+                guard let self = self else { return }
+                guard let window = interaction.view?.window else { return }
+            
+                if let containerView = window.subviews.first(where: {
+                    String(describing: type(of: $0)).contains("ContextMenuContainer")
+                }) {
+                    if let panGesture = containerView.gestureRecognizers?.first(where: {
+                        $0 is UIPanGestureRecognizer &&
+                            $0.description.contains("PreviewPlatterPan")
+                    }) as? UIPanGestureRecognizer {
+                        panGesture.addTarget(self, action: #selector(handleContextMenuPan(_:)))
+                        print("Successfully hooked into context menu pan gesture from Coordinator")
+                    }
+                }
+            }
         }
         
         func contextMenuInteraction(
@@ -160,7 +172,6 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
             )
         }
         
-        // Content Shape
         func contextMenuInteraction(
             _ interaction: UIContextMenuInteraction,
             previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration
@@ -182,17 +193,27 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
         func onRequestMenuAuxiliaryPreview(sender: ContextMenuManager) -> UIView? {
             let hostingController = UIHostingController(rootView: auxiliaryContent)
             hostingController.view.backgroundColor = .clear
-            hostingController.view.layer.borderColor = UIColor.systemGray.cgColor
-            hostingController.view.layer.borderWidth = 1
             return hostingController.view
         }
+        
+        @objc private func handleContextMenuPan(_ gesture: UIPanGestureRecognizer) {
+             let translation = gesture.translation(in: gesture.view)
+             let velocity = gesture.velocity(in: gesture.view)
+            
+            self.gestureTranslation = translation
+            self.gestureVelocity = velocity
+
+         }
     }
 }
 
 // MARK: - View Extension
+
 extension View {
     func auxiliaryContextMenu<AuxiliaryContent: View>(
         auxiliaryContent: AuxiliaryContent,
+        gestureTranslation: Binding<CGPoint>,
+        gestureVelocity: Binding<CGPoint>,
         config: AuxiliaryPreviewConfig = AuxiliaryPreviewConfig(
             verticalAnchorPosition: .top,
             horizontalAlignment: .targetTrailing,
@@ -200,6 +221,8 @@ extension View {
             preferredHeight: .constant(100),
             marginInner: 10,
             marginOuter: 10,
+            marginLeading: 0,
+            marginTrailing: 0,
             transitionConfigEntrance: .syncedToMenuEntranceTransition(),
             transitionExitPreset: .fade
         ),
@@ -208,12 +231,15 @@ extension View {
         modifier(AuxiliaryContextMenuModifier(
             auxiliaryContent: auxiliaryContent,
             menuItems: menuItems,
+            gestureTranslation: gestureTranslation,
+            gestureVelocity: gestureVelocity,
             config: config
         ))
     }
 }
 
 // MARK: - Menu Builder
+
 @resultBuilder
 struct MenuBuilder {
     static func buildBlock(_ components: UIMenuElement...) -> [UIMenuElement] {
@@ -225,7 +251,8 @@ struct DarkModeWindowModifier: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
         if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let uiWindow = window.windows.first {
+           let uiWindow = window.windows.first
+        {
             uiWindow.overrideUserInterfaceStyle = .dark
         }
         return view

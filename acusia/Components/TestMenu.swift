@@ -38,6 +38,8 @@ class AuxiliaryPreviewBasicUsage01Controller: UIViewController, ContextMenuManag
         preferredHeight: .constant(100),
         marginInner: 10,
         marginOuter: 10,
+        marginLeading: 0,
+        marginTrailing: 0,
         transitionConfigEntrance: .syncedToMenuEntranceTransition(),
         transitionExitPreset: .fade
       );

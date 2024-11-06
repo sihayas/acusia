@@ -114,6 +114,7 @@ struct EntryView: View {
                             .frame(maxHeight: .infinity)
 
                             EntryBubble(entry: entry, color: strokeColor)
+
                         }
                         .frame(maxHeight: .infinity)
                     }

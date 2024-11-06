@@ -7,70 +7,75 @@
 import SwiftUI
 import ContextMenuAuxiliaryPreview
 
+struct CurvedPathShape: Shape, Animatable {
+    var trigger: CGFloat
+    var pathProgress: CGFloat
 
-#Preview {
-    AuxiliaryPreview()
-        .background(DarkModeWindowModifier())
-}
+    var animatableData: AnimatablePair<CGFloat, CGFloat> {
+        get { AnimatablePair(trigger, pathProgress) }
+        set {
+            trigger = newValue.first
+            pathProgress = newValue.second
+        }
+    }
 
-
-struct CurvedPathShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        path.move(to: CGPoint(x: rect.width * 0.22, y: rect.height * 0.25))
+        path.move(to: CGPoint(x: rect.maxX - rect.height * 0.25, y: rect.maxY - rect.height * 0.25))
         path.addQuadCurve(
-            to: CGPoint(x: rect.width * 0.75, y: rect.height * 0.78),
-            control: CGPoint(x: rect.width * 0.8, y: rect.height * 0.2)
+            to: CGPoint(x: rect.maxX - rect.height * 0.75, y: rect.minY + rect.height * 0.25),
+            control: CGPoint(x: rect.maxX - rect.height * 0.25, y: rect.minY + rect.height * 0.25)
         )
-        return path
+
+        let x = rect.minX + rect.height * 0.25 + (trigger * ((rect.maxX - rect.height * 0.75) - (rect.minX + rect.height * 0.25)))
+        path.addLine(to: CGPoint(x: x, y: rect.minY + rect.height * 0.25))
+
+        return path.trimmedPath(from: 0, to: pathProgress)
     }
 }
 
 struct AuxiliaryView: View {
-    @State private var width: CGFloat = 124
-    @GestureState private var isDragging: Bool = false
+    @State private var isCollapsed: Bool = false
+    @State private var hasAppeared: Bool = false
+    @State private var pathProgress: CGFloat = 0
+
+    let size: CGSize
 
     var body: some View {
         GeometryReader { geometry in
-            let pathShape = CurvedPathShape()
+            let pathShape = CurvedPathShape(trigger: isCollapsed ? 1 : 0, pathProgress: pathProgress)
 
             pathShape
                 .stroke(Color(.systemGray5), style: StrokeStyle(
-                    lineWidth: geometry.size.height * 0.45,
+                    lineWidth: 55,
                     lineCap: .round
                 ))
 
-            let icons = ["circle.fill", "suit.heart.fill", "circle.fill"]
+            let icons = ["circle.fill", "suit.heart.fill", "circle.fill", "suit.club.fill", "circle.fill"]
             let path = pathShape.path(in: geometry.frame(in: .local))
 
-            ForEach(0..<icons.count, id: \.self) { index in
-                let fraction = CGFloat(index) / CGFloat(icons.count - 1)
-                let position = path.point(atFractionOfLength: fraction)
-
-                Image(systemName: icons[index])
-                    .font(.system(size: 22))
-                    .position(x: position.x, y: position.y)
+            // ForEach(0..<icons.count, id: \.self) { index in
+            //     let fraction = CGFloat(index) / CGFloat(icons.count - 1)
+            //     let adjustedFraction = fraction * pathProgress
+            //     let position = path.point(atFractionOfLength: adjustedFraction)
+            //
+            //     Image(systemName: icons[index])
+            //         .font(.system(size: 22))
+            //         .position(x: position.x, y: position.y)
+            // }
+        }
+        .frame(width: size.width, height: size.height, alignment: .trailing)
+        .onTapGesture {
+            withAnimation(.smooth(duration: 0.4)) {
+                isCollapsed.toggle()
             }
         }
-        .frame(width: width, height: 124)
-        .border(.red)
-        .offset(x: 64)
-        .gesture(
-            DragGesture()
-                .updating($isDragging) { _, state, _ in
-                    state = true
-                    // Change width as soon as drag starts
-                    withAnimation(.spring()) {
-                        width = 180
-                    }
-                }
-                .onEnded { _ in
-                    // Reset width when drag ends
-                    withAnimation(.spring()) {
-                        width = 124
-                    }
-                }
-        )
+        .onAppear {
+            withAnimation(.smooth()) {
+                hasAppeared = true
+                pathProgress = 1.0
+            }
+        }
     }
 }
 
@@ -78,6 +83,11 @@ struct AuxiliaryView: View {
 struct EntryBubble: View {
     let entry: EntryModel
     let color: Color
+    
+    let auxiliarySize: CGSize = CGSize(width: 216, height: 120)
+    
+    @State private var gestureTranslation = CGPoint.zero
+    @State private var gestureVelocity = CGPoint.zero
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -87,23 +97,32 @@ struct EntryBubble: View {
                     .font(.system(size: 16))
                     .multilineTextAlignment(.leading)
                     .lineLimit(6)
+                    .onChange(of: gestureTranslation) {_, newValue in
+                        print("Gesture translation: \(newValue)")
+                    }
+                    .onChange(of: gestureVelocity) {_, newValue in
+                        print("Gesture velocity: \(newValue)")
+                    }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background(color, in: BubbleWithTailShape(scale: 1))
             .foregroundStyle(.secondary)
-            .contentShape(BubbleWithTailShape(scale: 1))
             .auxiliaryContextMenu(
-                 auxiliaryContent: AuxiliaryView(),
+                 auxiliaryContent: AuxiliaryView(size: auxiliarySize),
+                 gestureTranslation: $gestureTranslation,
+                 gestureVelocity: $gestureVelocity,
                  config: AuxiliaryPreviewConfig(
                     verticalAnchorPosition: .top,
-                    horizontalAlignment: .stretch,
-                    preferredWidth: .constant(124),
-                    preferredHeight: .constant(124),
-                    marginInner: -64, // Distance between the auxiliary view and the target view
-                    marginOuter: 0, // Distance between the auxiliary view and the screen edge
+                    horizontalAlignment: .targetTrailing,
+                    preferredWidth:  .constant(auxiliarySize.width),
+                    preferredHeight: .constant(auxiliarySize.height),
+                    marginInner: -56,
+                    marginOuter: 0,
+                    marginLeading: 0,
+                    marginTrailing: 64,
                     transitionConfigEntrance: .syncedToMenuEntranceTransition(),
-                    transitionExitPreset: .zoom(zoomOffset: 0.5)
+                    transitionExitPreset: .zoom(zoomOffset: 0)
                   )
              ) {
                  UIAction(
@@ -135,6 +154,7 @@ struct EntryBubble: View {
                 .alignmentGuide(VerticalAlignment.top) { d in d.height + 2 }
                 .alignmentGuide(HorizontalAlignment.leading) { _ in -12 }
             }
+
 
             BlipView(size: CGSize(width: 60, height: 60), fill: color)
                 .alignmentGuide(VerticalAlignment.top) { d in d.height / 1.5 }

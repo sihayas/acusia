@@ -14,12 +14,17 @@
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CD17C1032CA8FC520014D3FD /* Transmission */; };
 		CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C10D2CB195400014D3FD /* SafeArea.swift */; };
-		CD264CD32CD3A43B00A74D7E /* Grok.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD264CD22CD3A43800A74D7E /* Grok.swift */; };
 		CD264CD82CD3A6B600A74D7E /* Grok.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD264CD72CD3A6B600A74D7E /* Grok.metal */; };
-		CD264CDB2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CDA2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview */; };
 		CD264CDE2CD4FF1700A74D7E /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CDD2CD4FF1700A74D7E /* SwiftUIX */; };
 		CD264CE02CD69ADD00A74D7E /* AuxiliaryContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */; };
+		CD264CE42CD7B1F000A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CE32CD7B1F000A74D7E /* ContextMenuAuxiliaryPreview */; };
+		CD264CE92CD7B37D00A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CE82CD7B37D00A74D7E /* ContextMenuAuxiliaryPreview */; };
+		CD264CEC2CD7B3A600A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CEB2CD7B3A600A74D7E /* ContextMenuAuxiliaryPreview */; };
+		CD264CEF2CD7B45E00A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CEE2CD7B45E00A74D7E /* ContextMenuAuxiliaryPreview */; };
+		CD264CFE2CD7B5E000A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD264CFD2CD7B5E000A74D7E /* ContextMenuAuxiliaryPreview */; };
 		CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD27939B2C7B883C00486C1D /* AvatarView.swift */; };
+		CD43B2AE2CD7BA450018DB16 /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD43B2AD2CD7BA450018DB16 /* ContextMenuAuxiliaryPreview */; };
+		CD43B2BD2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD43B2BC2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview */; };
 		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
 		CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */; };
 		CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD54A56E2CB72E9900B257EA /* PixellatePreview.swift */; };
@@ -36,6 +41,8 @@
 		CD8E0BDB2C8D6C8C003A6F91 /* TintedBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */; };
 		CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9245092CA6713100635716 /* SymmetryView.swift */; };
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
+		CDA73C392CD7B71A006F8B4A /* DGSwiftUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = CDA73C382CD7B71A006F8B4A /* DGSwiftUtilities */; };
+		CDA73C3D2CD7B7FE006F8B4A /* DGSwiftUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = CDA73C3C2CD7B7FE006F8B4A /* DGSwiftUtilities */; };
 		CDABF18F2CD1838F00FBE750 /* EntryBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABF18E2CD1838200FBE750 /* EntryBubbleView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
@@ -110,7 +117,6 @@
 		CD0D90502CA3C31A004FD674 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		CD0EEB7E2C7BB0B300DB9896 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		CD17C10D2CB195400014D3FD /* SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeArea.swift; sourceTree = "<group>"; };
-		CD264CD22CD3A43800A74D7E /* Grok.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grok.swift; sourceTree = "<group>"; };
 		CD264CD72CD3A6B600A74D7E /* Grok.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Grok.metal; sourceTree = "<group>"; };
 		CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxiliaryContextMenu.swift; sourceTree = "<group>"; };
 		CD27939B2C7B883C00486C1D /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
@@ -183,11 +189,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD264CFE2CD7B5E000A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
+				CD264CEF2CD7B45E00A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
 				CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */,
+				CD43B2AE2CD7BA450018DB16 /* ContextMenuAuxiliaryPreview in Frameworks */,
 				CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */,
+				CDA73C392CD7B71A006F8B4A /* DGSwiftUtilities in Frameworks */,
 				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
+				CD264CE42CD7B1F000A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
 				CD264CDE2CD4FF1700A74D7E /* SwiftUIX in Frameworks */,
-				CD264CDB2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
+				CD264CE92CD7B37D00A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
+				CD264CEC2CD7B3A600A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
+				CD43B2BD2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview in Frameworks */,
+				CDA73C3D2CD7B7FE006F8B4A /* DGSwiftUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,7 +332,6 @@
 		CDDED7342C194C8400958B39 /* acusia */ = {
 			isa = PBXGroup;
 			children = (
-				CD264CD22CD3A43800A74D7E /* Grok.swift */,
 				CDDED79E2C1991D600958B39 /* acusia.entitlements */,
 				CD8D19842C29C5FF00FDC979 /* Info.plist */,
 				CDDED7392C194C8500958B39 /* Assets.xcassets */,
@@ -432,8 +445,16 @@
 				CD132AA22C6DDB7200C16804 /* BigUIPaging */,
 				CD0D90532CA40434004FD674 /* Kingfisher */,
 				CD17C1032CA8FC520014D3FD /* Transmission */,
-				CD264CDA2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview */,
 				CD264CDD2CD4FF1700A74D7E /* SwiftUIX */,
+				CD264CE32CD7B1F000A74D7E /* ContextMenuAuxiliaryPreview */,
+				CD264CE82CD7B37D00A74D7E /* ContextMenuAuxiliaryPreview */,
+				CD264CEB2CD7B3A600A74D7E /* ContextMenuAuxiliaryPreview */,
+				CD264CEE2CD7B45E00A74D7E /* ContextMenuAuxiliaryPreview */,
+				CD264CFD2CD7B5E000A74D7E /* ContextMenuAuxiliaryPreview */,
+				CDA73C382CD7B71A006F8B4A /* DGSwiftUtilities */,
+				CDA73C3C2CD7B7FE006F8B4A /* DGSwiftUtilities */,
+				CD43B2AD2CD7BA450018DB16 /* ContextMenuAuxiliaryPreview */,
+				CD43B2BC2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -511,8 +532,8 @@
 				CD3B7A292C6DC22200DDE3EF /* XCRemoteSwiftPackageReference "BigUIPaging" */,
 				CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */,
-				CD264CD92CD3BCD200A74D7E /* XCRemoteSwiftPackageReference "ContextMenuAuxiliaryPreview" */,
 				CD264CDC2CD4FF1700A74D7E /* XCRemoteSwiftPackageReference "SwiftUIX" */,
+				CD43B2BB2CD7DF1A0018DB16 /* XCLocalSwiftPackageReference "../forked/ContextMenuAuxiliaryPreview" */,
 			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
@@ -581,7 +602,6 @@
 				CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */,
 				CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
-				CD264CD32CD3A43B00A74D7E /* Grok.swift in Sources */,
 				CD7B51452CCB7AB2001B9DB5 /* TestMenu.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
@@ -930,6 +950,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		CD43B2BB2CD7DF1A0018DB16 /* XCLocalSwiftPackageReference "../forked/ContextMenuAuxiliaryPreview" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../forked/ContextMenuAuxiliaryPreview;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		CD0D90522CA40434004FD674 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -945,14 +972,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.4.9;
-			};
-		};
-		CD264CD92CD3BCD200A74D7E /* XCRemoteSwiftPackageReference "ContextMenuAuxiliaryPreview" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/dominicstop/ContextMenuAuxiliaryPreview.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.2;
 			};
 		};
 		CD264CDC2CD4FF1700A74D7E /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
@@ -989,15 +1008,46 @@
 			package = CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */;
 			productName = Transmission;
 		};
-		CD264CDA2CD3BCD200A74D7E /* ContextMenuAuxiliaryPreview */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CD264CD92CD3BCD200A74D7E /* XCRemoteSwiftPackageReference "ContextMenuAuxiliaryPreview" */;
-			productName = ContextMenuAuxiliaryPreview;
-		};
 		CD264CDD2CD4FF1700A74D7E /* SwiftUIX */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CD264CDC2CD4FF1700A74D7E /* XCRemoteSwiftPackageReference "SwiftUIX" */;
 			productName = SwiftUIX;
+		};
+		CD264CE32CD7B1F000A74D7E /* ContextMenuAuxiliaryPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD264CE82CD7B37D00A74D7E /* ContextMenuAuxiliaryPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD264CEB2CD7B3A600A74D7E /* ContextMenuAuxiliaryPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD264CEE2CD7B45E00A74D7E /* ContextMenuAuxiliaryPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD264CFD2CD7B5E000A74D7E /* ContextMenuAuxiliaryPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD43B2AD2CD7BA450018DB16 /* ContextMenuAuxiliaryPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD43B2BC2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ContextMenuAuxiliaryPreview;
+		};
+		CDA73C382CD7B71A006F8B4A /* DGSwiftUtilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DGSwiftUtilities;
+		};
+		CDA73C3C2CD7B7FE006F8B4A /* DGSwiftUtilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DGSwiftUtilities;
 		};
 /* End XCSwiftPackageProductDependency section */
 
