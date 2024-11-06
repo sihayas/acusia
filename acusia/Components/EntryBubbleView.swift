@@ -21,13 +21,15 @@ struct CurvedPathShape: Shape, Animatable {
 
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        path.move(to: CGPoint(x: rect.maxX - rect.height * 0.25, y: rect.maxY - rect.height * 0.25))
+        path.move(to: CGPoint(x: rect.minX + rect.height * 0.25, y: rect.maxY - rect.height * 0.25))
         path.addQuadCurve(
-            to: CGPoint(x: rect.maxX - rect.height * 0.75, y: rect.minY + rect.height * 0.25),
-            control: CGPoint(x: rect.maxX - rect.height * 0.25, y: rect.minY + rect.height * 0.25)
+            to: CGPoint(x: rect.minX + rect.height * 0.75, y: rect.minY + rect.height * 0.25),
+            control: CGPoint(x: rect.minX + rect.height * 0.25, y: rect.minY + rect.height * 0.25)
         )
 
-        let x = rect.minX + rect.height * 0.25 + (trigger * ((rect.maxX - rect.height * 0.75) - (rect.minX + rect.height * 0.25)))
+        let startX = rect.maxX - rect.height * 0.25
+        let endX = rect.minX + rect.height * 0.75
+        let x = startX * (1 - trigger) + endX * trigger
         path.addLine(to: CGPoint(x: x, y: rect.minY + rect.height * 0.25))
 
         return path.trimmedPath(from: 0, to: pathProgress)
@@ -38,37 +40,54 @@ struct AuxiliaryView: View {
     @State private var isCollapsed: Bool = false
     @State private var hasAppeared: Bool = false
     @State private var pathProgress: CGFloat = 0
-
     let size: CGSize
+
+    @Binding var gestureTranslation: CGPoint
+    @Binding var gestureVelocity: CGPoint
 
     var body: some View {
         GeometryReader { geometry in
+            let icons = Array(repeating: "circle.fill", count: 5)
             let pathShape = CurvedPathShape(trigger: isCollapsed ? 1 : 0, pathProgress: pathProgress)
+            let path = pathShape.path(in: CGRect(origin: .zero, size: geometry.size))
+
+
+            let adjustedTranslation = CGPoint(
+                x: geometry.size.width + gestureTranslation.x * 2.5,
+                y: geometry.size.height + gestureTranslation.y * 2.5
+            )
 
             pathShape
-                .stroke(Color(.systemGray5), style: StrokeStyle(
-                    lineWidth: 55,
-                    lineCap: .round
-                ))
+                .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 55, lineCap: .round))
 
-            let icons = ["circle.fill", "suit.heart.fill", "circle.fill", "suit.club.fill", "circle.fill"]
-            let path = pathShape.path(in: geometry.frame(in: .local))
-
-            // ForEach(0..<icons.count, id: \.self) { index in
-            //     let fraction = CGFloat(index) / CGFloat(icons.count - 1)
-            //     let adjustedFraction = fraction * pathProgress
-            //     let position = path.point(atFractionOfLength: adjustedFraction)
-            //
-            //     Image(systemName: icons[index])
-            //         .font(.system(size: 22))
-            //         .position(x: position.x, y: position.y)
-            // }
-        }
-        .frame(width: size.width, height: size.height, alignment: .trailing)
-        .onTapGesture {
-            withAnimation(.smooth(duration: 0.4)) {
-                isCollapsed.toggle()
+            // Compute closest icon
+            let iconPositions = icons.indices.map { index -> CGPoint in
+                let fraction = CGFloat(index) / CGFloat(icons.count - 1) * pathProgress
+                return path.point(atFractionOfLength: fraction)
             }
+            let closestIndex = iconPositions
+                .enumerated()
+                .min(by: { adjustedTranslation.distance(to: $0.element) < adjustedTranslation.distance(to: $1.element) })?
+                .offset
+
+            ForEach(icons.indices, id: \.self) { index in
+                let position = iconPositions[index]
+                let isClosest = (index == closestIndex)
+
+                Image(systemName: icons[index])
+                    .font(.system(size: 22))
+                    .scaleEffect(isClosest ? 2.0 : 1.0)
+                    .position(x: position.x, y: position.y)
+                    .animation(.snappy(), value: isClosest)
+                    .sensoryFeedback(trigger: isClosest) { oldValue, newValue in
+                        return .impact(flexibility: .soft, intensity: 0.25)
+                    }
+                
+            }
+        }
+        .frame(width: size.width, height: size.height, alignment: .topLeading)
+        .onTapGesture {
+            withAnimation(.smooth()) { isCollapsed.toggle() }
         }
         .onAppear {
             withAnimation(.smooth()) {
@@ -78,6 +97,14 @@ struct AuxiliaryView: View {
         }
     }
 }
+
+extension CGPoint {
+    // Helper function to calculate distance between two points
+    func distance(to other: CGPoint) -> CGFloat {
+        return hypot(x - other.x, y - other.y)
+    }
+}
+
 
 
 struct EntryBubble: View {
@@ -101,7 +128,7 @@ struct EntryBubble: View {
                         print("Gesture translation: \(newValue)")
                     }
                     .onChange(of: gestureVelocity) {_, newValue in
-                        print("Gesture velocity: \(newValue)")
+                        // print("Gesture velocity: \(newValue)")
                     }
             }
             .padding(.horizontal, 12)
@@ -109,18 +136,18 @@ struct EntryBubble: View {
             .background(color, in: BubbleWithTailShape(scale: 1))
             .foregroundStyle(.secondary)
             .auxiliaryContextMenu(
-                 auxiliaryContent: AuxiliaryView(size: auxiliarySize),
+                auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),
                  gestureTranslation: $gestureTranslation,
                  gestureVelocity: $gestureVelocity,
                  config: AuxiliaryPreviewConfig(
                     verticalAnchorPosition: .top,
-                    horizontalAlignment: .targetTrailing,
+                    horizontalAlignment: .targetLeading,
                     preferredWidth:  .constant(auxiliarySize.width),
                     preferredHeight: .constant(auxiliarySize.height),
                     marginInner: -56,
                     marginOuter: 0,
-                    marginLeading: 0,
-                    marginTrailing: 64,
+                    marginLeading: -56,
+                    marginTrailing: 0,
                     transitionConfigEntrance: .syncedToMenuEntranceTransition(),
                     transitionExitPreset: .zoom(zoomOffset: 0)
                   )
@@ -161,7 +188,6 @@ struct EntryBubble: View {
                 .alignmentGuide(HorizontalAlignment.trailing) { d in d.width * 1.0 }
                 .offset(x: 20, y: 0)
         }
-        .padding(.trailing, 40)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -195,7 +221,7 @@ struct EntryBubbleOutlined: View {
             .foregroundStyle(.secondary)
             .padding(.bottom, 6)
         }
-        // .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
