@@ -6,16 +6,19 @@ let apiurl = "http://192.168.1.248:8000"
 
 struct AcusiaAppView_Previews: PreviewProvider {
     static var previews: some View {
-        // Setup mock environments or dependencies if needed
         let windowState = WindowState()
         let musicKit = MusicKit()
         let homeState = HomeState()
+        var floatingBarPresenter = FloatingBarPresenter()
 
         AcusiaAppView()
             .background(DarkModeWindowModifier())
             .environmentObject(windowState)
             .environmentObject(musicKit)
             .environmentObject(homeState)
+            .onAppear {
+                floatingBarPresenter.showFloatingBar()
+            }
     }
 }
 

@@ -143,22 +143,90 @@ struct NoodleIcon: Shape {
     }
 }
 
-// MARK: - Reply Paths
+// MARK: - Entry Paths
 
-/// Mainly for replies/threads
-struct BubbleWithTail: Shape {
+struct BubbleWithTailShape: Shape {
+    var scale: CGFloat
+
     func path(in rect: CGRect) -> Path {
-        // Create the main bubble (rounded rectangle)
         let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 18, style: .continuous)
+        let bubble = RoundedRectangle(cornerRadius: 20, style: .continuous)
             .path(in: bubbleRect)
 
-        // Define the size and position of the tail
-        let tailSize: CGFloat = 12
-        let tailOffsetX: CGFloat = 0 // Aligns tail's left edge with bubble's left edge
-        let tailOffsetY: CGFloat = bubbleRect.height - (tailSize - 2)
+        let firstCircleSize: CGFloat = 12
+        let firstCircleOffsetX: CGFloat = 0
+        let firstCircleOffsetY: CGFloat = bubbleRect.height - firstCircleSize
 
-        // Create the tail (circle)
+        let tailRect = CGRect(
+            x: bubbleRect.minX + firstCircleOffsetX,
+            y: bubbleRect.minY + firstCircleOffsetY,
+            width: firstCircleSize,
+            height: firstCircleSize
+        )
+        let tail = Circle().path(in: tailRect)
+
+        let secondCircleSize: CGFloat = 6
+        let secondCircleOffsetX = tailRect.minX - secondCircleSize
+        let secondCircleOffsetY = tailRect.maxY - secondCircleSize / 2
+        let secondCircleRect = CGRect(
+            x: secondCircleOffsetX,
+            y: secondCircleOffsetY,
+            width: secondCircleSize,
+            height: secondCircleSize
+        )
+        let secondCircle = Circle().path(in: secondCircleRect)
+
+        let combined = bubble.union(tail).union(secondCircle)
+
+        return combined
+    }
+
+    var animatableData: CGFloat {
+        get { scale }
+        set { scale = newValue }
+    }
+}
+
+/// Same as above shape, but used for context-auxilliary preview.
+struct BubbleWithTailPath {
+    func path(in rect: CGRect) -> UIBezierPath {
+        let cornerRadius: CGFloat = 20
+        let firstCircleSize: CGFloat = 12
+        let secondCircleSize: CGFloat = 6
+
+        let bubblePath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+        
+        // First circle (tail)
+        let firstCircleRect = CGRect(
+            x: rect.minX,
+            y: rect.maxY - firstCircleSize,
+            width: firstCircleSize,
+            height: firstCircleSize
+        )
+        bubblePath.append(UIBezierPath(ovalIn: firstCircleRect))
+        
+        // Second smaller circle
+        let secondCircleRect = CGRect(
+            x: firstCircleRect.minX - secondCircleSize,
+            y: firstCircleRect.maxY - secondCircleSize / 2,
+            width: secondCircleSize,
+            height: secondCircleSize
+        )
+        bubblePath.append(UIBezierPath(ovalIn: secondCircleRect))
+        
+        return bubblePath
+    }
+}
+
+struct SoundBubbleWithTail: Shape {
+    func path(in rect: CGRect) -> Path {
+        let bubbleRect = rect
+        let bubble = Circle().path(in: bubbleRect)
+
+        let tailSize: CGFloat = 12
+        let tailOffsetX: CGFloat = 0
+        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
+
         let tailRect = CGRect(
             x: bubbleRect.minX + tailOffsetX,
             y: bubbleRect.minY + tailOffsetY,
@@ -167,12 +235,55 @@ struct BubbleWithTail: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        // Combine the bubble and the tail
-        let combined = bubble.union(tail)
+        let secondCircleSize: CGFloat = 6
+        let secondCircleOffsetX = tailRect.maxX
+        let secondCircleOffsetY = tailRect.maxY
+        let secondCircleRect = CGRect(
+            x: secondCircleOffsetX,
+            y: secondCircleOffsetY,
+            width: secondCircleSize,
+            height: secondCircleSize
+        )
+        let secondCircle = Circle().path(in: secondCircleRect)
+
+        let combined = bubble.union(tail).union(secondCircle)
 
         return combined
     }
 }
+
+struct BlipBubbleWithTail: Shape {
+    func path(in rect: CGRect) -> Path {
+        let bubbleRect = rect
+        let bubble = Circle().path(in: bubbleRect)
+
+        let tailSize: CGFloat = 12
+        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
+
+        let tailRect = CGRect(
+            x: bubbleRect.maxX - tailSize,
+            y: bubbleRect.maxY - tailSize,
+            width: tailSize,
+            height: tailSize
+        )
+        let tail = Circle().path(in: tailRect)
+
+        let secondCircleSize: CGFloat = 6
+        let secondCircleRect = CGRect(
+            x: tailRect.maxX,
+            y: tailRect.maxY,
+            width: secondCircleSize,
+            height: secondCircleSize
+        )
+        let secondCircle = Circle().path(in: secondCircleRect)
+
+        let combined = bubble.union(tail).union(secondCircle)
+
+        return combined
+    }
+}
+
+
 
 struct TopLeadingToBottomCenterPath: Shape {
     func path(in rect: CGRect) -> Path {
@@ -248,111 +359,3 @@ struct LoopPath: Shape {
 }
 
 // MARK: Entry Paths
-
-struct BubbleWithTailShape: Shape {
-    var scale: CGFloat
-
-    func path(in rect: CGRect) -> Path {
-        let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 20, style: .continuous)
-            .path(in: bubbleRect)
-
-        let firstCircleSize: CGFloat = 12
-        let firstCircleOffsetX: CGFloat = 0
-        let firstCircleOffsetY: CGFloat = bubbleRect.height - firstCircleSize
-
-        // Create the tail (circle)
-        let tailRect = CGRect(
-            x: bubbleRect.minX + firstCircleOffsetX,
-            y: bubbleRect.minY + firstCircleOffsetY,
-            width: firstCircleSize,
-            height: firstCircleSize
-        )
-        let tail = Circle().path(in: tailRect)
-
-        let secondCircleSize: CGFloat = 6
-        let secondCircleOffsetX = tailRect.minX - secondCircleSize
-        let secondCircleOffsetY = tailRect.maxY - secondCircleSize / 2
-        let secondCircleRect = CGRect(
-            x: secondCircleOffsetX,
-            y: secondCircleOffsetY,
-            width: secondCircleSize,
-            height: secondCircleSize
-        )
-        let secondCircle = Circle().path(in: secondCircleRect)
-
-        let combined = bubble.union(tail).union(secondCircle)
-
-        return combined
-    }
-
-    var animatableData: CGFloat {
-        get { scale }
-        set { scale = newValue }
-    }
-}
-
-/// Mainly used for context-auxilliary preview.
-struct BubbleWithTailPath {
-    func path(in rect: CGRect) -> UIBezierPath {
-        let cornerRadius: CGFloat = 20
-        let firstCircleSize: CGFloat = 12
-        let secondCircleSize: CGFloat = 6
-
-        let bubblePath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
-        
-        // First circle (tail)
-        let firstCircleRect = CGRect(
-            x: rect.minX,
-            y: rect.maxY - firstCircleSize,
-            width: firstCircleSize,
-            height: firstCircleSize
-        )
-        bubblePath.append(UIBezierPath(ovalIn: firstCircleRect))
-        
-        // Second smaller circle
-        let secondCircleRect = CGRect(
-            x: firstCircleRect.minX - secondCircleSize,
-            y: firstCircleRect.maxY - secondCircleSize / 2,
-            width: secondCircleSize,
-            height: secondCircleSize
-        )
-        bubblePath.append(UIBezierPath(ovalIn: secondCircleRect))
-        
-        return bubblePath
-    }
-}
-
-struct SoundBubbleWithTail: Shape {
-    func path(in rect: CGRect) -> Path {
-        let bubbleRect = rect
-        let bubble = Circle().path(in: bubbleRect)
-
-        let tailSize: CGFloat = 12
-        let tailOffsetX: CGFloat = 0
-        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
-
-        let tailRect = CGRect(
-            x: bubbleRect.minX + tailOffsetX,
-            y: bubbleRect.minY + tailOffsetY,
-            width: tailSize,
-            height: tailSize
-        )
-        let tail = Circle().path(in: tailRect)
-
-        let secondCircleSize: CGFloat = 6
-        let secondCircleOffsetX = tailRect.maxX
-        let secondCircleOffsetY = tailRect.maxY
-        let secondCircleRect = CGRect(
-            x: secondCircleOffsetX,
-            y: secondCircleOffsetY,
-            width: secondCircleSize,
-            height: secondCircleSize
-        )
-        let secondCircle = Circle().path(in: secondCircleRect)
-
-        let combined = bubble.union(tail).union(secondCircle)
-
-        return combined
-    }
-}

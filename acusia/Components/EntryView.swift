@@ -6,17 +6,6 @@
 //
 import SwiftUI
 
-struct Line: Shape {
-    var x2: CGFloat = 0.0
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: 0, y: 0))
-        path.addLine(to: CGPoint(x: x2, y: rect.height))
-        return path
-    }
-}
-
 struct EntryView: View {
     @EnvironmentObject private var windowState: WindowState
 
@@ -29,7 +18,7 @@ struct EntryView: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             if let artwork = entrySet.entries.first?.artwork {
-                /// Only render if the entry is a root
+                /// Background color, only render if the entry is a root
                 AsyncImage(url: URL(string: artwork)) { image in
                     image
                         .resizable()
@@ -87,34 +76,33 @@ struct EntryView: View {
                                     Spacer()
                                 }
 
-                                AvatarView(size: 40, imageURL: entry.avatar)
-                                    .overlay(alignment: .topLeading) {
-                                        if isRoot {
-                                            /// Only render if the entry is a root
-                                            ZStack {
-                                                AsyncImage(url: URL(string: entry.artwork ?? "")) { image in
-                                                    image
-                                                        .resizable()
-                                                } placeholder: {
-                                                    Rectangle()
-                                                }
-                                                .aspectRatio(contentMode: .fit)
-                                                .clipShape(Circle())
-                                                .padding(2)
-                                                .background(Circle().fill(strokeColor))
-                                            }
-                                            .frame(width: 56, height: 56)
-                                            .background(strokeColor, in: SoundBubbleWithTail())
-                                            .offset(x: 0, y: -48)
-                                            .shadow(color: .black.opacity(0.15), radius: 4)
+                                ZStack {
+                                    AvatarView(size: 40, imageURL: entry.avatar)
+                                    if isRoot {
+                                        /// Only render if the entry is a root
+                                        AsyncImage(url: URL(string: entry.artwork ?? "")) { image in
+                                            image
+                                                .resizable()
+                                        } placeholder: {
+                                            Rectangle()
                                         }
+                                        .aspectRatio(contentMode: .fit)
+                                        .clipShape(Circle())
+                                        .padding(2)
+                                        .background(Circle().fill(strokeColor))
+                                        .frame(width: 56, height: 56)
+                                        .background(strokeColor, in: SoundBubbleWithTail())
+                                        .offset(x: 0, y: -42)
+                                        .shadow(color: .black.opacity(0.15), radius: 4)
+                                        .zIndex(10)
                                     }
+                                }
+                                .frame(width: 40, height: 40)
                             }
                             .frame(width: 40)
                             .frame(maxHeight: .infinity)
 
                             EntryBubble(entry: entry, color: strokeColor)
-
                         }
                         .frame(maxHeight: .infinity)
                     }
