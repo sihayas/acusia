@@ -115,12 +115,6 @@ struct EntryBubble: View {
                     .font(.system(size: 16))
                     .multilineTextAlignment(.leading)
                     .lineLimit(6)
-                    .onChange(of: gestureTranslation) {_, newValue in
-                        print("Gesture translation: \(newValue)")
-                    }
-                    .onChange(of: gestureVelocity) {_, newValue in
-                        // print("Gesture velocity: \(newValue)")
-                    }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
@@ -147,15 +141,14 @@ struct EntryBubble: View {
                      title: "Share",
                      image: UIImage(systemName: "square.and.arrow.up")
                  ) { _ in
-                     // Action handler
                  }
              }
-             .padding(.bottom, 4)
             .overlay(alignment: .topLeading) {
                 HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(entry.username)
                         .foregroundColor(.secondary)
                         .font(.system(size: 11, weight: .regular))
+                        .lineLimit(1)
 
                     if let artist = entry.artistName, let album = entry.name {
                         Text("·")
@@ -173,13 +166,14 @@ struct EntryBubble: View {
                 .alignmentGuide(VerticalAlignment.top) { d in d.height + 2 }
                 .alignmentGuide(HorizontalAlignment.leading) { _ in -12 }
             }
+            .padding(.bottom, 4)
 
 
             BlipView(size: CGSize(width: 56, height: 56), fill: color)
-                .alignmentGuide(VerticalAlignment.top) { d in d.height / 1.15 }
-                .padding(.trailing, -4) 
+                .alignmentGuide(VerticalAlignment.top) { d in d.height / 1.2 }
+                .padding(.trailing, -40)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.trailing, 40) // Space for blip view.
     }
 }
 
@@ -202,13 +196,6 @@ struct EntryBubbleOutlined: View {
                 BubbleWithTailShape(scale: 0.7)
                     .stroke(.white.opacity(0.1), lineWidth: 1)
             )
-            .overlay(alignment: .topLeading) {
-                Text(entry.username)
-                    .foregroundColor(.secondary)
-                    .font(.system(size: 11, weight: .regular, design: .rounded))
-                    .alignmentGuide(VerticalAlignment.top) { d in d.height + 2 }
-                    .alignmentGuide(HorizontalAlignment.leading) { _ in -12 }
-            }
             .foregroundStyle(.secondary)
             .padding(.bottom, 6)
         }

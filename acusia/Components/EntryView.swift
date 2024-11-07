@@ -16,111 +16,90 @@ struct EntryView: View {
     @State private var selected: EntryModel?
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            if let artwork = entrySet.entries.first?.artwork {
-                /// Background color, only render if the entry is a root
-                AsyncImage(url: URL(string: artwork)) { image in
-                    image
-                        .resizable()
-                } placeholder: {
-                    Rectangle()
-                }
-                .aspectRatio(contentMode: .fit)
-                .clipShape(Circle())
-                .padding(2)
-                .frame(width: 160, height: 160)
-            }
+        /// Loop through up to 6 entries.
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(0 ..< min(6, entrySet.entries.count), id: \.self) { index in
+                let entry = entrySet.entries[index]
+                let isRoot = entry.parent == nil
+                let previousEntry = index > 0 ? entrySet.entries[index - 1] : nil
 
-            VStack(spacing: 8) {
-                /// Loop through up to 6 entries.
-                ForEach(0 ..< min(6, entrySet.entries.count), id: \.self) { index in
-                    let entry = entrySet.entries[index]
-                    let isRoot = entry.parent == nil
-                    let previousEntry = index > 0 ? entrySet.entries[index - 1] : nil
-
-                    VStack(spacing: 8) {
-                        /// Contextual Parent Logic
-                        /// Render context if:
-                        /// - This entry has a parent (this entry is not the root).
-                        /// - The previous entry's parent is not the same as this entry.
-                        /// - The parent is not the previous entry.
-                        if let parent = entry.parent, previousEntry?.parent?.id != parent.id, previousEntry?.id != parent.id {
-                            VStack(alignment: .leading) {
-                                Capsule()
-                                    .fill(strokeColor)
-                                    .frame(width: 4, height: 8)
-                                    .frame(width: 40)
-
-                                HStack(spacing: 12) {
-                                    LoopPath()
-                                        .stroke(strokeColor, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                                        .frame(width: 40, height: 32)
-                                        .scaleEffect(x: -1, y: 1)
-
-                                    AvatarView(size: 24, imageURL: parent.avatar)
-
-                                    EntryBubbleOutlined(entry: parent)
-                                        .padding(.leading, -4)
-                                }
-                            }
-                        }
-
-                        /// Entry Rendering
-                        HStack(alignment: .bottom, spacing: 8) {
-                            VStack {
-                                if !isRoot {
-                                    Rectangle()
-                                        .strokeBorder(strokeColor, style: StrokeStyle(lineWidth: 4, lineCap: .round, dash: [4, 12]))
-                                        .frame(width: 4)
-                                } else {
-                                    Spacer()
-                                }
-
-                                ZStack {
-                                    AvatarView(size: 40, imageURL: entry.avatar)
-                                    if isRoot {
-                                        /// Only render if the entry is a root
-                                        AsyncImage(url: URL(string: entry.artwork ?? "")) { image in
-                                            image
-                                                .resizable()
-                                        } placeholder: {
-                                            Rectangle()
-                                        }
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(2)
-                                        .background(Circle().fill(strokeColor))
-                                        .frame(width: 56, height: 56)
-                                        .background(strokeColor, in: SoundBubbleWithTail())
-                                        .offset(x: 0, y: -42)
-                                        .shadow(color: .black.opacity(0.15), radius: 4)
-                                        .zIndex(10)
-                                    }
-                                }
-                                .frame(width: 40, height: 40)
-                            }
+                /// Contextual Parent Logic
+                /// Render context if:
+                /// - This entry has a parent (this entry is not the root).
+                /// - The previous entry's parent is not the same as this entry.
+                /// - The parent is not the previous entry.
+                if let parent = entry.parent, previousEntry?.parent?.id != parent.id, previousEntry?.id != parent.id {
+                    VStack(alignment: .leading) {
+                        Capsule()
+                            .fill(strokeColor)
+                            .frame(width: 4, height: 8)
                             .frame(width: 40)
-                            .frame(maxHeight: .infinity)
 
-                            EntryBubble(entry: entry, color: strokeColor)
+                        HStack(spacing: 12) {
+                            LoopPath()
+                                .stroke(strokeColor, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                                .frame(width: 40, height: 32)
+                                .scaleEffect(x: -1, y: 1)
+
+                            AvatarView(size: 24, imageURL: parent.avatar)
+
+                            EntryBubbleOutlined(entry: parent)
+                                .padding(.leading, -4)
                         }
-                        .frame(maxHeight: .infinity)
                     }
                 }
+
+                /// Main Entry Rendering
+                HStack(alignment: .bottom, spacing: 8) {
+                    VStack {
+                        Rectangle()
+                            .strokeBorder(strokeColor, style: StrokeStyle(lineWidth: 4, lineCap: .round, dash: [4, 12]))
+                            .frame(width: 4)
+                            .opacity(!isRoot ? 1 : 0)
+
+                        ZStack {
+                            AvatarView(size: 40, imageURL: entry.avatar)
+                            /// Render the sound.
+                            if isRoot {
+                                AsyncImage(url: URL(string: entry.artwork ?? "")) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    Rectangle()
+                                }
+                                .aspectRatio(contentMode: .fit)
+                                .clipShape(Circle())
+                                .padding(2)
+                                .background(Circle().fill(strokeColor))
+                                .frame(width: 64, height: 64)
+                                .background(strokeColor, in: SoundBubbleWithTail())
+                                .offset(x: 12, y: -42)
+                                .shadow(color: .black.opacity(0.15), radius: 4)
+                            }
+                        }
+                        .frame(width: 40, height: 40)
+                    }
+                    .frame(width: 40)
+                    .frame(maxHeight: .infinity)
+
+                    EntryBubble(entry: entry, color: strokeColor)
+                }
+                .frame(maxHeight: .infinity)
+                .shadow(color: isRoot ? .black.opacity(0.1) : .clear, radius: isRoot ? 10 : 0, x: 0, y: 0)
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 24)
-            .background(
-                .thickMaterial,
-                in: RoundedRectangle(cornerRadius: 45, style: .continuous)
-            )
-            .foregroundStyle(.secondary)
-            .matchedTransitionSource(id: entrySet.entries.first?.id ?? "", in: animation)
-            .sheet(item: $selected) { entry in
-                DetailView(entry: entry)
-                    .navigationTransition(.zoom(sourceID: entry.id, in: animation))
-                    .presentationBackground(.black)
-            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 24)
+        .background(
+            .thickMaterial,
+            in: RoundedRectangle(cornerRadius: 55, style: .continuous)
+        )
+        .foregroundStyle(.secondary)
+        .matchedTransitionSource(id: entrySet.entries.first?.id ?? "", in: animation)
+        .sheet(item: $selected) { entry in
+            DetailView(entry: entry)
+                .navigationTransition(.zoom(sourceID: entry.id, in: animation))
+                .presentationBackground(.black)
         }
         .padding(.horizontal, 24)
         .onTapGesture {
@@ -173,9 +152,9 @@ let entriesOne: [EntryModel] = {
         avatar: "https://i.pinimg.com/474x/9f/38/61/9f38614bb1acaad50e1959f4e3d5768c.jpg",
         text: "yall are insane. this is peak, sounds like autolux. also, its not like theyre hiding the fact that they took inspiration",
         rating: 2,
-        artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/49/8a/34/498a34eb-27af-4f6f-5e42-d6863b37e05d/24UM1IM01096.rgb.jpg/632x632bb.webp",
-        name: "Lyfestyle",
-        artistName: "Yeat",
+        artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/92/9f/69/929f69f1-9977-3a44-d674-11f70c852d1b/24UMGIM36186.rgb.jpg/632x632bb.webp",
+        name: "Hit Me Hard And Soft",
+        artistName: "Billie Eilish",
         created_at: Date(timeIntervalSinceNow: -3600)
     )
 
@@ -185,7 +164,7 @@ let entriesOne: [EntryModel] = {
             id: "3",
             username: "starrry",
             avatar: "https://i.pinimg.com/474x/d8/5d/02/d85d022bedcf129ebd23a2b21e97ef19.jpg",
-            text: "this is a test",
+            text: ".",
             rating: 2,
             created_at: Date(timeIntervalSinceNow: -1800),
             parent: parentEntry

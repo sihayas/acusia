@@ -107,16 +107,16 @@ struct ZigZagLayout: Layout {
             height: max($0.height, $1.height)
         )}
         
-        // Calculate number of items per row (bottom row has more items)
-        let bottomRowCount = (subviews.count + 1) / 2
-        let topRowCount = subviews.count / 2
+        // Calculate number of items per row (first row)
+        let firstRowCount = (subviews.count + 1) / 2
+        let secondRowCount = subviews.count / 2
         
         // Calculate total width needed
-        let bottomRowWidth = maxItemSize.width * CGFloat(bottomRowCount) + spacing * CGFloat(bottomRowCount - 1)
-        let topRowWidth = maxItemSize.width * CGFloat(topRowCount) + spacing * CGFloat(topRowCount - 1)
+        let firstRowWidth = maxItemSize.width * CGFloat(firstRowCount) + spacing * CGFloat(firstRowCount - 1)
+        let secondRowWidth = maxItemSize.width * CGFloat(secondRowCount) + spacing * CGFloat(secondRowCount - 1)
         
         return CGSize(
-            width: max(bottomRowWidth, topRowWidth),
+            width: max(firstRowWidth, secondRowWidth),
             height: maxItemSize.height * 2 + rowSpacing
         )
     }
@@ -130,31 +130,31 @@ struct ZigZagLayout: Layout {
             height: max($0.height, $1.height)
         )}
         
-        // Calculate number of items for bottom row
-        let bottomRowCount = (subviews.count + 1) / 2
+        // Calculate number of items for each row
+        let firstRowCount = (subviews.count + 1) / 2
         
-        // Calculate Y positions (bottom row first)
-        let bottomRowY = bounds.maxY - maxItemSize.height
-        let topRowY = bottomRowY - maxItemSize.height - rowSpacing
+        // Calculate starting positions
+        let firstRowY = bounds.minY
+        let secondRowY = firstRowY + maxItemSize.height + rowSpacing
         
-        // Place bottom row items first
+        // Place first row items
         var currentX = bounds.minX
-        for index in 0..<bottomRowCount {
+        for index in 0..<firstRowCount {
             let subview = subviews[index]
             subview.place(
-                at: CGPoint(x: currentX + maxItemSize.width / 2, y: bottomRowY + maxItemSize.height / 2),
+                at: CGPoint(x: currentX + maxItemSize.width / 2, y: firstRowY + maxItemSize.height / 2),
                 anchor: .center,
                 proposal: ProposedViewSize(width: maxItemSize.width, height: maxItemSize.height)
             )
             currentX += maxItemSize.width + spacing
         }
         
-        // Place top row items (offset to center between bottom items)
+        // Place second row items (offset to center between top items)
         currentX = bounds.minX + (maxItemSize.width + spacing) / 2
-        for index in bottomRowCount..<subviews.count {
+        for index in firstRowCount..<subviews.count {
             let subview = subviews[index]
             subview.place(
-                at: CGPoint(x: currentX + maxItemSize.width / 2, y: topRowY + maxItemSize.height / 2),
+                at: CGPoint(x: currentX + maxItemSize.width / 2, y: secondRowY + maxItemSize.height / 2),
                 anchor: .center,
                 proposal: ProposedViewSize(width: maxItemSize.width, height: maxItemSize.height)
             )
