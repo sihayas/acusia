@@ -1,11 +1,11 @@
 //
-//  EntryBubbleView.swift
+//  EntityBubbleView.swift
 //  acusia
 //
 //  Created by decoherence on 10/29/24.
 //
-import SwiftUI
 import ContextMenuAuxiliaryPreview
+import SwiftUI
 
 struct CurvedPathShape: Shape, Animatable {
     var trigger: CGFloat
@@ -34,7 +34,7 @@ struct CurvedPathShape: Shape, Animatable {
 
         return path.trimmedPath(from: 0, to: pathProgress)
     }
-} 
+}
 
 struct AuxiliaryView: View {
     @State private var isCollapsed: Bool = false
@@ -50,7 +50,6 @@ struct AuxiliaryView: View {
             let icons = Array(repeating: "circle.fill", count: 5)
             let pathShape = CurvedPathShape(trigger: isCollapsed ? 1 : 0, pathProgress: pathProgress)
             let path = pathShape.path(in: CGRect(origin: .zero, size: geometry.size))
-
 
             let adjustedTranslation = CGPoint(
                 x: geometry.size.width + gestureTranslation.x * 2.5,
@@ -79,10 +78,9 @@ struct AuxiliaryView: View {
                     .scaleEffect(isClosest ? 2.0 : 1.0)
                     .position(x: position.x, y: position.y)
                     .animation(.snappy(), value: isClosest)
-                    .sensoryFeedback(trigger: isClosest) { oldValue, newValue in
-                        return .impact(flexibility: .soft, intensity: 0.25)
+                    .sensoryFeedback(trigger: isClosest) { _, _ in
+                        .impact(flexibility: .soft, intensity: 0.25)
                     }
-                
             }
         }
         .frame(width: size.width, height: size.height, alignment: .topLeading)
@@ -98,92 +96,83 @@ struct AuxiliaryView: View {
     }
 }
 
-struct EntryBubble: View {
-    let entry: EntryModel
+struct TextBubbleView: View {
+    let entity: Entity
     let color: Color
-    
-    let auxiliarySize: CGSize = CGSize(width: 216, height: 120)
-    
+
+    let auxiliarySize: CGSize = .init(width: 216, height: 120)
+
     @State private var gestureTranslation = CGPoint.zero
     @State private var gestureVelocity = CGPoint.zero
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
+        VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .lastTextBaseline) {
-                Text(entry.text)
+                Text(entity.text)
                     .foregroundColor(.white)
                     .font(.system(size: 16))
                     .multilineTextAlignment(.leading)
-                    .lineLimit(6)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(color, in: BubbleWithTailShape(scale: 1))
-            .foregroundStyle(.secondary)
-            .auxiliaryContextMenu(
-                auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),
-                 gestureTranslation: $gestureTranslation,
-                 gestureVelocity: $gestureVelocity,
-                 config: AuxiliaryPreviewConfig(
-                    verticalAnchorPosition: .top,
-                    horizontalAlignment: .targetLeading,
-                    preferredWidth:  .constant(auxiliarySize.width),
-                    preferredHeight: .constant(auxiliarySize.height),
-                    marginInner: -56,
-                    marginOuter: 0,
-                    marginLeading: -56,
-                    marginTrailing: 0,
-                    transitionConfigEntrance: .syncedToMenuEntranceTransition(),
-                    transitionExitPreset: .zoom(zoomOffset: 0)
-                  )
-             ) {
-                 UIAction(
-                     title: "Share",
-                     image: UIImage(systemName: "square.and.arrow.up")
-                 ) { _ in
-                 }
-             }
-            .overlay(alignment: .topLeading) {
-                HStack(alignment: .lastTextBaseline, spacing: 4) {
-                    Text(entry.username)
+
+            if entity.name != nil {
+                HStack(spacing: 4) {
+                    Image(systemName: "music.note")
+                        .font(.system(size: 9, weight: .bold))
                         .foregroundColor(.secondary)
-                        .font(.system(size: 11, weight: .regular))
-                        .lineLimit(1)
-
-                    if let artist = entry.artistName, let album = entry.name {
-                        Text("·")
+                    
+                    if let artist = entity.artistName, let album = entity.name {
+                        Text("\(artist),")
                             .foregroundColor(.secondary)
-                            .font(.system(size: 11, weight: .bold))
+                            .font(.system(size: 11, weight: .regular, design: .monospaced))
+                            .lineLimit(1)
 
-                        VStack(alignment: .leading) {
-                            Text("\(artist), \(album)")
-                                .foregroundColor(.secondary)
-                                .font(.system(size: 11, weight: .semibold))
-                                .lineLimit(1)
-                        }
+                        Text(album)
+                            .foregroundColor(.white)
+                            .font(.system(size: 11, weight: .regular, design: .monospaced))
                     }
                 }
-                .alignmentGuide(VerticalAlignment.top) { d in d.height + 2 }
-                .alignmentGuide(HorizontalAlignment.leading) { _ in -12 }
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(Color(UIColor.systemGray4), in: Capsule())
             }
-            .padding(.bottom, 4)
-
-
-            BlipView(size: CGSize(width: 56, height: 56), fill: color)
-                .alignmentGuide(VerticalAlignment.top) { d in d.height / 1.2 }
-                .padding(.trailing, -40)
         }
-        .padding(.trailing, 40) // Space for blip view.
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(color, in: BubbleWithTailShape(scale: 1))
+        .foregroundStyle(.secondary)
+        .auxiliaryContextMenu(
+            auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),
+            gestureTranslation: $gestureTranslation,
+            gestureVelocity: $gestureVelocity,
+            config: AuxiliaryPreviewConfig(
+                verticalAnchorPosition: .top,
+                horizontalAlignment: .targetLeading,
+                preferredWidth: .constant(auxiliarySize.width),
+                preferredHeight: .constant(auxiliarySize.height),
+                marginInner: -56,
+                marginOuter: 0,
+                marginLeading: -56,
+                marginTrailing: 0,
+                transitionConfigEntrance: .syncedToMenuEntranceTransition(),
+                transitionExitPreset: .zoom(zoomOffset: 0)
+            )
+        ) {
+            UIAction(
+                title: "Share",
+                image: UIImage(systemName: "square.and.arrow.up")
+            ) { _ in
+            }
+        }
     }
 }
 
-struct EntryBubbleOutlined: View {
-    let entry: EntryModel
+struct ParentTextBubbleView: View {
+    let entity: Entity
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             HStack(alignment: .lastTextBaseline) {
-                Text(entry.text)
+                Text(entity.text)
                     .foregroundColor(.secondary)
                     .font(.system(size: 11))
                     .multilineTextAlignment(.leading)

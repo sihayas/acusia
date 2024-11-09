@@ -38,8 +38,8 @@ struct Home: View {
 
                 /// Main Feed
                 VStack(spacing: 32) {
-                    ForEach(sampleEntrySets) { sampleEntrySet in
-                        EntryView(entrySet: sampleEntrySet)
+                    ForEach(biomes) { biome in
+                        BiomeView(biome: biome)
                     }
                 }
                 .padding(.top, safeAreaInsets.top)

@@ -143,7 +143,7 @@ struct NoodleIcon: Shape {
     }
 }
 
-// MARK: - Entry Paths
+// MARK: - Entity Paths
 
 struct BubbleWithTailShape: Shape {
     var scale: CGFloat
@@ -195,7 +195,7 @@ struct BubbleWithTailPath {
         let secondCircleSize: CGFloat = 6
 
         let bubblePath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
-        
+
         // First circle (tail)
         let firstCircleRect = CGRect(
             x: rect.minX,
@@ -204,7 +204,7 @@ struct BubbleWithTailPath {
             height: firstCircleSize
         )
         bubblePath.append(UIBezierPath(ovalIn: firstCircleRect))
-        
+
         // Second smaller circle
         let secondCircleRect = CGRect(
             x: firstCircleRect.minX - secondCircleSize,
@@ -213,42 +213,59 @@ struct BubbleWithTailPath {
             height: secondCircleSize
         )
         bubblePath.append(UIBezierPath(ovalIn: secondCircleRect))
-        
+
         return bubblePath
     }
 }
 
 struct SoundBubbleWithTail: Shape {
     func path(in rect: CGRect) -> Path {
-        let bubbleRect = rect
-        let bubble = Circle().path(in: bubbleRect)
+        var path = Path()
 
-        let tailSize: CGFloat = 12
-        let tailOffsetX: CGFloat = 0
-        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
+        let tailWidth: CGFloat = 25.23
+        let tailHeight: CGFloat = 12.55
+        let tailOverlap: CGFloat = tailHeight / 2
 
-        let tailRect = CGRect(
-            x: bubbleRect.minX + tailOffsetX,
-            y: bubbleRect.minY + tailOffsetY,
-            width: tailSize,
-            height: tailSize
-        )
-        let tail = Circle().path(in: tailRect)
+        let rectHeight = rect.height - (tailHeight - tailOverlap)
+        let roundedRect = CGRect(x: 0, y: 0, width: rect.width, height: rectHeight)
+        path.addRoundedRect(in: roundedRect, cornerSize: CGSize(width: 16, height: 16))
 
-        let secondCircleSize: CGFloat = 6
-        let secondCircleOffsetX = tailRect.maxX
-        let secondCircleOffsetY = tailRect.maxY
-        let secondCircleRect = CGRect(
-            x: secondCircleOffsetX,
-            y: secondCircleOffsetY,
-            width: secondCircleSize,
-            height: secondCircleSize
-        )
-        let secondCircle = Circle().path(in: secondCircleRect)
+        let xOffset = (rect.width - tailWidth) / 2
 
-        let combined = bubble.union(tail).union(secondCircle)
+        let tailY = rectHeight - tailOverlap
 
-        return combined
+        let tailPath = Path { p in
+            p.move(to: CGPoint(x: xOffset + 0.20711*tailWidth, y: tailY + 0.50406*tailHeight))
+            p.addLine(to: CGPoint(x: xOffset + 0.0477*tailWidth, y: tailY + 0.50406*tailHeight))
+            p.addLine(to: CGPoint(x: xOffset + 0.0477*tailWidth, y: tailY + 0.01975*tailHeight))
+            p.addLine(to: CGPoint(x: xOffset + 0.9814*tailWidth, y: tailY + 0.01975*tailHeight))
+            p.addLine(to: CGPoint(x: xOffset + 0.9814*tailWidth, y: tailY + 0.45563*tailHeight))
+            p.addLine(to: CGPoint(x: xOffset + 0.76258*tailWidth, y: tailY + 0.51825*tailHeight))
+            p.addCurve(
+                to: CGPoint(x: xOffset + 0.66563*tailWidth, y: tailY + 0.58958*tailHeight),
+                control1: CGPoint(x: xOffset + 0.7283*tailWidth, y: tailY + 0.52806*tailHeight),
+                control2: CGPoint(x: xOffset + 0.69527*tailWidth, y: tailY + 0.55194*tailHeight)
+            )
+            p.addCurve(
+                to: CGPoint(x: xOffset + 0.48039*tailWidth, y: tailY + 0.84307*tailHeight),
+                control1: CGPoint(x: xOffset + 0.61345*tailWidth, y: tailY + 0.65582*tailHeight),
+                control2: CGPoint(x: xOffset + 0.5285*tailWidth, y: tailY + 0.76633*tailHeight)
+            )
+            p.addCurve(
+                to: CGPoint(x: xOffset + 0.2982*tailWidth, y: tailY + 0.8915*tailHeight),
+                control1: CGPoint(x: xOffset + 0.3893*tailWidth, y: tailY + 0.98836*tailHeight),
+                control2: CGPoint(x: xOffset + 0.27543*tailWidth, y: tailY + 1.08523*tailHeight)
+            )
+            p.addCurve(
+                to: CGPoint(x: xOffset + 0.20711*tailWidth, y: tailY + 0.50406*tailHeight),
+                control1: CGPoint(x: xOffset + 0.31642*tailWidth, y: tailY + 0.73652*tailHeight),
+                control2: CGPoint(x: xOffset + 0.24507*tailWidth, y: tailY + 0.56863*tailHeight)
+            )
+            p.closeSubpath()
+        }
+        path.addPath(tailPath)
+
+        return path
     }
 }
 
@@ -258,11 +275,10 @@ struct BlipBubbleWithTail: Shape {
         let bubble = Circle().path(in: bubbleRect)
 
         let tailSize: CGFloat = 12
-        let tailOffsetY: CGFloat = bubbleRect.height - tailSize
 
         let tailRect = CGRect(
             x: bubbleRect.maxX - tailSize,
-            y: bubbleRect.maxY - tailSize,
+            y: bubbleRect.maxY - tailSize / 1.25,
             width: tailSize,
             height: tailSize
         )
@@ -282,8 +298,6 @@ struct BlipBubbleWithTail: Shape {
         return combined
     }
 }
-
-
 
 struct TopLeadingToBottomCenterPath: Shape {
     func path(in rect: CGRect) -> Path {
@@ -358,4 +372,4 @@ struct LoopPath: Shape {
     }
 }
 
-// MARK: Entry Paths
+// MARK: Entity Paths

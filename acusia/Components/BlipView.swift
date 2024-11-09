@@ -13,7 +13,7 @@ struct BlipView: View {
     }
 
     var body: some View {
-        ZigZagLayout(spacing: -6, rowSpacing: -12) {
+        ZigZagLayout(spacing: -6, rowSpacing: -10) {
             ForEach(0..<4) { index in
                 Circle()
                     .fill(Color(UIColor.systemGray5))
@@ -48,7 +48,7 @@ struct BlipView: View {
     private func getSize(for index: Int) -> CGFloat {
         switch index {
             case 0: return 24
-            case 1: return 28
+            case 1: return 30
             case 2: return 32
             default: return 28
         }
