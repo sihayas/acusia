@@ -26,6 +26,8 @@
 		CD43B2BD2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview in Frameworks */ = {isa = PBXBuildFile; productRef = CD43B2BC2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview */; };
 		CD43B2BF2CDC0D900018DB16 /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2BE2CDC0D8C0018DB16 /* Path.swift */; };
 		CD43B2C12CDD73770018DB16 /* BiomeExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */; };
+		CD43B2C32CDEFBA40018DB16 /* EntityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2C22CDEFBA10018DB16 /* EntityView.swift */; };
+		CD43B2C52CDFB4AD0018DB16 /* AuxiliaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */; };
 		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
 		CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */; };
 		CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD54A56E2CB72E9900B257EA /* PixellatePreview.swift */; };
@@ -123,6 +125,8 @@
 		CD27939B2C7B883C00486C1D /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CD43B2BE2CDC0D8C0018DB16 /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
 		CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeExpandedView.swift; sourceTree = "<group>"; };
+		CD43B2C22CDEFBA10018DB16 /* EntityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityView.swift; sourceTree = "<group>"; };
+		CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxiliaryView.swift; sourceTree = "<group>"; };
 		CD4BAA9F2C950A570005F3DB /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
 		CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
 		CD54A56E2CB72E9900B257EA /* PixellatePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixellatePreview.swift; sourceTree = "<group>"; };
@@ -378,6 +382,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */,
 				CD43B2BE2CDC0D8C0018DB16 /* Path.swift */,
 				CD17C10D2CB195400014D3FD /* SafeArea.swift */,
 				CD0D90502CA3C31A004FD674 /* Notification.swift */,
@@ -392,7 +397,8 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */,
+				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
+				CD43B2C22CDEFBA10018DB16 /* EntityView.swift */,
 				CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */,
 				CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */,
 				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
@@ -595,9 +601,11 @@
 				CD8CFDA82C6F02F100D7DEA7 /* PastView.swift in Sources */,
 				CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */,
 				CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */,
+				CD43B2C52CDFB4AD0018DB16 /* AuxiliaryView.swift in Sources */,
 				CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */,
 				CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */,
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
+				CD43B2C32CDEFBA40018DB16 /* EntityView.swift in Sources */,
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,

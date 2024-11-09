@@ -10,7 +10,8 @@ struct BiomeView: View {
     @EnvironmentObject private var windowState: WindowState
 
     let biome: Biome
-    let strokeColor = Color(UIColor.systemGray5)
+    let color = Color(UIColor.systemGray5)
+    let secondaryColor = Color(UIColor.systemGray4)
 
     let expandedBiomes: [Biome] = [
         Biome(entities: biomeOneExpanded)
@@ -26,35 +27,8 @@ struct BiomeView: View {
                 let entity = biome.entities[index]
                 let isRoot = entity.parent == nil
                 let previousEntity = index > 0 ? biome.entities[index - 1] : nil
-
-                /// Contextual Parent Logic
-                /// Render context if:
-                /// - This entity has a parent (this entity is not the root).
-                /// - The previous entity's parent is not the same as this entity.
-                /// - The parent is not the previous entity.
-                if let parent = entity.parent, previousEntity?.parent?.id != parent.id, previousEntity?.id != parent.id {
-                    VStack(alignment: .leading) {
-                        Capsule()
-                            .fill(strokeColor)
-                            .frame(width: 4, height: 8)
-                            .frame(width: 40)
-
-                        HStack(spacing: 12) {
-                            LoopPath()
-                                .stroke(strokeColor, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                                .frame(width: 40, height: 32)
-                                .scaleEffect(x: -1, y: 1)
-
-                            AvatarView(size: 24, imageURL: parent.avatar)
-
-                            ParentTextBubbleView(entity: parent)
-                                .padding(.leading, -4)
-                        }
-                    }
-                }
-
-                /// Main Entity Rendering
-                EntityView(entity: entity, isRoot: isRoot, strokeColor: strokeColor)
+                
+                EntityView(root: biome.entities[0], previousEntity: previousEntity, entity: entity, isRoot: isRoot, color: color, secondaryColor: secondaryColor)
                     .frame(maxHeight: .infinity)
                     .shadow(
                         color: isRoot ? .black.opacity(0.15) : .clear,
@@ -68,7 +42,7 @@ struct BiomeView: View {
         .padding(.vertical, 24)
         .background(
             .thickMaterial,
-            in: RoundedRectangle(cornerRadius: 55, style: .continuous)
+            in: RoundedRectangle(cornerRadius: 40, style: .continuous)
         )
         .foregroundStyle(.secondary)
         .matchedTransitionSource(id: biome.entities.first?.id ?? "", in: animation)
@@ -80,94 +54,6 @@ struct BiomeView: View {
         .padding(.horizontal, 24)
         .onTapGesture {
             showSheet = true
-        }
-    }
-}
-
-struct EntityView: View {
-    let entity: Entity
-    let isRoot: Bool
-    let strokeColor: Color
-
-    @State private var attachmentSize: CGSize = .zero
-    @State private var textSize: CGSize = .zero
-    @State private var spacing: CGFloat = 24
-
-    var body: some View {
-        HStack(alignment: .bottom, spacing: 8) {
-            VStack {
-                Rectangle()
-                    .strokeBorder(strokeColor,
-                                  style: StrokeStyle(
-                                      lineWidth: 4,
-                                      lineCap: .round,
-                                      dash: [2, 10]
-                                  ))
-                    .frame(width: 4)
-                    .opacity(!isRoot ? 1 : 0)
-
-                AvatarView(size: 40, imageURL: entity.avatar)
-            }
-            .frame(width: 40)
-            .frame(maxHeight: .infinity)
-
-            ZStack(alignment: .topLeading) {
-                HStack(alignment: .bottom, spacing: -20) {
-                    TextBubbleView(entity: entity, color: strokeColor)
-                        .alignmentGuide(VerticalAlignment.bottom) { _ in 28 }
-                        .measure($textSize)
-                        .padding(.bottom, 4)
-
-                    BlipView(size: CGSize(width: 56, height: 56), fill: strokeColor)
-                }
-                .onChange(of: textSize.width) {
-                    /// If the width of the top is greater than the width of the text bubble minus 16, push the top down.
-                    spacing = attachmentSize.width > (textSize.width - 20) ? 0 : 24
-                }
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(entity.username)
-                        .font(.system(size: 11, weight: .regular))
-                        .foregroundColor(.secondary)
-                        .padding(.leading, 12)
-
-                    if isRoot {
-                        HStack(alignment: .bottom) {
-                            ZStack(alignment: .bottomTrailing) {
-                                AsyncImage(url: URL(string: entity.artwork ?? "")) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 88, height: 88)
-                                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                                .padding(1)
-                                .background(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Color(UIColor.systemGray5), lineWidth: 4))
-                                .rotationEffect(.degrees(-2))
-
-                                Button {} label: {
-                                    Image(systemName: "plus")
-                                        .font(.system(size: 12, weight: .bold))
-                                        .foregroundColor(.secondary)
-                                        .frame(width: 24, height: 24)
-                                        .background(.ultraThinMaterial)
-                                        .clipShape(Circle())
-                                        .overlay(
-                                            Circle()
-                                                .stroke(strokeColor, lineWidth: 2)
-                                        )
-                                        .alignmentGuide(VerticalAlignment.bottom) { d in d.height - 4 }
-                                        .alignmentGuide(HorizontalAlignment.trailing) { d in d.width - 8 }
-                                }
-                            }
-                        }
-                    }
-                }
-                .alignmentGuide(VerticalAlignment.top) { d in d.height - spacing }
-                .measure($attachmentSize)
-            }
         }
     }
 }
@@ -194,15 +80,6 @@ let biomeOne: [Entity] = {
             text: "is the autolux in the room with us",
             rating: 2,
             created_at: Date(timeIntervalSinceNow: -1800),
-            parent: parentEntity
-        ),
-        Entity(
-            id: "2",
-            username: "vjeranskiiiiiiii",
-            avatar: "https://i.pinimg.com/474x/ca/a6/c7/caa6c70c24e6705894a36755fdba4fca.jpg",
-            text: "i see it",
-            rating: 2,
-            created_at: Date(timeIntervalSinceNow: -1700),
             parent: parentEntity
         ),
         Entity(
@@ -250,12 +127,12 @@ let biomeOneExpanded: [Entity] = {
     let parentEntity = Entity(
         id: "0",
         username: "autobahn",
-        avatar: "autobahn",
+        avatar: "https://i.pinimg.com/474x/9f/38/61/9f38614bb1acaad50e1959f4e3d5768c.jpg",
         text: "yall are insane. this is peak, sounds like autolux. also, its not like theyre hiding the fact that they took inspiration",
         rating: 2,
-        artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/92/9f/69/929f69f1-9977-3a44-d674-11f70c852d1b/24UMGIM36186.rgb.jpg/632x632bb.webp",
-        name: "Hit Me Hard And Soft",
-        artistName: "Billie Eilish",
+        artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/18/62/27/18622713-a797-9f9d-b85c-f0373f190a27/075679634382.jpg/632x632bb.webp",
+        name: "Eusexua",
+        artistName: "FKA Twigs",
         created_at: Date(timeIntervalSinceNow: -3600)
     )
 
@@ -567,7 +444,6 @@ struct Biome: Identifiable {
     private(set) var entities: [Entity]
 
     init(entities: [Entity]) {
-        // precondition(entities.count <= 8, "Biome can hold up to 8 entities.")
         self.entities = entities
     }
 }
