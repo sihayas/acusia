@@ -222,7 +222,6 @@ class FloatingBarPresenter {
         }
 
         let view = FloatingBarView()
-            .background(DarkModeWindowModifier())
             .environmentObject(WindowState.shared)
             .environmentObject(MusicKit.shared)
             .environmentObject(HomeState.shared)
@@ -267,6 +266,7 @@ struct FloatingBarView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .onAppear {
             self.keyboardHeight = safeAreaInsets.bottom
+
             windowState.symmetryState = .feed
         }
     }

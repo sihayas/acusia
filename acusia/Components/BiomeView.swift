@@ -71,14 +71,6 @@ let biomeOne: [Entity] = {
     return [
         parentEntity,
         Entity(
-            id: "3",
-            username: "starrry",
-            avatar: "https://i.pinimg.com/474x/d8/5d/02/d85d022bedcf129ebd23a2b21e97ef19.jpg",
-            text: "is the autolux in the room with us",
-            created_at: Date(timeIntervalSinceNow: -1800),
-            parent: parentEntity
-        ),
-        Entity(
             id: "4",
             username: "vjeranski",
             avatar: "https://d2w9rnfcy7mm78.cloudfront.net/31132288/original_b3573ce965ab3459b25ab0977beec40b.jpg",
@@ -127,14 +119,6 @@ let biomeTwo: [Entity] = {
     return [
         parentEntity,
         Entity(
-            id: "1",
-            username: "echoVerse",
-            avatar: "https://i.pinimg.com/474x/9b/3c/11/9b3c11429ec2b25b0135566ad3e6c482.jpg",
-            text: "I don’t know… something about it feels a little forced? Like it’s trying way too hard to be profound.",
-            created_at: Date(timeIntervalSinceNow: -3200),
-            parent: parentEntity
-        ),
-        Entity(
             id: "2",
             username: "synesthesia",
             avatar: "https://i.pinimg.com/474x/16/a2/5d/16a25d5a1db5b04f4cf1f519d8070c07.jpg",
@@ -147,7 +131,7 @@ let biomeTwo: [Entity] = {
             username: "echoVerse",
             avatar: "https://i.pinimg.com/474x/9b/3c/11/9b3c11429ec2b25b0135566ad3e6c482.jpg",
             text: "Alright, maybe I’ll give it another shot. I guess I was expecting something less… polished.",
-            created_at: Date(timeIntervalSinceNow: -2400),
+            created_at: Date(timeIntervalSinceNow: -2400), 
             parent: Entity(id: "1", username: "echoVerse", avatar: "", text: "", created_at: Date())
         )
     ]

@@ -245,6 +245,15 @@ struct SymmetryView: View {
                         tag: 1
                     )
                 }
+                
+                
+                ControlButtons(
+                    resetState: resetState,
+                    expandLeftBlob: feedState,
+                    expandSearchBar: searchState,
+                    expandReply: replyState
+                )
+                
             }
             .onAppear {
                 self.width = geometry.size.width
@@ -492,14 +501,6 @@ extension SymmetryView {
 
 struct ControlButtons: View {
     // MARK: Buttons
-
-    // ControlButtons(
-    //     resetState: resetState,
-    //     expandLeftBlob: expandLeftBlob,
-    //     expandSearchBar: expandSearchBar,
-    //     expandReply: expandReply
-    // )
-    
     let resetState: () -> Void
     let expandLeftBlob: () -> Void
     let expandSearchBar: () -> Void
@@ -555,6 +556,7 @@ struct ControlButtons: View {
 
 #Preview {
     SymmetryView()
+        .environmentObject(WindowState())
         .background(.black)
 }
 
