@@ -38,23 +38,14 @@ struct Home: View {
 
                 /// Main Feed
                 VStack(spacing: 32) {
-                    ForEach(biomes) { biome in
-                        BiomeView(biome: biome)
-                    }
+                    BiomeView(biome: Biome(entities: biomeOne))
+                    BiomeView(biome: Biome(entities: biomeTwo))
                 }
                 .padding(.top, safeAreaInsets.top)
+                .padding(.bottom, safeAreaInsets.bottom * 3)
             }
         }
         .scrollClipDisabled(true)
-        .onScrollGeometryChange(for: CGFloat.self) { proxy in
-            proxy.contentOffset.y
-        } action: { _, newValue in
-            if newValue > windowState.size.height {
-                windowState.symmetryState = .feed
-            } else {
-                windowState.symmetryState = .collapsed
-            }
-        }
         .frame(width: windowState.size.width, height: windowState.size.height)
         .overlay(alignment: .top) {
             VStack {
@@ -62,6 +53,7 @@ struct Home: View {
                     .scaleEffect(x: 1, y: -1)
                     .ignoresSafeArea()
                     .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
+                
                 Spacer()
             }
         }

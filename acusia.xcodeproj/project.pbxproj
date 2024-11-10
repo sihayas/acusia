@@ -28,6 +28,7 @@
 		CD43B2C12CDD73770018DB16 /* BiomeExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */; };
 		CD43B2C32CDEFBA40018DB16 /* EntityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2C22CDEFBA10018DB16 /* EntityView.swift */; };
 		CD43B2C52CDFB4AD0018DB16 /* AuxiliaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */; };
+		CD43B2C72CE136860018DB16 /* EntityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43B2C62CE136830018DB16 /* EntityModel.swift */; };
 		CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAA9F2C950A570005F3DB /* Ripple.metal */; };
 		CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */; };
 		CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD54A56E2CB72E9900B257EA /* PixellatePreview.swift */; };
@@ -127,6 +128,7 @@
 		CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeExpandedView.swift; sourceTree = "<group>"; };
 		CD43B2C22CDEFBA10018DB16 /* EntityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityView.swift; sourceTree = "<group>"; };
 		CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxiliaryView.swift; sourceTree = "<group>"; };
+		CD43B2C62CE136830018DB16 /* EntityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityModel.swift; sourceTree = "<group>"; };
 		CD4BAA9F2C950A570005F3DB /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
 		CD4BAAA12C950BAC0005F3DB /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
 		CD54A56E2CB72E9900B257EA /* PixellatePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixellatePreview.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 		CDDED77C2C19520300958B39 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				CD43B2C62CE136830018DB16 /* EntityModel.swift */,
 				CD614C412C74BA150059C80F /* MusicKitModel.swift */,
 			);
 			path = Models;
@@ -585,6 +588,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD43B2C72CE136860018DB16 /* EntityModel.swift in Sources */,
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* BiomeView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,

@@ -8,6 +8,8 @@
 import SwiftUI
 import AuthenticationServices
 
+let apiurl = ""
+
 struct AuthScreen: View {
     @StateObject private var viewModel = AuthViewModel()
     

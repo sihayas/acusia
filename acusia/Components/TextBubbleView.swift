@@ -26,22 +26,20 @@ struct TextBubbleView: View {
                     .multilineTextAlignment(.leading)
             }
 
-            if entity.name != nil {
+            if let song = entity.getSongAttachment() {
                 HStack(spacing: 4) {
                     Image(systemName: "music.note")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundColor(.secondary)
 
-                    if let artist = entity.artistName, let album = entity.name {
-                        Text("\(artist),")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 11, weight: .regular, design: .monospaced))
-                            .lineLimit(1)
+                    Text("\(song.artistName),")
+                        .foregroundColor(.secondary)
+                        .font(.system(size: 11, weight: .regular, design: .monospaced))
+                        .lineLimit(1)
 
-                        Text(album)
-                            .foregroundColor(.white)
-                            .font(.system(size: 11, weight: .regular, design: .monospaced))
-                    }
+                    Text(song.name)
+                        .foregroundColor(.white)
+                        .font(.system(size: 11, weight: .regular, design: .monospaced))
                 }
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)

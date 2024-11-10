@@ -2,26 +2,6 @@ import CoreData
 import SwiftUI
 import Transmission
 
-let apiurl = "http://192.168.1.248:8000"
-
-struct AcusiaAppView_Previews: PreviewProvider {
-    static var previews: some View {
-        let windowState = WindowState()
-        let musicKit = MusicKit()
-        let homeState = HomeState()
-        var floatingBarPresenter = FloatingBarPresenter()
-
-        AcusiaAppView()
-            .background(DarkModeWindowModifier())
-            .environmentObject(windowState)
-            .environmentObject(musicKit)
-            .environmentObject(homeState)
-            .onAppear {
-                floatingBarPresenter.showFloatingBar()
-            }
-    }
-}
-
 class WindowState: ObservableObject {
     static let shared = WindowState()
 
@@ -35,17 +15,35 @@ class WindowState: ObservableObject {
 
     @Published var size: CGSize = .zero
 
-    // SymmetryView
+    /// Symmetry
     @Published var symmetryState: SymmetryState = .collapsed
     @Published var selectedResult: SearchResult?
 
-    // Reply Sheet
+    /// Reply Sheet
     @Published var collapsedHomeHeight: CGFloat = 0
     @Published var isSplit: Bool = false
     @Published var isOffsetAtTop: Bool = true
     @Published var isLayered: Bool = false
 
     init() {}
+}
+
+struct AcusiaAppView_Previews: PreviewProvider {
+    static var previews: some View {
+        let windowState = WindowState()
+        let musicKit = MusicKit()
+        let homeState = HomeState()
+        let floatingBarPresenter = FloatingBarPresenter()
+
+        AcusiaAppView()
+            .background(DarkModeWindowModifier())
+            .environmentObject(windowState)
+            .environmentObject(musicKit)
+            .environmentObject(homeState)
+            .onAppear {
+                floatingBarPresenter.showFloatingBar()
+            }
+    }
 }
 
 @main
@@ -88,132 +86,106 @@ struct AcusiaAppView: View {
     private var cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
-        ScrollView(.init()) {
-            // TabView {
-            // Main Feed + User + User History View
-            GeometryReader { proxy in
-                // Horizontal Slide Helpers
-                let screen = proxy.frame(in: .global)
-                let offset = screen.minX
-                let scale = 1 + (offset / screen.width)
+        // Main Feed + User + User History View
+        GeometryReader { proxy in
+            // Split Layout Helpers
+            let screenHeight = proxy.size.height
+            let screenWidth = proxy.size.width
 
-                let progress = min(1, max(0, -offset / screen.width))
-                let dynamicCornerRadius = max(12, cornerRadius - (cornerRadius - 12) * progress)
+            let collapsedHomeHeight: CGFloat = safeAreaInsets.top * 2
 
-                // Split Layout Helpers
-                let screenHeight = proxy.size.height
-                let screenWidth = proxy.size.width
+            let homeHeight: CGFloat = windowState.isSplit ?
+                collapsedHomeHeight + dragOffset
+                : screenHeight
 
-                let collapsedHomeHeight: CGFloat = safeAreaInsets.top * 2
+            let replyHeight: CGFloat = windowState.isSplit ?
+                screenHeight - dragOffset
+                : 0
 
-                let homeHeight: CGFloat = windowState.isSplit ?
-                    collapsedHomeHeight + dragOffset
-                    : screenHeight
+            ZStack(alignment: .top) {
+                Home()
+                    .overlay {
+                        Rectangle()
+                            .foregroundStyle(.clear)
+                            .background(.thinMaterial)
+                            .opacity(windowState.isSplit ? 1.0 : 0)
+                            .animation(.snappy, value: windowState.isSplit)
+                            .allowsHitTesting(false)
+                    }
+                    .frame(minWidth: screenWidth, minHeight: screenHeight)
+                    .frame(height: homeHeight, alignment: .top)
+                    .background(.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                    .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                    .shadow(radius: 10)
+                    .animation(.snappy(), value: homeHeight)
+                    .zIndex(1)
 
-                let replyHeight: CGFloat = windowState.isSplit ?
-                    screenHeight - dragOffset
-                    : 0
-
-                ZStack(alignment: .top) {
-                    Home()
-                        .overlay {
-                            Rectangle()
-                                .foregroundStyle(.clear)
-                                .background(.thinMaterial)
-                                .opacity(windowState.isSplit ? 1.0 : 0)
-                                .animation(.snappy, value: windowState.isSplit)
-                                .allowsHitTesting(false)
+                VStack {
+                    if windowState.isSplit {
+                        VStack(alignment: .leading) { // Align to top. This contains the clipped view.
+                            EmptyView()
+                                .frame(minWidth: screenWidth, minHeight: screenHeight)
+                                .frame(height: replyHeight, alignment: .top) // Align content inside to top.
+                                .overlay(
+                                    Color.white.opacity(windowState.isSplit ? 0 : 0.05)
+                                        .blendMode(.exclusion)
+                                        // .animation(.spring(), value: replyOpacity)
+                                        .allowsHitTesting(false)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                                .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                                .animation(.spring(), value: replyHeight)
                         }
-                        .frame(minWidth: screenWidth, minHeight: screenHeight)
-                        .frame(height: homeHeight, alignment: .top)
-                        .background(.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .shadow(radius: 10)
-                        .animation(.snappy(), value: homeHeight)
-                        .zIndex(1)
+                        .frame(minWidth: screenWidth, minHeight: screenHeight, alignment: .bottom)
+                    }
+                }
+                .transition(.blurReplace)
+                .zIndex(0)
+            }
+            .simultaneousGesture(
+                DragGesture()
+                    .onChanged { value in
+                        /// Only allow gesture input to modify split progress if not fully split or if fully split and root scroll offset is at the top.
+                        guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
+                        let yOffset = value.translation.height
 
-                    VStack {
-                        if windowState.isSplit {
-                            VStack(alignment: .leading) { // Align to top. This contains the clipped view.
-                                EmptyView()
-                                    .frame(minWidth: screenWidth, minHeight: screenHeight)
-                                    .frame(height: replyHeight, alignment: .top) // Align content inside to top.
-                                    .overlay(
-                                        Color.white.opacity(windowState.isSplit ? 0 : 0.05)
-                                            .blendMode(.exclusion)
-                                            // .animation(.spring(), value: replyOpacity)
-                                            .allowsHitTesting(false)
-                                    )
-                                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                    .animation(.spring(), value: replyHeight)
-                            }
-                            .frame(minWidth: screenWidth, minHeight: screenHeight, alignment: .bottom)
+                        /// Dragging up, means scrolling down, negative offset.
+                        /// Dragging down, means scrolling up, positive offset.
+                        if yOffset > 0 {
+                            dragOffset = yOffset
                         }
                     }
-                    .transition(.blurReplace)
-                    .zIndex(0)
-                }
-                // Notification Slide Over
-                .overlay(
-                    Color.white
-                        .opacity(min(0.3, max(0, -offset / screen.width * 0.3)))
-                )
-                .clipShape(RoundedRectangle(cornerRadius: dynamicCornerRadius, style: .continuous))
-                .scaleEffect(scale >= 0.92 ? scale : 0.92, anchor: .center)
-                .offset(x: -offset)
-                .simultaneousGesture(
-                    DragGesture()
-                        .onChanged { value in
-                            /// Only allow gesture input to modify split progress if not fully split or if fully split and root scroll offset is at the top.
-                            guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
-                            let yOffset = value.translation.height
+                    .onEnded { value in
+                        guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
 
-                            /// Dragging up, means scrolling down, negative offset.
-                            /// Dragging down, means scrolling up, positive offset.
-                            if yOffset > 0 {
-                                dragOffset = yOffset
-                            }
-                        }
-                        .onEnded { value in
-                            guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
+                        let yOffset = value.translation.height
+                        let yVelocity = value.velocity.height
 
-                            let yOffset = value.translation.height
-                            let yVelocity = value.velocity.height
-
-                            if yOffset > 0, yVelocity > 1000 || yOffset >= (screenHeight / 2) { // User is dragging downwards
-                                withAnimation(.snappy) {
-                                    windowState.isSplit = false
-                                    dragOffset = 0
-                                }
-                            } else {
+                        if yOffset > 0, yVelocity > 1000 || yOffset >= (screenHeight / 2) { // User is dragging downwards
+                            withAnimation(.snappy) {
+                                windowState.isSplit = false
                                 dragOffset = 0
                             }
+                        } else {
+                            dragOffset = 0
                         }
-                )
-                .onAppear {
-                    windowState.size = proxy.size
-                    windowState.collapsedHomeHeight = collapsedHomeHeight
+                    }
+            )
+            .onAppear {
+                windowState.size = proxy.size
+                windowState.collapsedHomeHeight = collapsedHomeHeight
 
-                    UINavigationBar.setupCustomAppearance()
+                UINavigationBar.setupCustomAppearance()
 
-                    Task {
-                        await musicKitManager.requestMusicAuthorization()
+                Task {
+                    await musicKitManager.requestMusicAuthorization()
 
-                        if musicKitManager.isAuthorizedForMusicKit {
-                            await musicKitManager.loadRecentlyPlayedSongs()
-                        }
+                    if musicKitManager.isAuthorizedForMusicKit {
+                        await musicKitManager.loadRecentlyPlayedSongs()
                     }
                 }
             }
-
-            // Notifications
-            //     VStack {}
-            //         .frame(maxWidth: .infinity, maxHeight: .infinity)
-            //         .background(.black)
-            // }
-            // .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
         .ignoresSafeArea()
         .blur(radius: windowState.symmetryState == .reply ? 4 : 0)
@@ -228,7 +200,7 @@ struct AcusiaAppView: View {
             get: { windowState.symmetryState == .search },
             set: { newValue in
                 if !newValue, windowState.symmetryState == .search {
-                    windowState.symmetryState = .collapsed
+                    windowState.symmetryState = .feed
                 }
             }
         )) {
@@ -250,11 +222,11 @@ class FloatingBarPresenter {
         }
 
         let view = FloatingBarView()
+            .background(DarkModeWindowModifier())
             .environmentObject(WindowState.shared)
             .environmentObject(MusicKit.shared)
             .environmentObject(HomeState.shared)
 
-        // Remove safe area from the hosting controller
         let hostingController = UIHostingController(rootView: view)
         hostingController.view.backgroundColor = .clear
         hostingController.safeAreaRegions = SafeAreaRegions()
@@ -295,6 +267,7 @@ struct FloatingBarView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .onAppear {
             self.keyboardHeight = safeAreaInsets.bottom
+            windowState.symmetryState = .feed
         }
     }
 }

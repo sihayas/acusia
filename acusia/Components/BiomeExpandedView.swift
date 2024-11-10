@@ -23,13 +23,13 @@ struct BiomeExpandedView: View {
                 .ignoresSafeArea()
 
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 8) {
                     ForEach(0 ..< biome.entities.count, id: \.self) { index in
                         let entity = biome.entities[index]
                         let isRoot = entity.parent == nil
                         let previousEntity = index > 0 ? biome.entities[index - 1] : nil
                         
-                        EntityView(root: biome.entities[0], previousEntity: previousEntity, entity: entity, isRoot: isRoot, color: color, secondaryColor: secondaryColor)
+                        EntityView(rootEntity: biome.entities[0], previousEntity: previousEntity, entity: entity, isRoot: isRoot, color: color, secondaryColor: secondaryColor)
                             .frame(maxHeight: .infinity)
                             .shadow(
                                 color: isRoot ? .black.opacity(0.15) : .clear,
@@ -42,7 +42,7 @@ struct BiomeExpandedView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, safeAreaInsets.bottom)
             }
-            // .defaultScrollAnchor(.bottom)
+            .defaultScrollAnchor(.bottom)
         }
         .overlay(alignment: .top) {
             Image(systemName: "chevron.down")

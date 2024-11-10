@@ -76,8 +76,8 @@ struct SymmetryView: View {
                 // MARK: Canvas
 
                 Rectangle()
-                    .foregroundColor(.clear)
                     .background(.ultraThinMaterial)
+                    .foregroundStyle(.clear)
                     .mask {
                         Canvas { ctx, _ in
                             let leading = ctx.resolveSymbol(id: 0)!
@@ -217,7 +217,7 @@ struct SymmetryView: View {
                                     windowState.symmetryState = .search
                                 }) {
                                     Image(systemName: "magnifyingglass")
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.white.opacity(0.5))
                                         .font(.system(size: 16, weight: .medium))
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -379,7 +379,7 @@ extension SymmetryView {
                 ),
                 trailing: .init(
                     showContent: false,
-                    offset: .zero,
+                    offset: .zero, 
                     size: CGSize(width: baseWidth, height: baseHeight)
                 )
             )

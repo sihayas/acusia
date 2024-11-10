@@ -16,54 +16,49 @@ struct Line: Shape {
 }
 
 struct EntityView: View {
-    let root: Entity
+    @State private var attachmentSize: CGSize = .zero
+    @State private var textSize: CGSize = .zero
+    @State private var spacing: CGFloat = 0
+    @State private var hasContext = false
+
+    let rootEntity: Entity
     let previousEntity: Entity?
     let entity: Entity
     let isRoot: Bool
     let color: Color
     let secondaryColor: Color
 
-    @State private var attachmentSize: CGSize = .zero
-    @State private var textSize: CGSize = .zero
-    @State private var spacing: CGFloat = 0
-    @State private var hasContext = false
-
     let blipXOffset: CGFloat = 52
 
     var body: some View {
-        let entityParent = entity.parent
+        let rootId = rootEntity.id
+        let previousId = previousEntity?.id
+        let previousParentId = previousEntity?.parent?.id
+        let parent = entity.parent
+        let parentId = entity.parent?.id
+        let entityId = entity.id
+
+        let isRootChild = parentId == rootId
 
         VStack(alignment: .leading, spacing: hasContext ? 8 : 0) {
-            /// Contextual Parent Logic
-            /// Render context if:
-            /// - This entity has a parent (this entity is not the root).
-            /// - The previous entity's parent is not the same as this entity.
-            /// - The parent is not the previous entity.
-            if let parent = entity.parent, previousEntity?.parent?.id != parent.id, previousEntity?.id != parent.id {
-                VStack(alignment: .leading, spacing: 0) {
-                    Line()
-                        .stroke(color,
-                                style: StrokeStyle(
-                                    lineWidth: 4,
-                                    lineCap: .round,
-                                    dash: previousEntity?.parent?.id != root.id ? [4, 8] : []
-                                ))
-                        .frame(width: 40, height: 48)
-                        .padding(.bottom, -12)
+            /// Contextual Parent
+            if previousId == parentId && !isRootChild && !isRoot {
+                LoopPath()
+                    .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .frame(width: 40, height: 32)
+                    .scaleEffect(x: -1, y: 1)
+            }
+            
+            if let parent = parent, parentId != previousParentId, parentId != previousId, !isRootChild {
+                HStack(spacing: 12) {
+                    AvatarView(size: 32, imageURL: parent.avatar)
+                        .frame(width: 40)
 
-                    HStack(spacing: 12) {
-                        LoopPath()
-                            .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                            .frame(width: 40, height: 32)
-                            .scaleEffect(x: -1, y: 1)
-
-                        AvatarView(size: 32, imageURL: parent.avatar)
-
-                        ParentTextBubbleView(entity: parent)
-                            .padding(.bottom, 8)
-                    }
+                    ParentTextBubbleView(entity: parent)
+                        .padding(.bottom, 8)
                 }
                 .onAppear { hasContext = true }
+                .padding(.top, 44)
             }
 
             HStack(alignment: .bottom, spacing: 8) {
@@ -73,11 +68,10 @@ struct EntityView: View {
                                 style: StrokeStyle(
                                     lineWidth: 4,
                                     lineCap: .round,
-                                    dash: entityParent?.id != root.id ? [4, 8] : []
+                                    dash: previousParentId == parentId ? [4, 8] : []
                                 ))
                         .frame(width: 40)
-                        .padding(.top, hasContext ? -16 : 0)
-                        .opacity(!isRoot ? 1 : 0)
+                        .opacity(!isRoot && !isRootChild ? 1 : 0)
 
                     AvatarView(size: 40, imageURL: entity.avatar)
                 }
@@ -104,9 +98,9 @@ struct EntityView: View {
                             .foregroundColor(.secondary)
                             .padding(.leading, 12)
 
-                        if isRoot {
+                        if let song = entity.getSongAttachment() {
                             ZStack(alignment: .bottomTrailing) {
-                                AsyncImage(url: URL(string: entity.artwork ?? "")) { image in
+                                AsyncImage(url: URL(string: song.artwork)) { image in
                                     image
                                         .resizable()
                                 } placeholder: {
@@ -119,7 +113,9 @@ struct EntityView: View {
                                 .background(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(.ultraThinMaterial, lineWidth: 4))
                                 .rotationEffect(.degrees(-4), anchor: .center)
 
-                                Button {} label: {
+                                Button(action: {
+                                    // Handle button action here
+                                }) {
                                     Image(systemName: "plus")
                                         .font(.system(size: 12, weight: .bold))
                                         .foregroundColor(.secondary)
@@ -141,5 +137,34 @@ struct EntityView: View {
                 }
             }
         }
+        // .border(.red)
     }
 }
+
+// if let parent = entity.parent, previousEntity?.parent?.id != parent.id, previousEntity?.id != parent.id, !isRootChild {
+//     VStack(alignment: .leading, spacing: 8) {
+//         // Line()
+//         //     .stroke(color,
+//         //             style: StrokeStyle(
+//         //                 lineWidth: 4,
+//         //                 lineCap: .round,
+//         //                 dash: previousEntity?.parent?.id != rootEntity.id ? [4, 8] : []
+//         //             ))
+//         //     .frame(width: 40, height: 48)
+//             // .padding(.bottom, -12)
+//
+//         HStack(spacing: 12) {
+//             // LoopPath()
+//             //     .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+//             //     .frame(width: 40, height: 32)
+//             //     .scaleEffect(x: -1, y: 1)
+//
+//             AvatarView(size: 32, imageURL: parent.avatar)
+//                 .frame(width: 40)
+//
+//             ParentTextBubbleView(entity: parent)
+//                 .padding(.bottom, 8)
+//         }
+//     }
+//     .onAppear { hasContext = true }
+// }
