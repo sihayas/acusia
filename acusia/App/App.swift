@@ -252,7 +252,7 @@ struct FloatingBarView: View {
                 .animation(.snappy, value: keyboardHeight)
                 .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
                     if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                        self.keyboardHeight = keyboardFrame.height + safeAreaInsets.bottom
+                        self.keyboardHeight = keyboardFrame.height + 24
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in

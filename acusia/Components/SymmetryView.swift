@@ -232,6 +232,8 @@ struct SymmetryView: View {
                 self.width = geometry.size.width
                 self.height = geometry.size.height
                 self.centerWidth = geometry.size.width / 2
+                
+                // windowState.symmetryState = .reply
             }
             .onChange(of: windowState.symmetryState) { _, _ in
                 switch windowState.symmetryState {
@@ -301,60 +303,73 @@ extension SymmetryView {
         tag: Int
     ) -> some View {
         VStack(spacing: 0) {
-            TextEditor(text: windowState.symmetryState == .reply ? $replyText : $searchText)
-                .font(.system(size: 17))
-                .foregroundColor(.white)
-                .padding([.top, .horizontal], 8)
-                .focused($focusedField, equals: .reply)
-                .focused($focusedField, equals: .search)
-                .textEditorBackground(.clear)
-                .border(.red.opacity(0.5))
-           
-            
-            if windowState.symmetryState == .reply {
-                HStack(alignment: .bottom) {
-                    if let result = windowState.selectedResult {
-                        HStack(spacing: 4) {
-                            Image(systemName: "music.note")
-                                .font(.system(size: 9, weight: .bold))
-                                .foregroundColor(.secondary)
-
-                            Text("\(result.artistName),")
-                                .foregroundColor(.secondary)
-                                .font(.system(size: 11, weight: .regular, design: .monospaced))
-                                .lineLimit(1)
-
-                            Text(result.title)
-                                .foregroundColor(.white)
-                                .font(.system(size: 11, weight: .regular, design: .monospaced))
-                                .lineLimit(1)
+            Group {
+                TextEditor(text: windowState.symmetryState == .reply ? $replyText : $searchText)
+                    .font(.system(size: 17))
+                    .foregroundColor(.white)
+                    .padding([.top, .horizontal], 8)
+                    .focused($focusedField, equals: .reply)
+                    .focused($focusedField, equals: .search)
+                    .textEditorBackground(.clear)
+                
+                
+                if windowState.symmetryState == .reply {
+                    HStack(alignment: .bottom) {
+                        if let result = windowState.selectedResult {
+                            HStack(spacing: 4) {
+                                Image(systemName: "music.note")
+                                    .font(.system(size: 9, weight: .bold))
+                                    .foregroundColor(.secondary)
+                                
+                                Text("\(result.artistName),")
+                                    .foregroundColor(.secondary)
+                                    .font(.system(size: 11, weight: .regular, design: .monospaced))
+                                    .lineLimit(1)
+                                
+                                Text(result.title)
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 11, weight: .regular, design: .monospaced))
+                                    .lineLimit(1)
+                            }
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(.ultraThickMaterial, in: Capsule())
                         }
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.ultraThickMaterial, in: Capsule())
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            print("context menu")
+                        }) {
+                            Image(systemName: "ellipsis")
+                                .contentTransition(.symbolEffect(.replace))
+                                .foregroundColor(.secondary)
+                                .animation(.smooth, value: replyText.isEmpty)
+                                .font(.system(size: 20))
+                                .frame(width: 27, height: 27 )
+                        }
+                        
+                        
+                        Button(action: {
+                            replyText.isEmpty ? windowState.symmetryState = .search : print("send")
+                        }) {
+                            Image(systemName: replyText.isEmpty ? "xmark" : "arrow.up.circle.fill")
+                                .contentTransition(.symbolEffect(.replace))
+                                .foregroundColor(replyText.isEmpty ? Color(UIColor.systemRed) : .white)
+                                .animation(.smooth, value: replyText.isEmpty)
+                                .font(.system(size: 27))
+                        }
                     }
-            
-                    Spacer()
-            
-                    Button(action: {
-                        replyText.isEmpty ? resetState() : print("send")
-                    }) {
-                        Image(systemName: replyText.isEmpty ? "xmark.circle.fill" : "arrow.up.circle.fill")
-                            .contentTransition(.symbolEffect(.replace))
-                            .foregroundColor(replyText.isEmpty ? Color(UIColor.systemRed).opacity(0.5) : .white)
-                            .animation(.smooth, value: replyText.isEmpty)
-                            .font(.system(size: 27))
-                    }
+                    .padding([.horizontal, .bottom], 8)
                 }
-                .padding([.horizontal, .bottom], 8)
-                .border(.blue.opacity(0.5))
             }
+            .opacity(windowState.symmetryState != .reply && windowState.symmetryState != .search ? 0 : 1)
         }
         .frame(width: symmetryState.center.size.width)
         .frame(minHeight: symmetryState.center.size.height)
         .background(fillColor, in: RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous))
         .measure($replySize)
-        .frame(maxHeight: 124)
+        .frame(maxHeight: 180)
         .fixedSize(horizontal: false, vertical: true)
         .overlay(overlayContent)
         .offset(x: symmetryState.center.offset.x, y: symmetryState.center.offset.y)
@@ -373,6 +388,7 @@ extension SymmetryView {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
+            windowState.selectedResult = nil
             focusedField = nil
             replyText = ""
             searchText = ""
@@ -412,6 +428,7 @@ extension SymmetryView {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
+            windowState.selectedResult = nil
             focusedField = nil
             blurRadius = 4
             symmetryState = SymmetryState(
