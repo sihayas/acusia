@@ -1,28 +1,19 @@
 import SwiftUI
 
 class HomeState: ObservableObject {
-    // Singleton instance
     static let shared = HomeState()
 
-    // Prevent external initialization
     init() {}
 
-    // Your shared properties go here
     @Published var isExpanded: Bool = false
 
-    // ScrollView Properties
     @Published var mainScrollValue: CGFloat = 0
     @Published var topScrollViewValue: CGFloat = 0
 
-    // These properties will be used to evaluate the drag conditions,
-    // whether the scroll view can either be pulled up or down for expanding/minimizing the photos scrollview
     @Published var canPullDown: Bool = false
     @Published var canPullUp: Bool = false
 
     @Published var gestureProgress: CGFloat = 0
-
-    @Published var showReplies: Bool = false
-    @Published var repliesOffset: CGFloat = 0
 }
 
 struct Home: View {

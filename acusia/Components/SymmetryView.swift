@@ -74,7 +74,7 @@ struct SymmetryView: View {
 
                 Rectangle()
                     .background(.ultraThinMaterial)
-                    // .foregroundStyle(.clear)
+                    .foregroundStyle(.clear)
                     .mask {
                         Canvas { ctx, _ in
                             let leading = ctx.resolveSymbol(id: 0)!
@@ -91,7 +91,7 @@ struct SymmetryView: View {
                             }
                         } symbols: {
                             createSymbol(
-                                shape: Capsule(),
+                                shape: RoundedRectangle(cornerRadius: symmetryState.leading.cornerRadius, style: .continuous),
                                 fillColor: .black,
                                 overlayContent: EmptyView(),
                                 size: symmetryState.leading.size,
@@ -110,7 +110,7 @@ struct SymmetryView: View {
                             )
                             
                             createSymbol(
-                                shape: RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous),
+                                shape: RoundedRectangle(cornerRadius: symmetryState.trailing.cornerRadius, style: .continuous),
                                 fillColor: .black,
                                 overlayContent: EmptyView(),
                                 size: symmetryState.trailing.size,
@@ -127,7 +127,7 @@ struct SymmetryView: View {
 
                 Group {
                     createSymbol(
-                        shape: Capsule(),
+                        shape: RoundedRectangle(cornerRadius: symmetryState.leading.cornerRadius, style: .continuous),
                         fillColor: .clear,
                         overlayContent:
                         ZStack {
@@ -135,11 +135,32 @@ struct SymmetryView: View {
                                 AvatarView(size: 32, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
                             }
                             
-                            if windowState.symmetryState == .reply {
-                                Image(systemName: "plus")
-                                    .foregroundColor(.secondary)
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            if windowState.symmetryState == .reply, let result = windowState.selectedResult {
+                                GeometryReader { _ in
+                                    AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
+                                        image
+                                            .resizable()
+                                    } placeholder: {
+                                        Rectangle()
+                                    }
+                                    .clipShape(RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius - 2, style: .continuous))
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(2)
+                                    .coordinateSpace(name: "AsyncImage")
+                                    .onTapGesture(count: 2) { location in
+                                        loved = true
+                                        origin = location
+                                        velocity = 1.5
+                                        rippleTrigger += 1
+                                    }
+                                    .onTapGesture(count: 1) { location in
+                                        loved = false
+                                        origin = location // Ripple
+                                        velocity = 0.5
+                                        rippleTrigger += 1
+                                    }
+                                    .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
+                                }
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -165,7 +186,7 @@ struct SymmetryView: View {
                     )
                     
                     createSymbol(
-                        shape: RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous),
+                        shape: RoundedRectangle(cornerRadius: symmetryState.trailing.cornerRadius, style: .continuous),
                         fillColor: .clear,
                         overlayContent:
                         ZStack {
@@ -233,17 +254,17 @@ struct SymmetryView: View {
             }
             .onChange(of: replySize.height) { _, newHeight in
                 if windowState.symmetryState == .reply {
-                    // withAnimation(.interpolatingSpring(
-                    //     mass: 2.0,
-                    //     stiffness: pow(2 * .pi / 0.5, 2),
-                    //     damping: 4 * .pi * 0.7 / 0.5,
-                    //     initialVelocity: 0.0
-                    // )) {
-                    //     blurRadius = 1
-                    //     symmetryState.center.offset = CGPoint(x: 24, y: -newHeight - 4)
-                    // } completion: {
-                    //     blurRadius = 0
-                    // }
+                    withAnimation(.interpolatingSpring(
+                        mass: 2.0,
+                        stiffness: pow(2 * .pi / 0.5, 2),
+                        damping: 4 * .pi * 0.7 / 0.5,
+                        initialVelocity: 0.0
+                    )) {
+                        blurRadius = 1
+                        symmetryState.leading.offset.y = -newHeight - 4
+                    } completion: {
+                        blurRadius = 0
+                    }
                 }
             }
         }
@@ -283,42 +304,56 @@ extension SymmetryView {
             TextEditor(text: windowState.symmetryState == .reply ? $replyText : $searchText)
                 .font(.system(size: 17))
                 .foregroundColor(.white)
-                // .border(.red.opacity(0.5))
-                .padding(8)
+                .padding([.top, .horizontal], 8)
                 .focused($focusedField, equals: .reply)
                 .focused($focusedField, equals: .search)
-                .disabled(windowState.symmetryState != .reply || windowState.symmetryState != .search)
                 .textEditorBackground(.clear)
-                .measure($replySize)
+                .border(.red.opacity(0.5))
+           
             
             if windowState.symmetryState == .reply {
                 HStack(alignment: .bottom) {
-                    Button(action: {
-                        searchText = ""
-                    }) {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.white)
-                            .font(.system(size: 16))
+                    if let result = windowState.selectedResult {
+                        HStack(spacing: 4) {
+                            Image(systemName: "music.note")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundColor(.secondary)
+
+                            Text("\(result.artistName),")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 11, weight: .regular, design: .monospaced))
+                                .lineLimit(1)
+
+                            Text(result.title)
+                                .foregroundColor(.white)
+                                .font(.system(size: 11, weight: .regular, design: .monospaced))
+                                .lineLimit(1)
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(.ultraThickMaterial, in: Capsule())
                     }
-                    .opacity(0)
-                
+            
                     Spacer()
-                    
+            
                     Button(action: {
-                        print("Send")
+                        replyText.isEmpty ? resetState() : print("send")
                     }) {
-                        Image(systemName: replyText.isEmpty ? "arrow.up.circle.dotted": "arrow.up.circle.fill")
+                        Image(systemName: replyText.isEmpty ? "xmark.circle.fill" : "arrow.up.circle.fill")
                             .contentTransition(.symbolEffect(.replace))
-                            .font(.system(size: 24))
+                            .foregroundColor(replyText.isEmpty ? Color(UIColor.systemRed).opacity(0.5) : .white)
+                            .animation(.smooth, value: replyText.isEmpty)
+                            .font(.system(size: 27))
                     }
                 }
                 .padding([.horizontal, .bottom], 8)
-                // .border(.blue.opacity(0.5))
+                .border(.blue.opacity(0.5))
             }
         }
         .frame(width: symmetryState.center.size.width)
         .frame(minHeight: symmetryState.center.size.height)
-        .background(fillColor, in: RoundedRectangle(cornerRadius: baseRadius, style: .continuous))
+        .background(fillColor, in: RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius, style: .continuous))
+        .measure($replySize)
         .frame(maxHeight: 124)
         .fixedSize(horizontal: false, vertical: true)
         .overlay(overlayContent)
@@ -346,7 +381,8 @@ extension SymmetryView {
                 leading: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: baseWidth, height: baseHeight)
+                    size: CGSize(width: baseWidth, height: baseHeight),
+                    cornerRadius: baseRadius
                 ),
                 center: .init(
                     showContent: false,
@@ -357,7 +393,8 @@ extension SymmetryView {
                 trailing: .init(
                     showContent: false,
                     offset: .zero,
-                    size: CGSize(width: baseWidth, height: baseHeight)
+                    size: CGSize(width: baseWidth, height: baseHeight),
+                    cornerRadius: baseRadius
                 )
             )
         } completion: {
@@ -410,18 +447,20 @@ extension SymmetryView {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
+            let height: CGFloat = 80
+            
             blurRadius = 4
             focusedField = .reply
             symmetryState = SymmetryState(
                 leading: .init(
-                    showContent: false,
-                    offset: .zero,
-                    size: CGSize(width: baseWidth, height: baseHeight)
+                    showContent: true,
+                    offset: CGPoint(x: -centerWidth + (224 / 2) + 24, y: -height - 4),
+                    size: CGSize(width: 224, height: 224)
                 ),
                 center: .init(
                     showContent: true,
                     offset: .zero,
-                    size: CGSize(width: width - horizontalPadding, height: 88),
+                    size: CGSize(width: width - horizontalPadding, height: height),
                     cornerRadius: baseRadius
                 ),
                 trailing: .init(
@@ -468,6 +507,7 @@ extension SymmetryView {
 
 struct ControlButtons: View {
     // MARK: Buttons
+
     @EnvironmentObject private var windowState: WindowState
     
     var body: some View {

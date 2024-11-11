@@ -4,6 +4,8 @@ import Transmission
 
 class WindowState: ObservableObject {
     static let shared = WindowState()
+    
+    init() {}
 
     enum SymmetryState: String {
         case collapsed
@@ -25,7 +27,6 @@ class WindowState: ObservableObject {
     @Published var isOffsetAtTop: Bool = true
     @Published var isLayered: Bool = false
 
-    init() {}
 }
 
 struct AcusiaAppView_Previews: PreviewProvider {
@@ -59,6 +60,7 @@ struct AcusiaApp: App {
     var body: some Scene {
         WindowGroup {
             AcusiaAppView()
+                .background(DarkModeWindowModifier())
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(windowState)
                 .environmentObject(musicKit)
@@ -70,12 +72,6 @@ struct AcusiaApp: App {
     }
 }
 
-/// The general idea for the split layout is there is a ZStack container that holds
-/// the RepliesView below the HomeView. When the user triggers a split,
-/// the HomeView mask frame shrinks to the baseHomeHeight
-/// and the RepliesView mask frame expands to the baseReplyHeight.
-/// As the user drags up the RepliesView mask expands to full, and the
-/// HomeView mask shrinks to the minHomeHeight.
 struct AcusiaAppView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: WindowState
@@ -266,7 +262,6 @@ struct FloatingBarView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .onAppear {
             self.keyboardHeight = safeAreaInsets.bottom
-
             windowState.symmetryState = .feed
         }
     }
