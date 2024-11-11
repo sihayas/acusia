@@ -77,24 +77,71 @@ struct TextBubbleView: View {
 }
 
 struct ParentTextBubbleView: View {
+    @State private var gestureTranslation = CGPoint.zero
+    @State private var gestureVelocity = CGPoint.zero
+    
     let entity: Entity
+    let auxiliarySize: CGSize = .init(width: 216, height: 120)
 
     var body: some View {
-        HStack(alignment: .lastTextBaseline) {
-            Text(entity.text)
-                .foregroundColor(.secondary)
-                .font(.system(size: 11))
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-                .lineLimit(2)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .lastTextBaseline) {
+                Text(entity.text)
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 11))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+            }
+
+            if let song = entity.getSongAttachment() {
+                HStack(spacing: 4) {
+                    Image(systemName: "music.note")
+                        .font(.system(size: 7, weight: .bold))
+                        .foregroundColor(.secondary)
+
+                    Text("\(song.artistName),")
+                        .foregroundColor(.secondary)
+                        .font(.system(size: 9, weight: .regular, design: .monospaced))
+                        .lineLimit(1)
+
+                    Text(song.name)
+                        .foregroundColor(.white)
+                        .font(.system(size: 9, weight: .regular, design: .monospaced))
+                }
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .overlay(Capsule().stroke(.white.opacity(0.05), lineWidth: 1))
+            }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .overlay(
-            BubbleWithTailShape(scale: 0.2)
+            BubbleWithTailShape(scale: 0.75)
                 .stroke(.white.opacity(0.1), lineWidth: 1)
         )
-        .foregroundStyle(.secondary)
+        .auxiliaryContextMenu(
+            auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),
+            gestureTranslation: $gestureTranslation,
+            gestureVelocity: $gestureVelocity,
+            config: AuxiliaryPreviewConfig(
+                verticalAnchorPosition: .top,
+                horizontalAlignment: .targetLeading,
+                preferredWidth: .constant(auxiliarySize.width),
+                preferredHeight: .constant(auxiliarySize.height),
+                marginInner: -56,
+                marginOuter: 0,
+                marginLeading: -56,
+                marginTrailing: 0,
+                transitionConfigEntrance: .syncedToMenuEntranceTransition(),
+                transitionExitPreset: .zoom(zoomOffset: 0)
+            )
+        ) {
+            UIAction(
+                title: "Share",
+                image: UIImage(systemName: "square.and.arrow.up")
+            ) { _ in
+            }
+        }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

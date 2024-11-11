@@ -19,6 +19,11 @@ struct EntityView: View {
     @State private var attachmentSize: CGSize = .zero
     @State private var textSize: CGSize = .zero
     @State private var spacing: CGFloat = 0
+
+    @State private var parentAttachmentSize: CGSize = .zero
+    @State private var parentTextSize: CGSize = .zero
+    @State private var parentSpacing: CGFloat = 0
+
     @State private var hasContext = false
 
     let rootEntity: Entity
@@ -41,25 +46,74 @@ struct EntityView: View {
         let isRootChild = parentId == rootId
 
         VStack(alignment: .leading, spacing: hasContext ? 8 : 0) {
-            /// Contextual Parent
+            // MARK: Contextual Parent
+
             if previousId == parentId && !isRootChild && !isRoot {
                 LoopPath()
                     .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .frame(width: 40, height: 32)
                     .scaleEffect(x: -1, y: 1)
             }
-            
+
             if let parent = parent, parentId != previousParentId, parentId != previousId, !isRootChild {
-                HStack(spacing: 12) {
+                HStack(alignment: .bottom, spacing: 8) {
                     AvatarView(size: 32, imageURL: parent.avatar)
                         .frame(width: 40)
 
-                    ParentTextBubbleView(entity: parent)
-                        .padding(.bottom, 8)
+                    ZStack(alignment: .topLeading) {
+                        HStack(alignment: .bottom, spacing: -blipXOffset) {
+                            ParentTextBubbleView(entity: parent)
+                                .alignmentGuide(VerticalAlignment.bottom) { _ in 8 }
+                                .measure($parentTextSize)
+                                .padding(.bottom, 4)
+                        }
+                        .onChange(of: parentTextSize.width) {
+                            /// If the width of the top is greater than the width of the text bubble minus 16, push the top down.
+                            parentSpacing = parentAttachmentSize.width > (parentTextSize.width) ? 0 : 4
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            if let song = parent.getSongAttachment() {
+                                ZStack(alignment: .bottomTrailing) {
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(.ultraThinMaterial, lineWidth: 1)
+                                        .fill(.clear)
+                                        .frame(width: 44, height: 44)
+                                        .overlay(
+                                            AsyncImage(url: URL(string: song.artwork)) { image in
+                                                image
+                                                    .resizable()
+                                            } placeholder: {
+                                                Rectangle()
+                                            }
+                                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                            .aspectRatio(contentMode: .fill)
+                                            .padding(4)
+                                        )
+
+                                    Button(action: {
+                                        // Handle button action here
+                                    }) {
+                                        Image(systemName: "plus")
+                                            .font(.system(size: 8, weight: .regular))
+                                            .foregroundColor(.secondary)
+                                            .frame(width: 12, height: 12)
+                                            .background(.ultraThinMaterial)
+                                            .clipShape(Circle())
+                                            .alignmentGuide(VerticalAlignment.bottom) { d in d.height + 4 }
+                                            .alignmentGuide(HorizontalAlignment.trailing) { d in d.width + 4 }
+                                    }
+                                }
+                            }
+                        }
+                        .alignmentGuide(VerticalAlignment.top) { d in d.height + parentSpacing }
+                        .measure($parentAttachmentSize)
+                    }
                 }
                 .onAppear { hasContext = true }
-                .padding(.top, 44)
             }
+
+            // MARK: Entity Parent
 
             HStack(alignment: .bottom, spacing: 8) {
                 VStack {
@@ -100,22 +154,22 @@ struct EntityView: View {
 
                         if let song = entity.getSongAttachment() {
                             ZStack(alignment: .bottomTrailing) {
-                                AsyncImage(url: URL(string: song.artwork)) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 88, height: 88)
-                                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                                .padding(1)
-                                .background(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(.ultraThinMaterial, lineWidth: 4))
-                                .rotationEffect(.degrees(-4), anchor: .center)
+                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                                    .frame(width: 88, height: 88)
+                                    .overlay(
+                                        AsyncImage(url: URL(string: song.artwork)) { image in
+                                            image
+                                                .resizable()
+                                        } placeholder: {
+                                            Rectangle()
+                                        }
+                                        .clipShape(RoundedRectangle(cornerRadius: 19, style: .continuous))
+                                        .aspectRatio(contentMode: .fill)
+                                        .padding(2)
+                                    )
 
-                                Button(action: {
-                                    // Handle button action here
-                                }) {
+                                Button(action: {}) {
                                     Image(systemName: "plus")
                                         .font(.system(size: 12, weight: .bold))
                                         .foregroundColor(.secondary)
@@ -127,7 +181,7 @@ struct EntityView: View {
                                                 .stroke(color, lineWidth: 2)
                                         )
                                         .alignmentGuide(VerticalAlignment.bottom) { d in d.height - 4 }
-                                        .alignmentGuide(HorizontalAlignment.trailing) { d in d.width - 8 }
+                                        .alignmentGuide(HorizontalAlignment.trailing) { d in d.width - 4 }
                                 }
                             }
                         }
@@ -137,34 +191,5 @@ struct EntityView: View {
                 }
             }
         }
-        // .border(.red)
     }
 }
-
-// if let parent = entity.parent, previousEntity?.parent?.id != parent.id, previousEntity?.id != parent.id, !isRootChild {
-//     VStack(alignment: .leading, spacing: 8) {
-//         // Line()
-//         //     .stroke(color,
-//         //             style: StrokeStyle(
-//         //                 lineWidth: 4,
-//         //                 lineCap: .round,
-//         //                 dash: previousEntity?.parent?.id != rootEntity.id ? [4, 8] : []
-//         //             ))
-//         //     .frame(width: 40, height: 48)
-//             // .padding(.bottom, -12)
-//
-//         HStack(spacing: 12) {
-//             // LoopPath()
-//             //     .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-//             //     .frame(width: 40, height: 32)
-//             //     .scaleEffect(x: -1, y: 1)
-//
-//             AvatarView(size: 32, imageURL: parent.avatar)
-//                 .frame(width: 40)
-//
-//             ParentTextBubbleView(entity: parent)
-//                 .padding(.bottom, 8)
-//         }
-//     }
-//     .onAppear { hasContext = true }
-// }

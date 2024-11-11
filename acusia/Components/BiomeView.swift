@@ -81,7 +81,13 @@ let biomeOne: [Entity] = {
                 username: "qwertyyy",
                 avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
                 text: "No and tbh vultures 1 clears both🦅",
-                created_at: Date(timeIntervalSinceNow: -2400)
+                created_at: Date(timeIntervalSinceNow: -2400),
+                attachments: [
+                    SongAttachment(id: "idk",
+                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/25/47/fa/2547fae8-2010-7b31-8dc7-1a93de4a3269/cover.jpg/632x632bb.webp",
+                                   name: "Vultures 1",
+                                   artistName: "Kanye West")
+                ]
             )
         ),
         Entity(
