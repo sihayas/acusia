@@ -41,7 +41,6 @@ struct EntityView: View {
         let previousParentId = previousEntity?.parent?.id
         let parent = entity.parent
         let parentId = entity.parent?.id
-        let entityId = entity.id
 
         let isRootChild = parentId == rootId
 
@@ -111,6 +110,7 @@ struct EntityView: View {
                     }
                 }
                 .onAppear { hasContext = true }
+                .padding(.top, 24)
             }
 
             // MARK: Entity Parent
