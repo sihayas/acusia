@@ -72,6 +72,11 @@ struct EntityView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 4) {
+                            Text(entity.username)
+                                .font(.system(size: 9, weight: .regular))
+                                .foregroundColor(.secondary)
+                                .padding(.leading, 10)
+                            
                             if let song = parent.getSongAttachment() {
                                 ZStack(alignment: .bottomTrailing) {
                                     RoundedRectangle(cornerRadius: 12, style: .continuous)

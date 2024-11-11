@@ -137,7 +137,7 @@ let biomeTwo: [Entity] = {
             username: "echoVerse",
             avatar: "https://i.pinimg.com/474x/9b/3c/11/9b3c11429ec2b25b0135566ad3e6c482.jpg",
             text: "Alright, maybe I’ll give it another shot. I guess I was expecting something less… polished.",
-            created_at: Date(timeIntervalSinceNow: -2400), 
+            created_at: Date(timeIntervalSinceNow: -2400),
             parent: Entity(id: "1", username: "echoVerse", avatar: "", text: "", created_at: Date())
         )
     ]
@@ -193,16 +193,21 @@ let biomeOneExpanded: [Entity] = {
         Entity(
             id: "4",
             username: "vjeranski",
-            avatar: "vjeranski",
+            avatar: "https://d2w9rnfcy7mm78.cloudfront.net/31132288/original_b3573ce965ab3459b25ab0977beec40b.jpg",
             text: "delusional",
-           
             created_at: Date(timeIntervalSinceNow: -1200),
             parent: Entity(
                 id: "1",
                 username: "qwertyyy",
-                avatar: "qwertyyy",
+                avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
                 text: "No and tbh vultures 1 clears both🦅",
-                created_at: Date(timeIntervalSinceNow: -2400)
+                created_at: Date(timeIntervalSinceNow: -2400),
+                attachments: [
+                    SongAttachment(id: "idk",
+                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/25/47/fa/2547fae8-2010-7b31-8dc7-1a93de4a3269/cover.jpg/632x632bb.webp",
+                                   name: "Vultures 1",
+                                   artistName: "Kanye West")
+                ]
             )
         ),
         Entity(
