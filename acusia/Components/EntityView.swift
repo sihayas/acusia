@@ -29,7 +29,6 @@ struct EntityView: View {
     let rootEntity: Entity
     let previousEntity: Entity?
     let entity: Entity
-    let isRoot: Bool
     let color: Color
     let secondaryColor: Color
 
@@ -42,6 +41,7 @@ struct EntityView: View {
         let parent = entity.parent
         let parentId = entity.parent?.id
 
+        let isRoot = parent == nil
         let isRootChild = parentId == rootId
 
         VStack(alignment: .leading, spacing: hasContext ? 8 : 0) {

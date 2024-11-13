@@ -38,15 +38,5 @@ struct Home: View {
         }
         .scrollClipDisabled(true)
         .frame(width: windowState.size.width, height: windowState.size.height)
-        .overlay(alignment: .top) {
-            VStack {
-                VariableBlurView(radius: 1, mask: Image(.gradient))
-                    .scaleEffect(x: 1, y: -1)
-                    .ignoresSafeArea()
-                    .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
-                
-                Spacer()
-            }
-        }
     }
 }

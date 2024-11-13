@@ -35,65 +35,6 @@ struct RadialLayout: Layout {
     }
 }
 
-struct TriangularLayout: Layout {
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) -> CGSize {
-        // Accept the full proposed space, replacing any nil values with defaults
-        proposal.replacingUnspecifiedDimensions()
-    }
-    
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) {
-        guard !subviews.isEmpty else { return }
-        
-        // Calculate the number of rows needed for a triangle
-        let totalRows = calculateRows(for: subviews.count)
-        
-        // Calculate spacing between elements
-        let maxItemsInRow = totalRows // Bottom row will have this many items
-        let horizontalSpacing = bounds.width / CGFloat(maxItemsInRow + 1)
-        let verticalSpacing = bounds.height / CGFloat(totalRows + 1)
-        
-        var currentIndex = 0
-        
-        // Place views row by row
-        for row in 0..<totalRows {
-            let itemsInCurrentRow = row + 1
-            let rowY = bounds.minY + verticalSpacing * CGFloat(row + 1)
-            
-            // Calculate starting X position for this row to center it
-            let totalRowWidth = horizontalSpacing * CGFloat(itemsInCurrentRow - 1)
-            let startX = bounds.midX - totalRowWidth / 2
-            
-            // Place items in the current row
-            for item in 0..<itemsInCurrentRow {
-                guard currentIndex < subviews.count else { return }
-                
-                let subview = subviews[currentIndex]
-                let viewSize = subview.sizeThatFits(.unspecified)
-                
-                let xPos = startX + horizontalSpacing * CGFloat(item)
-                let point = CGPoint(x: xPos, y: rowY)
-                
-                subview.place(at: point, anchor: .center, proposal: .unspecified)
-                currentIndex += 1
-            }
-        }
-    }
-    
-    // Helper function to calculate the number of rows needed
-    private func calculateRows(for count: Int) -> Int {
-        var items = 0
-        var rows = 0
-        
-        while items < count {
-            rows += 1
-            items += rows
-        }
-        
-        return rows
-    }
-}
-
-
 struct ZigZagLayout: Layout {
     var spacing: CGFloat = 20  // Horizontal spacing between items
     var rowSpacing: CGFloat = 20  // Vertical spacing between rows
@@ -161,4 +102,86 @@ struct ZigZagLayout: Layout {
             currentX += maxItemSize.width + spacing
         }
     }
+}
+
+import SwiftUI
+
+struct ConcentricRadialLayout: Layout {
+    var innerRadius: CGFloat  // Size of the first circle
+    var ringSpacing: CGFloat = 20  // Space between rings
+    
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) -> CGSize {
+        // Accept the full proposed space
+        proposal.replacingUnspecifiedDimensions()
+    }
+    
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) {
+        guard !subviews.isEmpty else { return }
+        
+        // Place first item in center
+        let centerPoint = CGPoint(x: bounds.midX, y: bounds.midY)
+        if let firstView = subviews.first {
+            firstView.place(at: centerPoint, anchor: .center, proposal: .unspecified)
+        }
+        
+        // Skip the first view as it's in the center
+        let remainingViews = subviews.dropFirst()
+        guard !remainingViews.isEmpty else { return }
+        
+        // Calculate rings needed (roughly square root of remaining items)
+        let ringCount = Int(ceil(sqrt(Double(remainingViews.count))))
+        var currentIndex = 0
+        
+        // Place items in concentric rings
+        for ring in 1...ringCount {
+            // Calculate number of items that can fit in this ring
+            let itemsInRing = min(ring * 6, remainingViews.count - currentIndex)
+            guard itemsInRing > 0 else { break }
+            
+            // Calculate radius for this ring
+            let ringRadius = innerRadius + (ringSpacing * CGFloat(ring))
+            
+            // Calculate angle between items in this ring
+            let angle = Angle.degrees(360.0 / Double(itemsInRing)).radians
+            
+            // Place items in this ring
+            for item in 0..<itemsInRing {
+                let index = currentIndex + item
+                guard index < remainingViews.count else { break }
+                
+                let view = remainingViews.dropFirst(currentIndex)[item]
+                let viewSize = view.sizeThatFits(.unspecified)
+                
+                // Calculate position on the circle
+                let itemAngle = angle * Double(item) - .pi / 2
+                let xPos = cos(itemAngle) * (ringRadius - viewSize.width / 2)
+                let yPos = sin(itemAngle) * (ringRadius - viewSize.height / 2)
+                
+                // Position the view
+                let point = CGPoint(x: bounds.midX + xPos, y: bounds.midY + yPos)
+                view.place(at: point, anchor: .center, proposal: .unspecified)
+            }
+            
+            currentIndex += itemsInRing
+        }
+    }
+}
+
+// Example usage:
+struct ContentView: View {
+    var body: some View {
+        ConcentricRadialLayout(innerRadius: 50, ringSpacing: 60) {
+            ForEach(0..<20) { index in
+                Circle()
+                    .fill(Color.blue.opacity(0.5))
+                    .frame(width: 40, height: 40)
+                    .overlay(Text("\(index)"))
+            }
+        }
+        .frame(width: 500, height: 500)
+    }
+}
+
+#Preview {
+    ContentView()
 }
