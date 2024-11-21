@@ -17,16 +17,18 @@ struct BiomeView: View {
     @State private var showSheet: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(0 ..< min(6, biome.entities.count), id: \.self) { index in
-                let previousEntity = index > 0 ? biome.entities[index - 1] : nil
-
-                EntityView(rootEntity: biome.entities[0],
-                           previousEntity: previousEntity,
-                           entity: biome.entities[index],
-                           color: color,
-                           secondaryColor: secondaryColor)
+        VStack {
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(0 ..< min(6, biome.entities.count), id: \.self) { index in
+                    let previousEntity = index > 0 ? biome.entities[index - 1] : nil
+                    
+                    EntityView(rootEntity: biome.entities[0],
+                               previousEntity: previousEntity,
+                               entity: biome.entities[index],
+                               color: color,
+                               secondaryColor: secondaryColor)
                     .frame(maxHeight: .infinity)
+                }
             }
         }
         .padding(.horizontal, 24)
@@ -55,13 +57,7 @@ let biomeOne: [Entity] = {
         username: "autobahn",
         avatar: "https://i.pinimg.com/474x/9f/38/61/9f38614bb1acaad50e1959f4e3d5768c.jpg",
         text: "yall are insane. this is peak, sounds like autolux. also, its not like theyre hiding the fact that they took inspiration",
-        created_at: Date(timeIntervalSinceNow: -3600),
-        attachments: [
-            SongAttachment(id: "idk",
-                           artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/18/62/27/18622713-a797-9f9d-b85c-f0373f190a27/075679634382.jpg/632x632bb.webp",
-                           name: "Eusexua",
-                           artistName: "FKA Twigs")
-        ]
+        created_at: Date(timeIntervalSinceNow: -3600)
     )
 
     return [
@@ -82,7 +78,8 @@ let biomeOne: [Entity] = {
                     SongAttachment(id: "idk",
                                    artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/25/47/fa/2547fae8-2010-7b31-8dc7-1a93de4a3269/cover.jpg/632x632bb.webp",
                                    name: "Vultures 1",
-                                   artistName: "Kanye West")
+                                   artistName: "Kanye West",
+                                   color: "#FFF")
                 ]
             )
         ),
@@ -98,7 +95,15 @@ let biomeOne: [Entity] = {
                 avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
                 text: "No and tbh vultures 1 clears both🦅",
                 created_at: Date(timeIntervalSinceNow: -2400)
-            )
+            ),
+            attachments: [
+                SongAttachment(id: "idk",
+                               artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/18/62/27/18622713-a797-9f9d-b85c-f0373f190a27/075679634382.jpg/632x632bb.webp",
+                               name: "Eusexua",
+                               artistName: "FKA Twigs",
+                               
+                               color: "#9b9b9b")
+            ]
         )
     ]
 }()
@@ -114,7 +119,9 @@ let biomeTwo: [Entity] = {
             SongAttachment(id: "exhibit2024",
                            artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/1d/30/021d3036-5503-3ed3-df00-882f2833a6ae/17UM1IM17026.rgb.jpg/632x632bb.webp",
                            name: "dont smile at me",
-                           artistName: "Billie Eilish")
+                           artistName: "Billie Eilish",
+                           color: "#FFF"
+                          )
         ]
     )
 
@@ -150,7 +157,9 @@ let biomeOneExpanded: [Entity] = {
             SongAttachment(id: "idk",
                            artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/18/62/27/18622713-a797-9f9d-b85c-f0373f190a27/075679634382.jpg/632x632bb.webp",
                            name: "Eusexua",
-                           artistName: "FKA Twigs")
+                           artistName: "FKA Twigs",
+                           color: "#FFF"
+                          )
         ]
     )
 
@@ -175,7 +184,9 @@ let biomeOneExpanded: [Entity] = {
                 SongAttachment(id: "idk",
                                artwork: "https://is1-ssl.mzstatic.com/image/thumb/Video211/v4/93/01/d3/9301d31b-3c90-8f26-44c9-a403c186cbac/Job70a1c5af-b67a-4cf3-a2d6-dc032483f151-169441773-PreviewImage_Preview_Image_Intermediate_nonvideo_sdr_329793320_1793175885-Time1717534608063.png/632x632bb.webp",
                                name: "Sympathy is a knife",
-                               artistName: "Charli XCX")
+                               artistName: "Charli XCX",
+                               color: "#FFF"
+                              )
             ]
         ),
         Entity(
@@ -202,7 +213,9 @@ let biomeOneExpanded: [Entity] = {
                     SongAttachment(id: "idk",
                                    artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/25/47/fa/2547fae8-2010-7b31-8dc7-1a93de4a3269/cover.jpg/632x632bb.webp",
                                    name: "Vultures 1",
-                                   artistName: "Kanye West")
+                                   artistName: "Kanye West",
+                                   color: "#FFF"
+                                  )
                 ]
             )
         ),

@@ -60,13 +60,15 @@ class SongAttachment: Attachment {
     let artwork: String
     let name: String
     let artistName: String
+    let color: String
     
 
-    init(id: String, artwork: String, name: String, artistName: String) {
+    init(id: String, artwork: String, name: String, artistName: String, color: String) {
         self.id = id
         self.artwork = artwork
         self.name = name
         self.artistName = artistName
+        self.color = color
     }
 }
 

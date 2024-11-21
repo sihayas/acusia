@@ -26,25 +26,25 @@ struct TextBubbleView: View {
                     .multilineTextAlignment(.leading)
             }
 
-            if let song = entity.getSongAttachment() {
-                HStack(spacing: 4) {
-                    Image(systemName: "music.note")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundColor(.secondary)
-
-                    Text("\(song.artistName),")
-                        .foregroundColor(.secondary)
-                        .font(.system(size: 11, weight: .regular, design: .monospaced))
-                        .lineLimit(1)
-
-                    Text(song.name)
-                        .foregroundColor(.white)
-                        .font(.system(size: 11, weight: .regular, design: .monospaced))
-                }
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(secondaryColor, in: Capsule())
-            }
+            // if let song = entity.getSongAttachment() {
+            //     HStack(spacing: 4) {
+            //         Image(systemName: "music.note")
+            //             .font(.system(size: 9, weight: .bold))
+            //             .foregroundColor(.secondary)
+           
+            //         Text("\(song.artistName),")
+            //             .foregroundColor(.secondary)
+            //             .font(.system(size: 11, weight: .regular, design: .monospaced))
+            //             .lineLimit(1)
+           
+            //         Text(song.name)
+            //             .foregroundColor(.white)
+            //             .font(.system(size: 11, weight: .regular, design: .monospaced))
+            //     }
+            //     .padding(.horizontal, 6)
+            //     .padding(.vertical, 2)
+            //     .background(secondaryColor, in: Capsule())
+            // }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
@@ -93,31 +93,31 @@ struct ParentTextBubbleView: View {
                     .lineLimit(2)
             }
 
-            if let song = entity.getSongAttachment() {
-                HStack(spacing: 4) {
-                    Image(systemName: "music.note")
-                        .font(.system(size: 7, weight: .bold))
-                        .foregroundColor(.secondary)
-
-                    Text("\(song.artistName),")
-                        .foregroundColor(.secondary)
-                        .font(.system(size: 9, weight: .regular, design: .monospaced))
-                        .lineLimit(1)
-
-                    Text(song.name)
-                        .foregroundColor(.white)
-                        .font(.system(size: 9, weight: .regular, design: .monospaced))
-                }
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .overlay(Capsule().stroke(.white.opacity(0.05), lineWidth: 1))
-            }
+            // if let song = entity.getSongAttachment() {
+            //     HStack(spacing: 4) {
+            //         Image(systemName: "music.note")
+            //             .font(.system(size: 7, weight: .bold))
+            //             .foregroundColor(.secondary)
+           
+            //         Text("\(song.artistName),")
+            //             .foregroundColor(.secondary)
+            //             .font(.system(size: 9, weight: .regular, design: .monospaced))
+            //             .lineLimit(1)
+           
+            //         Text(song.name)
+            //             .foregroundColor(.white)
+            //             .font(.system(size: 9, weight: .regular, design: .monospaced))
+            //     }
+            //     .padding(.horizontal, 6)
+            //     .padding(.vertical, 2)
+            //     .overlay(Capsule().stroke(.white.opacity(0.05), lineWidth: 1))
+            // }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .overlay(
             BubbleWithTailShape(scale: 0.75)
-                .stroke(.white.opacity(0.1), lineWidth: 1)
+                .stroke(.white.opacity(0.05), lineWidth: 1)
         )
         .auxiliaryContextMenu(
             auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),
