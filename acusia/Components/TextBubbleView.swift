@@ -85,6 +85,30 @@ struct ParentTextBubbleView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            if let song = entity.getSongAttachment() {
+                HStack {
+                    AsyncImage(url: URL(string: song.artwork)) { image in
+                        image
+                            .resizable()
+                    } placeholder: {
+                        Rectangle()
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .aspectRatio(contentMode: .fit)
+                    
+                    VStack(alignment: .leading) {
+                        Text(song.artistName)
+                            .font(.system(size: 11, weight: .regular))
+                            .foregroundColor(.secondary)
+                        Text(song.name)
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: 44, alignment: .leading)
+                .padding(.vertical, 4)
+            }
+            
             HStack(alignment: .lastTextBaseline) {
                 Text(entity.text)
                     .foregroundColor(.secondary)
@@ -92,31 +116,11 @@ struct ParentTextBubbleView: View {
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
             }
-
-            // if let song = entity.getSongAttachment() {
-            //     HStack(spacing: 4) {
-            //         Image(systemName: "music.note")
-            //             .font(.system(size: 7, weight: .bold))
-            //             .foregroundColor(.secondary)
-           
-            //         Text("\(song.artistName),")
-            //             .foregroundColor(.secondary)
-            //             .font(.system(size: 9, weight: .regular, design: .monospaced))
-            //             .lineLimit(1)
-           
-            //         Text(song.name)
-            //             .foregroundColor(.white)
-            //             .font(.system(size: 9, weight: .regular, design: .monospaced))
-            //     }
-            //     .padding(.horizontal, 6)
-            //     .padding(.vertical, 2)
-            //     .overlay(Capsule().stroke(.white.opacity(0.05), lineWidth: 1))
-            // }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .overlay(
-            BubbleWithTailShape(scale: 0.75)
+            ContextualBubbleWithTailShape()
                 .stroke(.white.opacity(0.05), lineWidth: 1)
         )
         .auxiliaryContextMenu(

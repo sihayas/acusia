@@ -12,10 +12,10 @@ struct BlipView: View {
     }
 
     var body: some View {
-        HStack(spacing: -6) {
+        HStack(spacing: -8) {
             Circle()
                 .fill(color)
-                .frame(width: 24, height: 24)
+                .frame(width: 28, height: 28)
                 .overlay(
                     Text("1k")
                         .font(.system(size: 11, weight: .bold, design: .rounded))

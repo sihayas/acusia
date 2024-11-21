@@ -30,7 +30,7 @@ struct Home: View {
                 /// Main Feed
                 VStack(spacing: 32) {
                     BiomeView(biome: Biome(entities: biomeOne))
-                    BiomeView(biome: Biome(entities: biomeTwo))
+                    // BiomeView(biome: Biome(entities: biomeTwo))
                 }
                 .padding(.top, safeAreaInsets.top)
                 .padding(.bottom, safeAreaInsets.bottom * 3)

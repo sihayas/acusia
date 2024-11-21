@@ -47,14 +47,12 @@ struct EntityView: View {
         if !isRoot {
             VStack(alignment: .leading, spacing: hasContext ? 8 : 0) {
                 // MARK: Contextual Parent
-
                 if previousId == parentId && !isRootChild && !isRoot {
                     LoopPath()
                         .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                         .frame(width: 40, height: 32)
                         .scaleEffect(x: -1, y: 1)
                 }
-
                 if let parent = parent, parentId != previousParentId, parentId != previousId, !isRootChild {
                     HStack(alignment: .bottom, spacing: 8) {
                         AvatarView(size: 32, imageURL: parent.avatar)
@@ -77,32 +75,6 @@ struct EntityView: View {
                                     .font(.system(size: 9, weight: .regular))
                                     .foregroundColor(.secondary)
                                     .padding(.leading, 8)
-
-                                if let song = parent.getSongAttachment() {
-                                    HStack {
-                                        AsyncImage(url: URL(string: song.artwork)) { image in
-                                            image
-                                                .resizable()
-                                        } placeholder: {
-                                            Rectangle()
-                                        }
-                                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                        .aspectRatio(contentMode: .fit)
-                                        
-                                        VStack(alignment: .leading) {
-                                            Text(song.artistName)
-                                                .font(.system(size: 11, weight: .regular))
-                                                .foregroundColor(.secondary)
-                                            Text(song.name)
-                                                .font(.system(size: 11, weight: .bold))
-                                                .foregroundColor(.secondary)
-                                        }
-                                    }
-                                    .padding(4)
-                                    .padding(.trailing, 8)
-                                    .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(.white.opacity(0.1), lineWidth: 1))
-                                    .frame(width: 132, height: 44, alignment: .leading)
-                                }
                             }
                             .alignmentGuide(VerticalAlignment.top) { d in d.height + parentSpacing }
                             .measure($parentAttachmentSize)
@@ -181,7 +153,7 @@ struct EntityView: View {
                                     }
                                 }
                                 .padding(8)
-                                .frame(width: 164, height: 72, alignment: .leading)
+                                .frame(height: 72, alignment: .leading)
                                 .background(Color(hex: song.color), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                             }
                         }

@@ -144,7 +144,6 @@ struct NoodleIcon: Shape {
 }
 
 // MARK: - Entity Paths
-
 struct BubbleWithTailShape: Shape {
     var scale: CGFloat
 
@@ -218,6 +217,42 @@ struct BubbleWithTailPath {
     }
 }
 
+struct ContextualBubbleWithTailShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let bubbleRect = rect
+        let bubble = RoundedRectangle(cornerRadius: 16, style: .continuous)
+            .path(in: bubbleRect)
+
+        let firstCircleSize: CGFloat = 8
+        let firstCircleOffsetX: CGFloat = 0
+        let firstCircleOffsetY: CGFloat = bubbleRect.height - firstCircleSize
+
+        let tailRect = CGRect(
+            x: bubbleRect.minX + firstCircleOffsetX,
+            y: bubbleRect.minY + firstCircleOffsetY,
+            width: firstCircleSize,
+            height: firstCircleSize
+        )
+        let tail = Circle().path(in: tailRect)
+
+        let secondCircleSize: CGFloat = 4
+        let secondCircleOffsetX = tailRect.minX - secondCircleSize
+        let secondCircleOffsetY = tailRect.maxY - secondCircleSize / 2
+        let secondCircleRect = CGRect(
+            x: secondCircleOffsetX,
+            y: secondCircleOffsetY,
+            width: secondCircleSize,
+            height: secondCircleSize
+        )
+        let secondCircle = Circle().path(in: secondCircleRect)
+
+        let combined = bubble.union(tail).union(secondCircle)
+
+        return combined
+    }
+}
+
+// MARK: Thread Paths
 struct SoundBubbleWithTail: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -371,5 +406,3 @@ struct LoopPath: Shape {
         return path
     }
 }
-
-// MARK: Entity Paths

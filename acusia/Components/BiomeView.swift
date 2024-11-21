@@ -27,12 +27,124 @@ struct BiomeView: View {
                                entity: biome.entities[index],
                                color: color,
                                secondaryColor: secondaryColor)
-                    .frame(maxHeight: .infinity)
+                        .frame(maxHeight: .infinity)
                 }
             }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 24)
+            
+            VStack {
+                CollageLayout {
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1759706838319161344/QZE066Lr_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                    
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1828581255069241344/QySOaDzU_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                    
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1855940230362103808/_8fGXfK6_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                    
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1562843260304863232/s_Cv2vdy_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                    
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1709499954711142400/sHmbME_7_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                }
+                .frame(width: 56, height: 56)
+                .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
+                
+                Text("gods weakest soldiers")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(
+                        .secondary
+                    )
+                
+                HStack {
+                    HStack(spacing: 4) {
+                        Image(systemName: "person.crop.circle.fill")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.white)
+                        Text("32")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 4)
+                    .background(.blue, in: Capsule())
+                    
+                    HStack(spacing: 4) {
+                        Image(systemName: "message.badge.filled.fill")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.white)
+                        Text("786")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 4)
+                    .background(.secondary, in: Capsule())
+                    
+                    HStack(spacing: 4) {
+                        Image(systemName: "ellipsis.message.fill")
+                            .symbolEffect(.variableColor.cumulative, options: .repeating)
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.white)
+                        Text("7")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 4)
+                    .background(.secondary, in: Capsule())
+                }
+            }
+            .padding([.horizontal, .bottom], 20)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 24)
         .background(
             .thickMaterial,
             in: RoundedRectangle(cornerRadius: 40, style: .continuous)
@@ -66,19 +178,19 @@ let biomeOne: [Entity] = {
             id: "4",
             username: "vjeranski",
             avatar: "https://d2w9rnfcy7mm78.cloudfront.net/31132288/original_b3573ce965ab3459b25ab0977beec40b.jpg",
-            text: "delusional",
+            text: "have you all checked out azusa saga (for tracy hyde, aprilblue)'s idol group yet",
             created_at: Date(timeIntervalSinceNow: -1200),
             parent: Entity(
                 id: "1",
                 username: "qwertyyy",
                 avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
-                text: "No and tbh vultures 1 clears both🦅",
+                text: "sentimental outlook on Hotel Insomnia, mainly since it soundtracked a good portion of my trip to Japan",
                 created_at: Date(timeIntervalSinceNow: -2400),
                 attachments: [
                     SongAttachment(id: "idk",
-                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/25/47/fa/2547fae8-2010-7b31-8dc7-1a93de4a3269/cover.jpg/632x632bb.webp",
-                                   name: "Vultures 1",
-                                   artistName: "Kanye West",
+                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music71/v4/90/74/50/9074507a-c12c-50e5-122f-5d9b4918d1f2/4538182661741_cov.jpg/632x632bb.webp",
+                                   name: "Film Bleu",
+                                   artistName: "For Tracy Hyde",
                                    color: "#FFF")
                 ]
             )
@@ -87,7 +199,13 @@ let biomeOne: [Entity] = {
             id: "5",
             username: "zack+",
             avatar: "https://i.pinimg.com/474x/fd/f1/21/fdf12119ecb977a68bc10d185dbb2523.jpg",
-            text: "Do not piss me off rn WLR was the template.",
+            text: """
+            the other side of 2020年代邦楽名盤四天王
+            mekakushe / あこがれ
+            For Tracy Hyde / Hotel Insomnia
+            RAY / Camellia
+            Moon In June / ロマンと水色の街
+            """,
             created_at: Date(timeIntervalSinceNow: -600),
             parent: Entity(
                 id: "1",
@@ -108,43 +226,42 @@ let biomeOne: [Entity] = {
     ]
 }()
 
-let biomeTwo: [Entity] = {
-    let parentEntity = Entity(
-        id: "0",
-        username: "neonDream",
-        avatar: "https://i.pinimg.com/474x/5a/4c/73/5a4c73cb4ea137d5b52d7a3c1459c42a.jpg",
-        text: "This installation is insane. Feels like walking inside a memory you can’t quite remember. Wild stuff.",
-        created_at: Date(timeIntervalSinceNow: -3600),
-        attachments: [
-            SongAttachment(id: "exhibit2024",
-                           artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/1d/30/021d3036-5503-3ed3-df00-882f2833a6ae/17UM1IM17026.rgb.jpg/632x632bb.webp",
-                           name: "dont smile at me",
-                           artistName: "Billie Eilish",
-                           color: "#FFF"
-                          )
-        ]
-    )
-
-    return [
-        parentEntity,
-        Entity(
-            id: "2",
-            username: "synesthesia",
-            avatar: "https://i.pinimg.com/474x/16/a2/5d/16a25d5a1db5b04f4cf1f519d8070c07.jpg",
-            text: "I get that, but if you stick around, it starts pulling you in. It’s almost hypnotic, like it’s pulling memories out of your head.",
-            created_at: Date(timeIntervalSinceNow: -2800),
-            parent: parentEntity
-        ),
-        Entity(
-            id: "3",
-            username: "echoVerse",
-            avatar: "https://i.pinimg.com/474x/9b/3c/11/9b3c11429ec2b25b0135566ad3e6c482.jpg",
-            text: "Alright, maybe I’ll give it another shot. I guess I was expecting something less… polished.",
-            created_at: Date(timeIntervalSinceNow: -2400),
-            parent: Entity(id: "1", username: "echoVerse", avatar: "", text: "", created_at: Date())
-        )
-    ]
-}()
+// let biomeTwo: [Entity] = {
+//     let parentEntity = Entity(
+//         id: "0",
+//         username: "neonDream",
+//         avatar: "https://i.pinimg.com/474x/5a/4c/73/5a4c73cb4ea137d5b52d7a3c1459c42a.jpg",
+//         text: "This installation is insane. Feels like walking inside a memory you can’t quite remember. Wild stuff.",
+//         created_at: Date(timeIntervalSinceNow: -3600),
+//         attachments: [
+//             SongAttachment(id: "exhibit2024",
+//                            artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/1d/30/021d3036-5503-3ed3-df00-882f2833a6ae/17UM1IM17026.rgb.jpg/632x632bb.webp",
+//                            name: "dont smile at me",
+//                            artistName: "Billie Eilish",
+//                            color: "#FFF")
+//         ]
+//     )
+//
+//     return [
+//         parentEntity,
+//         Entity(
+//             id: "2",
+//             username: "synesthesia",
+//             avatar: "https://i.pinimg.com/474x/16/a2/5d/16a25d5a1db5b04f4cf1f519d8070c07.jpg",
+//             text: "I get that, but if you stick around, it starts pulling you in. It’s almost hypnotic, like it’s pulling memories out of your head.",
+//             created_at: Date(timeIntervalSinceNow: -2800),
+//             parent: parentEntity
+//         ),
+//         Entity(
+//             id: "3",
+//             username: "echoVerse",
+//             avatar: "https://i.pinimg.com/474x/9b/3c/11/9b3c11429ec2b25b0135566ad3e6c482.jpg",
+//             text: "Alright, maybe I’ll give it another shot. I guess I was expecting something less… polished.",
+//             created_at: Date(timeIntervalSinceNow: -2400),
+//             parent: Entity(id: "1", username: "echoVerse", avatar: "", text: "", created_at: Date())
+//         )
+//     ]
+// }()
 
 let biomeOneExpanded: [Entity] = {
     let parentEntity = Entity(
@@ -158,8 +275,7 @@ let biomeOneExpanded: [Entity] = {
                            artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/18/62/27/18622713-a797-9f9d-b85c-f0373f190a27/075679634382.jpg/632x632bb.webp",
                            name: "Eusexua",
                            artistName: "FKA Twigs",
-                           color: "#FFF"
-                          )
+                           color: "#FFF")
         ]
     )
 
@@ -185,8 +301,7 @@ let biomeOneExpanded: [Entity] = {
                                artwork: "https://is1-ssl.mzstatic.com/image/thumb/Video211/v4/93/01/d3/9301d31b-3c90-8f26-44c9-a403c186cbac/Job70a1c5af-b67a-4cf3-a2d6-dc032483f151-169441773-PreviewImage_Preview_Image_Intermediate_nonvideo_sdr_329793320_1793175885-Time1717534608063.png/632x632bb.webp",
                                name: "Sympathy is a knife",
                                artistName: "Charli XCX",
-                               color: "#FFF"
-                              )
+                               color: "#FFF")
             ]
         ),
         Entity(
@@ -214,8 +329,7 @@ let biomeOneExpanded: [Entity] = {
                                    artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/25/47/fa/2547fae8-2010-7b31-8dc7-1a93de4a3269/cover.jpg/632x632bb.webp",
                                    name: "Vultures 1",
                                    artistName: "Kanye West",
-                                   color: "#FFF"
-                                  )
+                                   color: "#FFF")
                 ]
             )
         ),
