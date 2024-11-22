@@ -105,8 +105,7 @@ struct ParentTextBubbleView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: 44, alignment: .leading)
-                .padding(.vertical, 4)
+                .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
             }
             
             HStack(alignment: .lastTextBaseline) {

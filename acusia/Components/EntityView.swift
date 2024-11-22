@@ -140,19 +140,21 @@ struct EntityView: View {
                                         Text(song.name)
                                             .font(.system(size: 13, weight: .bold))
                                             .foregroundColor(.white)
+                      
 
                                         HStack(spacing: 2) {
                                             Image(systemName: "applelogo")
-                                                .font(.system(size: 9))
+                                                .font(.system(size: 13))
                                                 .foregroundColor(.secondary)
 
                                             Text("Music")
-                                                .font(.system(size: 9, weight: .bold))
+                                                .font(.system(size: 13, weight: .regular))
                                                 .foregroundColor(.secondary)
                                         }
                                     }
+                                    .blendMode(.difference)
                                 }
-                                .padding(8)
+                                .padding(12)
                                 .frame(height: 72, alignment: .leading)
                                 .background(Color(hex: song.color), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                             }

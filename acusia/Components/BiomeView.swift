@@ -18,6 +18,7 @@ struct BiomeView: View {
 
     var body: some View {
         VStack {
+            // MARK: - Biome Snapshot
             VStack(alignment: .leading, spacing: 8) {
                 ForEach(0 ..< min(6, biome.entities.count), id: \.self) { index in
                     let previousEntity = index > 0 ? biome.entities[index - 1] : nil
@@ -33,114 +34,135 @@ struct BiomeView: View {
             .padding(.horizontal, 24)
             .padding(.vertical, 24)
             
-            VStack {
-                CollageLayout {
-                    Circle()
-                        .background(
-                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1759706838319161344/QZE066Lr_400x400.jpg")) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                Rectangle()
-                            }
-                        )
-                        .foregroundStyle(.clear)
-                        .clipShape(Circle())
+            // MARK: - Biome Footer
+            ZStack(alignment: .bottomTrailing) {
+                VStack {
+                    CollageLayout {
+                        Circle()
+                            .background(
+                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1759706838319161344/QZE066Lr_400x400.jpg")) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    Rectangle()
+                                }
+                            )
+                            .foregroundStyle(.clear)
+                            .clipShape(Circle())
+                        
+                        Circle()
+                            .background(
+                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1828581255069241344/QySOaDzU_400x400.jpg")) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    Rectangle()
+                                }
+                            )
+                            .foregroundStyle(.clear)
+                            .clipShape(Circle())
+                        
+                        Circle()
+                            .background(
+                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1855940230362103808/_8fGXfK6_400x400.jpg")) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    Rectangle()
+                                }
+                            )
+                            .foregroundStyle(.clear)
+                            .clipShape(Circle())
+                        
+                        Circle()
+                            .background(
+                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1562843260304863232/s_Cv2vdy_400x400.jpg")) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    Rectangle()
+                                }
+                            )
+                            .foregroundStyle(.clear)
+                            .clipShape(Circle())
+                        
+                        Circle()
+                            .background(
+                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1709499954711142400/sHmbME_7_400x400.jpg")) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    Rectangle()
+                                }
+                            )
+                            .foregroundStyle(.clear)
+                            .clipShape(Circle())
+                    }
+                    .frame(width: 56, height: 56)
+                    .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
                     
-                    Circle()
-                        .background(
-                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1828581255069241344/QySOaDzU_400x400.jpg")) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                Rectangle()
-                            }
+                    Text("gods weakest soldiers")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(
+                            .secondary
                         )
-                        .foregroundStyle(.clear)
-                        .clipShape(Circle())
                     
-                    Circle()
-                        .background(
-                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1855940230362103808/_8fGXfK6_400x400.jpg")) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                Rectangle()
-                            }
-                        )
-                        .foregroundStyle(.clear)
-                        .clipShape(Circle())
-                    
-                    Circle()
-                        .background(
-                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1562843260304863232/s_Cv2vdy_400x400.jpg")) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                Rectangle()
-                            }
-                        )
-                        .foregroundStyle(.clear)
-                        .clipShape(Circle())
-                    
-                    Circle()
-                        .background(
-                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1709499954711142400/sHmbME_7_400x400.jpg")) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                Rectangle()
-                            }
-                        )
-                        .foregroundStyle(.clear)
-                        .clipShape(Circle())
+                    HStack {
+                        HStack(spacing: 4) {
+                            Image(systemName: "person.2.fill")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.white)
+                            Text("21")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(.white)
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 4)
+                        .background(.blue.opacity(0.8), in: Capsule())
+                        
+                        HStack(spacing: 4) {
+                            Image(systemName: "message.fill")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.white)
+                            Text("786")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(.white)
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 4)
+                        .background(.ultraThinMaterial, in: Capsule())
+                        
+                        HStack(spacing: 4) {
+                            Image(systemName: "ellipsis.message.fill")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.white)
+                            Text("7")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(.white)
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 4)
+                        .background(.ultraThinMaterial, in: Capsule())
+                    }
                 }
-                .frame(width: 56, height: 56)
-                .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
+                .frame(maxWidth: .infinity)
                 
-                Text("gods weakest soldiers")
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(
-                        .secondary
-                    )
-                
-                HStack {
-                    HStack(spacing: 4) {
-                        Image(systemName: "person.crop.circle.fill")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.white)
-                        Text("32")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 4)
-                    .background(.blue, in: Capsule())
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "message.badge.filled.fill")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.white)
-                        Text("786")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 4)
-                    .background(.secondary, in: Capsule())
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "ellipsis.message.fill")
-                            .symbolEffect(.variableColor.cumulative, options: .repeating)
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.white)
-                        Text("7")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 4)
-                    .background(.secondary, in: Capsule())
+                VStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 24, height: 24)
+                        .overlay{
+                            ZStack {
+                                Image(systemName: "circle.dotted")
+                                    .font(.system(size: 40))
+                                    .foregroundStyle(.secondary)
+                                
+                                Image(systemName: "plus")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundStyle(.white)
+                                
+                            }
+                        }
                 }
             }
             .padding([.horizontal, .bottom], 20)
@@ -150,10 +172,10 @@ struct BiomeView: View {
             in: RoundedRectangle(cornerRadius: 40, style: .continuous)
         )
         .foregroundStyle(.secondary)
-        .matchedTransitionSource(id: biome.entities.first?.id ?? "", in: animation)
+        .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
             BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
-                .navigationTransition(.zoom(sourceID: biome.entities.first?.id ?? "", in: animation))
+                .navigationTransition(.zoom(sourceID: "hi", in: animation))
                 .presentationBackground(.black)
         }
         .padding(.horizontal, 24)
@@ -200,11 +222,7 @@ let biomeOne: [Entity] = {
             username: "zack+",
             avatar: "https://i.pinimg.com/474x/fd/f1/21/fdf12119ecb977a68bc10d185dbb2523.jpg",
             text: """
-            the other side of 2020年代邦楽名盤四天王
-            mekakushe / あこがれ
-            For Tracy Hyde / Hotel Insomnia
-            RAY / Camellia
-            Moon In June / ロマンと水色の街
+            Really a shame for Tracy Hyde broke up. The goats of Japanese shoegaze. At least Azusa is still writing music for other groups so their legacy lives on in Aprilblue, Fennel, Tricot, RAY etc. But man I’ll miss them
             """,
             created_at: Date(timeIntervalSinceNow: -600),
             parent: Entity(
@@ -216,11 +234,11 @@ let biomeOne: [Entity] = {
             ),
             attachments: [
                 SongAttachment(id: "idk",
-                               artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/18/62/27/18622713-a797-9f9d-b85c-f0373f190a27/075679634382.jpg/632x632bb.webp",
-                               name: "Eusexua",
-                               artistName: "FKA Twigs",
+                               artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/19/76/d1/1976d17a-d900-5969-d37f-612127b0e302/4538182836460_cov.jpg/632x632bb.webp",
+                               name: "New Young City",
+                               artistName: "For Tracy Hyde",
                                
-                               color: "#9b9b9b")
+                               color: "#d2dcf0")
             ]
         )
     ]
