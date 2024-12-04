@@ -95,7 +95,7 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
-                        .padding(.horizontal, 6)
+                        .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(.blue, in: Capsule())
                         
@@ -107,7 +107,7 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
-                        .padding(.horizontal, 6)
+                        .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(.ultraThinMaterial, in: Capsule())
                         
@@ -119,7 +119,7 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
-                        .padding(.horizontal, 6)
+                        .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(.ultraThinMaterial, in: Capsule())
                     }
@@ -142,6 +142,10 @@ struct BiomeView: View {
             }
             .padding(24)
             .background(.black)
+            .overlay(alignment: .bottom) {
+                VariableBlurView(radius: 12, mask: Image(.gradient))
+                    .frame(maxWidth: .infinity, maxHeight: 40)
+            }
             .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
             .foregroundStyle(.secondary)
             .matchedTransitionSource(id: "hi", in: animation)

@@ -20,7 +20,7 @@ struct AcusiaApp: App {
                 .environmentObject(uiState)
                 .environmentObject(musicKit)
                 .environmentObject(homeState)
-                .onAppear { auth.authenticate() }
+                // .onAppear { auth.authenticate() }
         }
     }
 }
@@ -34,6 +34,7 @@ struct AcusiaAppView: View {
 
     @State private var dragOffset: CGFloat = 0
     var cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
+    
 
     var body: some View {
         if !auth.isAuthenticated {

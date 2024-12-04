@@ -15,7 +15,7 @@ struct AuthResponse: Codable {
 class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     static let shared = Auth()
 
-    @Published var isAuthenticated: Bool = false
+    @Published var isAuthenticated: Bool = true
     @Published var userProfile: User?
     @Published var debugInfo: String?
 
