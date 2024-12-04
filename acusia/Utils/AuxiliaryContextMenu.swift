@@ -24,7 +24,7 @@ struct AuxiliaryContextMenuModifier<AuxiliaryContent: View>: ViewModifier {
                 content: content,
                 auxiliaryContent: auxiliaryContent,
                 menuItems: menuItems,
-                gestureTranslation:  $gestureTranslation,
+                gestureTranslation: $gestureTranslation,
                 gestureVelocity: $gestureVelocity,
                 config: config
             )
@@ -103,7 +103,6 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
         @Binding var gestureTranslation: CGPoint
         @Binding var gestureVelocity: CGPoint
         
-
         init(container: ContextMenuContainer, gestureTranslation: Binding<CGPoint>, gestureVelocity: Binding<CGPoint>) {
             self.container = container
             self.auxiliaryContent = container.auxiliaryContent
@@ -196,13 +195,12 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
         }
         
         @objc private func handleContextMenuPan(_ gesture: UIPanGestureRecognizer) {
-             let translation = gesture.translation(in: gesture.view)
-             let velocity = gesture.velocity(in: gesture.view)
+            let translation = gesture.translation(in: gesture.view)
+            let velocity = gesture.velocity(in: gesture.view)
             
-            self.gestureTranslation = translation
-            self.gestureVelocity = velocity
-
-         }
+            gestureTranslation = translation
+            gestureVelocity = velocity
+        }
     }
 }
 
@@ -244,18 +242,4 @@ struct MenuBuilder {
     static func buildBlock(_ components: UIMenuElement...) -> [UIMenuElement] {
         components
     }
-}
-
-struct DarkModeWindowModifier: UIViewRepresentable {
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let uiWindow = window.windows.first
-        {
-            uiWindow.overrideUserInterfaceStyle = .dark
-        }
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {}
 }

@@ -7,11 +7,11 @@
 import SwiftUI
 
 struct BiomeView: View {
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
 
     let biome: Biome
-    let color = Color(UIColor.systemGray5)
-    let secondaryColor = Color(UIColor.systemGray4)
+    let color = Color(UIColor.systemGray6)
+    let secondaryColor = Color(UIColor.systemGray5)
 
     @Namespace var animation
     @State private var showSheet: Bool = false
@@ -19,6 +19,7 @@ struct BiomeView: View {
     var body: some View {
         VStack {
             // MARK: - Biome Snapshot
+
             VStack(alignment: .leading, spacing: 8) {
                 ForEach(0 ..< min(6, biome.entities.count), id: \.self) { index in
                     let previousEntity = index > 0 ? biome.entities[index - 1] : nil
@@ -33,9 +34,13 @@ struct BiomeView: View {
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 24)
-            
+        }
+        .overlay(alignment: .bottom) {
             // MARK: - Biome Footer
             ZStack(alignment: .bottomTrailing) {
+                VariableBlurView(radius: 4, mask: Image(.gradient))
+                    .frame(maxWidth: .infinity, maxHeight: 180)
+                
                 VStack {
                     CollageLayout {
                         Circle()
@@ -98,13 +103,13 @@ struct BiomeView: View {
                             .foregroundStyle(.clear)
                             .clipShape(Circle())
                     }
-                    .frame(width: 56, height: 56)
+                    .frame(width: 64, height: 64)
                     .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
                     
                     Text("gods weakest soldiers")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundStyle(
-                            .secondary
+                            .white
                         )
                     
                     HStack {
@@ -118,7 +123,7 @@ struct BiomeView: View {
                         }
                         .padding(.horizontal, 6)
                         .padding(.vertical, 4)
-                        .background(.blue.opacity(0.8), in: Capsule())
+                        .background(.blue, in: Capsule())
                         
                         HStack(spacing: 4) {
                             Image(systemName: "message.fill")
@@ -146,31 +151,30 @@ struct BiomeView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
+                .padding([.horizontal, .bottom], 20)
                 
                 VStack {
                     Circle()
                         .fill(.ultraThinMaterial)
-                        .frame(width: 24, height: 24)
-                        .overlay{
+                        .frame(width: 52, height: 52)
+                        .overlay {
                             ZStack {
                                 Image(systemName: "circle.dotted")
                                     .font(.system(size: 40))
-                                    .foregroundStyle(.secondary)
-                                
-                                Image(systemName: "plus")
-                                    .font(.system(size: 12, weight: .bold))
                                     .foregroundStyle(.white)
                                 
+                                Image(systemName: "paperplane.fill")
+                                    .font(.system(size: 15, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .scaleEffect(x: -1, y: 1)
                             }
                         }
                 }
+                .padding([.horizontal, .bottom], 20)
             }
-            .padding([.horizontal, .bottom], 20)
         }
-        .background(
-            .thickMaterial,
-            in: RoundedRectangle(cornerRadius: 40, style: .continuous)
-        )
+        .background(.black)
+        .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
         .foregroundStyle(.secondary)
         .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
@@ -179,6 +183,7 @@ struct BiomeView: View {
                 .presentationBackground(.black)
         }
         .padding(.horizontal, 24)
+        .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 0)
         .onTapGesture {
             showSheet = true
         }
@@ -229,8 +234,15 @@ let biomeOne: [Entity] = {
                 id: "1",
                 username: "qwertyyy",
                 avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
-                text: "No and tbh vultures 1 clears both🦅",
-                created_at: Date(timeIntervalSinceNow: -2400)
+                text: "sentimental outlook on Hotel Insomnia, mainly since it soundtracked a good portion of my trip to Japan",
+                created_at: Date(timeIntervalSinceNow: -2400),
+                attachments: [
+                    SongAttachment(id: "idk",
+                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music71/v4/90/74/50/9074507a-c12c-50e5-122f-5d9b4918d1f2/4538182661741_cov.jpg/632x632bb.webp",
+                                   name: "Film Bleu",
+                                   artistName: "For Tracy Hyde",
+                                   color: "#FFF")
+                ]
             ),
             attachments: [
                 SongAttachment(id: "idk",
@@ -240,6 +252,29 @@ let biomeOne: [Entity] = {
                                
                                color: "#d2dcf0")
             ]
+        ),
+        Entity(
+            id: "7",
+            username: "zack+",
+            avatar: "https://pbs.twimg.com/profile_images/1853512066142720000/I2JbmSxI_400x400.jpg",
+            text: """
+            same here, I was really looking forward to their next album. I’m glad they’re still involved in the scene though. I’ll have to check out Aprilblue
+            """,
+            created_at: Date(timeIntervalSinceNow: -600),
+            parent: Entity(
+                id: "1",
+                username: "qwertyyy",
+                avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
+                text: "sentimental outlook on Hotel Insomnia, mainly since it soundtracked a good portion of my trip to Japan",
+                created_at: Date(timeIntervalSinceNow: -2400),
+                attachments: [
+                    SongAttachment(id: "idk",
+                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music71/v4/90/74/50/9074507a-c12c-50e5-122f-5d9b4918d1f2/4538182661741_cov.jpg/632x632bb.webp",
+                                   name: "Film Bleu",
+                                   artistName: "For Tracy Hyde",
+                                   color: "#FFF")
+                ]
+            )
         )
     ]
 }()

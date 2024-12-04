@@ -18,7 +18,7 @@ class HomeState: ObservableObject {
 
 struct Home: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
     @EnvironmentObject private var shareData: HomeState
 
     var body: some View {

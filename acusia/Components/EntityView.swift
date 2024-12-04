@@ -32,7 +32,7 @@ struct EntityView: View {
     let color: Color
     let secondaryColor: Color
 
-    let blipXOffset: CGFloat = 80
+    let blipXOffset: CGFloat = 92
 
     var body: some View {
         let rootId = rootEntity.id
@@ -112,7 +112,7 @@ struct EntityView: View {
                         }
                         .onChange(of: textSize.width) {
                             /// If the width of the top is greater than the width of the text bubble minus 16, push the top down.
-                            spacing = attachmentSize.width > (textSize.width - blipXOffset) ? 0 : 20
+                            spacing = attachmentSize.width > (textSize.width - blipXOffset) ? 0 : 24
                         }
 
                         VStack(alignment: .leading, spacing: 4) {

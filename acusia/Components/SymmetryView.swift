@@ -19,7 +19,7 @@ struct SymmetryState {
 }
 
 struct SymmetryView: View {
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
     @EnvironmentObject private var musicKitManager: MusicKit
     @FocusState var focusedField: Field?
     
@@ -73,7 +73,7 @@ struct SymmetryView: View {
                 // MARK: Canvas
 
                 Rectangle()
-                    .background(.ultraThinMaterial)
+                    .background(.black)
                     .foregroundStyle(.clear)
                     .mask {
                         Canvas { ctx, _ in
@@ -525,7 +525,7 @@ extension SymmetryView {
 struct ControlButtons: View {
     // MARK: Buttons
 
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
     
     var body: some View {
         VStack {
@@ -576,7 +576,7 @@ struct ControlButtons: View {
 
 #Preview {
     SymmetryView()
-        .environmentObject(WindowState())
+        .environmentObject(UIState())
         .background(.black)
 }
 

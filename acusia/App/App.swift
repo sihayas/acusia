@@ -2,9 +2,26 @@ import CoreData
 import SwiftUI
 import Transmission
 
-class WindowState: ObservableObject {
-    static let shared = WindowState()
-    
+struct AcusiaAppView_Previews: PreviewProvider {
+    static var previews: some View {
+        let windowState = UIState()
+        let musicKit = MusicKit()
+        let homeState = HomeState()
+        let floatingBarPresenter = FloatingBarPresenter()
+
+        AuthScreen()
+            .environmentObject(windowState)
+            .environmentObject(musicKit)
+            .environmentObject(homeState)
+            .onAppear {
+                floatingBarPresenter.showFloatingBar()
+            }
+    }
+}
+
+class UIState: ObservableObject {
+    static let shared = UIState()
+
     init() {}
 
     enum SymmetryState: String {
@@ -27,46 +44,49 @@ class WindowState: ObservableObject {
     @Published var isOffsetAtTop: Bool = true
     @Published var isLayered: Bool = false
 
-}
+    /// Customizes the navigation bar appearance.
+    func setupNavigationBarAppearance() {
+        var backButtonBackgroundImage = UIImage(systemName: "chevron.left.circle.fill")!
+        backButtonBackgroundImage = backButtonBackgroundImage.applyingSymbolConfiguration(.init(paletteColors: [.white, .darkGray]))!
+        UINavigationBar.appearance().backIndicatorImage = backButtonBackgroundImage
+        UINavigationBar.appearance().backIndicatorTransitionMaskImage = backButtonBackgroundImage
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().isTranslucent = true
+        UINavigationBar.appearance().backgroundColor = .clear
+        UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: -1000.0, vertical: 0.0), for: .default)
+    }
 
-struct AcusiaAppView_Previews: PreviewProvider {
-    static var previews: some View {
-        let windowState = WindowState()
-        let musicKit = MusicKit()
-        let homeState = HomeState()
-        let floatingBarPresenter = FloatingBarPresenter()
-
-        AcusiaAppView()
-            .background(DarkModeWindowModifier())
-            .environmentObject(windowState)
-            .environmentObject(musicKit)
-            .environmentObject(homeState)
-            .onAppear {
-                floatingBarPresenter.showFloatingBar()
-            }
+    func enableDarkMode() {
+        if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let uiWindow = window.windows.first
+        {
+            uiWindow.overrideUserInterfaceStyle = .dark
+        }
     }
 }
 
 @main
 struct AcusiaApp: App {
-    @ObservedObject private var windowState = WindowState.shared
+    @StateObject private var auth = Auth.shared
+    @ObservedObject private var windowState = UIState.shared
     @ObservedObject private var musicKit = MusicKit.shared
     @ObservedObject private var homeState = HomeState.shared
 
     let persistenceController = PersistenceController.shared
-    private var floatingBarPresenter = FloatingBarPresenter()
     private var safeAreaInsets: UIEdgeInsets = .init()
 
     var body: some Scene {
         WindowGroup {
             AcusiaAppView()
-                .background(DarkModeWindowModifier())
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(auth)
                 .environmentObject(windowState)
                 .environmentObject(musicKit)
                 .environmentObject(homeState)
                 .onAppear {
-                    floatingBarPresenter.showFloatingBar()
+                    print("Checking authentication") 
+                    auth.checkAuthentication()
                 }
         }
     }
@@ -74,137 +94,148 @@ struct AcusiaApp: App {
 
 struct AcusiaAppView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var auth: Auth
+    @EnvironmentObject private var windowState: UIState
     @EnvironmentObject private var musicKitManager: MusicKit
+    @EnvironmentObject private var homeState: HomeState
+
+    private var floatingBarPresenter = FloatingBarPresenter()
 
     @State private var dragOffset: CGFloat = 0
-
-    private var cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
+    var cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
 
     var body: some View {
-        // Main Feed + User + User History View
-        GeometryReader { proxy in
-            // Split Layout Helpers
-            let screenHeight = proxy.size.height
-            let screenWidth = proxy.size.width
+        if !auth.isAuthenticated {
+            AuthScreen()
+        } else {
+            GeometryReader { proxy in
+                // Split Layout Helpers
+                let screenHeight = proxy.size.height
+                let screenWidth = proxy.size.width
 
-            let collapsedHomeHeight: CGFloat = safeAreaInsets.top * 2
+                let collapsedHomeHeight: CGFloat = safeAreaInsets.top * 2
 
-            let homeHeight: CGFloat = windowState.isSplit ?
-                collapsedHomeHeight + dragOffset
-                : screenHeight
+                let homeHeight: CGFloat = windowState.isSplit ?
+                    collapsedHomeHeight + dragOffset
+                    : screenHeight
 
-            let replyHeight: CGFloat = windowState.isSplit ?
-                screenHeight - dragOffset
-                : 0
+                let replyHeight: CGFloat = windowState.isSplit ?
+                    screenHeight - dragOffset
+                    : 0
 
-            ZStack(alignment: .top) {
-                Home()
-                    .overlay {
-                        Rectangle()
-                            .foregroundStyle(.clear)
-                            .background(.thinMaterial)
-                            .opacity(windowState.isSplit ? 1.0 : 0)
-                            .animation(.snappy, value: windowState.isSplit)
-                            .allowsHitTesting(false)
-                    }
-                    .frame(minWidth: screenWidth, minHeight: screenHeight)
-                    .frame(height: homeHeight, alignment: .top)
-                    .background(.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                    .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                    .shadow(radius: 10)
-                    .animation(.snappy(), value: homeHeight)
-                    .zIndex(1)
-
-                VStack {
-                    if windowState.isSplit {
-                        VStack(alignment: .leading) { // Align to top. This contains the clipped view.
-                            EmptyView()
-                                .frame(minWidth: screenWidth, minHeight: screenHeight)
-                                .frame(height: replyHeight, alignment: .top) // Align content inside to top.
-                                .overlay(
-                                    Color.white.opacity(windowState.isSplit ? 0 : 0.05)
-                                        .blendMode(.exclusion)
-                                        // .animation(.spring(), value: replyOpacity)
-                                        .allowsHitTesting(false)
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                .animation(.spring(), value: replyHeight)
+                ZStack(alignment: .top) {
+                    Home()
+                        .overlay {
+                            Rectangle()
+                                .foregroundStyle(.clear)
+                                .background(.thinMaterial)
+                                .opacity(windowState.isSplit ? 1.0 : 0)
+                                .animation(.snappy, value: windowState.isSplit)
+                                .allowsHitTesting(false)
                         }
-                        .frame(minWidth: screenWidth, minHeight: screenHeight, alignment: .bottom)
+                        .frame(minWidth: screenWidth, minHeight: screenHeight)
+                        .frame(height: homeHeight, alignment: .top)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .shadow(radius: 10)
+                        .animation(.snappy(), value: homeHeight)
+                        .zIndex(1)
+
+                    VStack {
+                        if windowState.isSplit {
+                            VStack(alignment: .leading) { // Align to top. This contains the clipped view.
+                                EmptyView()
+                                    .frame(minWidth: screenWidth, minHeight: screenHeight)
+                                    .frame(height: replyHeight, alignment: .top) // Align content inside to top.
+                                    .overlay(
+                                        Color.white.opacity(windowState.isSplit ? 0 : 0.05)
+                                            .blendMode(.exclusion)
+                                            // .animation(.spring(), value: replyOpacity)
+                                            .allowsHitTesting(false)
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                                    .animation(.spring(), value: replyHeight)
+                            }
+                            .frame(minWidth: screenWidth, minHeight: screenHeight, alignment: .bottom)
+                        }
                     }
+                    .transition(.blurReplace)
+                    .zIndex(0)
                 }
-                .transition(.blurReplace)
-                .zIndex(0)
-            }
-            .simultaneousGesture(
-                DragGesture()
-                    .onChanged { value in
-                        /// Only allow gesture input to modify split progress if not fully split or if fully split and root scroll offset is at the top.
-                        guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
-                        let yOffset = value.translation.height
+                .simultaneousGesture(
+                    DragGesture()
+                        .onChanged { value in
+                            /// Only allow gesture input to modify split progress if not fully split or if fully split and root scroll offset is at the top.
+                            guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
+                            let yOffset = value.translation.height
 
-                        /// Dragging up, means scrolling down, negative offset.
-                        /// Dragging down, means scrolling up, positive offset.
-                        if yOffset > 0 {
-                            dragOffset = yOffset
+                            /// Dragging up, means scrolling down, negative offset.
+                            /// Dragging down, means scrolling up, positive offset.
+                            if yOffset > 0 {
+                                dragOffset = yOffset
+                            }
                         }
-                    }
-                    .onEnded { value in
-                        guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
+                        .onEnded { value in
+                            guard windowState.isSplit, !windowState.isLayered, windowState.isOffsetAtTop else { return }
 
-                        let yOffset = value.translation.height
-                        let yVelocity = value.velocity.height
+                            let yOffset = value.translation.height
+                            let yVelocity = value.velocity.height
 
-                        if yOffset > 0, yVelocity > 1000 || yOffset >= (screenHeight / 2) { // User is dragging downwards
-                            withAnimation(.snappy) {
-                                windowState.isSplit = false
+                            if yOffset > 0, yVelocity > 1000 || yOffset >= (screenHeight / 2) { // User is dragging downwards
+                                withAnimation(.snappy) {
+                                    windowState.isSplit = false
+                                    dragOffset = 0
+                                }
+                            } else {
                                 dragOffset = 0
                             }
-                        } else {
-                            dragOffset = 0
+                        }
+                )
+                .onAppear {
+                    /// Setup window state.
+                    windowState.size = proxy.size
+                    windowState.collapsedHomeHeight = collapsedHomeHeight
+                    windowState.setupNavigationBarAppearance()
+                    windowState.enableDarkMode()
+
+                    floatingBarPresenter.showFloatingBar()
+
+                    /// Setup music kit.
+                    Task {
+                        await musicKitManager.requestMusicAuthorization()
+
+                        if musicKitManager.isAuthorizedForMusicKit {
+                            await musicKitManager.loadRecentlyPlayedSongs()
                         }
                     }
-            )
-            .onAppear {
-                windowState.size = proxy.size
-                windowState.collapsedHomeHeight = collapsedHomeHeight
-
-                UINavigationBar.setupCustomAppearance()
-
-                Task {
-                    await musicKitManager.requestMusicAuthorization()
-
-                    if musicKitManager.isAuthorizedForMusicKit {
-                        await musicKitManager.loadRecentlyPlayedSongs()
+                }
+            }
+            .ignoresSafeArea()
+            .overlay(alignment: .bottom) {
+                Button(action: {
+                    auth.signOut()
+                }) {
+                    Text("Sign Out")
+                        .padding()
+                        .background(Color.red)
+                }
+            }
+            .sheet(isPresented: Binding(
+                get: { windowState.symmetryState == .search },
+                set: { newValue in
+                    if !newValue, windowState.symmetryState == .search {
+                        windowState.symmetryState = .feed
                     }
                 }
+            )) {
+                IndexSheet()
+                    .presentationBackground(.thinMaterial)
+                    .presentationDetents([.fraction(0.99)])
+                    .presentationDragIndicator(.hidden)
+                    .presentationCornerRadius(40)
             }
-        }
-        .ignoresSafeArea()
-        .blur(radius: windowState.symmetryState == .reply ? 4 : 0)
-        .overlay(
-            Color
-                .black
-                .opacity(windowState.symmetryState == .reply ? 0.3 : 0.0)
-                .allowsHitTesting(false)
-                .ignoresSafeArea()
-        )
-        .sheet(isPresented: Binding(
-            get: { windowState.symmetryState == .search },
-            set: { newValue in
-                if !newValue, windowState.symmetryState == .search {
-                    windowState.symmetryState = .feed
-                }
-            }
-        )) {
-            IndexSheet()
-                .presentationBackground(.thinMaterial)
-                .presentationDetents([.fraction(0.99)])
-                .presentationDragIndicator(.hidden)
-                .presentationCornerRadius(40)
         }
     }
 }
@@ -218,9 +249,10 @@ class FloatingBarPresenter {
         }
 
         let view = FloatingBarView()
-            .environmentObject(WindowState.shared)
+            .environmentObject(UIState.shared)
             .environmentObject(MusicKit.shared)
             .environmentObject(HomeState.shared)
+            .environmentObject(Auth.shared)
 
         let hostingController = UIHostingController(rootView: view)
         hostingController.view.backgroundColor = .clear
@@ -238,10 +270,12 @@ class FloatingBarPresenter {
     }
 }
 
-/// NOTE: Putting a border on the outer stack prevents touch inputs from being passed through.
+/// IMPORTANT: Putting a border on the outer stack prevents touch inputs from being passed through.
 struct FloatingBarView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
+    @EnvironmentObject private var musicKitManager: MusicKit
+    @EnvironmentObject private var homeState: HomeState
 
     @State private var keyboardHeight: CGFloat = 0
 
@@ -264,5 +298,6 @@ struct FloatingBarView: View {
             self.keyboardHeight = safeAreaInsets.bottom
             windowState.symmetryState = .feed
         }
+        .opacity(0)
     }
 }

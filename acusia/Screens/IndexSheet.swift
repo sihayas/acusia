@@ -12,7 +12,7 @@ import Transmission
 
 struct IndexSheet: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
     @EnvironmentObject private var musicKitManager: MusicKit
 
     @State private var keyboardOffset: CGFloat = 0
@@ -53,7 +53,7 @@ struct IndexSheet: View {
 }
 
 struct ResultCell: View {
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
     @Binding var searchResult: SearchResult
     @Binding var selectedResult: SearchResult?
 

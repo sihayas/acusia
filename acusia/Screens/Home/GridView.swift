@@ -11,7 +11,7 @@ import SwiftUI
 
 struct GridView: View {
     // Global Properties
-    @EnvironmentObject private var windowState: WindowState
+    @EnvironmentObject private var windowState: UIState
     @EnvironmentObject var musicKitManager: MusicKit
 
     // Local Properties
