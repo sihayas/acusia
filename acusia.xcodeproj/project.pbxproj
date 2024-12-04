@@ -54,6 +54,8 @@
 		CDABF18F2CD1838F00FBE750 /* TextBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDBDA23F2D009834005333B0 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA23E2D009832005333B0 /* Auth.swift */; };
+		CDBDA2412D00CAB2005333B0 /* SymmetryWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2402D00CAAE005333B0 /* SymmetryWindow.swift */; };
+		CDBDA2432D00CE0B005333B0 /* UIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2422D00CE08005333B0 /* UIState.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
 		CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* GridView.swift */; };
 		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
@@ -158,6 +160,8 @@
 		CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBubbleView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
 		CDBDA23E2D009832005333B0 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		CDBDA2402D00CAAE005333B0 /* SymmetryWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetryWindow.swift; sourceTree = "<group>"; };
+		CDBDA2422D00CE08005333B0 /* UIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIState.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
@@ -251,12 +255,12 @@
 		CD13D5252C3FAD84007E3120 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				CD54A5722CB7307600B257EA /* PixellatedTextRenderer */,
-				CDC37D492C606C16002D2709 /* Holo */,
-				CD4BAA9E2C950A3F0005F3DB /* Ripple */,
-				CDC37D442C6067FA002D2709 /* Iridescent */,
 				CDD77DA92C8FF83000D5BCC1 /* definitions.h */,
 				CD264CD72CD3A6B600A74D7E /* Grok.metal */,
+				CDC37D492C606C16002D2709 /* Holo */,
+				CDC37D442C6067FA002D2709 /* Iridescent */,
+				CD54A5722CB7307600B257EA /* PixellatedTextRenderer */,
+				CD4BAA9E2C950A3F0005F3DB /* Ripple */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -292,10 +296,12 @@
 		CD8CFDA42C6F02AC00D7DEA7 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				CDBDA23E2D009832005333B0 /* Auth.swift */,
 				CDDED7352C194C8400958B39 /* App.swift */,
+				CDBDA23E2D009832005333B0 /* Auth.swift */,
 				CDDED7852C19543D00958B39 /* CoreData.swift */,
 				CDDED73E2C194C8500958B39 /* Persistence.swift */,
+				CDBDA2402D00CAAE005333B0 /* SymmetryWindow.swift */,
+				CDBDA2422D00CE08005333B0 /* UIState.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -395,16 +401,16 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				CD8A643A2D0092B100BE98DE /* JWT.swift */,
-				CD8A64382D00903800BE98DE /* FileCache.swift */,
-				CD81D0A02D00834F0028F2DB /* Keychain.swift */,
 				CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */,
+				CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */,
+				CD8A64382D00903800BE98DE /* FileCache.swift */,
+				CD8A643A2D0092B100BE98DE /* JWT.swift */,
+				CD81D0A02D00834F0028F2DB /* Keychain.swift */,
+				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
+				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
+				CD0D90502CA3C31A004FD674 /* Notification.swift */,
 				CD43B2BE2CDC0D8C0018DB16 /* Path.swift */,
 				CD17C10D2CB195400014D3FD /* SafeArea.swift */,
-				CD0D90502CA3C31A004FD674 /* Notification.swift */,
-				CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */,
-				CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */,
-				CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */,
 				CDDED78A2C1959C600958B39 /* UIKit */,
 			);
 			path = Utils;
@@ -414,18 +420,18 @@
 			isa = PBXGroup;
 			children = (
 				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
-				CD43B2C22CDEFBA10018DB16 /* EntityView.swift */,
-				CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */,
-				CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */,
-				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
-				CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */,
-				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
-				CD0EEB7E2C7BB0B300DB9896 /* BiomeView.swift */,
 				CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */,
-				CDE43C102C8671250009CB87 /* ReactionView.swift */,
+				CD0EEB7E2C7BB0B300DB9896 /* BiomeView.swift */,
+				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
+				CD43B2C22CDEFBA10018DB16 /* EntityView.swift */,
 				CDE14A442C8118C400D0F172 /* PathViews.swift */,
+				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
+				CDE43C102C8671250009CB87 /* ReactionView.swift */,
 				CD9245092CA6713100635716 /* SymmetryView.swift */,
+				CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */,
+				CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */,
+				CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */,
 				CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */,
 			);
 			path = Components;
@@ -444,9 +450,9 @@
 		CDDED7872C1955A500958B39 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				CD06C26F2C69B10100FC010C /* IndexSheet.swift */,
-				CD2E1ABD2C7A011100922C1B /* Home */,
 				CDDED7882C1955BD00958B39 /* AuthScreen.swift */,
+				CD2E1ABD2C7A011100922C1B /* Home */,
+				CD06C26F2C69B10100FC010C /* IndexSheet.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -604,6 +610,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD43B2C72CE136860018DB16 /* EntityModel.swift in Sources */,
+				CDBDA2412D00CAB2005333B0 /* SymmetryWindow.swift in Sources */,
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
 				CD8A64392D00903B00BE98DE /* FileCache.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* BiomeView.swift in Sources */,
@@ -652,6 +659,7 @@
 				CD81D09F2D0081A90028F2DB /* AuthModel.swift in Sources */,
 				CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */,
 				CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */,
+				CDBDA2432D00CE0B005333B0 /* UIState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,7 +31,6 @@ class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAut
 
         isAuthenticated = true
 
-        // Attempt to load the cached user profile
         if let cachedProfile = FileCache.load(UserProfile.self, from: "\(userId)_profile.json") {
             userProfile = cachedProfile
         }
@@ -147,7 +146,7 @@ class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAut
 
                 DispatchQueue.main.async {
                     self?.debugInfo = "Authentication successful!"
-                    self?.checkAuthentication() // Update auth state
+                    self?.checkAuthentication()
                 }
             } catch {
                 DispatchQueue.main.async {
@@ -155,6 +154,7 @@ class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAut
                 }
             }
         }
+        
         task.resume()
     }
 
