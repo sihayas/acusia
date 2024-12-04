@@ -9,7 +9,6 @@ import SwiftUI
 
 // MARK: - Imprint Paths
 
-/// Mainly for the Imprint.
 struct HeartPath: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -119,31 +118,17 @@ struct HeartbreakRightPath: Shape {
     }
 }
 
-struct NoodleIcon: Shape {
+// MARK: - Entity Paths
+
+struct Line: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        let width = rect.size.width
-        let height = rect.size.height
-        path.move(to: CGPoint(x: 0.20743*width, y: 0.22529*height))
-        path.addCurve(to: CGPoint(x: 0.41576*width, y: 0.58954*height), control1: CGPoint(x: 0.23801*width, y: 0.36667*height), control2: CGPoint(x: 0.31216*width, y: 0.48463*height))
-        path.addCurve(to: CGPoint(x: 0.89289*width, y: 0.80689*height), control1: CGPoint(x: 0.55211*width, y: 0.72033*height), control2: CGPoint(x: 0.70496*width, y: 0.80287*height))
-        path.addCurve(to: CGPoint(x: 0.97219*width, y: 0.89223*height), control1: CGPoint(x: 0.94107*width, y: 0.80792*height), control2: CGPoint(x: 0.97328*width, y: 0.84791*height))
-        path.addCurve(to: CGPoint(x: 0.89034*width, y: 0.97213*height), control1: CGPoint(x: 0.97115*width, y: 0.93466*height), control2: CGPoint(x: 0.93938*width, y: 0.97448*height))
-        path.addCurve(to: CGPoint(x: 0.88342*width, y: 0.9718*height), control1: CGPoint(x: 0.88804*width, y: 0.97202*height), control2: CGPoint(x: 0.88573*width, y: 0.97191*height))
-        path.addCurve(to: CGPoint(x: 0.74369*width, y: 0.95718*height), control1: CGPoint(x: 0.83849*width, y: 0.96967*height), control2: CGPoint(x: 0.79024*width, y: 0.96738*height))
-        path.addCurve(to: CGPoint(x: 0.21121*width, y: 0.61031*height), control1: CGPoint(x: 0.52228*width, y: 0.90868*height), control2: CGPoint(x: 0.34787*width, y: 0.78566*height))
-        path.addCurve(to: CGPoint(x: 0.0278*width, y: 0.11974*height), control1: CGPoint(x: 0.09998*width, y: 0.46759*height), control2: CGPoint(x: 0.03094*width, y: 0.30588*height))
-        path.addCurve(to: CGPoint(x: 0.04798*width, y: 0.0553*height), control1: CGPoint(x: 0.02739*width, y: 0.09554*height), control2: CGPoint(x: 0.03338*width, y: 0.0727*height))
-        path.addCurve(to: CGPoint(x: 0.10769*width, y: 0.02783*height), control1: CGPoint(x: 0.06294*width, y: 0.03746*height), control2: CGPoint(x: 0.08427*width, y: 0.02855*height))
-        path.addCurve(to: CGPoint(x: 0.17005*width, y: 0.05275*height), control1: CGPoint(x: 0.13213*width, y: 0.02707*height), control2: CGPoint(x: 0.15411*width, y: 0.03539*height))
-        path.addCurve(to: CGPoint(x: 0.19443*width, y: 0.11572*height), control1: CGPoint(x: 0.18542*width, y: 0.06949*height), control2: CGPoint(x: 0.19278*width, y: 0.09197*height))
-        path.addCurve(to: CGPoint(x: 0.20743*width, y: 0.22529*height), control1: CGPoint(x: 0.19708*width, y: 0.15391*height), control2: CGPoint(x: 0.19989*width, y: 0.19042*height))
-        path.closeSubpath()
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
         return path
     }
 }
 
-// MARK: - Entity Paths
 struct BubbleWithTailShape: Shape {
     var scale: CGFloat
 

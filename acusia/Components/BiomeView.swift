@@ -10,107 +10,81 @@ struct BiomeView: View {
     @EnvironmentObject private var windowState: UIState
 
     let biome: Biome
-    let color = Color(UIColor.systemGray6)
-    let secondaryColor = Color(UIColor.systemGray5)
 
     @Namespace var animation
     @State private var showSheet: Bool = false
 
     var body: some View {
-        VStack {
-            // MARK: - Biome Snapshot
-
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(0 ..< min(6, biome.entities.count), id: \.self) { index in
-                    let previousEntity = index > 0 ? biome.entities[index - 1] : nil
-                    
-                    EntityView(rootEntity: biome.entities[0],
-                               previousEntity: previousEntity,
-                               entity: biome.entities[index],
-                               color: color,
-                               secondaryColor: secondaryColor)
-                        .frame(maxHeight: .infinity)
-                }
-            }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 24)
-        }
-        .overlay(alignment: .bottom) {
-            // MARK: - Biome Footer
-            ZStack(alignment: .bottomTrailing) {
-                VariableBlurView(radius: 4, mask: Image(.gradient))
-                    .frame(maxWidth: .infinity, maxHeight: 180)
-                
-                VStack {
-                    CollageLayout {
-                        Circle()
-                            .background(
-                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1759706838319161344/QZE066Lr_400x400.jpg")) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            )
-                            .foregroundStyle(.clear)
-                            .clipShape(Circle())
-                        
-                        Circle()
-                            .background(
-                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1828581255069241344/QySOaDzU_400x400.jpg")) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            )
-                            .foregroundStyle(.clear)
-                            .clipShape(Circle())
-                        
-                        Circle()
-                            .background(
-                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1855940230362103808/_8fGXfK6_400x400.jpg")) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            )
-                            .foregroundStyle(.clear)
-                            .clipShape(Circle())
-                        
-                        Circle()
-                            .background(
-                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1562843260304863232/s_Cv2vdy_400x400.jpg")) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            )
-                            .foregroundStyle(.clear)
-                            .clipShape(Circle())
-                        
-                        Circle()
-                            .background(
-                                AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1709499954711142400/sHmbME_7_400x400.jpg")) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            )
-                            .foregroundStyle(.clear)
-                            .clipShape(Circle())
-                    }
-                    .frame(width: 64, height: 64)
-                    .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
-                    
-                    Text("gods weakest soldiers")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(
-                            .white
+        VStack(alignment: .leading) {
+            HStack {
+                CollageLayout {
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1759706838319161344/QZE066Lr_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
                         )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                        
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1828581255069241344/QySOaDzU_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                        
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1855940230362103808/_8fGXfK6_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                        
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1562843260304863232/s_Cv2vdy_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                        
+                    Circle()
+                        .background(
+                            AsyncImage(url: URL(string: "https://pbs.twimg.com/profile_images/1709499954711142400/sHmbME_7_400x400.jpg")) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
+                }
+                .frame(width: 64, height: 64)
+                .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 2)
+                    
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("gods weakest soldiers")
+                        .font(.system(size: 23, weight: .bold))
+                        .foregroundStyle(.secondary)
                     
                     HStack {
                         HStack(spacing: 4) {
@@ -118,7 +92,7 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(.white)
                             Text("21")
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
                         .padding(.horizontal, 6)
@@ -130,7 +104,7 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(.white)
                             Text("786")
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
                         .padding(.horizontal, 6)
@@ -142,7 +116,7 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(.white)
                             Text("7")
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
                         .padding(.horizontal, 6)
@@ -150,42 +124,37 @@ struct BiomeView: View {
                         .background(.ultraThinMaterial, in: Capsule())
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .padding([.horizontal, .bottom], 20)
                 
-                VStack {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .frame(width: 52, height: 52)
-                        .overlay {
-                            ZStack {
-                                Image(systemName: "circle.dotted")
-                                    .font(.system(size: 40))
-                                    .foregroundStyle(.white)
-                                
-                                Image(systemName: "paperplane.fill")
-                                    .font(.system(size: 15, weight: .bold))
-                                    .foregroundStyle(.white)
-                                    .scaleEffect(x: -1, y: 1)
-                            }
-                        }
-                }
-                .padding([.horizontal, .bottom], 20)
+                Spacer()
             }
-        }
-        .background(.black)
-        .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
-        .foregroundStyle(.secondary)
-        .matchedTransitionSource(id: "hi", in: animation)
-        .sheet(isPresented: $showSheet) {
-            BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
-                .navigationTransition(.zoom(sourceID: "hi", in: animation))
-                .presentationBackground(.black)
-        }
-        .padding(.horizontal, 24)
-        .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 0)
-        .onTapGesture {
-            showSheet = true
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 36)
+
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(0 ..< biome.entities.count, id: \.self) { index in
+                    let previousEntity = index > 0 ? biome.entities[index - 1] : nil
+                    
+                    EntityView(rootEntity: biome.entities[0],
+                               previousEntity: previousEntity,
+                               entity: biome.entities[index])
+                        .frame(maxHeight: .infinity)
+                }
+            }
+            .padding(24)
+            .background(.black)
+            .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
+            .foregroundStyle(.secondary)
+            .matchedTransitionSource(id: "hi", in: animation)
+            .sheet(isPresented: $showSheet) {
+                BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
+                    .navigationTransition(.zoom(sourceID: "hi", in: animation))
+                    .presentationBackground(.black)
+            }
+            .padding(.horizontal, 24)
+            .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 0)
+            .onTapGesture {
+                showSheet = true
+            }
         }
     }
 }
@@ -252,29 +221,6 @@ let biomeOne: [Entity] = {
                                
                                color: "#d2dcf0")
             ]
-        ),
-        Entity(
-            id: "7",
-            username: "zack+",
-            avatar: "https://pbs.twimg.com/profile_images/1853512066142720000/I2JbmSxI_400x400.jpg",
-            text: """
-            same here, I was really looking forward to their next album. I’m glad they’re still involved in the scene though. I’ll have to check out Aprilblue
-            """,
-            created_at: Date(timeIntervalSinceNow: -600),
-            parent: Entity(
-                id: "1",
-                username: "qwertyyy",
-                avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
-                text: "sentimental outlook on Hotel Insomnia, mainly since it soundtracked a good portion of my trip to Japan",
-                created_at: Date(timeIntervalSinceNow: -2400),
-                attachments: [
-                    SongAttachment(id: "idk",
-                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music71/v4/90/74/50/9074507a-c12c-50e5-122f-5d9b4918d1f2/4538182661741_cov.jpg/632x632bb.webp",
-                                   name: "Film Bleu",
-                                   artistName: "For Tracy Hyde",
-                                   color: "#FFF")
-                ]
-            )
         )
     ]
 }()

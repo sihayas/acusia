@@ -28,13 +28,13 @@ struct AuxiliaryView: View {
             )
 
             pathShape
-                .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 55, lineCap: .round))
+                .stroke(Color(UIColor.systemGray6), style: StrokeStyle(lineWidth: 55, lineCap: .round))
 
-            // Compute closest icon
             let iconPositions = icons.indices.map { index -> CGPoint in
                 let fraction = CGFloat(index) / CGFloat(icons.count - 1) * pathProgress
                 return path.point(atFractionOfLength: fraction)
             }
+            
             let closestIndex = iconPositions
                 .enumerated()
                 .min(by: { adjustedTranslation.distance(to: $0.element) < adjustedTranslation.distance(to: $1.element) })?

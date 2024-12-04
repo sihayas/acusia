@@ -7,18 +7,23 @@
 import AuthenticationServices
 import SwiftUI
 
+struct AuthResponse: Codable {
+    let token: String
+    let user: User
+}
+
 class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     static let shared = Auth()
 
     @Published var isAuthenticated: Bool = false
-    @Published var userProfile: UserProfile?
+    @Published var userProfile: User?
     @Published var debugInfo: String?
 
     override private init() {}
 
     // MARK: - Authentication State Management
 
-    func checkAuthentication() {
+    func authenticate() {
         guard let token = loadTokenFromKeychain() else {
             isAuthenticated = false
             return
@@ -31,7 +36,7 @@ class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAut
 
         isAuthenticated = true
 
-        if let cachedProfile = FileCache.load(UserProfile.self, from: "\(userId)_profile.json") {
+        if let cachedProfile = FileCache.load(User.self, from: "\(userId)_profile.json") {
             userProfile = cachedProfile
         }
     }
@@ -120,7 +125,6 @@ class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAut
             do {
                 let decoder = JSONDecoder()
 
-                // Custom date decoding strategy for ISO8601 with fractional seconds
                 decoder.dateDecodingStrategy = .custom { decoder in
                     let dateString = try decoder.singleValueContainer().decode(String.self)
                     let iso8601Formatter = ISO8601DateFormatter()
@@ -137,16 +141,14 @@ class Auth: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAut
                 let authResponse = try decoder.decode(AuthResponse.self, from: data)
 
                 saveTokenToKeychain(token: authResponse.token)
-                print("Token saved to keychain.")
 
                 if let userId = decodeJWT(authResponse.token) {
                     FileCache.save(authResponse.user, to: "\(userId)_profile.json")
-                    print("User profile saved.")
                 }
 
                 DispatchQueue.main.async {
                     self?.debugInfo = "Authentication successful!"
-                    self?.checkAuthentication()
+                    self?.authenticate()
                 }
             } catch {
                 DispatchQueue.main.async {

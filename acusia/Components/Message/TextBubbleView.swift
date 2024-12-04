@@ -9,8 +9,6 @@ import SwiftUI
 
 struct TextBubbleView: View {
     let entity: Entity
-    let color: Color
-    let secondaryColor: Color
 
     let auxiliarySize: CGSize = .init(width: 216, height: 120)
 
@@ -25,30 +23,10 @@ struct TextBubbleView: View {
                     .font(.system(size: 16))
                     .multilineTextAlignment(.leading)
             }
-
-            // if let song = entity.getSongAttachment() {
-            //     HStack(spacing: 4) {
-            //         Image(systemName: "music.note")
-            //             .font(.system(size: 9, weight: .bold))
-            //             .foregroundColor(.secondary)
-           
-            //         Text("\(song.artistName),")
-            //             .foregroundColor(.secondary)
-            //             .font(.system(size: 11, weight: .regular, design: .monospaced))
-            //             .lineLimit(1)
-           
-            //         Text(song.name)
-            //             .foregroundColor(.white)
-            //             .font(.system(size: 11, weight: .regular, design: .monospaced))
-            //     }
-            //     .padding(.horizontal, 6)
-            //     .padding(.vertical, 2)
-            //     .background(secondaryColor, in: Capsule())
-            // }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(color, in: BubbleWithTailShape(scale: 1))
+        .background(Color(.systemGray6), in: BubbleWithTailShape(scale: 1))
         .foregroundStyle(.secondary)
         .auxiliaryContextMenu(
             auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),
@@ -76,7 +54,7 @@ struct TextBubbleView: View {
     }
 }
 
-struct ParentTextBubbleView: View {
+struct ContextualTextBubbleView: View {
     @State private var gestureTranslation = CGPoint.zero
     @State private var gestureVelocity = CGPoint.zero
     

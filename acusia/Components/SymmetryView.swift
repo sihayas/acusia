@@ -73,7 +73,7 @@ struct SymmetryView: View {
                 // MARK: Canvas
 
                 Rectangle()
-                    .background(.black)
+                    .background(.ultraThinMaterial)
                     .foregroundStyle(.clear)
                     .mask {
                         Canvas { ctx, _ in
@@ -132,7 +132,7 @@ struct SymmetryView: View {
                         overlayContent:
                         ZStack {
                             if windowState.symmetryState == .feed {
-                                AvatarView(size: 32, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
+                                AvatarView(size: 40, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
                             }
                             
                             if windowState.symmetryState == .reply, let result = windowState.selectedResult {

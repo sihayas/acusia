@@ -79,10 +79,12 @@ class UIState: ObservableObject {
     // MARK: - Dark Mode
 
     func enableDarkMode() {
-        if let window = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let uiWindow = window.windows.first
-        {
-            uiWindow.overrideUserInterfaceStyle = .dark
-        }
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene } // Ensure the scene is a UIWindowScene
+            .forEach { windowScene in
+                windowScene.windows.forEach { window in
+                    window.overrideUserInterfaceStyle = .dark
+                }
+            }
     }
 }

@@ -39,8 +39,7 @@
 		CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */; };
 		CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD69761E2C51B9EA003E4481 /* Iridescent.metal */; };
 		CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* BlipView.swift */; };
-		CD7B51452CCB7AB2001B9DB5 /* TestMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */; };
-		CD81D09F2D0081A90028F2DB /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD81D09E2D0081A50028F2DB /* AuthModel.swift */; };
+		CD81D09F2D0081A90028F2DB /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD81D09E2D0081A50028F2DB /* UserModel.swift */; };
 		CD81D0A12D0083510028F2DB /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD81D0A02D00834F0028F2DB /* Keychain.swift */; };
 		CD8A64392D00903B00BE98DE /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8A64382D00903800BE98DE /* FileCache.swift */; };
 		CD8A643B2D0092B300BE98DE /* JWT.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8A643A2D0092B100BE98DE /* JWT.swift */; };
@@ -54,8 +53,10 @@
 		CDABF18F2CD1838F00FBE750 /* TextBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* VariableBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */; };
 		CDBDA23F2D009834005333B0 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA23E2D009832005333B0 /* Auth.swift */; };
-		CDBDA2412D00CAB2005333B0 /* SymmetryWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2402D00CAAE005333B0 /* SymmetryWindow.swift */; };
 		CDBDA2432D00CE0B005333B0 /* UIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2422D00CE08005333B0 /* UIState.swift */; };
+		CDBDA2452D00CF99005333B0 /* UDTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2442D00CF94005333B0 /* UDTModel.swift */; };
+		CDBDA2482D00E1C9005333B0 /* ContextualMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */; };
+		CDBDA24A2D00E32E005333B0 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2492D00E32C005333B0 /* MessageView.swift */; };
 		CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDC37D4B2C606C2A002D2709 /* Holo.metal */; };
 		CDD48E182C62C20F0001C4E8 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E172C62C20B0001C4E8 /* GridView.swift */; };
 		CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */; };
@@ -146,8 +147,7 @@
 		CD6438CA2C92C22F00D7436E /* HoloShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoloShaderView.swift; sourceTree = "<group>"; };
 		CD69761E2C51B9EA003E4481 /* Iridescent.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Iridescent.metal; sourceTree = "<group>"; };
 		CD720E4D2CB8713A00CEEE00 /* BlipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlipView.swift; sourceTree = "<group>"; };
-		CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestMenu.swift; sourceTree = "<group>"; };
-		CD81D09E2D0081A50028F2DB /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
+		CD81D09E2D0081A50028F2DB /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		CD81D0A02D00834F0028F2DB /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		CD8A64382D00903800BE98DE /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		CD8A643A2D0092B100BE98DE /* JWT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWT.swift; sourceTree = "<group>"; };
@@ -160,8 +160,10 @@
 		CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBubbleView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlur.swift; sourceTree = "<group>"; };
 		CDBDA23E2D009832005333B0 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
-		CDBDA2402D00CAAE005333B0 /* SymmetryWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetryWindow.swift; sourceTree = "<group>"; };
 		CDBDA2422D00CE08005333B0 /* UIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIState.swift; sourceTree = "<group>"; };
+		CDBDA2442D00CF94005333B0 /* UDTModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTModel.swift; sourceTree = "<group>"; };
+		CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualMessageView.swift; sourceTree = "<group>"; };
+		CDBDA2492D00E32C005333B0 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		CDC37D4B2C606C2A002D2709 /* Holo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Holo.metal; sourceTree = "<group>"; };
 		CDD48E172C62C20B0001C4E8 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		CDD48E2D2C62FA670001C4E8 /* MKSymbolShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKSymbolShape.swift; sourceTree = "<group>"; };
@@ -300,7 +302,6 @@
 				CDBDA23E2D009832005333B0 /* Auth.swift */,
 				CDDED7852C19543D00958B39 /* CoreData.swift */,
 				CDDED73E2C194C8500958B39 /* Persistence.swift */,
-				CDBDA2402D00CAAE005333B0 /* SymmetryWindow.swift */,
 				CDBDA2422D00CE08005333B0 /* UIState.swift */,
 			);
 			path = App;
@@ -311,6 +312,21 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CDBDA2462D00E11E005333B0 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				CDBDA2492D00E32C005333B0 /* MessageView.swift */,
+				CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */,
+				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
+				CDE43C102C8671250009CB87 /* ReactionView.swift */,
+				CDE14A442C8118C400D0F172 /* PathViews.swift */,
+				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
+				CD43B2C22CDEFBA10018DB16 /* EntityView.swift */,
+				CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */,
+			);
+			path = Message;
 			sourceTree = "<group>";
 		};
 		CDC37D442C6067FA002D2709 /* Iridescent */ = {
@@ -419,18 +435,12 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
+				CDBDA2462D00E11E005333B0 /* Message */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
 				CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */,
 				CD0EEB7E2C7BB0B300DB9896 /* BiomeView.swift */,
-				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
-				CD43B2C22CDEFBA10018DB16 /* EntityView.swift */,
-				CDE14A442C8118C400D0F172 /* PathViews.swift */,
 				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
-				CDE43C102C8671250009CB87 /* ReactionView.swift */,
 				CD9245092CA6713100635716 /* SymmetryView.swift */,
-				CD7B51442CCB7AAF001B9DB5 /* TestMenu.swift */,
-				CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */,
 				CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */,
 				CDAE7D0E2C718CA700254E56 /* VariableBlur.swift */,
 			);
@@ -440,7 +450,8 @@
 		CDDED77C2C19520300958B39 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				CD81D09E2D0081A50028F2DB /* AuthModel.swift */,
+				CDBDA2442D00CF94005333B0 /* UDTModel.swift */,
+				CD81D09E2D0081A50028F2DB /* UserModel.swift */,
 				CD43B2C62CE136830018DB16 /* EntityModel.swift */,
 				CD614C412C74BA150059C80F /* MusicKitModel.swift */,
 			);
@@ -610,8 +621,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD43B2C72CE136860018DB16 /* EntityModel.swift in Sources */,
-				CDBDA2412D00CAB2005333B0 /* SymmetryWindow.swift in Sources */,
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
+				CDBDA24A2D00E32E005333B0 /* MessageView.swift in Sources */,
 				CD8A64392D00903B00BE98DE /* FileCache.swift in Sources */,
 				CD0EEB7F2C7BB0B500DB9896 /* BiomeView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,
@@ -640,13 +651,14 @@
 				CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */,
 				CD43B2BF2CDC0D900018DB16 /* Path.swift in Sources */,
 				CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */,
-				CD7B51452CCB7AB2001B9DB5 /* TestMenu.swift in Sources */,
 				CDC37D4C2C606C2A002D2709 /* Holo.metal in Sources */,
 				CD614C402C7489050059C80F /* MusicKit.swift in Sources */,
 				CD4BAAA22C950BB00005F3DB /* RippleEffect.swift in Sources */,
 				CD43B2C12CDD73770018DB16 /* BiomeExpandedView.swift in Sources */,
 				CD8E0BDB2C8D6C8C003A6F91 /* TintedBlurView.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
+				CDBDA2452D00CF99005333B0 /* UDTModel.swift in Sources */,
+				CDBDA2482D00E1C9005333B0 /* ContextualMessageView.swift in Sources */,
 				CDABF18F2CD1838F00FBE750 /* TextBubbleView.swift in Sources */,
 				CD54A5712CB72F1200B257EA /* Pixellate.metal in Sources */,
 				CD264CD82CD3A6B600A74D7E /* Grok.metal in Sources */,
@@ -656,7 +668,7 @@
 				CD81D0A12D0083510028F2DB /* Keychain.swift in Sources */,
 				CDBDA23F2D009834005333B0 /* Auth.swift in Sources */,
 				CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */,
-				CD81D09F2D0081A90028F2DB /* AuthModel.swift in Sources */,
+				CD81D09F2D0081A90028F2DB /* UserModel.swift in Sources */,
 				CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */,
 				CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */,
 				CDBDA2432D00CE0B005333B0 /* UIState.swift in Sources */,
