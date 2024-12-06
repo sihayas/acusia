@@ -22,16 +22,14 @@ struct BiomeView: View {
                     
                     EntityView(rootEntity: biome.entities[0],
                                previousEntity: previousEntity,
-                               entity: biome.entities[index])
+                               entity: biome.entities[index],
+                               isExpandedView: false
+                    )
                         .frame(maxHeight: .infinity)
                 }
             }
             .padding(24)
             .background(.black)
-            .overlay(alignment: .bottom) {
-                VariableBlurView(radius: 12, mask: Image(.gradient))
-                    .frame(maxWidth: .infinity, maxHeight: 40)
-            }
             .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
             .foregroundStyle(.secondary)
             .matchedTransitionSource(id: "hi", in: animation)
@@ -40,7 +38,7 @@ struct BiomeView: View {
                     .navigationTransition(.zoom(sourceID: "hi", in: animation))
                     .presentationBackground(.black)
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, 12)
             .shadow(color: .black.opacity(0.5), radius: 12, x: 0, y: 8)
             .onTapGesture {
                 showSheet = true
@@ -62,11 +60,12 @@ struct BiomeView: View {
                             .clipShape(Circle())
                     }
                 }
-                .frame(width: 64, height: 64)
+                .frame(width: 52, height: 52)
                     
                 VStack(alignment: .leading, spacing: 4) {
                     Text("gods weakest soldiers")
-                        .font(.system(size: 23, weight: .bold))
+                        .font(.headline)
+                        .fontWeight(.bold)
                         .foregroundStyle(.secondary)
                     
                     HStack {
@@ -78,9 +77,9 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, 4)
                         .padding(.vertical, 4)
-                        .background(.blue, in: Capsule())
+                        // .background(.blue, in: Capsule())
                         
                         HStack(spacing: 4) {
                             Image(systemName: "message.fill")
@@ -90,9 +89,9 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, 4)
                         .padding(.vertical, 4)
-                        .background(.ultraThinMaterial, in: Capsule())
+                        // .background(.ultraThinMaterial, in: Capsule())
                         
                         HStack(spacing: 4) {
                             Image(systemName: "ellipsis.message.fill")
@@ -102,9 +101,9 @@ struct BiomeView: View {
                                 .font(.system(size: 13, weight: .bold))
                                 .foregroundStyle(.white)
                         }
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, 4)
                         .padding(.vertical, 4)
-                        .background(.ultraThinMaterial, in: Capsule())
+                        // .background(.ultraThinMaterial, in: Capsule())
                     }
                 }
                 
@@ -116,7 +115,7 @@ struct BiomeView: View {
     }
 }
 
-struct UserDev {
+struct UserDev: Identifiable {
     let id: String
     let alias: String
     let imageUrl: String
@@ -176,10 +175,10 @@ let biomeOne: [Entity] = {
                 created_at: Date(timeIntervalSinceNow: -2400),
                 attachments: [
                     SongAttachment(id: "idk",
-                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music71/v4/90/74/50/9074507a-c12c-50e5-122f-5d9b4918d1f2/4538182661741_cov.jpg/632x632bb.webp",
-                                   name: "Film Bleu",
+                                   artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/b9/c4/a6/b9c4a69d-a8f4-019f-d4a5-05b2bbc30e94/4538182723500_cov.jpg/632x632bb.webp",
+                                   name: "he(r)art",
                                    artistName: "For Tracy Hyde",
-                                   color: "#FFF")
+                                   color: "#33253b")
                 ]
             )
         ),

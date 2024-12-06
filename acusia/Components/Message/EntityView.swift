@@ -12,6 +12,7 @@ struct EntityView: View {
     let rootEntity: Entity
     let previousEntity: Entity?
     let entity: Entity
+    let isExpandedView: Bool
 
     var body: some View {
         let rootId = rootEntity.id
@@ -37,7 +38,11 @@ struct EntityView: View {
                         AvatarView(size: 32, imageURL: parent.avatar)
                             .frame(width: 40)
 
-                        ContextualMessageView(entity: parent)
+                        if isExpandedView {
+                            ContextualMessageView(entity: parent)
+                        } else {
+                            MessageView(entity: parent)
+                        }
                     }
                     .onAppear { hasContext = true }
                 }

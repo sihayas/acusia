@@ -141,7 +141,14 @@ struct AcusiaAppView: View {
                 }
             }
             .ignoresSafeArea()
-            .sheet(isPresented: .constant(true)) {
+            .sheet(isPresented: Binding(
+                get: { uiState.symmetryState == .create },
+                set: { newValue in
+                    if !newValue, uiState.symmetryState == .create {
+                        uiState.symmetryState = .feed
+                    }
+                }
+            )) {
                 CreateSheet()
                     .presentationBackground(.ultraThickMaterial)
                     .presentationDetents([.large])

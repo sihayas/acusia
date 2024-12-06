@@ -48,24 +48,34 @@ struct MessageView: View {
                         .aspectRatio(contentMode: .fit)
                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
 
-                        VStack(alignment: .leading) {
-                            Text(song.artistName)
-                                .font(.system(size: 13, weight: .regular))
-                                .foregroundColor(.white)
-                            Text(song.name)
-                                .font(.system(size: 13, weight: .bold))
-                                .foregroundColor(.white)
-          
+                        VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading) {
+                                Text(song.artistName)
+                                    .font(.system(size: 13, weight: .regular))
+                                    .foregroundColor(.white)
+                                Text(song.name)
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
 
-                            HStack(spacing: 2) {
+                            HStack(alignment: .lastTextBaseline, spacing: 2) {
                                 Image(systemName: "applelogo")
                                     .font(.system(size: 13))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.white)
 
                                 Text("Music")
                                     .font(.system(size: 13, weight: .regular))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.white)
                             }
+                        }
+                        .blendMode(.difference)
+                        
+                        Button(action: {
+                            // Play song
+                        }) {
+                            Image(systemName: "play.circle")
+                                .font(.system(size: 27))
+                                .foregroundColor(.white)
                         }
                         .blendMode(.difference)
                     }

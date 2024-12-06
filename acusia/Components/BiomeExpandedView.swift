@@ -29,7 +29,9 @@ struct BiomeExpandedView: View {
 
                         EntityView(rootEntity: biome.entities[0],
                                    previousEntity: previousEntity,
-                                   entity: biome.entities[index])
+                                   entity: biome.entities[index],
+                                   isExpandedView: true
+                        )
                             .frame(maxHeight: .infinity)
                     }
                 }

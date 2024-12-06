@@ -12,32 +12,37 @@ enum Topping: String, CaseIterable, Identifiable {
 }
 
 struct CreateSheet: View {
-    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: UIState
     @EnvironmentObject private var musicKitManager: MusicKit
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     @State private var users: [UserDev] = userDevs
 
-    @State private var count = 4
-    @State private var limitedRead = false
-    @State private var closedWrite = false
-
+    @State private var biomeName: String = ""
     @State private var messageNotifications = false
     @State private var requestNotifications = false
     @State private var mentionNotifications = false
 
-    @State private var selectedTopping: Topping = .pepperoni
     @State private var mode: Int = 0
 
     var body: some View {
         List { /// List is a ScrollView.
             CollageLayout {
-                ForEach(0 ..< self.count, id: \.self) { _ in
+                ForEach(self.users.prefix(3), id: \.id) { user in
                     Circle()
-                        .fill(.black)
+                        .background(
+                            AsyncImage(url: URL(string: user.imageUrl)) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                Rectangle()
+                            }
+                        )
+                        .foregroundStyle(.clear)
+                        .clipShape(Circle())
                 }
             }
-            .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7)
+            .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.width * 0.5)
             .padding(.horizontal, 24)
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
             .shadow(color: .black.opacity(0.2), radius: 16, x: 0, y: 4)
@@ -52,8 +57,22 @@ struct CreateSheet: View {
 
             // MARK: - Biome Type
 
+            HStack {
+                TextField("Biome", text: $biomeName)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.secondary)
+                    .textFieldStyle(PlainTextFieldStyle())
+
+            }
+            .listRowBackground(
+                Rectangle()
+                    .foregroundStyle(.clear)
+                    .background(.clear)
+            )
+
             Section {
-                Picker("Color", selection: self.$mode) {
+                Picker("Biome Type", selection: self.$mode) {
                     Image(systemName: "network")
                         .resizable()
                         .frame(width: 32, height: 32)
@@ -65,9 +84,8 @@ struct CreateSheet: View {
                         .tag(1)
                 }
                 .pickerStyle(SegmentedPickerStyle())
-
             } header: {
-                Text("\(mode == 0 ? "Interlaced" : "Interlinked")")
+                Text("\(self.mode == 0 ? "Interlaced" : "Interlinked")")
                     .fontWeight(.semibold)
                     .foregroundStyle(.blue)
                     .transition(.scale)
@@ -98,13 +116,19 @@ struct CreateSheet: View {
                         .font(.footnote)
 
                     Menu {
+                        /// Main menu listing all core users.
                         ControlGroup {
-                            Button {} label: {
-                                Label("Add Users", systemImage: "person.crop.circle.fill.badge.plus")
+                            Button {
+                                /// Add a new user to the biome.
+                            } label: {
+                                Label("Add Users", systemImage: "")
                             }
                         }
 
                         ForEach(self.users, id: \.id) { user in
+
+                            Divider()
+
                             /// Create a sub menu for each user.
                             Menu {
                                 ControlGroup {
@@ -121,27 +145,32 @@ struct CreateSheet: View {
                                     }
                                 }
 
+                                /// Biome specific management menu for each user.
                                 Menu {
-                                    Button {} label: {
-                                        Label("Remove", systemImage: "figure.kickboxing")
+                                    ControlGroup {
+                                        Button(role: .destructive) {} label: {
+                                            Label("Block", systemImage: "circle.badge.xmark.fill")
+                                        }
+
+                                        Button {
+                                            if let index = users.firstIndex(where: { $0.id == user.id }) {
+                                                self.users.remove(at: index)
+                                            }
+                                        } label: {
+                                            Label("Remove", systemImage: "circle.badge.minus.fill")
+                                        }
                                     }
 
-                                    Button(role: .destructive) {
-                                        if let index = users.firstIndex(where: { $0.id == user.id }) {
-                                            self.users.remove(at: index)
-                                        }
-                                    } label: {
-                                        Label("Block", systemImage: "hand.raised.slash.fill")
-                                    }
                                 } label: {
                                     Label {
-                                        Text("Destructive")
+                                        Text("Biome Presence")
 
                                     } icon: {
-                                        Image(systemName: "exclamationmark.triangle.fill")
-                                            .foregroundStyle(.white, .white, .yellow)
+                                        Image(systemName: "circle.badge.exclamationmark")
+                                        // .foregroundStyle(.black, .white, .white)
                                     }
                                 }
+
                             } label: {
                                 Label {
                                     Text(user.alias)
@@ -158,11 +187,9 @@ struct CreateSheet: View {
                                             .frame(width: 32, height: 32)
                                     }
                                 }
-                                .accentColor(.white)
 
                                 Text("Online")
                             }
-                            .menuActionDismissBehavior(.disabled)
                         }
                     } label: {
                         Label {
@@ -175,10 +202,11 @@ struct CreateSheet: View {
                         .accentColor(.white)
                     }
                     .menuOrder(.priority)
+                    .menuActionDismissBehavior(.disabled)
 
                     Spacer()
 
-                    Text("8 / 32")
+                    Text("32")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -404,17 +432,10 @@ struct CreateSheet: View {
             } footer: {
                 Text("")
             }
+
+
         }
         .scrollContentBackground(.hidden)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .overlay(alignment: .topLeading) {
-            HStack {
-                Text("Biome")
-                    .font(.system(size: 27, weight: .bold))
-                    .foregroundColor(.secondary)
-            }
-            .padding(.horizontal, 32)
-            .frame(height: self.safeAreaInsets.top * 1.5)
-        }
+        .safeAreaPadding(.bottom)
     }
 }
