@@ -6,6 +6,11 @@
 //
 import SwiftUI
 
+enum Topping: String, CaseIterable, Identifiable {
+    case pepperoni, mushrooms, extraCheese, olives
+    var id: String { self.rawValue }
+}
+
 struct CreateSheet: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: UIState
@@ -21,10 +26,13 @@ struct CreateSheet: View {
     @State private var requestNotifications = false
     @State private var mentionNotifications = false
 
+    @State private var selectedTopping: Topping = .pepperoni
+    @State private var mode: Int = 0
+
     var body: some View {
         List { /// List is a ScrollView.
             CollageLayout {
-                ForEach(0 ..< count, id: \.self) { _ in
+                ForEach(0 ..< self.count, id: \.self) { _ in
                     Circle()
                         .fill(.black)
                 }
@@ -42,15 +50,53 @@ struct CreateSheet: View {
             // Stepper("Count: \(count)", value: $count.animation(), in: 1 ... 10)
             //     .padding()
 
+            // MARK: - Biome Type
+
+            Section {
+                Picker("Color", selection: self.$mode) {
+                    Image(systemName: "network")
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                        .tag(0)
+
+                    Image(systemName: "network.badge.shield.half.filled")
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                        .tag(1)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+
+            } header: {
+                Text("\(mode == 0 ? "Interlaced" : "Interlinked")")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.blue)
+                    .transition(.scale)
+                    .animation(.spring(), value: self.mode)
+            } footer: {
+                ZStack {
+                    if self.mode == 0 {
+                        Text("Anyone can freely message and interact within the Biome.")
+                    } else {
+                        Text("Users on the periphery must send a request to join.")
+                    }
+                }
+            }
+            .listRowBackground(
+                Rectangle()
+                    .foregroundStyle(.clear)
+                    .background(.clear)
+            )
+
             // MARK: - User Management
 
             Section {
-                // MARK: - Active
+                // MARK: - Core
+
                 HStack {
                     Image(systemName: "chevron.up.dotted.2")
                         .foregroundStyle(.secondary)
                         .font(.footnote)
-                    
+
                     Menu {
                         ControlGroup {
                             Button {} label: {
@@ -58,7 +104,7 @@ struct CreateSheet: View {
                             }
                         }
 
-                        ForEach(users, id: \.id) { user in
+                        ForEach(self.users, id: \.id) { user in
                             /// Create a sub menu for each user.
                             Menu {
                                 ControlGroup {
@@ -82,7 +128,7 @@ struct CreateSheet: View {
 
                                     Button(role: .destructive) {
                                         if let index = users.firstIndex(where: { $0.id == user.id }) {
-                                            users.remove(at: index)
+                                            self.users.remove(at: index)
                                         }
                                     } label: {
                                         Label("Block", systemImage: "hand.raised.slash.fill")
@@ -136,13 +182,14 @@ struct CreateSheet: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                
-                // MARK: - Permitted
+
+                // MARK: - Peripheral
+
                 HStack {
                     Image(systemName: "chevron.up.dotted.2")
                         .foregroundStyle(.secondary)
                         .font(.footnote)
-                    
+
                     Menu {
                         ControlGroup {
                             Button {} label: {
@@ -150,7 +197,7 @@ struct CreateSheet: View {
                             }
                         }
 
-                        ForEach(users, id: \.id) { user in
+                        ForEach(self.users, id: \.id) { user in
                             /// Create a sub menu for each user.
                             Menu {
                                 ControlGroup {
@@ -174,7 +221,7 @@ struct CreateSheet: View {
 
                                     Button(role: .destructive) {
                                         if let index = users.firstIndex(where: { $0.id == user.id }) {
-                                            users.remove(at: index)
+                                            self.users.remove(at: index)
                                         }
                                     } label: {
                                         Label("Block", systemImage: "hand.raised.slash.fill")
@@ -228,13 +275,14 @@ struct CreateSheet: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                
+
                 // MARK: - Blocked
+
                 HStack {
                     Image(systemName: "chevron.up.dotted.2")
                         .foregroundStyle(.secondary)
                         .font(.footnote)
-                    
+
                     Menu {
                         ControlGroup {
                             Button {} label: {
@@ -242,7 +290,7 @@ struct CreateSheet: View {
                             }
                         }
 
-                        ForEach(users, id: \.id) { user in
+                        ForEach(self.users, id: \.id) { user in
                             /// Create a sub menu for each user.
                             Menu {
                                 ControlGroup {
@@ -266,7 +314,7 @@ struct CreateSheet: View {
 
                                     Button(role: .destructive) {
                                         if let index = users.firstIndex(where: { $0.id == user.id }) {
-                                            users.remove(at: index)
+                                            self.users.remove(at: index)
                                         }
                                     } label: {
                                         Label("Block", systemImage: "hand.raised.slash.fill")
@@ -323,57 +371,28 @@ struct CreateSheet: View {
             } header: {
                 Text("Users")
                     .fontWeight(.semibold)
-                    .foregroundStyle(.blue)
             } footer: {
                 Text("Blocked users will not be able to view or interact with this Biome in any capacity.")
-            }
-
-            // MARK: - Biome Type
-
-            Section {
-                Toggle(isOn: $limitedRead) {
-                    Label("Limited Read", systemImage: limitedRead ? "circle.dotted.circle" : "circle.dotted")
-                        .accentColor(.white)
-                }
-                .tint(.white)
-                .contentTransition(.symbolEffect(.replace))
-            } header: {
-                Text("Biome")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.yellow)
-            } footer: {
-                Text("Non-native users can only read and react to the most recent messages. However, Biome highlights will still appear in their feed.")
-            }
-
-            Section {
-                Toggle(isOn: $closedWrite) {
-                    Label("Closed Write", systemImage: closedWrite ? "lock.circle.dotted" : "circle.dotted")
-                        .accentColor(.white)
-                }
-                .tint(.white)
-                .contentTransition(.symbolEffect(.replace))
-            } footer: {
-                Text("Non-native users are restricted from submitting message requests.")
             }
 
             // MARK: - Alerts
 
             Section {
-                Toggle(isOn: $messageNotifications) {
+                Toggle(isOn: self.$messageNotifications) {
                     Label("Messages", systemImage: "message.badge.filled.fill")
                         .accentColor(.white)
                 }
                 .tint(.white)
                 .contentTransition(.symbolEffect(.replace))
 
-                Toggle(isOn: $requestNotifications) {
+                Toggle(isOn: self.$requestNotifications) {
                     Label("Requests", systemImage: "plus.message.fill")
                         .accentColor(.white)
                 }
                 .tint(.white)
                 .contentTransition(.symbolEffect(.replace))
 
-                Toggle(isOn: $mentionNotifications) {
+                Toggle(isOn: self.$mentionNotifications) {
                     Label("Mentions", systemImage: "at")
                         .accentColor(.white)
                 }
@@ -382,7 +401,6 @@ struct CreateSheet: View {
             } header: {
                 Text("Alerts")
                     .fontWeight(.semibold)
-                    .foregroundStyle(.yellow)
             } footer: {
                 Text("")
             }
@@ -396,7 +414,7 @@ struct CreateSheet: View {
                     .foregroundColor(.secondary)
             }
             .padding(.horizontal, 32)
-            .frame(height: safeAreaInsets.top * 1.5)
+            .frame(height: self.safeAreaInsets.top * 1.5)
         }
     }
 }
