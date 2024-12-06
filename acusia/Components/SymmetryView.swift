@@ -19,7 +19,7 @@ struct SymmetryState {
 }
 
 struct SymmetryView: View {
-    @EnvironmentObject private var windowState: UIState
+    @EnvironmentObject private var uiState: UIState
     @EnvironmentObject private var musicKitManager: MusicKit
     @FocusState var focusedField: Field?
     
@@ -131,11 +131,11 @@ struct SymmetryView: View {
                         fillColor: .clear,
                         overlayContent:
                         ZStack {
-                            if windowState.symmetryState == .feed {
+                            if uiState.symmetryState == .feed {
                                 AvatarView(size: 40, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
                             }
                             
-                            if windowState.symmetryState == .reply, let result = windowState.selectedResult {
+                            if uiState.symmetryState == .reply, let result = uiState.selectedResult {
                                 GeometryReader { _ in
                                     AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
                                         image
@@ -190,29 +190,17 @@ struct SymmetryView: View {
                         fillColor: .clear,
                         overlayContent:
                         ZStack {
-                            if windowState.symmetryState == .feed {
+                            /// Create biome button
+                            if uiState.symmetryState == .feed {
                                 Button(action: {
-                                    windowState.symmetryState = .search
+                                    uiState.symmetryState = .create
                                 }) {
-                                    Image(systemName: "magnifyingglass")
-                                        .foregroundColor(.white.opacity(0.5))
-                                        .font(.system(size: 16, weight: .medium))
+                                    Image(systemName: "microbe.fill")
+                                        .foregroundColor(.secondary)
+                                        .font(.system(size: 24))
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .background(Color.gray.opacity(0.001))
-                            }
-                            
-                            if windowState.symmetryState == .reply {
-                                Button(action: {
-                                    print("Send")
-                                }) {
-                                    Image(systemName: "pencil.and.outline")
-                                        .foregroundColor(replyText.isEmpty ? .gray : .white)
-                                        .font(.system(size: 18))
-                                        .padding(8)
-                                }
-                                .disabled(replyText.isEmpty)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -233,14 +221,16 @@ struct SymmetryView: View {
                 self.height = geometry.size.height
                 self.centerWidth = geometry.size.width / 2
                 
-                // windowState.symmetryState = .reply
+                // uiState.symmetryState = .reply
             }
-            .onChange(of: windowState.symmetryState) { _, _ in
-                switch windowState.symmetryState {
+            .onChange(of: uiState.symmetryState) { _, _ in
+                switch uiState.symmetryState {
                 case .collapsed:
                     resetState()
                 case .feed:
                     feedState()
+                case .create:
+                    replyState()
                 case .search:
                     searchState()
                 case .reply:
@@ -252,21 +242,6 @@ struct SymmetryView: View {
             .onChange(of: searchText) { _, newValue in
                 Task {
                     await MusicKit.shared.loadCatalogSearchTopResults(searchTerm: newValue)
-                }
-            }
-            .onChange(of: replySize.height) { _, newHeight in
-                if windowState.symmetryState == .reply {
-                    withAnimation(.interpolatingSpring(
-                        mass: 2.0,
-                        stiffness: pow(2 * .pi / 0.5, 2),
-                        damping: 4 * .pi * 0.7 / 0.5,
-                        initialVelocity: 0.0
-                    )) {
-                        blurRadius = 1
-                        symmetryState.leading.offset.y = -newHeight - 4
-                    } completion: {
-                        blurRadius = 0
-                    }
                 }
             }
         }
@@ -304,7 +279,7 @@ extension SymmetryView {
     ) -> some View {
         VStack(spacing: 0) {
             Group {
-                TextEditor(text: windowState.symmetryState == .reply ? $replyText : $searchText)
+                TextEditor(text: uiState.symmetryState == .reply || uiState.symmetryState == .create ? $replyText : $searchText)
                     .font(.system(size: 17))
                     .foregroundColor(.white)
                     .padding([.top, .horizontal], 8)
@@ -312,10 +287,9 @@ extension SymmetryView {
                     .focused($focusedField, equals: .search)
                     .textEditorBackground(.clear)
                 
-                
-                if windowState.symmetryState == .reply {
-                    HStack(alignment: .bottom) {
-                        if let result = windowState.selectedResult {
+                if uiState.symmetryState == .reply || uiState.symmetryState == .create {
+                    HStack {
+                        if let result = uiState.selectedResult {
                             HStack(spacing: 4) {
                                 Image(systemName: "music.note")
                                     .font(.system(size: 9, weight: .bold))
@@ -334,28 +308,27 @@ extension SymmetryView {
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(.ultraThickMaterial, in: Capsule())
+                        } else {
+                            Button(action: {
+                                print("context menu")
+                            }) {
+                                Image(systemName: "paperclip")
+                                    .contentTransition(.symbolEffect(.replace))
+                                    .foregroundColor(.secondary)
+                                    .animation(.smooth, value: replyText.isEmpty)
+                                    .font(.system(size: 18))
+                            }
+                            .padding(.horizontal, 4)
                         }
                         
                         Spacer()
-                        
+
                         Button(action: {
-                            print("context menu")
+                            replyText.isEmpty ? print("hi") : print("send")
                         }) {
-                            Image(systemName: "ellipsis")
+                            Image(systemName: replyText.isEmpty ? "xmark.circle.fill" : "arrow.up.circle.fill")
                                 .contentTransition(.symbolEffect(.replace))
-                                .foregroundColor(.secondary)
-                                .animation(.smooth, value: replyText.isEmpty)
-                                .font(.system(size: 20))
-                                .frame(width: 27, height: 27 )
-                        }
-                        
-                        
-                        Button(action: {
-                            replyText.isEmpty ? windowState.symmetryState = .search : print("send")
-                        }) {
-                            Image(systemName: replyText.isEmpty ? "xmark" : "arrow.up.circle.fill")
-                                .contentTransition(.symbolEffect(.replace))
-                                .foregroundColor(replyText.isEmpty ? Color(UIColor.systemRed) : .white)
+                                .foregroundColor(replyText.isEmpty ? .white : .white)
                                 .animation(.smooth, value: replyText.isEmpty)
                                 .font(.system(size: 27))
                         }
@@ -363,7 +336,7 @@ extension SymmetryView {
                     .padding([.horizontal, .bottom], 8)
                 }
             }
-            .opacity(windowState.symmetryState != .reply && windowState.symmetryState != .search ? 0 : 1)
+            .opacity(uiState.symmetryState != .reply && uiState.symmetryState != .search && uiState.symmetryState != .create ? 0 : 1)
         }
         .frame(width: symmetryState.center.size.width)
         .frame(minHeight: symmetryState.center.size.height)
@@ -388,7 +361,7 @@ extension SymmetryView {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
-            windowState.selectedResult = nil
+            uiState.selectedResult = nil
             focusedField = nil
             replyText = ""
             searchText = ""
@@ -428,7 +401,7 @@ extension SymmetryView {
             damping: 4 * .pi * 0.7 / 0.5,
             initialVelocity: 0.0
         )) {
-            windowState.selectedResult = nil
+            uiState.selectedResult = nil
             focusedField = nil
             blurRadius = 4
             symmetryState = SymmetryState(
@@ -457,6 +430,43 @@ extension SymmetryView {
     /// Move the trailing capsule to the right & expand
     /// Move the leading capsule to the left, shrink
     /// Show the center capsule up, content is the selected result.
+    func createState() {
+        withAnimation(.interpolatingSpring(
+            mass: 1.0,
+            stiffness: pow(2 * .pi / 0.5, 2),
+            damping: 4 * .pi * 0.7 / 0.5,
+            initialVelocity: 0.0
+        )) {
+            let height: CGFloat = 80
+            
+            blurRadius = 4
+            focusedField = .reply
+            symmetryState = SymmetryState(
+                leading: .init(
+                    showContent: false,
+                    offset: .zero,
+                    size: CGSize(width: baseWidth, height: baseHeight)
+                ),
+                center: .init(
+                    showContent: true,
+                    offset: .zero,
+                    size: CGSize(width: width - horizontalPadding, height: height),
+                    cornerRadius: baseRadius
+                ),
+                trailing: .init(
+                    showContent: false,
+                    offset: .zero,
+                    size: CGSize(width: baseWidth, height: baseHeight)
+                )
+            )
+        } completion: {
+            blurRadius = 0
+        }
+    }
+    
+    /// Move the trailing capsule to the right & expand
+    /// Move the leading capsule to the left, shrink
+    /// Show the center capsule up, content is the selected result.
     func replyState() {
         withAnimation(.interpolatingSpring(
             mass: 1.0,
@@ -470,9 +480,9 @@ extension SymmetryView {
             focusedField = .reply
             symmetryState = SymmetryState(
                 leading: .init(
-                    showContent: true,
-                    offset: CGPoint(x: -centerWidth + (224 / 2) + 24, y: -height - 4),
-                    size: CGSize(width: 224, height: 224)
+                    showContent: false,
+                    offset: .zero,
+                    size: CGSize(width: baseWidth, height: baseHeight)
                 ),
                 center: .init(
                     showContent: true,
@@ -525,13 +535,13 @@ extension SymmetryView {
 struct ControlButtons: View {
     // MARK: Buttons
 
-    @EnvironmentObject private var windowState: UIState
+    @EnvironmentObject private var uiState: UIState
     
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
-                    windowState.symmetryState = .feed
+                    uiState.symmetryState = .feed
                 }) {
                     Image(systemName: "arrowshape.turn.up.left.fill")
                         .font(.system(size: 17))
@@ -541,7 +551,7 @@ struct ControlButtons: View {
                 }
                 
                 Button(action: {
-                    windowState.symmetryState = .collapsed
+                    uiState.symmetryState = .collapsed
                 }) {
                     Image(systemName: "arrow.counterclockwise")
                         .font(.system(size: 13))
@@ -551,7 +561,7 @@ struct ControlButtons: View {
                 }
                 
                 Button(action: {
-                    windowState.symmetryState = .search
+                    uiState.symmetryState = .search
                 }) {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 13))
@@ -561,7 +571,7 @@ struct ControlButtons: View {
                 }
                 
                 Button(action: {
-                    windowState.symmetryState = .reply
+                    uiState.symmetryState = .reply
                 }) {
                     Image(systemName: "arrowshape.turn.up.right.fill")
                         .font(.system(size: 17))

@@ -141,6 +141,13 @@ struct AcusiaAppView: View {
                 }
             }
             .ignoresSafeArea()
+            .sheet(isPresented: .constant(true)) {
+                CreateSheet()
+                    .presentationBackground(.ultraThickMaterial)
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+                    .presentationCornerRadius(40)
+            }
             .sheet(isPresented: Binding(
                 get: { uiState.symmetryState == .search },
                 set: { newValue in

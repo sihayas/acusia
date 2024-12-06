@@ -20,6 +20,7 @@ class UIState: ObservableObject {
         case search
         case form
         case reply
+        case create
     }
 
     @Published var size: CGSize = .zero
