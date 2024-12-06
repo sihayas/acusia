@@ -71,11 +71,11 @@ struct BiomeView: View {
                     HStack {
                         HStack(spacing: 4) {
                             Image(systemName: "person.2.fill")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(.secondary)
                             Text("21")
-                                .font(.system(size: 13, weight: .bold))
-                                .foregroundStyle(.white)
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 4)
                         .padding(.vertical, 4)
@@ -83,11 +83,11 @@ struct BiomeView: View {
                         
                         HStack(spacing: 4) {
                             Image(systemName: "message.fill")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(.secondary)
                             Text("786")
-                                .font(.system(size: 13, weight: .bold))
-                                .foregroundStyle(.white)
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 4)
                         .padding(.vertical, 4)
@@ -95,11 +95,11 @@ struct BiomeView: View {
                         
                         HStack(spacing: 4) {
                             Image(systemName: "ellipsis.message.fill")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(.secondary)
                             Text("7")
-                                .font(.system(size: 13, weight: .bold))
-                                .foregroundStyle(.white)
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 4)
                         .padding(.vertical, 4)
