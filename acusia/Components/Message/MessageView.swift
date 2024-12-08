@@ -89,12 +89,15 @@ struct MessageView: View {
                 }
 
                 if !photos.isEmpty {
-                    if photos.count == 1, let photo = photos.first {
-                        PhotoAttachmentView(photo: photo)
-                    } else {
-                        ForEach(photos, id: \.id) { photo in
-                            PhotoAttachmentView(photo: photo)
+                    switch photos.count {
+                    case 1:
+                        if let photo = photos.first {
+                            PhotoMessageView(photo: photo)
                         }
+                    case 2...3:
+                        PhotoMessagesView(photos: photos)
+                    default:
+                        PhotoAttachmentsCardDeckView(photos: photos)
                     }
                 }
             }

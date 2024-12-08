@@ -12,23 +12,15 @@ struct UserSheet: View {
 
     var body: some View {
         ScrollView {
-            HStack() {
-                AvatarView(size: 48, imageURL: "https://pbs.twimg.com/profile_images/1863668966167601152/OQ34VUQ-_400x400.png")
-                
-                VStack(alignment: .leading) {
-                    Text("Alia")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.secondary)
-                    
-                    Text("@alia")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.secondary)
-                    
-                }
-                
+            HStack(alignment: .bottom) {
                 Spacer()
+                
+                Text("Alia")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                
+                AvatarView(size: 48, imageURL: "https://pbs.twimg.com/profile_images/1863668966167601152/OQ34VUQ-_400x400.png")
             }
             .safeAreaPadding([.bottom, .top])
             .padding(.horizontal, 24)

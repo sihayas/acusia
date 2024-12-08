@@ -98,7 +98,7 @@ struct BiomePreviewView: View {
                 .ignoresSafeArea()
                 .frame(
                     maxWidth: .infinity,
-                    maxHeight: firstMessageSize.height * 0.28
+                    maxHeight: firstMessageSize.height * 0.26
                 )
                 .scaleEffect(x: 1, y: -1)
         }
@@ -106,8 +106,8 @@ struct BiomePreviewView: View {
             .black
                 .shadow(
                     .inner(
-                        color: .white.opacity(0.2),
-                        radius: 16,
+                        color: .white.opacity(0.15),
+                        radius: 24,
                         x: 0,
                         y: 0
                     )
