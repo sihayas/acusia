@@ -16,6 +16,7 @@ class UIState: ObservableObject {
     /// App states and properties
     enum SymmetryState: String {
         case collapsed
+        case user
         case feed
         case search
         case form

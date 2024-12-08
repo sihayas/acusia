@@ -11,11 +11,13 @@ struct MessageView: View {
     @State private var attachmentSize: CGSize = .zero
     @State private var textBubbleSize: CGSize = .zero
     @State private var verticalSpacing: CGFloat = 0
-    
+
     let entity: Entity
     let blipXOffset: CGFloat = 92
-    
+
     var body: some View {
+        let photos = entity.getPhotoAttachments()
+
         ZStack(alignment: .topLeading) {
             HStack(alignment: .bottom, spacing: -blipXOffset) {
                 TextBubbleView(entity: entity)
@@ -25,9 +27,11 @@ struct MessageView: View {
 
                 BlipView()
             }
-            .onChange(of: textBubbleSize.width) {
-                /// If the width of the top is greater than the width of the text bubble minus 16, push the top down.
-                verticalSpacing = attachmentSize.width > (textBubbleSize.width - blipXOffset) ? 0 : 24
+            .onChange(of: textBubbleSize.width) { _ in
+                /// If the width of the top is greater than the width of the text bubble minus blip horizontal size, push the top down.
+                verticalSpacing = attachmentSize.width > (textBubbleSize.width - blipXOffset)
+                    ? -2
+                    : 24
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -48,7 +52,7 @@ struct MessageView: View {
                         .aspectRatio(contentMode: .fit)
                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
 
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: 2) {
                             VStack(alignment: .leading) {
                                 Text(song.artistName)
                                     .font(.system(size: 13, weight: .regular))
@@ -61,21 +65,21 @@ struct MessageView: View {
                             HStack(alignment: .lastTextBaseline, spacing: 2) {
                                 Image(systemName: "applelogo")
                                     .font(.system(size: 13))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.secondary)
 
                                 Text("Music")
                                     .font(.system(size: 13, weight: .regular))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.secondary)
                             }
                         }
                         .blendMode(.difference)
-                        
+
                         Button(action: {
                             // Play song
                         }) {
-                            Image(systemName: "play.circle")
-                                .font(.system(size: 27))
-                                .foregroundColor(.white)
+                            Image(systemName: "play.circle.fill")
+                                .font(.system(size: 25))
+                                .foregroundColor(.secondary)
                         }
                         .blendMode(.difference)
                     }
@@ -83,8 +87,33 @@ struct MessageView: View {
                     .frame(height: 72, alignment: .leading)
                     .background(Color(hex: song.color), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 }
+
+                if !photos.isEmpty {
+                    ForEach(photos, id: \.id) { photo in
+                        let maxWidth: CGFloat = 196
+                        let maxHeight: CGFloat = maxWidth * 4 / 3
+                        let aspectRatio = CGFloat(photo.width) / CGFloat(photo.height)
+                        let displayedWidth = min(CGFloat(photo.width), maxWidth)
+                        let displayedHeight = min(CGFloat(photo.height), maxHeight)
+
+                        AsyncImage(url: URL(string: photo.url)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(aspectRatio, contentMode: .fill)
+                                .frame(width: displayedWidth, height: displayedHeight)
+                                .clipped()
+                        } placeholder: {
+                            Rectangle()
+                                .frame(width: displayedWidth, height: displayedHeight)
+                                .clipped()
+                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    }
+                }
             }
-            .alignmentGuide(VerticalAlignment.top) { d in d.height - verticalSpacing }
+            .alignmentGuide(VerticalAlignment.top) { dimensions in
+                dimensions.height - verticalSpacing
+            }
             .measure($attachmentSize)
         }
     }

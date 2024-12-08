@@ -4,10 +4,10 @@
 //
 //  Created by decoherence on 8/15/24.
 //
-// This is a fork of the CardDeckPageView in the BigUIPaging package.
-// The original code had a default scaleEffect applied to it. This
-// remedies that.
-//
+/// This is a fork of the CardDeckPageView in the BigUIPaging package.
+/// The original code had a default scaleEffect applied to it. This
+/// remedies that.
+///
 /// Changes:
 /// - Removed the scaleEffect modifier from the CustomCardDeckPageView
 /// - Changed the swingOutMultiplier and subsequent xOffset padding multiplier.
@@ -18,11 +18,11 @@
 import BigUIPaging
 import SwiftUI
 
-// Example
 #Preview {
     CardDeckPreview()
         .frame(width: 240, height: 320)
 }
+
 struct CardDeckPreview: View {
     @Namespace private var namespace
     @State private var selection: Int = 1

@@ -29,11 +29,12 @@ struct Home: View {
 
                 /// Main Feed
                 VStack(spacing: 32) {
-                    BiomeView(biome: Biome(entities: biomeOne))
+                    BiomeSpotlightView(biome: Biome(entities: biomeSpotlightOne))
                     // BiomeView(biome: Biome(entities: biomeTwo))
                 }
                 .padding(.top, safeAreaInsets.top)
                 .padding(.bottom, safeAreaInsets.bottom * 3)
+                .padding(.horizontal, 24)
             }
         }
         .scrollClipDisabled(true)

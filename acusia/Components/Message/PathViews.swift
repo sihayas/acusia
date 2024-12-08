@@ -134,7 +134,7 @@ struct BubbleWithTailShape: Shape {
 
     func path(in rect: CGRect) -> Path {
         let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 20*scale, style: .continuous)
+        let bubble = RoundedRectangle(cornerRadius: 20, style: .continuous)
             .path(in: bubbleRect)
 
         let firstCircleSize: CGFloat = 12*scale

@@ -27,20 +27,18 @@ struct BiomeExpandedView: View {
                     ForEach(0 ..< biome.entities.count, id: \.self) { index in
                         let previousEntity = index > 0 ? biome.entities[index - 1] : nil
 
-                        EntityView(rootEntity: biome.entities[0],
-                                   previousEntity: previousEntity,
-                                   entity: biome.entities[index],
-                                   isExpandedView: true
+                        EntityView(
+                            rootEntity: biome.entities[0],
+                            previousEntity: previousEntity,
+                            entity: biome.entities[index]
                         )
-                            .frame(maxHeight: .infinity)
+                        .frame(maxHeight: .infinity)
                     }
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, safeAreaInsets.bottom)
             }
             .defaultScrollAnchor(.bottom)
-            
-            
         }
         .overlay(alignment: .top) {
             VStack {
@@ -48,7 +46,7 @@ struct BiomeExpandedView: View {
                     .scaleEffect(x: 1, y: -1)
                     .ignoresSafeArea()
                     .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
-                
+
                 Spacer()
             }
         }

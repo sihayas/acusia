@@ -16,13 +16,11 @@ struct TextBubbleView: View {
     @State private var gestureVelocity = CGPoint.zero
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .lastTextBaseline) {
-                Text(entity.text)
-                    .foregroundColor(.white)
-                    .font(.system(size: 16))
-                    .multilineTextAlignment(.leading)
-            }
+        HStack(alignment: .lastTextBaseline) {
+            Text(entity.text)
+                .foregroundColor(.white)
+                .font(.system(size: 16))
+                .multilineTextAlignment(.leading)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
@@ -57,7 +55,7 @@ struct TextBubbleView: View {
 struct ContextualTextBubbleView: View {
     @State private var gestureTranslation = CGPoint.zero
     @State private var gestureVelocity = CGPoint.zero
-    
+
     let entity: Entity
     let auxiliarySize: CGSize = .init(width: 216, height: 120)
 
@@ -73,7 +71,7 @@ struct ContextualTextBubbleView: View {
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .aspectRatio(contentMode: .fit)
-                    
+
                     VStack(alignment: .leading) {
                         Text(song.artistName)
                             .font(.system(size: 11, weight: .regular))
@@ -85,7 +83,7 @@ struct ContextualTextBubbleView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
             }
-            
+
             HStack(alignment: .lastTextBaseline) {
                 Text(entity.text)
                     .foregroundColor(.secondary)

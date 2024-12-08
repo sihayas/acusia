@@ -43,7 +43,6 @@ struct CreateSheet: View {
                 }
             }
             .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.width * 0.5)
-            .padding(.horizontal, 24)
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
             .shadow(color: .black.opacity(0.2), radius: 16, x: 0, y: 4)
             .listRowBackground(

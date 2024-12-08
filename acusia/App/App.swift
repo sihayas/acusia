@@ -142,6 +142,20 @@ struct AcusiaAppView: View {
             }
             .ignoresSafeArea()
             .sheet(isPresented: Binding(
+                get: { uiState.symmetryState == .feed },
+                set: { newValue in
+                    if !newValue, uiState.symmetryState == .feed {
+                        uiState.symmetryState = .feed
+                    }
+                }
+            )) {
+                UserSheet()
+                    .presentationBackground(.ultraThinMaterial)
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+                    .presentationCornerRadius(50)
+            }
+            .sheet(isPresented: Binding(
                 get: { uiState.symmetryState == .create },
                 set: { newValue in
                     if !newValue, uiState.symmetryState == .create {
@@ -185,6 +199,7 @@ struct SymmetryWindowView: View {
     var body: some View {
         ZStack {
             SymmetryView()
+                .shadow(radius: 10)
                 .offset(y: -keyboardHeight)
                 .animation(.snappy, value: keyboardHeight)
                 .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in

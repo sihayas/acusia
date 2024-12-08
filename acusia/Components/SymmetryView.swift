@@ -73,7 +73,7 @@ struct SymmetryView: View {
                 // MARK: Canvas
 
                 Rectangle()
-                    .background(.ultraThinMaterial)
+                    .background(.black)
                     .foregroundStyle(.clear)
                     .mask {
                         Canvas { ctx, _ in
@@ -133,6 +133,9 @@ struct SymmetryView: View {
                         ZStack {
                             if uiState.symmetryState == .feed {
                                 AvatarView(size: 40, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
+                                    .onTapGesture {
+                                        uiState.symmetryState = .user
+                                    }
                             }
                             
                             if uiState.symmetryState == .reply, let result = uiState.selectedResult {
@@ -226,6 +229,8 @@ struct SymmetryView: View {
             .onChange(of: uiState.symmetryState) { _, _ in
                 switch uiState.symmetryState {
                 case .collapsed:
+                    resetState()
+                case .user:
                     resetState()
                 case .feed:
                     feedState()

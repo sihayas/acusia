@@ -28,7 +28,7 @@ struct BlipView: View {
                 )
             
             ForEach(0..<2) { index in
-                Circle()
+                Capsule()
                     .fill(Color(.systemGray6))
                     .frame(width: 32, height: 32)
                     .overlay(
