@@ -81,6 +81,7 @@
 		CDF4BD662D054CFC00F8D775 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD652D054CF500F8D775 /* Loupe.metal */; };
 		CDF4BD682D054D2B00F8D775 /* LoupePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD672D054D2900F8D775 /* LoupePreview.swift */; };
 		CDF4BD6B2D054D4B00F8D775 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDF4BD6A2D054D4B00F8D775 /* Wave */; };
+		CDF4BD6D2D06045100F8D775 /* PhotoMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -198,6 +199,7 @@
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDF4BD652D054CF500F8D775 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CDF4BD672D054D2900F8D775 /* LoupePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoupePreview.swift; sourceTree = "<group>"; };
+		CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageView.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -330,6 +332,7 @@
 		CDBDA2462D00E11E005333B0 /* Message */ = {
 			isa = PBXGroup;
 			children = (
+				CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */,
 				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
 				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
 				CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */,
@@ -674,6 +677,7 @@
 				CDBDA24E2D03B156005333B0 /* UserSheet.swift in Sources */,
 				CDBDA24C2D00F28F005333B0 /* CreateSheet.swift in Sources */,
 				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
+				CDF4BD6D2D06045100F8D775 /* PhotoMessageView.swift in Sources */,
 				CD43B2C32CDEFBA40018DB16 /* EntityView.swift in Sources */,
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,

@@ -150,7 +150,7 @@ struct AcusiaAppView: View {
                 }
             )) {
                 UserSheet()
-                    .presentationBackground(.ultraThinMaterial)
+                    .presentationBackground(.ultraThickMaterial)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
                     .presentationCornerRadius(50)

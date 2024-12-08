@@ -89,25 +89,12 @@ struct MessageView: View {
                 }
 
                 if !photos.isEmpty {
-                    ForEach(photos, id: \.id) { photo in
-                        let maxWidth: CGFloat = 196
-                        let maxHeight: CGFloat = maxWidth * 4 / 3
-                        let aspectRatio = CGFloat(photo.width) / CGFloat(photo.height)
-                        let displayedWidth = min(CGFloat(photo.width), maxWidth)
-                        let displayedHeight = min(CGFloat(photo.height), maxHeight)
-
-                        AsyncImage(url: URL(string: photo.url)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(aspectRatio, contentMode: .fill)
-                                .frame(width: displayedWidth, height: displayedHeight)
-                                .clipped()
-                        } placeholder: {
-                            Rectangle()
-                                .frame(width: displayedWidth, height: displayedHeight)
-                                .clipped()
+                    if photos.count == 1, let photo = photos.first {
+                        PhotoAttachmentView(photo: photo)
+                    } else {
+                        ForEach(photos, id: \.id) { photo in
+                            PhotoAttachmentView(photo: photo)
                         }
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     }
                 }
             }

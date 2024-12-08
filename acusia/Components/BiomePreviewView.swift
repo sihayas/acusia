@@ -15,6 +15,8 @@ struct BiomePreviewView: View {
     @State private var showSheet: Bool = false
     @State private var totalHeight: CGFloat = 0
     @State private var firstMessageSize: CGSize = .zero
+    
+    private let shadowColor: Color = .init(red: 197/255, green: 197/255, blue: 197/255)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -35,7 +37,6 @@ struct BiomePreviewView: View {
                             }
                         }
                 })
-                // .scaleEffect(index == 0 ? 0.96 : 1.0)
             }
 
             /// Typing indicator
@@ -101,16 +102,31 @@ struct BiomePreviewView: View {
                 )
                 .scaleEffect(x: 1, y: -1)
         }
-        .background(.black)
+        .background(
+            .black
+                .shadow(
+                    .inner(
+                        color: .white.opacity(0.2),
+                        radius: 16,
+                        x: 0,
+                        y: 0
+                    )
+                ),
+            in: RoundedRectangle(cornerRadius: 40, style: .continuous)
+        )
         .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
         .foregroundStyle(.secondary)
+        .shadow(radius: 12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .stroke(.ultraThinMaterial, lineWidth: 0.05)
+        )
         .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
             BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
                 .navigationTransition(.zoom(sourceID: "hi", in: animation))
                 .presentationBackground(.black)
         }
-        .shadow(color: .black.opacity(0.5), radius: 12, x: 0, y: 8)
         .onTapGesture { showSheet = true }
     }
 }

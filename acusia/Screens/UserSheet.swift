@@ -12,24 +12,37 @@ struct UserSheet: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            HStack() {
+                AvatarView(size: 48, imageURL: "https://pbs.twimg.com/profile_images/1863668966167601152/OQ34VUQ-_400x400.png")
+                
+                VStack(alignment: .leading) {
+                    Text("Alia")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
+                    
+                    Text("@alia")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
+                    
+                }
+                
+                Spacer()
+            }
+            .safeAreaPadding([.bottom, .top])
+            .padding(.horizontal, 24)
+            .frame(maxWidth: .infinity)
+            
+            VStack(spacing: 12) {
                 BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
-                    .padding(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 48, style: .continuous)
-                            .strokeBorder(.ultraThinMaterial, lineWidth: 2)
-                    )
-                    .padding(16)
+                    .padding(.horizontal, 24)
                 
                 BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                    .padding(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 48, style: .continuous)
-                            .strokeBorder(.ultraThinMaterial, lineWidth: 2)
-                    )
-                    .padding(16)
+                    .padding(.horizontal, 24)
             }
         }
+        .scrollClipDisabled()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .safeAreaPadding([.bottom, .top])
     }
