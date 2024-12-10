@@ -10,32 +10,52 @@ struct UserSheet: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var uiState: UIState
 
+    private let columns = [
+        GridItem(.flexible(), spacing: 32),
+        GridItem(.flexible(), spacing: 32),
+        GridItem(.flexible(), spacing: 32)
+    ]
+
+    private let biomes = [
+        Biome(entities: biomePreviewOne),
+        Biome(entities: biomePreviewTwo),
+        Biome(entities: biomePreviewOne),
+        Biome(entities: biomePreviewTwo)
+        
+    ]
+
     var body: some View {
         ScrollView {
             HStack(alignment: .bottom) {
                 Spacer()
-                
+
                 Text("Alia")
                     .font(.title)
                     .fontWeight(.semibold)
-                    .foregroundColor(.secondary)
-                
-                AvatarView(size: 48, imageURL: "https://pbs.twimg.com/profile_images/1863668966167601152/OQ34VUQ-_400x400.png")
+                    .foregroundColor(.white)
+
+                AvatarView(
+                    size: 48,
+                    imageURL: "https://pbs.twimg.com/profile_images/1863668966167601152/OQ34VUQ-_400x400.png"
+                )
             }
-            .safeAreaPadding([.bottom, .top])
-            .padding(.horizontal, 24)
             .frame(maxWidth: .infinity)
-            
-            VStack(spacing: 12) {
-                BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
-                    .padding(.horizontal, 24)
-                
-                BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                    .padding(.horizontal, 24)
+            .safeAreaPadding(.all)
+
+            LazyVGrid(columns: columns, spacing: safeAreaInsets.top * 2) {
+                ForEach(0 ..< biomes.count, id: \.self) { index in
+                    BiomePreviewSphereView(biome: biomes[index])
+                        .frame(maxWidth: .infinity)
+                }
             }
+            .padding(.horizontal, 24)
+            .padding(.top, safeAreaInsets.top * 2.5)
         }
         .scrollClipDisabled()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaPadding([.bottom, .top])
+        .presentationBackground(.black)
+        .presentationDetents([.large])
+        .presentationDragIndicator(.hidden)
+        .presentationCornerRadius(50)
     }
 }

@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct PhotoMessageView: View {
+struct PhotoMessagePreviewView: View {
     let photo: PhotoAttachment
 
     var body: some View {
@@ -31,6 +31,30 @@ struct PhotoMessageView: View {
     }
 }
 
+struct PhotoMessageView: View {
+    let photo: PhotoAttachment
+
+    var body: some View {
+        let maxWidth: CGFloat = 196
+        let maxHeight: CGFloat = maxWidth * 4 / 3
+        let aspectRatio = CGFloat(photo.width) / CGFloat(photo.height)
+        let displayedWidth = min(CGFloat(photo.width), maxWidth)
+        let displayedHeight = min(CGFloat(photo.height), maxHeight)
+
+        AsyncImage(url: URL(string: photo.url)) { image in
+            image
+                .resizable()
+                .aspectRatio(aspectRatio, contentMode: .fill)
+                .frame(width: displayedWidth, height: displayedHeight)
+                .clipped()
+        } placeholder: {
+            Rectangle()
+                .frame(width: displayedWidth, height: displayedHeight)
+                .clipped()
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+}
 
 struct PhotoMessagesView: View {
     let photos: [PhotoAttachment]
@@ -65,7 +89,7 @@ struct PhotoMessagesView: View {
 
     private func rotationAngle(for index: Int, totalPhotos: Int) -> Angle {
         if totalPhotos == 2 {
-            return index.isEven ? .degrees(2) : .degrees(-2) 
+            return index.isEven ? .degrees(2) : .degrees(-2)
         } else {
             return index.isEven ? .degrees(-2) : .degrees(2)
         }
@@ -80,7 +104,7 @@ struct PhotoMessagesView: View {
     }
 }
 
-struct PhotoAttachmentsCardDeckView: View {
+struct PhotoMessagesDeckView: View {
     let photos: [PhotoAttachment]
     private let scaleFactor: CGFloat = 0.8
 
@@ -105,7 +129,7 @@ struct PhotoAttachmentsCardDeckView: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .rotationEffect(.degrees(index == 1 ? -2 : 2))
-                .padding(.leading, index == 1 ? 0  : scaledWidth * 0.3)
+                .padding(.leading, index == 1 ? 0 : scaledWidth * 0.3)
                 .shadow(radius: 8)
             }
         }

@@ -15,11 +15,11 @@ struct User: Codable {
     let blocked_users: Set<Int64>?
     let created_at: Date
     let email: String?
-    let followers_count: Int
-    let following_count: Int
-    let images_sent: Int
+    let followers_count: Int64
+    let following_count: Int64
+    let images_sent: Int64
     let last_played: Music_UDT?
-    let messages_sent: Int
-    let songs_sent: Int
+    let messages_sent: Int64
+    let songs_sent: Int64
     let status: String?
 }

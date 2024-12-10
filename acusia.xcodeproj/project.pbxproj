@@ -83,6 +83,7 @@
 		CDF4BD6B2D054D4B00F8D775 /* Wave in Frameworks */ = {isa = PBXBuildFile; productRef = CDF4BD6A2D054D4B00F8D775 /* Wave */; };
 		CDF4BD6D2D06045100F8D775 /* PhotoMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */; };
 		CDF4BD6F2D062A4200F8D775 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD6E2D062A4000F8D775 /* Int.swift */; };
+		CDF4BD712D07A09A00F8D775 /* BiomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD702D07A09700F8D775 /* BiomeModel.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -202,6 +203,7 @@
 		CDF4BD672D054D2900F8D775 /* LoupePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoupePreview.swift; sourceTree = "<group>"; };
 		CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageView.swift; sourceTree = "<group>"; };
 		CDF4BD6E2D062A4000F8D775 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
+		CDF4BD702D07A09700F8D775 /* BiomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeModel.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -470,6 +472,7 @@
 		CDDED77C2C19520300958B39 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				CDF4BD702D07A09700F8D775 /* BiomeModel.swift */,
 				CDBDA2442D00CF94005333B0 /* UDTModel.swift */,
 				CD81D09E2D0081A50028F2DB /* UserModel.swift */,
 				CD43B2C62CE136830018DB16 /* EntityModel.swift */,
@@ -707,6 +710,7 @@
 				CDE47E8A2CBADE7000834783 /* RadialLayout.swift in Sources */,
 				CD81D0A12D0083510028F2DB /* Keychain.swift in Sources */,
 				CDBDA23F2D009834005333B0 /* Auth.swift in Sources */,
+				CDF4BD712D07A09A00F8D775 /* BiomeModel.swift in Sources */,
 				CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */,
 				CD81D09F2D0081A90028F2DB /* UserModel.swift in Sources */,
 				CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */,

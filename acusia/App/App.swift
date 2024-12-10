@@ -20,7 +20,7 @@ struct AcusiaApp: App {
                 .environmentObject(uiState)
                 .environmentObject(musicKit)
                 .environmentObject(homeState)
-                // .onAppear { auth.authenticate() }
+                .onAppear { auth.authenticate() }
         }
     }
 }
@@ -34,7 +34,6 @@ struct AcusiaAppView: View {
 
     @State private var dragOffset: CGFloat = 0
     var cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
-    
 
     var body: some View {
         if !auth.isAuthenticated {
@@ -141,19 +140,26 @@ struct AcusiaAppView: View {
                 }
             }
             .ignoresSafeArea()
+            .overlay(alignment: .top) {
+                if auth.isAuthenticated {
+                    Button {
+                        auth.signOut()
+                    } label: {
+                        Label("Sign Out", systemImage: "person.crop.circle.badge.xmark")
+                            .font(.headline)
+                            .padding()
+                    }
+                }
+            }
             .sheet(isPresented: Binding(
-                get: { uiState.symmetryState == .feed },
+                get: { uiState.symmetryState == .user },
                 set: { newValue in
-                    if !newValue, uiState.symmetryState == .feed {
+                    if !newValue, uiState.symmetryState == .user {
                         uiState.symmetryState = .feed
                     }
                 }
             )) {
                 UserSheet()
-                    .presentationBackground(.ultraThickMaterial)
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.hidden)
-                    .presentationCornerRadius(50)
             }
             .sheet(isPresented: Binding(
                 get: { uiState.symmetryState == .create },
@@ -219,7 +225,6 @@ struct SymmetryWindowView: View {
         }
     }
 }
-
 
 struct AcusiaAppPreview: PreviewProvider {
     static var previews: some View {

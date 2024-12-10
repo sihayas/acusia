@@ -97,7 +97,7 @@ struct MessageView: View {
                     case 2...3:
                         PhotoMessagesView(photos: photos)
                     default:
-                        PhotoAttachmentsCardDeckView(photos: photos)
+                        PhotoMessagesDeckView(photos: photos)
                     }
                 }
             }
