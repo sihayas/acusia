@@ -51,18 +51,19 @@ struct RadialGradientMask: View {
 
     var body: some View {
         let maxDimension = max(size.width, size.height)
+        let minDimension = min(size.width, size.height)
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
 
         RadialGradient(
-            gradient: Gradient(colors: [.clear, .black]),
+            gradient: Gradient(colors: [.clear, .red]),
             center: UnitPoint(
                 x: center.x / size.width,
                 y: center.y / size.height
             ),
-            startRadius: maxDimension / 1.5,
-            endRadius: maxDimension
+            startRadius: minDimension / 4, // Smaller radius to ensure visibility
+            endRadius: maxDimension / 2   // Scaled properly for large dimensions
         )
-        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        .frame(width: size.width, height: size.height)
     }
 }
 
@@ -101,7 +102,6 @@ struct RadialVariableBlurView: UIViewRepresentable {
     }
     .frame(maxWidth: .infinity, alignment: .center)
     .overlay(
-        // Vertical Preview
         VariableBlurView(radius: 10, mask: Image(.gradient))
             .ignoresSafeArea()
             .frame(maxWidth: .infinity, maxHeight: 240)

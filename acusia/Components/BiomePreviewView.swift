@@ -13,31 +13,32 @@ struct BiomePreviewView: View {
 
     @Namespace var animation
     @State private var showSheet: Bool = false
-    @State private var totalHeight: CGFloat = 0
+    @State private var size: CGSize = .zero
     @State private var firstMessageSize: CGSize = .zero
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(0 ..< 2, id: \.self) { index in
-                let previousEntity = index > 0 ? biome.entities[index - 1] : nil
+        VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(0 ..< 2, id: \.self) { index in
+                    let previousEntity = index > 0 ? biome.entities[index - 1] : nil
 
-                EntityView(
-                    rootEntity: biome.entities[0],
-                    previousEntity: previousEntity,
-                    entity: biome.entities[index]
-                )
-                .frame(maxHeight: .infinity)
-                .background(GeometryReader { proxy in
-                    Color.clear
-                        .onAppear {
-                            if index == 0 {
-                                firstMessageSize = proxy.size
+                    EntityView(
+                        rootEntity: biome.entities[0],
+                        previousEntity: previousEntity,
+                        entity: biome.entities[index]
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                    .background(GeometryReader { proxy in
+                        Color.clear
+                            .onAppear {
+                                if index == 0 {
+                                    firstMessageSize = proxy.size
+                                }
                             }
-                        }
-                })
+                    })
+                }
             }
 
-            /// Typing indicator
             HStack(alignment: .bottom, spacing: 12) {
                 CollageLayout {
                     ForEach(userDevs.prefix(3), id: \.id) { user in
@@ -55,6 +56,7 @@ struct BiomePreviewView: View {
                     }
                 }
                 .frame(width: 40, height: 40)
+                .shadow(radius: 4)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("gods weakest soldiers")
@@ -65,57 +67,37 @@ struct BiomePreviewView: View {
                     Text("coolgirl, saraton1nn, joji and 14 more...")
                         .font(.footnote)
                         .foregroundColor(.secondary)
-
-                    // Image(systemName: "ellipsis")
-                    //     .fontWeight(.bold)
-                    //     .font(.system(size: 21))
-                    //     .foregroundStyle(Color(.systemGray2))
-                    //     .padding(.horizontal, 10)
-                    //     .padding(.vertical, 10)
-                    //     .background(Color(.systemGray6), in: BubbleWithTailShape(scale: 1))
-                    //     .padding(.bottom, 4)
                 }
             }
-            .padding(.top, 24)
         }
         .padding(24)
         .background(
             GeometryReader { proxy in
                 Color.clear
                     .onAppear {
-                        totalHeight = proxy.size.height
-                        print(totalHeight)
+                        size = proxy.size
+                        print(size.height)
                     }
             }
         )
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // .frame(minHeight: totalHeight)
-        // .frame(
-        //     height: totalHeight > 0
-        //         ? totalHeight - (firstMessageSize.height * 0.92)
-        //         : nil,
-        //     alignment: .bottom
-        // )
-        // .overlay(alignment: .top) {
-        //     VariableBlurView(radius: 4, mask: Image(.gradient))
-        //         .ignoresSafeArea()
-        //         .frame(
-        //             maxWidth: .infinity,
-        //             maxHeight: firstMessageSize.height * 0.26
-        //         )
-        //         .scaleEffect(x: 1, y: -1)
-        // }
-        .matchedTransitionSource(id: "hi", in: animation)
+        .frame(minHeight: size.height)
+        .frame(
+            height: size.height > 0
+            ? size.height - (firstMessageSize.height * 0.92)
+                : nil,
+            alignment: .bottom
+        )
+        .overlay(alignment: .top) {
+            VariableBlurView(radius: 4, mask: Image(.gradient))
+                .ignoresSafeArea()
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: firstMessageSize.height * 0.26
+                )
+                .scaleEffect(x: 1, y: -1)
+        }
         .background(
-            .black
-                .shadow(
-                    .inner(
-                        color: .white.opacity(0.15),
-                        radius: 24,
-                        x: 0,
-                        y: 0
-                    )
-                ),
+            .black,
             in: RoundedRectangle(cornerRadius: 40, style: .continuous)
         )
         .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
@@ -124,6 +106,7 @@ struct BiomePreviewView: View {
             RoundedRectangle(cornerRadius: 40, style: .continuous)
                 .stroke(.ultraThinMaterial, lineWidth: 0.1)
         )
+        .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
             BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
                 .navigationTransition(.zoom(sourceID: "hi", in: animation))

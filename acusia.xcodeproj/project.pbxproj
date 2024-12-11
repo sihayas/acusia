@@ -84,6 +84,7 @@
 		CDF4BD6F2D062A4200F8D775 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD6E2D062A4000F8D775 /* Int.swift */; };
 		CDF4BD712D07A09A00F8D775 /* BiomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD702D07A09700F8D775 /* BiomeModel.swift */; };
 		CDF4BD752D09229A00F8D775 /* BiomeSphereView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD742D09229700F8D775 /* BiomeSphereView.swift */; };
+		CDF4BD772D0930E100F8D775 /* TypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -204,6 +205,7 @@
 		CDF4BD6E2D062A4000F8D775 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		CDF4BD702D07A09700F8D775 /* BiomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeModel.swift; sourceTree = "<group>"; };
 		CDF4BD742D09229700F8D775 /* BiomeSphereView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeSphereView.swift; sourceTree = "<group>"; };
+		CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicator.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -455,6 +457,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */,
 				CDF4BD742D09229700F8D775 /* BiomeSphereView.swift */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
 				CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */,
@@ -715,6 +718,7 @@
 				CD81D09F2D0081A90028F2DB /* UserModel.swift in Sources */,
 				CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */,
 				CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */,
+				CDF4BD772D0930E100F8D775 /* TypingIndicator.swift in Sources */,
 				CDBDA2432D00CE0B005333B0 /* UIState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
