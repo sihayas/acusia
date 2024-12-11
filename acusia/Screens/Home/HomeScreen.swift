@@ -23,19 +23,26 @@ struct Home: View {
 
     var body: some View {
         ScrollView(.vertical) {
-            VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 /// User's Past?
                 // PastView(size: size)
+                Text("Atlas")
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                    .safeAreaPadding(.horizontal)
+                    .padding(.top, safeAreaInsets.top)
+                
+                
 
                 /// Main Feed
                 VStack(spacing: 32) {
-                    BiomeSpotlightView(biome: Biome(entities: biomeSpotlightOne))
+                    BiomePreviewView(biome: Biome(entities: biomeSpotlightOne))
                     // BiomeView(biome: Biome(entities: biomeTwo))
                 }
-                .padding(.top, safeAreaInsets.top)
+                .safeAreaPadding(.top)
                 .padding(.bottom, safeAreaInsets.bottom * 3)
-                .padding(.horizontal, 24)
             }
+            .padding(.horizontal, 24)
         }
         .scrollClipDisabled(true)
         .frame(width: windowState.size.width, height: windowState.size.height)

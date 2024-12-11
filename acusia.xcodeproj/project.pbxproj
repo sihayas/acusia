@@ -10,7 +10,6 @@
 		CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06C26F2C69B10100FC010C /* IndexSheet.swift */; };
 		CD0D90512CA3C31F004FD674 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0D90502CA3C31A004FD674 /* Notification.swift */; };
 		CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CD0D90532CA40434004FD674 /* Kingfisher */; };
-		CD0EEB7F2C7BB0B500DB9896 /* BiomeSpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0EEB7E2C7BB0B300DB9896 /* BiomeSpotlightView.swift */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CD17C1032CA8FC520014D3FD /* Transmission */; };
 		CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C10D2CB195400014D3FD /* SafeArea.swift */; };
@@ -84,6 +83,7 @@
 		CDF4BD6D2D06045100F8D775 /* PhotoMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */; };
 		CDF4BD6F2D062A4200F8D775 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD6E2D062A4000F8D775 /* Int.swift */; };
 		CDF4BD712D07A09A00F8D775 /* BiomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD702D07A09700F8D775 /* BiomeModel.swift */; };
+		CDF4BD752D09229A00F8D775 /* BiomeSphereView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD742D09229700F8D775 /* BiomeSphereView.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -136,7 +136,6 @@
 /* Begin PBXFileReference section */
 		CD06C26F2C69B10100FC010C /* IndexSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexSheet.swift; sourceTree = "<group>"; };
 		CD0D90502CA3C31A004FD674 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
-		CD0EEB7E2C7BB0B300DB9896 /* BiomeSpotlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeSpotlightView.swift; sourceTree = "<group>"; };
 		CD17C10D2CB195400014D3FD /* SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeArea.swift; sourceTree = "<group>"; };
 		CD264CD72CD3A6B600A74D7E /* Grok.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Grok.metal; sourceTree = "<group>"; };
 		CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxiliaryContextMenu.swift; sourceTree = "<group>"; };
@@ -204,6 +203,7 @@
 		CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageView.swift; sourceTree = "<group>"; };
 		CDF4BD6E2D062A4000F8D775 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		CDF4BD702D07A09700F8D775 /* BiomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeModel.swift; sourceTree = "<group>"; };
+		CDF4BD742D09229700F8D775 /* BiomeSphereView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomeSphereView.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -455,10 +455,10 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CDF4BD742D09229700F8D775 /* BiomeSphereView.swift */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
 				CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */,
 				CDBDA24F2D03CEC6005333B0 /* BiomePreviewView.swift */,
-				CD0EEB7E2C7BB0B300DB9896 /* BiomeSpotlightView.swift */,
 				CDBDA2462D00E11E005333B0 /* Message */,
 				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
 				CDE43C102C8671250009CB87 /* ReactionView.swift */,
@@ -660,8 +660,8 @@
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
 				CDBDA24A2D00E32E005333B0 /* MessageView.swift in Sources */,
 				CD8A64392D00903B00BE98DE /* FileCache.swift in Sources */,
+				CDF4BD752D09229A00F8D775 /* BiomeSphereView.swift in Sources */,
 				CDBDA2502D03CECC005333B0 /* BiomePreviewView.swift in Sources */,
-				CD0EEB7F2C7BB0B500DB9896 /* BiomeSpotlightView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,
 				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,

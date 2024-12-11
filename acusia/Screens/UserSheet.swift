@@ -49,13 +49,13 @@ struct UserSheet: View {
                 }
             }
             .padding(.horizontal, 24)
-            .padding(.top, safeAreaInsets.top * 2.5)
+            .padding(.top, safeAreaInsets.top * 1.5)
         }
         .scrollClipDisabled()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .presentationBackground(.black)
-        .presentationDetents([.large])
-        .presentationDragIndicator(.hidden)
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
         .presentationCornerRadius(50)
     }
 }

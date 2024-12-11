@@ -32,6 +32,7 @@ struct EntityView: View {
                     .frame(width: 40, height: 32)
                     .scaleEffect(x: -1, y: 1)
             }
+            
             if let parent = parent, parentId != previousParentId, parentId != previousId, !isRootChild {
                 HStack(alignment: .bottom, spacing: 8) {
                     AvatarView(size: 32, imageURL: parent.avatar)

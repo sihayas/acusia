@@ -20,7 +20,7 @@ struct AcusiaApp: App {
                 .environmentObject(uiState)
                 .environmentObject(musicKit)
                 .environmentObject(homeState)
-                .onAppear { auth.authenticate() }
+                // .onAppear { auth.authenticate() }
         }
     }
 }
@@ -66,7 +66,7 @@ struct AcusiaAppView: View {
                         }
                         .frame(minWidth: screenWidth, minHeight: screenHeight)
                         .frame(height: homeHeight, alignment: .top)
-                        .background(.ultraThinMaterial)
+                        .background(.black)
                         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                         .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                         .shadow(radius: 10)
@@ -140,17 +140,17 @@ struct AcusiaAppView: View {
                 }
             }
             .ignoresSafeArea()
-            .overlay(alignment: .top) {
-                if auth.isAuthenticated {
-                    Button {
-                        auth.signOut()
-                    } label: {
-                        Label("Sign Out", systemImage: "person.crop.circle.badge.xmark")
-                            .font(.headline)
-                            .padding()
-                    }
-                }
-            }
+            // .overlay(alignment: .top) {
+            //     if auth.isAuthenticated {
+            //         Button {
+            //             auth.signOut()
+            //         } label: {
+            //             Label("Sign Out", systemImage: "person.crop.circle.badge.xmark")
+            //                 .font(.headline)
+            //                 .padding()
+            //         }
+            //     }
+            // }
             .sheet(isPresented: Binding(
                 get: { uiState.symmetryState == .user },
                 set: { newValue in
