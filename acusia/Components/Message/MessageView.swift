@@ -13,7 +13,7 @@ struct MessageView: View {
     @State private var verticalSpacing: CGFloat = 0
 
     let entity: Entity
-    let blipXOffset: CGFloat = 92
+    let blipXOffset: CGFloat = 88
 
     var body: some View {
         let photos = entity.getPhotoAttachments()
@@ -27,7 +27,7 @@ struct MessageView: View {
 
                 BlipView()
             }
-            .onChange(of: textBubbleSize.width) { _ in
+            .onChange(of: textBubbleSize.width) { oV, nV in
                 /// If the width of the top is greater than the width of the text bubble minus blip horizontal size, push the top down.
                 verticalSpacing = attachmentSize.width > (textBubbleSize.width - blipXOffset)
                     ? -2

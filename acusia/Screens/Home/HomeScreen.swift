@@ -38,7 +38,7 @@ struct Home: View {
             .safeAreaPadding(.all)
 
             /// Main Feed
-            VStack(spacing: 12) {
+            VStack(spacing: 24) {
                 BiomePreviewView(biome: Biome(entities: biomePreviewOne))
                 BiomePreviewView(biome: Biome(entities: biomePreviewTwo)) 
                 BiomePreviewView(biome: Biome(entities: biomePreviewThree))
@@ -51,6 +51,12 @@ struct Home: View {
             LinearGradientMask(gradientColors: [.black.opacity(0.5), Color.clear])
                 .frame(height: safeAreaInsets.bottom * 2)
                 .scaleEffect(x: 1, y: -1)
+        }
+        .overlay(alignment: .top) {
+            VariableBlurView(radius: 4, gradientColors: [.clear, .black])
+                .scaleEffect(x: 1, y: -1)
+                .ignoresSafeArea()
+                .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top)
         }
         .contentMargins(.bottom, safeAreaInsets.bottom * 3)
     }

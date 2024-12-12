@@ -110,12 +110,6 @@ class VoiceAttachment: Attachment {
 
 let biomePreviewOne: [Entity] = [
     Entity(
-        id: "2",
-        username: "synesthesia",
-        avatar: "https://i.pinimg.com/280x280_RS/4c/ba/fb/4cbafbfab791255a004740a491e85f6d.jpg",
-        text: "idk if it’s just me but if you stick around it kinda pulls you in lowkey like random core memories or smth",
-        created_at: Date(timeIntervalSinceNow: -2800)),
-    Entity(
         id: "1",
         username: "DeborahVthang",
         avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
@@ -135,17 +129,16 @@ let biomePreviewOne: [Entity] = [
             text: "Honestly, the presentation is unique, but it does feel a little too polished for my taste.",
             created_at: Date(timeIntervalSinceNow: -3000)
         )
-    )
+    ),
+    Entity(
+        id: "2",
+        username: "synesthesia",
+        avatar: "https://i.pinimg.com/280x280_RS/4c/ba/fb/4cbafbfab791255a004740a491e85f6d.jpg",
+        text: "idk if it’s just me but if you stick around it kinda pulls you in lowkey like random core memories or smth",
+        created_at: Date(timeIntervalSinceNow: -2800))
 ]
 
 let biomePreviewTwo: [Entity] = [
-    Entity(
-        id: "1",
-        username: "DeborahVthang",
-        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
-        text: "Honestly, the presentation is unique, but it does feel a little too polished for my taste.",
-        created_at: Date(timeIntervalSinceNow: -3000)
-    ),
     Entity(
         id: "0",
         username: "neonDream",
@@ -186,17 +179,17 @@ let biomePreviewTwo: [Entity] = [
                 height: 1513
             )
         ]
-    )
-]
-
-let biomePreviewThree: [Entity] = [
+    ),
     Entity(
         id: "1",
         username: "DeborahVthang",
         avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
         text: "Honestly, the presentation is unique, but it does feel a little too polished for my taste.",
         created_at: Date(timeIntervalSinceNow: -3000)
-    ),
+    )
+]
+
+let biomePreviewThree: [Entity] = [
     Entity(
         id: "4",
         username: "vjeranski",
@@ -247,6 +240,13 @@ let biomePreviewThree: [Entity] = [
                            artistName: "Max Richter, Lorne Balfe",
                            color: "#091023")
         ]
+    ),
+    Entity(
+        id: "1",
+        username: "DeborahVthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "Honestly, the presentation is unique, but it does feel a little too polished for my taste.",
+        created_at: Date(timeIntervalSinceNow: -3000)
     )
 ]
 
