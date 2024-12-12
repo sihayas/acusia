@@ -25,12 +25,13 @@ struct Home: View {
         ScrollView {
             /// User's Past?
             // PastView(size: size)
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text("Atlas")
-                    .font(.largeTitle)
+                    .font(.subheadline)
                     .fontWeight(.semibold)
                 
-                Text("closed alpha*")
+                Text("alpha*")
+                    .font(.subheadline)
 
                 Spacer()
             }
@@ -38,13 +39,13 @@ struct Home: View {
             .safeAreaPadding(.all)
 
             /// Main Feed
-            VStack(spacing: 24) {
+            VStack(spacing: 12) {
                 BiomePreviewView(biome: Biome(entities: biomePreviewOne))
                 BiomePreviewView(biome: Biome(entities: biomePreviewTwo)) 
                 BiomePreviewView(biome: Biome(entities: biomePreviewThree))
             }
         }
-        .scrollIndicators(.hidden)
+        // .scrollIndicators(.hidden)
         .scrollClipDisabled(true)
         .padding(.top, safeAreaInsets.top)
         .overlay(alignment: .bottom) {
@@ -53,9 +54,8 @@ struct Home: View {
                 .scaleEffect(x: 1, y: -1)
         }
         .overlay(alignment: .top) {
-            VariableBlurView(radius: 4, gradientColors: [.clear, .black])
+            LinearBlurView(radius: 2, gradientColors: [.clear, .black])
                 .scaleEffect(x: 1, y: -1)
-                .ignoresSafeArea()
                 .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top)
         }
         .contentMargins(.bottom, safeAreaInsets.bottom * 3)

@@ -21,10 +21,10 @@ struct BlipView: View {
                         .foregroundStyle(.secondary)
                 )
                 .background(.ultraThinMaterial)
-                .clipShape(Circle())
-                .overlay(
+                .mask(
                     Circle()
-                        .stroke(.black, lineWidth: 1)
+                        .fill(.white)
+                        .strokeBorder(.black, lineWidth: 1)
                 )
             
             ForEach(0..<2) { index in
@@ -36,24 +36,24 @@ struct BlipView: View {
                             .font(.system(size: 32 * 0.35))
                     )
                     .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-                    .overlay(
+                    .mask(
                         Circle()
-                            .stroke(.black, lineWidth: 1)
+                            .fill(.white)
+                            .strokeBorder(.black, lineWidth: 1)
                     )
             }
 
             Circle()
-                .fill(.clear)
+                .fill(Color(.systemGray6))
                 .frame(width: 36, height: 36)
-                .background(Color(.systemGray6), in: BlipBubbleWithTail())
                 .overlay(
                     Text(selectedEmojis[2])
                         .font(.system(size: 36 * 0.4))
                 )
-                .overlay(
+                .background(Color(.systemGray6), in: BlipBubbleWithTail())
+                .mask(
                     BlipBubbleWithTail()
-                        .stroke(.black, lineWidth: 1)
+                        .fill(.white)
                 )
         }
     }

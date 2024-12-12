@@ -205,7 +205,6 @@ struct SymmetryWindowView: View {
     var body: some View {
         ZStack {
             SymmetryView()
-                .shadow(radius: 10)
                 .offset(y: -keyboardHeight)
                 .animation(.snappy, value: keyboardHeight)
                 .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in

@@ -15,9 +15,9 @@ struct ReplyButton: View {
         } label: {
             Image(systemName: "message.badge.fill")
                 .fontWeight(.bold)
-                .font(.subheadline)
+                .font(.footnote)
                 .foregroundStyle(.white)
-                .padding(12)
+                .frame(width: 40, height: 40)
                 .background(
                     TintedBlurView(style: .systemChromeMaterialLight, backgroundColor: .black, blurMutingFactor: 0.75)
                 )

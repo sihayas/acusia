@@ -24,7 +24,7 @@ struct BiomePreviewView: View {
     }
 
     var body: some View {
-        VStack(spacing: -20) {
+        ZStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 8) {
                 /// Ranked Messages
                 ForEach(0 ..< biome.entities.count, id: \.self) { index in
@@ -43,7 +43,7 @@ struct BiomePreviewView: View {
                     }
                 }
             }
-            .padding(.horizontal, 24)
+            .padding([.horizontal, .top], 24)
             .readSize { newSize in
                 frameSize = newSize
             }
@@ -54,35 +54,24 @@ struct BiomePreviewView: View {
                     : nil,
                 alignment: .top
             )
+            .background(.ultraThickMaterial)
             .overlay(alignment: .bottom) {
                 ZStack(alignment: .bottom) {
-                    VariableBlurView(radius: 1, gradientColors: [.clear, .black])
-                        .ignoresSafeArea()
-                        .frame(
-                            maxWidth: .infinity,
-                            maxHeight: 88
-                        )
-
-                    LinearGradientMask(gradientColors: [.clear, .black])
-                        .ignoresSafeArea()
-                        .frame(
-                            maxWidth: .infinity,
-                            maxHeight: 88
-                        )
+                    LinearBlurView(radius: 2, gradientColors: [.clear, .black])
+                        .frame(maxWidth: .infinity, maxHeight: 112)
+                        .padding(.horizontal, 20)
+                    
+                    LinearGradientMask(gradientColors: [.clear, Color(.systemGray6)])
+                        .frame(maxWidth: .infinity, maxHeight: 112)
+                        .padding(.horizontal, 20)
                 }
             }
-            .foregroundStyle(.secondary)
-            .matchedTransitionSource(id: "hi", in: animation)
-            .sheet(isPresented: $showSheet) {
-                BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
-                    .navigationTransition(.zoom(sourceID: "hi", in: animation))
-                    .presentationBackground(.black)
-            }
-            .onTapGesture { showSheet = true }
+            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+            .padding(.horizontal, 12)
 
-            HStack {
+            HStack(alignment: .bottom) {
                 CollageLayout {
-                    ForEach(userDevs.shuffled().prefix(2), id: \.id) { user in
+                    ForEach(userDevs.shuffled().prefix(4), id: \.id) { user in
                         Circle()
                             .stroke(.ultraThinMaterial)
                             .background(
@@ -97,49 +86,48 @@ struct BiomePreviewView: View {
                             .clipShape(Circle())
                     }
                 }
-                .padding(12)
-                .background(.ultraThickMaterial, in: Circle())
-                .frame(width: 72, height: 72)
+                .frame(width: 56, height: 56)
 
-                VStack(alignment: .leading, spacing: 4) {
+                /// Biome Metadata
+                HStack(alignment: .bottom, spacing: 8) {
+                    // TypingIndicator()
                     Text("lorem ipsum")
                         .fontWeight(.bold)
                         .font(.title3)
                         .foregroundColor(.white)
 
-                    Capsule()
-                        .fill(.ultraThickMaterial)
-                        .frame(height: 2)
+                    Spacer()
 
-                    /// Biome Metadata
-                    HStack(spacing: 8) {
-                        // TypingIndicator()
+                    ReplyButton()
 
-                        Spacer()
-
-                        Button {
-                            // Perform button action here
-                        } label: {
-                            Text("Join")
-                                .fontWeight(.semibold)
-                                .font(.subheadline)
-                                .foregroundStyle(.white)
-                                .padding(12)
-                                .background(
-                                    TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .blue, blurMutingFactor: 0.75)
-                                )
-                                .clipShape(Capsule())
-                        }
-
-                        ReplyButton()
+                    Button {
+                        // Perform button action here
+                    } label: {
+                        Image(systemName: "plus")
+                            .fontWeight(.semibold)
+                            .font(.subheadline)
+                            .foregroundStyle(.white)
+                            .frame(width: 40, height: 40)
+                            .background(
+                                TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .brown, blurMutingFactor: 0.25)
+                            )
+                            .clipShape(Capsule())
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: 56, alignment: .bottom)
             }
-            .padding(.horizontal, 8)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .zIndex(1)
+            .padding(.horizontal, 28)
+            .padding(.bottom, 16)
+            .shadow(color: .black.opacity(0.3), radius: 12, x: 0, y: 4)
+            .frame(maxWidth: .infinity)
         }
+        .matchedTransitionSource(id: "hi", in: animation)
+        .sheet(isPresented: $showSheet) {
+            BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
+                .navigationTransition(.zoom(sourceID: "hi", in: animation))
+                .presentationBackground(.black)
+        }
+        .onTapGesture { showSheet = true }
     }
 }
 

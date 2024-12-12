@@ -39,7 +39,7 @@ struct LinearGradientMask: View {
     }
 }
 
-struct VariableBlurView: UIViewRepresentable {
+struct LinearBlurView: UIViewRepresentable {
     let radius: Double
     let gradientColors: [Color]
 
@@ -64,6 +64,57 @@ struct VariableBlurView: UIViewRepresentable {
     }
 }
 
+struct RoundedGradientMask: View {
+    var gradientColors: [Color]
+    var cornerRadius: CGFloat
+
+    var body: some View {
+        GeometryReader { geometry in
+            UnevenRoundedRectangle(
+                topLeadingRadius: 0,
+                bottomLeadingRadius: cornerRadius,
+                bottomTrailingRadius: cornerRadius,
+                topTrailingRadius: 0,
+                style: .continuous
+            )
+            .fill(
+                LinearGradient(
+                    gradient: Gradient(colors: gradientColors),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+    }
+}
+
+struct RoundedBlurView: UIViewRepresentable {
+    let radius: Double
+    let gradientColors: [Color]
+    let cornerRadius: CGFloat
+
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        let maskView = RoundedGradientMask(gradientColors: gradientColors, cornerRadius: cornerRadius)
+        let renderer = ImageRenderer(content: maskView)
+        if let maskImage = renderer.uiImage {
+            let effect = UIBlurEffect.variableBlurEffect(radius: radius, imageMask: maskImage)
+            let blurView = UIVisualEffectView(effect: effect)
+            return blurView
+        } else {
+            return UIVisualEffectView(effect: nil)
+        }
+    }
+
+    func updateUIView(_ view: UIVisualEffectView, context: Context) {
+        let maskView = RoundedGradientMask(gradientColors: gradientColors, cornerRadius: cornerRadius)
+        let renderer = ImageRenderer(content: maskView)
+        if let maskImage = renderer.uiImage {
+            view.effect = UIBlurEffect.variableBlurEffect(radius: radius, imageMask: maskImage)
+        }
+    }
+}
+
 #Preview {
     VStack(spacing: 0) {
         ForEach(0 ..< 3) { _ in
@@ -73,7 +124,7 @@ struct VariableBlurView: UIViewRepresentable {
     }
     .frame(maxWidth: .infinity, alignment: .center)
     .overlay(
-        VariableBlurView(radius: 10, gradientColors: [.clear, .black])
+        LinearBlurView(radius: 10, gradientColors: [.clear, .black])
             .ignoresSafeArea()
             .frame(maxWidth: .infinity, maxHeight: 240)
             .border(Color.black, width: 1)

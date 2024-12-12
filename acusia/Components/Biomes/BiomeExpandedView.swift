@@ -17,10 +17,10 @@ struct BiomeExpandedView: View {
 
     var body: some View {
         ZStack {
-            // RoundedRectangle(cornerRadius: 45, style: .continuous)
-            //     .fill(.black)
-            //     .opacity(didAppear ? 0 : 1)
-            //     .ignoresSafeArea()
+            RoundedRectangle(cornerRadius: 45, style: .continuous)
+                .fill(.ultraThickMaterial)
+                .opacity(didAppear ? 0 : 1)
+                .ignoresSafeArea()
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
@@ -41,7 +41,7 @@ struct BiomeExpandedView: View {
             .defaultScrollAnchor(.bottom)
         }
         .overlay(alignment: .top) {
-            VariableBlurView(radius: 4, gradientColors: [.clear, .black])
+            LinearBlurView(radius: 4, gradientColors: [.clear, .black])
                 .scaleEffect(x: 1, y: -1)
                 .ignoresSafeArea()
                 .frame(maxWidth: .infinity, maxHeight: 0)
