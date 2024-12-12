@@ -89,16 +89,7 @@ struct BiomePreviewView: View {
                     Spacer()
                     
                     VStack {
-                        Image(systemName: "message.badge.fill")
-                            .fontWeight(.bold)
-                            .font(.subheadline)
-                            .foregroundStyle(.white)
-                            .padding(12)
-                            .background(
-                                TintedBlurView(style: .systemChromeMaterialLight, backgroundColor: .black, blurMutingFactor: 0.75)
-                            )
-                            .clipShape(Circle())
-                            .scaleEffect(x: -1, y: 1)
+                        ReplyButton()
                     }
                 }
                 .safeAreaPadding([.horizontal])

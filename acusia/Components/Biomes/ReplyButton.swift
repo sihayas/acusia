@@ -1,29 +1,27 @@
 //
-//  AvatarView.swift
+//  ReplyButton'.swift
 //  acusia
 //
-//  Created by decoherence on 8/25/24.
+//  Created by decoherence on 12/11/24.
 //
-
 import SwiftUI
 
-struct AvatarView: View {
-    let size: CGFloat
-    let imageURL: String
+struct ReplyButton: View {
     @State private var isPressed: Bool = false
 
     var body: some View {
-        AsyncImage(url: URL(string: imageURL)) { image in
-            image
-                .resizable()
-                .frame(width: size, height: size)
+        Button {
+            // Perform button action here
+        } label: {
+            Image(systemName: "message.badge.fill")
+                .fontWeight(.bold)
+                .font(.subheadline)
+                .foregroundStyle(.white)
+                .padding(12)
+                .background(
+                    TintedBlurView(style: .systemChromeMaterialLight, backgroundColor: .black, blurMutingFactor: 0.75)
+                )
                 .clipShape(Circle())
-                .scaleEffect(isPressed ? 0.8 : 1)
-                .animation(.bouncy, value: isPressed)
-        } placeholder: {
-            Circle()
-                .fill(Color.gray)
-                .frame(width: size, height: size)
                 .scaleEffect(isPressed ? 0.8 : 1)
                 .animation(.bouncy, value: isPressed)
         }

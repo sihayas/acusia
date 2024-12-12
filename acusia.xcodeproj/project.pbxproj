@@ -87,6 +87,7 @@
 		CDF4BD772D0930E100F8D775 /* TypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */; };
 		CDF4BD7A2D0A200800F8D775 /* RadialBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD792D0A200100F8D775 /* RadialBlur.swift */; };
 		CDF4BD7C2D0A835200F8D775 /* SizePreferenceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD7B2D0A834F00F8D775 /* SizePreferenceKey.swift */; };
+		CDF4BD7F2D0AA42900F8D775 /* ReplyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD7E2D0AA42400F8D775 /* ReplyButton.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -210,6 +211,7 @@
 		CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicator.swift; sourceTree = "<group>"; };
 		CDF4BD792D0A200100F8D775 /* RadialBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialBlur.swift; sourceTree = "<group>"; };
 		CDF4BD7B2D0A834F00F8D775 /* SizePreferenceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizePreferenceKey.swift; sourceTree = "<group>"; };
+		CDF4BD7E2D0AA42400F8D775 /* ReplyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyButton.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -519,6 +521,7 @@
 		CDF4BD7D2D0A8E6000F8D775 /* Biomes */ = {
 			isa = PBXGroup;
 			children = (
+				CDF4BD7E2D0AA42400F8D775 /* ReplyButton.swift */,
 				CDBDA24F2D03CEC6005333B0 /* BiomePreviewView.swift */,
 				CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */,
 				CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */,
@@ -691,6 +694,7 @@
 				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
 				CD264CE02CD69ADD00A74D7E /* AuxiliaryContextMenu.swift in Sources */,
+				CDF4BD7F2D0AA42900F8D775 /* ReplyButton.swift in Sources */,
 				CD6438CB2C92C23E00D7436E /* HoloShaderView.swift in Sources */,
 				CDE43C112C8671280009CB87 /* ReactionView.swift in Sources */,
 				CD4BAAA02C950A570005F3DB /* Ripple.metal in Sources */,

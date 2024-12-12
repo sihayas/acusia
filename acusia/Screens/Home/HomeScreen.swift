@@ -40,7 +40,7 @@ struct Home: View {
             /// Main Feed
             VStack(spacing: 12) {
                 BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+                BiomePreviewView(biome: Biome(entities: biomePreviewTwo)) 
                 BiomePreviewView(biome: Biome(entities: biomePreviewThree))
             }
         }
@@ -52,5 +52,6 @@ struct Home: View {
                 .frame(height: safeAreaInsets.bottom * 2)
                 .scaleEffect(x: 1, y: -1)
         }
+        .contentMargins(.bottom, safeAreaInsets.bottom * 3)
     }
 }
