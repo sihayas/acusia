@@ -37,13 +37,13 @@ struct EntityView: View {
                 HStack(alignment: .bottom, spacing: 8) {
                     AvatarView(size: 32, imageURL: parent.avatar)
                         .frame(width: 40)
-
+           
                     ContextualMessageView(entity: parent)
                 }
                 .onAppear { hasContext = true }
             }
 
-            // MARK: Entity
+            // MARK: Main Message
 
             HStack(alignment: .bottom, spacing: 8) {
                 VStack {

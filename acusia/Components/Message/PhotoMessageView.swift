@@ -58,7 +58,7 @@ struct PhotoMessageView: View {
 
 struct PhotoMessagesView: View {
     let photos: [PhotoAttachment]
-    private let scaleFactor: CGFloat = 0.8
+    private let scaleFactor: CGFloat = 0.9
 
     var body: some View {
         VStack(alignment: .leading, spacing: -40) {
@@ -89,9 +89,9 @@ struct PhotoMessagesView: View {
 
     private func rotationAngle(for index: Int, totalPhotos: Int) -> Angle {
         if totalPhotos == 2 {
-            return index.isEven ? .degrees(2) : .degrees(-2)
+            return index.isEven ? .degrees(1) : .degrees(-1)
         } else {
-            return index.isEven ? .degrees(-2) : .degrees(2)
+            return index.isEven ? .degrees(-1) : .degrees(1)
         }
     }
 

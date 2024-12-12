@@ -11,38 +11,25 @@ struct BiomePreviewView: View {
 
     let biome: Biome
 
-    @Namespace var animation
     @State private var showSheet: Bool = false
-    @State private var size: CGSize = .zero
+    @State private var frameSize: CGSize = .zero
     @State private var firstMessageSize: CGSize = .zero
+    @Namespace var animation
+
+    private var adjustedHeight: CGFloat? {
+        guard frameSize.height > 0, firstMessageSize.height > 0 else {
+            return nil
+        }
+        return frameSize.height - firstMessageSize.height
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(0 ..< 2, id: \.self) { index in
-                    let previousEntity = index > 0 ? biome.entities[index - 1] : nil
-
-                    EntityView(
-                        rootEntity: biome.entities[0],
-                        previousEntity: previousEntity,
-                        entity: biome.entities[index]
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                    .background(GeometryReader { proxy in
-                        Color.clear
-                            .onAppear {
-                                if index == 0 {
-                                    firstMessageSize = proxy.size
-                                }
-                            }
-                    })
-                }
-            }
-
-            HStack(alignment: .bottom, spacing: 12) {
+        VStack(spacing: -20) {
+            HStack {
                 CollageLayout {
-                    ForEach(userDevs.prefix(3), id: \.id) { user in
+                    ForEach(userDevs.shuffled().prefix(2), id: \.id) { user in
                         Circle()
+                            .stroke(.ultraThinMaterial)
                             .background(
                                 AsyncImage(url: URL(string: user.imageUrl)) { image in
                                     image
@@ -55,64 +42,110 @@ struct BiomePreviewView: View {
                             .clipShape(Circle())
                     }
                 }
-                .frame(width: 40, height: 40)
-                .shadow(radius: 4)
+                .padding(12)
+                .background(.ultraThickMaterial, in: Circle())
+                .frame(width: 72, height: 72)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("gods weakest soldiers")
-                        .fontWeight(.bold)
-                        .font(.headline)
-                        .foregroundColor(.white)
+                Text("lorem ipsum")
+                    .fontWeight(.bold)
+                    .font(.title3)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .zIndex(1)
 
-                    Text("coolgirl, saraton1nn, joji and 14 more...")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 8) {
+                /// Ranked Messages
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(0 ..< biome.entities.count, id: \.self) { index in
+                        let previousEntity = index > 0 ? biome.entities[index - 1] : nil
+
+                        EntityView(
+                            rootEntity: biome.entities[0],
+                            previousEntity: previousEntity,
+                            entity: biome.entities[index]
+                        )
+                        .readSize { newSize in
+                            if index == 0 {
+                                firstMessageSize = newSize
+                                print("firstMessageSize: \(firstMessageSize)")
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 24)
+
+                /// Biome Metadata
+                HStack(spacing: 12) {
+                    // VStack(alignment: .leading, spacing: 4) {
+                    //     Text("user, user, user and 14 more...")
+                    //         .font(.footnote)
+                    //         .foregroundColor(.secondary)
+                    //
+                    //     TypingIndicator()
+                    // }
+                
+                    Spacer()
+                    
+                    VStack {
+                        Image(systemName: "message.badge.fill")
+                            .fontWeight(.bold)
+                            .font(.subheadline)
+                            .foregroundStyle(.white)
+                            .padding(12)
+                            .background(
+                                TintedBlurView(style: .systemChromeMaterialLight, backgroundColor: .black, blurMutingFactor: 0.75)
+                            )
+                            .clipShape(Circle())
+                            .scaleEffect(x: -1, y: 1)
+                    }
+                }
+                .safeAreaPadding([.horizontal])
+            }
+            .readSize { newSize in
+                frameSize = newSize
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(
+                height: frameSize.height > 0
+                    ? frameSize.height - firstMessageSize.height + 56
+                    : nil,
+                alignment: .bottom
+            )
+            .overlay(alignment: .top) {
+                ZStack(alignment: .top) {
+                    VariableBlurView(radius: 1, gradientColors: [.clear, .black])
+                        .ignoresSafeArea()
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: 64
+                        )
+                        .scaleEffect(x: 1, y: -1)
+
+                    LinearGradientMask(gradientColors: [.clear, .black])
+                        .ignoresSafeArea()
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: 64
+                        )
+                        .scaleEffect(x: 1, y: -1)
+
+                    Capsule()
+                        .fill(.ultraThickMaterial)
+                        .frame(height: 2)
+                        .padding(.leading, 88)
                 }
             }
-        }
-        .padding(24)
-        .background(
-            GeometryReader { proxy in
-                Color.clear
-                    .onAppear {
-                        size = proxy.size
-                        print(size.height)
-                    }
+            .foregroundStyle(.secondary)
+            .matchedTransitionSource(id: "hi", in: animation)
+            .sheet(isPresented: $showSheet) {
+                BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
+                    .navigationTransition(.zoom(sourceID: "hi", in: animation))
+                    .presentationBackground(.black)
             }
-        )
-        .frame(minHeight: size.height)
-        .frame(
-            height: size.height > 0
-            ? size.height - (firstMessageSize.height * 0.92)
-                : nil,
-            alignment: .bottom
-        )
-        .overlay(alignment: .top) {
-            VariableBlurView(radius: 4, mask: Image(.gradient))
-                .ignoresSafeArea()
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: firstMessageSize.height * 0.26
-                )
-                .scaleEffect(x: 1, y: -1)
+            .onTapGesture { showSheet = true }
         }
-        .background(
-            .black,
-            in: RoundedRectangle(cornerRadius: 40, style: .continuous)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
-        .foregroundStyle(.secondary)
-        .overlay(
-            RoundedRectangle(cornerRadius: 40, style: .continuous)
-                .stroke(.ultraThinMaterial, lineWidth: 0.1)
-        )
-        .matchedTransitionSource(id: "hi", in: animation)
-        .sheet(isPresented: $showSheet) {
-            BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
-                .navigationTransition(.zoom(sourceID: "hi", in: animation))
-                .presentationBackground(.black)
-        }
-        .onTapGesture { showSheet = true }
     }
 }
 

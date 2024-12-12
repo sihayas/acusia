@@ -41,14 +41,10 @@ struct BiomeExpandedView: View {
             .defaultScrollAnchor(.bottom)
         }
         .overlay(alignment: .top) {
-            VStack {
-                VariableBlurView(radius: 1, mask: Image(.gradient))
-                    .scaleEffect(x: 1, y: -1)
-                    .ignoresSafeArea()
-                    .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
-
-                Spacer()
-            }
+            VariableBlurView(radius: 4, gradientColors: [.clear, .black])
+                .scaleEffect(x: 1, y: -1)
+                .ignoresSafeArea()
+                .frame(maxWidth: .infinity, maxHeight: 0)
         }
         .onAppear {
             withAnimation(.smooth(duration: 0.7)) {

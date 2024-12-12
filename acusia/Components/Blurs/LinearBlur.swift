@@ -7,9 +7,7 @@
 /// In case this ends up being a private API, use Janum Trivdei's implementation
 /// outlined here ` https://designcode.io/swiftui-handbook-progressive-blur `
 
-import Foundation
 import SwiftUI
-import UIKit
 
 public extension UIBlurEffect {
     static func variableBlurEffect(radius: Double, imageMask: UIImage) -> UIBlurEffect? {
@@ -26,53 +24,27 @@ public extension UIBlurEffect {
     }
 }
 
-struct VariableBlurView: UIViewRepresentable {
-    let radius: Double
-    let mask: Image
-
-    func makeUIView(context: Context) -> UIVisualEffectView {
-        let maskImage = ImageRenderer(content: mask).uiImage
-        let effect = maskImage.flatMap {
-            UIBlurEffect.variableBlurEffect(radius: radius, imageMask: $0)
-        }
-        return UIVisualEffectView(effect: effect)
-    }
-
-    func updateUIView(_ view: UIVisualEffectView, context: Context) {
-        let maskImage = ImageRenderer(content: mask).uiImage
-        view.effect = maskImage.flatMap {
-            UIBlurEffect.variableBlurEffect(radius: radius, imageMask: $0)
-        }
-    }
-}
-
-struct RadialGradientMask: View {
-    var size: CGSize
+struct LinearGradientMask: View {
+    var gradientColors: [Color]
 
     var body: some View {
-        let maxDimension = max(size.width, size.height)
-        let minDimension = min(size.width, size.height)
-        let center = CGPoint(x: size.width / 2, y: size.height / 2)
-
-        RadialGradient(
-            gradient: Gradient(colors: [.clear, .red]),
-            center: UnitPoint(
-                x: center.x / size.width,
-                y: center.y / size.height
-            ),
-            startRadius: minDimension / 4, // Smaller radius to ensure visibility
-            endRadius: maxDimension / 2   // Scaled properly for large dimensions
-        )
-        .frame(width: size.width, height: size.height)
+        GeometryReader { geometry in
+            LinearGradient(
+                gradient: Gradient(colors: gradientColors),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(width: geometry.size.width, height: geometry.size.height)
+        }
     }
 }
 
-struct RadialVariableBlurView: UIViewRepresentable {
+struct VariableBlurView: UIViewRepresentable {
     let radius: Double
-    let size: CGSize
+    let gradientColors: [Color]
 
     func makeUIView(context: Context) -> UIVisualEffectView {
-        let maskView = RadialGradientMask(size: size)
+        let maskView = LinearGradientMask(gradientColors: gradientColors)
         let renderer = ImageRenderer(content: maskView)
         if let maskImage = renderer.uiImage {
             let effect = UIBlurEffect.variableBlurEffect(radius: radius, imageMask: maskImage)
@@ -84,14 +56,13 @@ struct RadialVariableBlurView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: UIVisualEffectView, context: Context) {
-        let maskView = RadialGradientMask(size: size)
+        let maskView = LinearGradientMask(gradientColors: gradientColors)
         let renderer = ImageRenderer(content: maskView)
         if let maskImage = renderer.uiImage {
             view.effect = UIBlurEffect.variableBlurEffect(radius: radius, imageMask: maskImage)
         }
     }
 }
-
 
 #Preview {
     VStack(spacing: 0) {
@@ -102,7 +73,7 @@ struct RadialVariableBlurView: UIViewRepresentable {
     }
     .frame(maxWidth: .infinity, alignment: .center)
     .overlay(
-        VariableBlurView(radius: 10, mask: Image(.gradient))
+        VariableBlurView(radius: 10, gradientColors: [.clear, .black])
             .ignoresSafeArea()
             .frame(maxWidth: .infinity, maxHeight: 240)
             .border(Color.black, width: 1)

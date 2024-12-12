@@ -25,28 +25,32 @@ struct Home: View {
         ScrollView {
             /// User's Past?
             // PastView(size: size)
-            HStack {
+            HStack(alignment: .firstTextBaseline) {
                 Text("Atlas")
                     .font(.largeTitle)
                     .fontWeight(.semibold)
-                    .safeAreaPadding(.horizontal)
-                    .padding(.top, safeAreaInsets.top)
+                
+                Text("closed alpha*")
 
                 Spacer()
             }
             .frame(maxWidth: .infinity)
-            .padding(.horizontal, 24)
+            .safeAreaPadding(.all)
 
             /// Main Feed
-            VStack(spacing: 16) {
-                BiomePreviewView(biome: Biome(entities: biomeSpotlightOne))
+            VStack(spacing: 12) {
+                BiomePreviewView(biome: Biome(entities: biomePreviewOne))
                 BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+                BiomePreviewView(biome: Biome(entities: biomePreviewThree))
             }
-            .padding(.horizontal, 8)
-            
-            Spacer()
-                .frame(minHeight: safeAreaInsets.bottom * 3)
         }
+        .scrollIndicators(.hidden)
         .scrollClipDisabled(true)
+        .padding(.top, safeAreaInsets.top)
+        .overlay(alignment: .bottom) {
+            LinearGradientMask(gradientColors: [.black.opacity(0.5), Color.clear])
+                .frame(height: safeAreaInsets.bottom * 2)
+                .scaleEffect(x: 1, y: -1)
+        }
     }
 }
