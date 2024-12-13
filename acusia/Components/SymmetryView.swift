@@ -132,11 +132,11 @@ struct SymmetryView: View {
                         overlayContent:
                         ZStack {
                             if uiState.symmetryState == .feed {
-                                AvatarView(size: 40, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
-                                    .background(Color.gray.opacity(0.001))
-                                    .onTapGesture {
-                                        uiState.symmetryState = .user
-                                    }
+                                // AvatarView(size: 40, imageURL: "https://i.pinimg.com/474x/36/21/cb/3621cbc3ccededfd4591ff199aa0ef0d.jpg")
+                                //     .background(Color.gray.opacity(0.001))
+                                //     .onTapGesture {
+                                //         uiState.symmetryState = .user
+                                //     }
                             }
                             
                             if uiState.symmetryState == .reply, let result = uiState.selectedResult {
@@ -200,8 +200,8 @@ struct SymmetryView: View {
                                     uiState.symmetryState = .create
                                 }) {
                                     Image(systemName: "microbe.fill")
-                                        .foregroundColor(.secondary)
-                                        .font(.system(size: 24))
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 20))
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .background(Color.gray.opacity(0.001))

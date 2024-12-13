@@ -38,7 +38,6 @@ struct BiomePreviewView: View {
                     .readSize { newSize in
                         if index == 2 {
                             firstMessageSize = newSize
-                            print("firstMessageSize: \(firstMessageSize)")
                         }
                     }
                 }
