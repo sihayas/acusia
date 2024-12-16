@@ -46,7 +46,6 @@ class UIState: ObservableObject {
         let view = SymmetryWindowView()
             .environmentObject(UIState.shared)
             .environmentObject(MusicKit.shared)
-            .environmentObject(HomeState.shared)
             .environmentObject(Auth.shared)
 
         let hostingController = UIHostingController(rootView: view)

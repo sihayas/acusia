@@ -7,7 +7,6 @@ struct AcusiaApp: App {
     @StateObject private var auth = Auth.shared
     @ObservedObject private var uiState = UIState.shared
     @ObservedObject private var musicKit = MusicKit.shared
-    @ObservedObject private var homeState = HomeState.shared
 
     let persistenceController = PersistenceController.shared
     private var safeAreaInsets: UIEdgeInsets = .init()
@@ -19,7 +18,6 @@ struct AcusiaApp: App {
                 .environmentObject(auth)
                 .environmentObject(uiState)
                 .environmentObject(musicKit)
-                .environmentObject(homeState)
                 // .onAppear { auth.authenticate() }
         }
     }
@@ -30,7 +28,6 @@ struct AcusiaAppView: View {
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var uiState: UIState
     @EnvironmentObject private var musicKitManager: MusicKit
-    @EnvironmentObject private var homeState: HomeState
 
     @State private var dragOffset: CGFloat = 0
     var cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
@@ -197,7 +194,6 @@ struct AcusiaAppView: View {
 struct SymmetryWindowView: View {
     @EnvironmentObject private var uiState: UIState
     @EnvironmentObject private var musicKitManager: MusicKit
-    @EnvironmentObject private var homeState: HomeState
     @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     @State private var keyboardHeight: CGFloat = 0
@@ -230,7 +226,6 @@ struct AcusiaAppPreview: PreviewProvider {
         let auth = Auth.shared
         let uiState = UIState.shared
         let musicKit = MusicKit.shared
-        let homeState = HomeState.shared
 
         auth.isAuthenticated = true
         let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDA0NTEuYTVmN2Y5OGQxMzRlNGY1ZTg1NWY2YmNkYzUyMmViMDMuMDkwMSIsImV4cCI6MTczMzQyMTc4OX0.VTf2UT9IzFL3-mZtGJGjsn4L1v1rcuGf2JmGS3Jql58"
@@ -239,7 +234,6 @@ struct AcusiaAppPreview: PreviewProvider {
             .environmentObject(auth)
             .environmentObject(uiState)
             .environmentObject(musicKit)
-            .environmentObject(homeState)
             .onAppear {
                 uiState.setupSymmetryWindow()
             }

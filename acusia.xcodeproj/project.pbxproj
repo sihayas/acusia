@@ -510,11 +510,11 @@
 		CDF4BD7D2D0A8E6000F8D775 /* Biomes */ = {
 			isa = PBXGroup;
 			children = (
-				CDF4BD7E2D0AA42400F8D775 /* ReplyButton.swift */,
-				CDBDA24F2D03CEC6005333B0 /* BiomePreviewView.swift */,
-				CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */,
 				CD43B2C02CDD73740018DB16 /* BiomeExpandedView.swift */,
+				CDBDA24F2D03CEC6005333B0 /* BiomePreviewView.swift */,
 				CDF4BD742D09229700F8D775 /* BiomeSphereView.swift */,
+				CDF4BD7E2D0AA42400F8D775 /* ReplyButton.swift */,
+				CDF4BD762D0930DB00F8D775 /* TypingIndicator.swift */,
 			);
 			path = Biomes;
 			sourceTree = "<group>";
