@@ -3,12 +3,8 @@ import SwiftUI
 struct Home: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: UIState
-
-    @State var scrollOffset: CGFloat = 0
-
-    @State var isTopExpanded = false
-    @State var isBottomExpanded = false
-    @State var dragState: DragState = .none
+    
+    @State var hasAppeared: Bool = false
 
     enum DragState {
         case none
@@ -18,109 +14,85 @@ struct Home: View {
         case ended
     }
 
-    @State var scrollAnchor: UnitPoint = .bottom
-    @State var scrollFrameAnchor: Alignment = .bottom
-    @State var scrollFrameHeight: CGFloat? = nil
-    @State var bottomFrameHeight: CGFloat? = nil
+    @GestureState var gestureState: Bool = false
+    @State var scrollOffset: CGFloat = 0
+    @State var enableDrag = true
+    @State var dragState: DragState = .none
     @State var topFrameHeight: CGFloat? = nil
+    @State var bottomFrameHeight: CGFloat? = nil
 
     var body: some View {
         GeometryReader { proxy in
             let screenHeight = proxy.size.height
-            let minTopHeight = screenHeight * 0.6
-            let minBottomHeight = screenHeight * 0.4
+            let minTopHeight = screenHeight
 
-            ScrollViewReader { _ in
+            ScrollViewReader { scrollProxy in
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
-                        LazyVGrid(columns: Array(repeating: GridItem(spacing: 4), count: 2), spacing: 4) {
+                        VStack(spacing: 4) {
                             ForEach(1 ... 50, id: \.self) { _ in
                                 Rectangle()
                                     .fill(Color(.systemGray5))
                                     .frame(height: 120)
                             }
                         }
-                        .border(.red, width: 2)
                         .frame(
-                            height: topFrameHeight,
+                            height: nil,
                             alignment: .bottom
-                        ) 
-                        
-                        LazyVGrid(columns: Array(repeating: GridItem(spacing: 4), count: 2), spacing: 4) {
-                            ForEach(1 ... 50, id: \.self) { _ in
+                        )
+                        .border(.purple, width: 2)
+                        .clipped()
+
+                        VStack(spacing: 4) {
+                            ForEach(1 ... 12, id: \.self) { _ in
                                 Rectangle()
-                                    .fill(Color(.systemGray4))
+                                    .fill(Color(.systemGray2))
                                     .frame(height: 120)
                             }
                         }
-                        .border(.red, width: 2)
                         .frame(
-                            height: bottomFrameHeight,
+                            height: nil,
                             alignment: .top
                         )
+                        .border(.red, width: 2)
                     }
-                    .frame(
-                        maxHeight: scrollFrameHeight,
-                        alignment: scrollFrameAnchor
-                    )
+                    .frame(height: topFrameHeight, alignment: .bottom)
+                    .clipped()
                 }
-                .defaultScrollAnchor(scrollAnchor)
-                .scrollBounceBehavior(.basedOnSize)
-                .onScrollGeometryChange(for: CGFloat.self) { proxy in
-                    proxy.contentOffset.y
-                } action: { _, newValue in
+                .defaultScrollAnchor(.bottom)
+                .scrollClipDisabled()
+                .border(.yellow, width: 2)
+                // .scrollDisabled(true)
+                .onScrollGeometryChange(for: CGFloat.self, of: {
+                    /// This will be zero when the content is placed at the bottom
+                    $0.contentOffset.y - $0.contentSize.height + $0.containerSize.height
+                }, action: { _, newValue in
                     scrollOffset = newValue
-                }
-                .border(.blue.opacity(1))
-                .gesture(
-                    CustomGesture(isEnabled: true) { gesture in
-                        let state = gesture.state
-                        let translation = gesture.translation(in: gesture.view).y
+                    print(scrollOffset)
+                })
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0)
+                        .updating($gestureState) { _, state, _ in
+                            guard enableDrag else { return }
 
-                        switch state {
-                        case .began:
-                            /// Crop the frame to prevent bounce overscroll and prepare for the drag.
-                            dragState = .began
-                            topFrameHeight = minTopHeight
-                            bottomFrameHeight = minBottomHeight
-                            scrollFrameHeight = screenHeight
-                        case .changed:
-                            dragState = translation > 0 ? .draggingDown : .draggingUp
-
-                            if dragState == .draggingDown {
-                                scrollAnchor = .bottom
-                                scrollFrameAnchor = .bottom
-                                scrollFrameHeight = nil
-                                topFrameHeight = nil
-                            }
-
-                            if dragState == .draggingUp {
-                                scrollAnchor = .top
-                                scrollFrameAnchor = .top
-                                scrollFrameHeight = nil
-                                bottomFrameHeight = nil
-                            }
-                        case .ended:
-                            if dragState == .draggingDown {
-                                isTopExpanded = true
-                                scrollAnchor = .bottom
-                                scrollFrameAnchor = .bottom
-                                scrollFrameHeight = nil
-                            }
-
-                            if dragState == .draggingUp {
-                                isBottomExpanded = true
-                                scrollAnchor = .top
-                                scrollFrameAnchor = .top
-                                scrollFrameHeight = nil
-                            }
-
-                            dragState = .ended
-                        default:
-                            dragState = .none
+                            state = true
                         }
-                    }
+                        .onChanged { value in
+                            guard enableDrag else { return }
+                            let translation = value.translation.height
+ 
+                            if translation > 0 { 
+                                topFrameHeight = minTopHeight + screenHeight + translation
+                                // bottomFrameHeight = screenHeight - translation
+                            }
+                        }
+                        .onEnded { _ in
+                            topFrameHeight = screenHeight * 40
+                                // scrollProxy.scrollTo("spacer", anchor: .top)
+                            dragState = .ended
+                        }
                 )
+                .scaleEffect(0.25)
                 .overlay(alignment: .bottom) {
                     LinearGradientMask(gradientColors: [.black.opacity(0.5), Color.clear])
                         .frame(height: safeAreaInsets.bottom * 2)
@@ -131,11 +103,10 @@ struct Home: View {
                         .scaleEffect(x: 1, y: -1)
                         .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top)
                 }
-            }
-            .onAppear {
-                scrollFrameHeight = screenHeight
-                topFrameHeight = minTopHeight
-                bottomFrameHeight = minBottomHeight
+                .onAppear {
+                    topFrameHeight = minTopHeight + screenHeight
+                    bottomFrameHeight = screenHeight
+                }
             }
         }
     }
