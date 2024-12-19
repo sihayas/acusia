@@ -28,9 +28,8 @@ struct Home: View {
     let maxTranslation: CGFloat = 124
 
     var body: some View {
+        let offset: CGFloat = viewSize.height * 0.4
         GeometryReader { _ in
-            let offset: CGFloat = viewSize.height * 0.4
-
             ScrollView {
                 VStack(spacing: 0) {
                     ScrollView(.vertical) {
@@ -46,7 +45,15 @@ struct Home: View {
                     .onScrollGeometryChange(for: CGFloat.self, of: {
                         /// This will be zero when the content is placed at the bottom
                         $0.contentOffset.y - $0.contentSize.height + $0.containerSize.height
-                    }, action: { _, newValue in
+                    }, action: { oldValue, newValue in
+
+                        guard oldValue != newValue else { return }
+
+                        if isExpanded, newValue >= 0 {
+                            allowTopHitTest = false
+                            allowBottomHitTest = true
+                        }
+
                         topScrollOffset = newValue
                         // print(topScrollOffset)
                     })
@@ -67,7 +74,7 @@ struct Home: View {
                     .border(.red, width: 2)
                     .offset(y: bottomOffset)
                 }
-            } 
+            }
             .onScrollGeometryChange(for: CGFloat.self, of: {
                 /// This will be zero when the content is placed at the bottom
                 $0.contentOffset.y
@@ -75,27 +82,24 @@ struct Home: View {
 
                 guard oldValue != newValue else { return }
 
-                if newValue <= 0 {
+                if !isExpanded, newValue <= 0 {
                     allowTopHitTest = true
                     allowBottomHitTest = false
                 }
 
                 scrollOffset = newValue
-
-                // print(scrollOffset)
             })
             .defaultScrollAnchor(.top)
             .scrollClipDisabled()
             .frame(height: viewSize.height, alignment: .top)
             // .clipped()
+            // .scaleEffect(0.5)
             .onChange(of: gestureState) { _, newValue in
                 /// As soon as the user starts dragging, we check if the relevant scrollview is at the minimum offset.
                 if newValue, (isExpanded && topScrollOffset >= 0) || (!isExpanded && scrollOffset <= 0) {
                     dragState = .dragging
-                    allowBottomHitTest = false
-                    allowTopHitTest = true
                     // print("Drag Enabled \(isExpanded ? "While Expanded" : "While Not Expanded")")
-                }
+                } 
             }
             .simultaneousGesture(
                 DragGesture(minimumDistance: 0)
@@ -109,16 +113,20 @@ struct Home: View {
 
                         let translation = value.translation.height
 
-                        if dragState == .dragging, translation > 0 {
-                            dragState = .draggedDown
-                            allowBottomHitTest = false
-                            allowTopHitTest = true
-                        }
+                        // MARK: - Dragging Down to Expand
 
-                        if dragState == .dragging, translation < 0 {
-                            dragState = .draggedUp
-                            allowTopHitTest = false
-                            allowBottomHitTest = true
+                        if dragState == .dragging {
+                            if translation > 0 {
+                                dragState = .draggedDown
+                                allowBottomHitTest = false
+                                allowTopHitTest = true
+                            }
+
+                            if translation < 0 {
+                                dragState = .draggedUp
+                                allowTopHitTest = false
+                                allowBottomHitTest = true
+                            }
                         }
 
                         if !isExpanded, dragState == .draggedDown {
@@ -128,7 +136,7 @@ struct Home: View {
                             topOffset = -offset * (1 - ratio)
                             bottomOffset = -offset * (1 - ratio)
                         }
-
+ 
                         if isExpanded, dragState == .draggedUp {
                             print("Expanded, and dragging up = collapse.")
                             let limited = min(-translation, maxTranslation)
@@ -155,11 +163,12 @@ struct Home: View {
                         dragState = .idle
                     }
             )
-            .onAppear {
+        }
+        .onAppear {
+            DispatchQueue.main.async {
                 topOffset = -offset
                 bottomOffset = -offset
             }
-            .scaleEffect(0.5)
         }
     }
 }
