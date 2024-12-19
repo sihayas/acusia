@@ -1,28 +1,35 @@
 import SwiftUI
 
+enum DragState {
+    case dragging
+    case draggedUp
+    case draggedDown
+    case idle
+}
+
 struct Home: View {
+    @Environment(\.viewSize) private var viewSize
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: UIState
-
-    enum DragState {
-        case none
-        case began
-        case draggingUp
-        case draggingDown
-        case ended
-    }
-
     @GestureState var gestureState: Bool = false
+
+    @State var topContentSize: CGSize = .zero
+
+    @State var isExpanded = false
+    @State var dragState: DragState = .idle
     @State var scrollOffset: CGFloat = 0
-    @State var enableDrag = true
-    @State var dragState: DragState = .none
+    @State var topScrollOffset: CGFloat = 0
+    @State var allowTopHitTest = true
+    @State var allowBottomHitTest = false
 
     @State var bottomOffset: CGFloat = 0
+    @State var topOffset: CGFloat = 0
+
+    let maxTranslation: CGFloat = 124
 
     var body: some View {
-        GeometryReader { proxy in
-            let screenHeight = proxy.size.height
-            let minTopHeight = screenHeight
+        GeometryReader { _ in
+            let offset: CGFloat = viewSize.height * 0.4
 
             ScrollView {
                 VStack(spacing: 0) {
@@ -30,61 +37,129 @@ struct Home: View {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 4)], spacing: 4) {
                             ForEach(1 ... 50, id: \.self) { _ in
                                 Rectangle()
-                                    .fill(Color(.systemGray6))
+                                    .fill(allowTopHitTest ? .green.opacity(0.5) : .red.opacity(0.5))
                                     .frame(height: 120)
                             }
                         }
+                        .offset(y: topOffset)
                     }
-                    .frame(maxHeight: screenHeight)
-                    .border(.green, width: 2)
+                    .onScrollGeometryChange(for: CGFloat.self, of: {
+                        /// This will be zero when the content is placed at the bottom
+                        $0.contentOffset.y - $0.contentSize.height + $0.containerSize.height
+                    }, action: { _, newValue in
+                        topScrollOffset = newValue
+                        // print(topScrollOffset)
+                    })
+                    .frame(height: viewSize.height)
                     .defaultScrollAnchor(.bottom)
                     .scrollClipDisabled()
-                    .scrollDisabled(dragState == .draggingUp)
+                    .allowsHitTesting(allowTopHitTest)
+                    .border(.blue, width: 2)
 
                     VStack(spacing: 4) {
                         ForEach(1 ... 12, id: \.self) { _ in
                             Rectangle()
-                                .fill(Color(.systemGray5))
+                                .fill(allowBottomHitTest ? .green.opacity(0.5) : .red.opacity(0.5))
                                 .frame(height: 120)
                         }
                     }
-                    .frame(alignment: .top)
+                    .allowsHitTesting(allowBottomHitTest)
                     .border(.red, width: 2)
                     .offset(y: bottomOffset)
                 }
-            }
+            } 
+            .onScrollGeometryChange(for: CGFloat.self, of: {
+                /// This will be zero when the content is placed at the bottom
+                $0.contentOffset.y
+            }, action: { oldValue, newValue in
+
+                guard oldValue != newValue else { return }
+
+                if newValue <= 0 {
+                    allowTopHitTest = true
+                    allowBottomHitTest = false
+                }
+
+                scrollOffset = newValue
+
+                // print(scrollOffset)
+            })
             .defaultScrollAnchor(.top)
             .scrollClipDisabled()
-            .frame(height: screenHeight, alignment: .top)
-            .clipped()
-            // .simultaneousGesture(
-            //     DragGesture(minimumDistance: 0)
-            //         .updating($gestureState) { _, state, _ in
-            //             guard enableDrag else { return }
-            //
-            //             state = true
-            //         }
-            //         .onChanged { value in
-            //             guard enableDrag else { return }
-            //             let translation = value.translation.height
-            //
-            //             print("Drag Down \(translation)")
-            //             if translation > 0 {
-            //                 dragState = .draggingDown
-            //             }
-            //
-            //             if translation < 0 {
-            //                 dragState = .draggingUp
-            //             }
-            //         }
-            //         .onEnded { _ in
-            //             dragState = .ended
-            //         }
-            // )
-            .scaleEffect(0.5)
-            .onAppear {
-                bottomOffset = -screenHeight * 0.4
+            .frame(height: viewSize.height, alignment: .top)
+            // .clipped()
+            .onChange(of: gestureState) { _, newValue in
+                /// As soon as the user starts dragging, we check if the relevant scrollview is at the minimum offset.
+                if newValue, (isExpanded && topScrollOffset >= 0) || (!isExpanded && scrollOffset <= 0) {
+                    dragState = .dragging
+                    allowBottomHitTest = false
+                    allowTopHitTest = true
+                    // print("Drag Enabled \(isExpanded ? "While Expanded" : "While Not Expanded")")
+                }
             }
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .updating($gestureState) { _, state, _ in
+                        state = true
+                    }
+                    .onChanged { value in
+                        guard dragState != .idle else {
+                            return
+                        }
+
+                        let translation = value.translation.height
+
+                        if dragState == .dragging, translation > 0 {
+                            dragState = .draggedDown
+                            allowBottomHitTest = false
+                            allowTopHitTest = true
+                        }
+
+                        if dragState == .dragging, translation < 0 {
+                            dragState = .draggedUp
+                            allowTopHitTest = false
+                            allowBottomHitTest = true
+                        }
+
+                        if !isExpanded, dragState == .draggedDown {
+                            print("Not expanded, and dragging down = expand.")
+                            let limited = min(translation, maxTranslation)
+                            let ratio = limited / maxTranslation
+                            topOffset = -offset * (1 - ratio)
+                            bottomOffset = -offset * (1 - ratio)
+                        }
+
+                        if isExpanded, dragState == .draggedUp {
+                            print("Expanded, and dragging up = collapse.")
+                            let limited = min(-translation, maxTranslation)
+                            let ratio = limited / maxTranslation
+                            topOffset = -offset * ratio
+                            bottomOffset = -offset * ratio
+                        }
+                    }
+                    .onEnded { value in
+                        guard dragState != .idle else {
+                            return
+                        }
+
+                        let translation = value.translation.height
+
+                        if !isExpanded, dragState == .draggedDown {
+                            isExpanded = true
+                        }
+
+                        if isExpanded, dragState == .draggedUp {
+                            isExpanded = false
+                        }
+
+                        dragState = .idle
+                    }
+            )
+            .onAppear {
+                topOffset = -offset
+                bottomOffset = -offset
+            }
+            .scaleEffect(0.5)
         }
     }
 }
@@ -106,10 +181,3 @@ struct Home: View {
 //     // BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
 //     // BiomePreviewView(biome: Biome(entities: biomePreviewThree))
 // }
-// .onScrollGeometryChange(for: CGFloat.self, of: {
-//     /// This will be zero when the content is placed at the bottom
-//     $0.contentOffset.y - $0.contentSize.height + $0.containerSize.height
-// }, action: { _, newValue in
-//     scrollOffset = newValue
-//     print(scrollOffset)
-// })

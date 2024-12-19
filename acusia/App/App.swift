@@ -24,6 +24,7 @@ struct AcusiaApp: App {
 }
 
 struct AcusiaAppView: View {
+    @Environment(\.viewSize) private var viewSize
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var uiState: UIState
@@ -135,6 +136,7 @@ struct AcusiaAppView: View {
                         }
                     }
                 }
+                .environment(\.viewSize, proxy.size)
             }
             .ignoresSafeArea()
             // .overlay(alignment: .top) {
