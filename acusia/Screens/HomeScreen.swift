@@ -8,22 +8,31 @@ enum DragState {
 }
 
 struct Home: View {
+    // MARK: - Environment Variables
+
     @Environment(\.viewSize) private var viewSize
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: UIState
+
+    // MARK: - Gesture State
+
     @GestureState var gestureState: Bool = false
 
-    @State var topContentSize: CGSize = .zero
+    // MARK: - State Variables
 
     @State var isExpanded = false
     @State var dragState: DragState = .idle
+
     @State var scrollOffset: CGFloat = 0
     @State var topScrollOffset: CGFloat = 0
     @State var allowTopHitTest = true
     @State var allowBottomHitTest = false
 
+    @State var topContentSize: CGSize = .zero
     @State var bottomOffset: CGFloat = 0
     @State var topOffset: CGFloat = 0
+
+    // MARK: - Constants
 
     let maxTranslation: CGFloat = 124
 
@@ -46,15 +55,14 @@ struct Home: View {
                         /// This will be zero when the content is placed at the bottom
                         $0.contentOffset.y - $0.contentSize.height + $0.containerSize.height
                     }, action: { oldValue, newValue in
-
                         guard oldValue != newValue else { return }
+                        topScrollOffset = newValue
 
                         if isExpanded, newValue >= 0 {
                             allowTopHitTest = false
                             allowBottomHitTest = true
                         }
 
-                        topScrollOffset = newValue
                         // print(topScrollOffset)
                     })
                     .frame(height: viewSize.height)
@@ -81,25 +89,26 @@ struct Home: View {
             }, action: { oldValue, newValue in
 
                 guard oldValue != newValue else { return }
+                scrollOffset = newValue
 
                 if !isExpanded, newValue <= 0 {
                     allowTopHitTest = true
                     allowBottomHitTest = false
                 }
 
-                scrollOffset = newValue
             })
             .defaultScrollAnchor(.top)
             .scrollClipDisabled()
             .frame(height: viewSize.height, alignment: .top)
-            // .clipped()
-            // .scaleEffect(0.5)
+            .clipped()
+            .scaleEffect(0.5)
             .onChange(of: gestureState) { _, newValue in
                 /// As soon as the user starts dragging, we check if the relevant scrollview is at the minimum offset.
                 if newValue, (isExpanded && topScrollOffset >= 0) || (!isExpanded && scrollOffset <= 0) {
                     dragState = .dragging
+
                     // print("Drag Enabled \(isExpanded ? "While Expanded" : "While Not Expanded")")
-                } 
+                }
             }
             .simultaneousGesture(
                 DragGesture(minimumDistance: 0)
@@ -118,14 +127,10 @@ struct Home: View {
                         if dragState == .dragging {
                             if translation > 0 {
                                 dragState = .draggedDown
-                                allowBottomHitTest = false
-                                allowTopHitTest = true
                             }
 
                             if translation < 0 {
                                 dragState = .draggedUp
-                                allowTopHitTest = false
-                                allowBottomHitTest = true
                             }
                         }
 
@@ -136,7 +141,7 @@ struct Home: View {
                             topOffset = -offset * (1 - ratio)
                             bottomOffset = -offset * (1 - ratio)
                         }
- 
+
                         if isExpanded, dragState == .draggedUp {
                             print("Expanded, and dragging up = collapse.")
                             let limited = min(-translation, maxTranslation)
