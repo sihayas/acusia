@@ -1,10 +1,12 @@
 import SwiftUI
 
 enum DragState {
-    case dragging
-    case draggedUp
-    case draggedDown
     case idle
+    case dragging
+    case collapsedDown
+    case expandedDown
+    case collapsedUp
+    case expandedUp
 }
 
 struct Home: View {
@@ -17,164 +19,137 @@ struct Home: View {
     // MARK: - Gesture State
 
     @GestureState var gestureState: Bool = false
+    @State var dragState: DragState = .idle
 
     // MARK: - State Variables
 
     @State var isExpanded = false
-    @State var dragState: DragState = .idle
 
-    @State var scrollOffset: CGFloat = 0
-    @State var topScrollOffset: CGFloat = 0
-    @State var allowTopHitTest = true
-    @State var allowBottomHitTest = false
+    @State var mainOffset: CGPoint = .zero
+    @State var mainHitTest = false
+    @State var mainScrollDisabled: Bool = false
+    @State var mainScrollOffset: CGFloat = 0
 
-    @State var topContentSize: CGSize = .zero
-    @State var bottomOffset: CGFloat = 0
-    @State var topOffset: CGFloat = 0
+    @State var gridScrollOffset: CGPoint = .zero
+    @State var gridContentSize: CGSize = .zero
+    @State var gridScrollDisabled: Bool = false
+    
+    @State var gridScrollView: CollaborativeScrollView?
+    @State var mainScrollView: CollaborativeScrollView?
 
     // MARK: - Constants
 
-    let maxTranslation: CGFloat = 124
-
     var body: some View {
-        let offset: CGFloat = viewSize.height * 0.4
-        GeometryReader { _ in
-            ScrollView {
-                VStack(spacing: 0) {
-                    ScrollView(.vertical) {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 4)], spacing: 4) {
+        let offset: CGFloat = viewSize.height * 0.7
+        let gOffset: CGFloat = viewSize.height - offset
+        let expandBoundary: CGFloat = gOffset / 2
+
+        VStack {
+            // Outer ScrollView
+            ScrollableView(
+                $mainOffset,
+                animationDuration: 0.0,
+                showsScrollIndicator: true,
+                axis: .vertical,
+                disableScroll: false
+            ) {
+                ZStack(alignment: .top) {
+                    // Inner ScrollView
+                    ScrollableView(
+                        $gridScrollOffset,
+                        animationDuration: 0.0,
+                        showsScrollIndicator: true,
+                        axis: .vertical,
+                        disableScroll: false
+                    ) {
+                        VStack(spacing: 1) {
                             ForEach(1 ... 50, id: \.self) { _ in
                                 Rectangle()
-                                    .fill(allowTopHitTest ? .green.opacity(0.5) : .red.opacity(0.5))
+                                    .fill(.blue.mix(with: .white, by: 0.5))
                                     .frame(height: 120)
                             }
                         }
-                        .offset(y: topOffset)
+                        .padding(.bottom, gOffset)
+                        .border(.yellow)
+                        .readSize { newSize in
+                            gridContentSize = newSize
+                        } 
                     }
-                    .onScrollGeometryChange(for: CGFloat.self, of: {
-                        /// This will be zero when the content is placed at the bottom
-                        $0.contentOffset.y - $0.contentSize.height + $0.containerSize.height
-                    }, action: { oldValue, newValue in
-                        guard oldValue != newValue else { return }
-                        topScrollOffset = newValue
-
-                        if isExpanded, newValue >= 0 {
-                            allowTopHitTest = false
-                            allowBottomHitTest = true
+                    .viewExtractor { view in
+                        if let scrollView = findScrollView(in: view) {
+                            gridScrollView = scrollView
+                            print("Found ScrollView \(scrollView)")
                         }
+                    }
+                    .frame(height: viewSize.height, alignment: .bottom)
+                    .border(.blue, width: 4)
+                    .zIndex(1)
 
-                        // print(topScrollOffset)
-                    })
-                    .frame(height: viewSize.height)
-                    .defaultScrollAnchor(.bottom)
-                    .scrollClipDisabled()
-                    .allowsHitTesting(allowTopHitTest)
-                    .border(.blue, width: 2)
-
-                    VStack(spacing: 4) {
+                    VStack(spacing: 1) {
                         ForEach(1 ... 12, id: \.self) { _ in
                             Rectangle()
-                                .fill(allowBottomHitTest ? .green.opacity(0.5) : .red.opacity(0.5))
+                                .fill(.red.mix(with: .black, by: 0.5))
                                 .frame(height: 120)
                         }
                     }
-                    .allowsHitTesting(allowBottomHitTest)
-                    .border(.red, width: 2)
-                    .offset(y: bottomOffset)
+                    .padding(.top, offset)
                 }
             }
-            .onScrollGeometryChange(for: CGFloat.self, of: {
-                /// This will be zero when the content is placed at the bottom
-                $0.contentOffset.y
-            }, action: { oldValue, newValue in
-
-                guard oldValue != newValue else { return }
-                scrollOffset = newValue
-
-                if !isExpanded, newValue <= 0 {
-                    allowTopHitTest = true
-                    allowBottomHitTest = false
-                }
-
-            })
-            .defaultScrollAnchor(.top)
-            .scrollClipDisabled()
-            .frame(height: viewSize.height, alignment: .top)
-            .clipped()
-            .scaleEffect(0.5)
-            .onChange(of: gestureState) { _, newValue in
-                /// As soon as the user starts dragging, we check if the relevant scrollview is at the minimum offset.
-                if newValue, (isExpanded && topScrollOffset >= 0) || (!isExpanded && scrollOffset <= 0) {
-                    dragState = .dragging
-
-                    // print("Drag Enabled \(isExpanded ? "While Expanded" : "While Not Expanded")")
+            .viewExtractor { view in
+                if let scrollView = findScrollView(in: view) {
+                    mainScrollView = scrollView
                 }
             }
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0)
-                    .updating($gestureState) { _, state, _ in
-                        state = true
-                    }
-                    .onChanged { value in
-                        guard dragState != .idle else {
-                            return
-                        }
-
-                        let translation = value.translation.height
-
-                        // MARK: - Dragging Down to Expand
-
-                        if dragState == .dragging {
-                            if translation > 0 {
-                                dragState = .draggedDown
-                            }
-
-                            if translation < 0 {
-                                dragState = .draggedUp
-                            }
-                        }
-
-                        if !isExpanded, dragState == .draggedDown {
-                            print("Not expanded, and dragging down = expand.")
-                            let limited = min(translation, maxTranslation)
-                            let ratio = limited / maxTranslation
-                            topOffset = -offset * (1 - ratio)
-                            bottomOffset = -offset * (1 - ratio)
-                        }
-
-                        if isExpanded, dragState == .draggedUp {
-                            print("Expanded, and dragging up = collapse.")
-                            let limited = min(-translation, maxTranslation)
-                            let ratio = limited / maxTranslation
-                            topOffset = -offset * ratio
-                            bottomOffset = -offset * ratio
-                        }
-                    }
-                    .onEnded { value in
-                        guard dragState != .idle else {
-                            return
-                        }
-
-                        let translation = value.translation.height
-
-                        if !isExpanded, dragState == .draggedDown {
-                            isExpanded = true
-                        }
-
-                        if isExpanded, dragState == .draggedUp {
-                            isExpanded = false
-                        }
-
-                        dragState = .idle
-                    }
-            )
-        }
-        .onAppear {
-            DispatchQueue.main.async {
-                topOffset = -offset
-                bottomOffset = -offset
+            .border(.red, width: 4)
+            .onAppear {
+                DispatchQueue.main.async {
+                    let bottomOffset = max(0, gridContentSize.height - viewSize.height)
+                    gridScrollOffset = CGPoint(x: 0, y: bottomOffset)
+                }
             }
         }
+        .frame(width: viewSize.width, height: viewSize.height)
+        .scaleEffect(0.75)
+    }
+}
+
+
+func findScrollView(in view: UIView) -> CollaborativeScrollView? {
+    if let scrollView = view as? CollaborativeScrollView {
+        return scrollView
+    }
+    for subview in view.subviews {
+        if let scrollView = findScrollView(in: subview) {
+            return scrollView
+        }
+    }
+    return nil
+}
+
+extension View {
+    @ViewBuilder
+    func viewExtractor(result: @escaping (UIView) -> ()) -> some View {
+        self
+            .background(ViewExtractorHelper(result: result))
+            .compositingGroup()
+    }
+}
+
+fileprivate struct ViewExtractorHelper: UIViewRepresentable {
+    var result: (UIView) -> ()
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .clear
+        DispatchQueue.main.async {
+            if let superView = view.superview?.superview?.subviews.last?.subviews.first {
+                result(superView)
+            }
+        }
+        return view
+    }
+    func updateUIView(_ uiView: UIView, context: Context) {
+        
     }
 }
 

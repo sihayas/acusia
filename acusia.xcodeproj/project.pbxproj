@@ -40,6 +40,7 @@
 		CD720E4E2CB8714100CEEE00 /* BlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD720E4D2CB8713A00CEEE00 /* BlipView.swift */; };
 		CD81D09F2D0081A90028F2DB /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD81D09E2D0081A50028F2DB /* UserModel.swift */; };
 		CD81D0A12D0083510028F2DB /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD81D0A02D00834F0028F2DB /* Keychain.swift */; };
+		CD863B662D15ACD000538DE2 /* ScrollUI in Frameworks */ = {isa = PBXBuildFile; productRef = CD863B652D15ACD000538DE2 /* ScrollUI */; };
 		CD8A64392D00903B00BE98DE /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8A64382D00903800BE98DE /* FileCache.swift */; };
 		CD8A643B2D0092B300BE98DE /* JWT.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8A643A2D0092B100BE98DE /* JWT.swift */; };
 		CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8CFDA52C6F02E600D7DEA7 /* HomeScreen.swift */; };
@@ -50,6 +51,7 @@
 		CDA73C3D2CD7B7FE006F8B4A /* DGSwiftUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = CDA73C3C2CD7B7FE006F8B4A /* DGSwiftUtilities */; };
 		CDABF18F2CD1838F00FBE750 /* TextBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */; };
 		CDAE7D0F2C718CA900254E56 /* LinearBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* LinearBlur.swift */; };
+		CDB61FB82D17F0FA001905C3 /* ScrollableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB61FB72D17F0F6001905C3 /* ScrollableView.swift */; };
 		CDBDA23F2D009834005333B0 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA23E2D009832005333B0 /* Auth.swift */; };
 		CDBDA2432D00CE0B005333B0 /* UIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2422D00CE08005333B0 /* UIState.swift */; };
 		CDBDA2452D00CF99005333B0 /* UDTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2442D00CF94005333B0 /* UDTModel.swift */; };
@@ -169,6 +171,7 @@
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
 		CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBubbleView.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* LinearBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearBlur.swift; sourceTree = "<group>"; };
+		CDB61FB72D17F0F6001905C3 /* ScrollableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableView.swift; sourceTree = "<group>"; };
 		CDBDA23E2D009832005333B0 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		CDBDA2422D00CE08005333B0 /* UIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIState.swift; sourceTree = "<group>"; };
 		CDBDA2442D00CF94005333B0 /* UDTModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTModel.swift; sourceTree = "<group>"; };
@@ -242,6 +245,7 @@
 				CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */,
 				CD43B2AE2CD7BA450018DB16 /* ContextMenuAuxiliaryPreview in Frameworks */,
 				CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */,
+				CD863B662D15ACD000538DE2 /* ScrollUI in Frameworks */,
 				CDA73C392CD7B71A006F8B4A /* DGSwiftUtilities in Frameworks */,
 				CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */,
 				CD264CE42CD7B1F000A74D7E /* ContextMenuAuxiliaryPreview in Frameworks */,
@@ -432,6 +436,7 @@
 		CDDED76A2C19516B00958B39 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CDB61FB72D17F0F6001905C3 /* ScrollableView.swift */,
 				CDF4BD802D0BA50B00F8D775 /* CustomHomeGesture.swift */,
 				CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */,
 				CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */,
@@ -551,6 +556,7 @@
 				CD43B2AD2CD7BA450018DB16 /* ContextMenuAuxiliaryPreview */,
 				CD43B2BC2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview */,
 				CDF4BD6A2D054D4B00F8D775 /* Wave */,
+				CD863B652D15ACD000538DE2 /* ScrollUI */,
 			);
 			productName = acusia;
 			productReference = CDDED7322C194C8400958B39 /* acusia.app */;
@@ -630,6 +636,7 @@
 				CD17C1022CA8FC520014D3FD /* XCRemoteSwiftPackageReference "Transmission" */,
 				CD43B2BB2CD7DF1A0018DB16 /* XCLocalSwiftPackageReference "../forked/ContextMenuAuxiliaryPreview" */,
 				CDF4BD692D054D4B00F8D775 /* XCRemoteSwiftPackageReference "Wave" */,
+				CD863B642D15ACD000538DE2 /* XCRemoteSwiftPackageReference "ScrollViewStyle" */,
 			);
 			productRefGroup = CDDED7332C194C8400958B39 /* Products */;
 			projectDirPath = "";
@@ -691,6 +698,7 @@
 				CD69761F2C51B9F0003E4481 /* Iridescent.metal in Sources */,
 				CD614C422C74BA1D0059C80F /* MusicKitModel.swift in Sources */,
 				CDD77DA72C8FD94200D5BCC1 /* HoloPreview.swift in Sources */,
+				CDB61FB82D17F0FA001905C3 /* ScrollableView.swift in Sources */,
 				CDF4BD682D054D2B00F8D775 /* LoupePreview.swift in Sources */,
 				CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */,
 				CD43B2C52CDFB4AD0018DB16 /* AuxiliaryView.swift in Sources */,
@@ -1102,6 +1110,14 @@
 				minimumVersion = 0.0.3;
 			};
 		};
+		CD863B642D15ACD000538DE2 /* XCRemoteSwiftPackageReference "ScrollViewStyle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RelativeJoe/ScrollViewStyle.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.0;
+			};
+		};
 		CDF4BD692D054D4B00F8D775 /* XCRemoteSwiftPackageReference "Wave" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jtrivedi/Wave";
@@ -1155,6 +1171,11 @@
 		CD43B2BC2CD7DF1A0018DB16 /* ContextMenuAuxiliaryPreview */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ContextMenuAuxiliaryPreview;
+		};
+		CD863B652D15ACD000538DE2 /* ScrollUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD863B642D15ACD000538DE2 /* XCRemoteSwiftPackageReference "ScrollViewStyle" */;
+			productName = ScrollUI;
 		};
 		CDA73C382CD7B71A006F8B4A /* DGSwiftUtilities */ = {
 			isa = XCSwiftPackageProductDependency;

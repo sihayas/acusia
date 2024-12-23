@@ -1,39 +1,51 @@
-//
-//  CustomHomeGesture.swift
-//  acusia
-//
-//  Created by decoherence on 12/12/24.
-//
 import SwiftUI
 
-struct CustomGesture: UIGestureRecognizerRepresentable {
+struct CustomGesture: UIViewRepresentable {
     var isEnabled: Bool
     var handle: (UIPanGestureRecognizer) -> ()
 
-    func makeCoordinator(converter: CoordinateSpaceConverter) -> Coordinator {
+    func makeCoordinator() -> Coordinator {
         Coordinator()
     }
 
-    func makeUIGestureRecognizer(context: Context) -> UIPanGestureRecognizer {
-        let gesture = UIPanGestureRecognizer()
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        let gesture = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePanGesture(_:)))
         gesture.delegate = context.coordinator
-        return gesture
+        view.addGestureRecognizer(gesture)
+        context.coordinator.handleGesture = handle
+        return view
     }
 
-    func updateUIGestureRecognizer(_ recognizer: UIPanGestureRecognizer, context: Context) {
-        recognizer.isEnabled = isEnabled
-    }
-
-    func handleUIGestureRecognizerAction(_ recognizer: UIPanGestureRecognizer, context: Context) {
-        handle(recognizer)
+    func updateUIView(_ uiView: UIView, context: Context) {
+        if let gesture = uiView.gestureRecognizers?.first as? UIPanGestureRecognizer {
+            gesture.isEnabled = isEnabled
+        }
     }
 
     class Coordinator: NSObject, UIGestureRecognizerDelegate {
-        func gestureRecognizer(
-            _ gestureRecognizer: UIGestureRecognizer,
-            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-        ) -> Bool {
+        var handleGesture: ((UIPanGestureRecognizer) -> Void)?
+
+        @objc func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
+            switch recognizer.state {
+            case .began:
+                print("Pan gesture began")
+            case .changed:
+                print("Pan gesture changed")
+            case .ended, .cancelled, .failed:
+                print("Pan gesture ended or cancelled")
+            default:
+                break
+            }
+
+            // Call the external handle closure
+            handleGesture?(recognizer)
+        }
+
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
             return true
         }
     }
 }
+
+
