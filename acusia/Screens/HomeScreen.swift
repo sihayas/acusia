@@ -1,156 +1,128 @@
+/// This took a MONTH to figure out for some reason. I spent way too long try to pull it off in pure SwiftUI.
+/// Thanks to https://stackoverflow.com/questions/25793141/continuous-vertical-scrolling-between-uicollectionview-nested-in-uiscrollview
 import SwiftUI
 
-enum DragState {
-    case idle
-    case dragging
-    case collapsedDown
-    case expandedDown
-    case collapsedUp
-    case expandedUp
+class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
+    var lastContentOffset: CGPoint = .zero
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return otherGestureRecognizer.view is CollaborativeScrollView
+    }
+}
+
+class CSVDelegate: NSObject, UIScrollViewDelegate {
+    private var lockOuterScrollView = false
+    weak var outerScrollView: CollaborativeScrollView?
+    weak var innerScrollView: CollaborativeScrollView?
+
+    enum Direction { case none, up, down }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let csv = scrollView as? CollaborativeScrollView else { return }
+
+        let direction: Direction
+        if csv.lastContentOffset.y > csv.contentOffset.y {
+            direction = .up
+        } else {
+            direction = .down
+        }
+
+        if csv === innerScrollView {
+            let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
+            let isAtTop = csv.contentOffset.y <= 0
+
+            if (direction == .down && isAtBottom) || (direction == .up && isAtTop) {
+                lockOuterScrollView = false
+                outerScrollView?.showsVerticalScrollIndicator = true
+            } else {
+                lockOuterScrollView = true
+                outerScrollView?.showsVerticalScrollIndicator = false
+            }
+        } else if lockOuterScrollView {
+            outerScrollView?.contentOffset = outerScrollView?.lastContentOffset ?? .zero
+            outerScrollView?.showsVerticalScrollIndicator = false
+        }
+
+        csv.lastContentOffset = csv.contentOffset
+    }
+}
+
+struct NestedScrollView<Content: View>: UIViewRepresentable {
+    let content: Content
+    let isInner: Bool
+    private let scrollDelegate: CSVDelegate
+
+    init(isInner: Bool = false, delegate: CSVDelegate, @ViewBuilder content: () -> Content) {
+        self.content = content()
+        self.isInner = isInner
+        self.scrollDelegate = delegate
+    }
+
+    func makeUIView(context: Context) -> CollaborativeScrollView {
+        let scrollView = CollaborativeScrollView()
+        scrollView.delegate = scrollDelegate
+        scrollView.bounces = !isInner
+
+        let hostController = UIHostingController(rootView: content)
+        hostController.view.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(hostController.view)
+
+        NSLayoutConstraint.activate([
+            hostController.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            hostController.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            hostController.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            hostController.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            hostController.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+        ])
+
+        if isInner {
+            scrollDelegate.innerScrollView = scrollView
+            
+            DispatchQueue.main.async {
+                let bottomOffset = CGPoint(
+                    x: 0,
+                    y: scrollView.contentSize.height - scrollView.bounds.size.height
+                )
+                if bottomOffset.y > 0 {
+                    scrollView.setContentOffset(bottomOffset, animated: false)
+                }
+            }
+        } else {
+            scrollDelegate.outerScrollView = scrollView
+        }
+
+        return scrollView
+    }
+
+    func updateUIView(_ uiView: CollaborativeScrollView, context: Context) {}
 }
 
 struct Home: View {
-    // MARK: - Environment Variables
-
-    @Environment(\.viewSize) private var viewSize
-    @Environment(\.safeAreaInsets) private var safeAreaInsets
-    @EnvironmentObject private var windowState: UIState
-
-    // MARK: - Gesture State
-
-    @GestureState var gestureState: Bool = false
-    @State var dragState: DragState = .idle
-
-    // MARK: - State Variables
-
-    @State var isExpanded = false
-
-    @State var mainOffset: CGPoint = .zero
-    @State var mainHitTest = false
-    @State var mainScrollDisabled: Bool = false
-    @State var mainScrollOffset: CGFloat = 0
-
-    @State var gridScrollOffset: CGPoint = .zero
-    @State var gridContentSize: CGSize = .zero
-    @State var gridScrollDisabled: Bool = false
-    
-    @State var gridScrollView: CollaborativeScrollView?
-    @State var mainScrollView: CollaborativeScrollView?
-
-    // MARK: - Constants
+    let scrollDelegate = CSVDelegate()
 
     var body: some View {
-        let offset: CGFloat = viewSize.height * 0.7
-        let gOffset: CGFloat = viewSize.height - offset
-        let expandBoundary: CGFloat = gOffset / 2
+        NestedScrollView(delegate: scrollDelegate) {
+            VStack {
+                NestedScrollView(isInner: true, delegate: scrollDelegate) {
+                    VStack {
+                        ForEach(0 ..< 60) { _ in
+                            Color.blue.frame(height: 100)
+                        }
+                    }
+                }
+                .frame(height: 300)
 
-        VStack {
-            // Outer ScrollView
-            ScrollableView(
-                $mainOffset,
-                animationDuration: 0.0,
-                showsScrollIndicator: true,
-                axis: .vertical,
-                disableScroll: false
-            ) {
-                ZStack(alignment: .top) {
-                    // Inner ScrollView
-                    ScrollableView(
-                        $gridScrollOffset,
-                        animationDuration: 0.0,
-                        showsScrollIndicator: true,
-                        axis: .vertical,
-                        disableScroll: false
-                    ) {
-                        VStack(spacing: 1) {
-                            ForEach(1 ... 50, id: \.self) { _ in
-                                Rectangle()
-                                    .fill(.blue.mix(with: .white, by: 0.5))
-                                    .frame(height: 120)
-                            }
-                        }
-                        .padding(.bottom, gOffset)
-                        .border(.yellow)
-                        .readSize { newSize in
-                            gridContentSize = newSize
-                        } 
-                    }
-                    .viewExtractor { view in
-                        if let scrollView = findScrollView(in: view) {
-                            gridScrollView = scrollView
-                            print("Found ScrollView \(scrollView)")
-                        }
-                    }
-                    .frame(height: viewSize.height, alignment: .bottom)
-                    .border(.blue, width: 4)
-                    .zIndex(1)
+                Color.red.frame(height: 300)
 
-                    VStack(spacing: 1) {
-                        ForEach(1 ... 12, id: \.self) { _ in
-                            Rectangle()
-                                .fill(.red.mix(with: .black, by: 0.5))
-                                .frame(height: 120)
-                        }
-                    }
-                    .padding(.top, offset)
-                }
-            }
-            .viewExtractor { view in
-                if let scrollView = findScrollView(in: view) {
-                    mainScrollView = scrollView
-                }
-            }
-            .border(.red, width: 4)
-            .onAppear {
-                DispatchQueue.main.async {
-                    let bottomOffset = max(0, gridContentSize.height - viewSize.height)
-                    gridScrollOffset = CGPoint(x: 0, y: bottomOffset)
-                }
+                Color.green.frame(height: 500)
             }
         }
-        .frame(width: viewSize.width, height: viewSize.height)
-        .scaleEffect(0.75)
     }
 }
 
-
-func findScrollView(in view: UIView) -> CollaborativeScrollView? {
-    if let scrollView = view as? CollaborativeScrollView {
-        return scrollView
-    }
-    for subview in view.subviews {
-        if let scrollView = findScrollView(in: subview) {
-            return scrollView
-        }
-    }
-    return nil
-}
-
-extension View {
-    @ViewBuilder
-    func viewExtractor(result: @escaping (UIView) -> ()) -> some View {
-        self
-            .background(ViewExtractorHelper(result: result))
-            .compositingGroup()
-    }
-}
-
-fileprivate struct ViewExtractorHelper: UIViewRepresentable {
-    var result: (UIView) -> ()
-    
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .clear
-        DispatchQueue.main.async {
-            if let superView = view.superview?.superview?.subviews.last?.subviews.first {
-                result(superView)
-            }
-        }
-        return view
-    }
-    func updateUIView(_ uiView: UIView, context: Context) {
-        
-    }
+#Preview {
+    Home()
+        .ignoresSafeArea()
 }
 
 // .overlay(alignment: .bottom) {
