@@ -2,6 +2,43 @@
 /// Thanks to https://stackoverflow.com/questions/25793141/continuous-vertical-scrolling-between-uicollectionview-nested-in-uiscrollview
 import SwiftUI
 
+struct Home: View {
+    @Environment(\.viewSize) private var viewSize
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
+    @EnvironmentObject private var windowState: UIState
+
+    let scrollDelegate = CSVDelegate()
+
+    var body: some View {
+        let size = viewSize
+        let innerSize = size.height * 0.7
+        let innerOffset = size.height - innerSize
+
+        NestedScrollView(delegate: scrollDelegate) {
+            ZStack(alignment: .top) {
+                NestedScrollView(isInner: true, delegate: scrollDelegate) {
+                    VStack(spacing: 1) {
+                        ForEach(0 ..< 60) { _ in
+                            Color.blue.frame(height: 100)
+                        }
+                    }
+
+                    Spacer()
+                        .frame(height: innerOffset)
+                }
+                .ignoresSafeArea()
+                .frame(height: size.height)
+                .border(.green)
+
+                Color.red.frame(height: size.height * 2)
+                    .padding(.top, innerSize)
+                    .opacity(0.5)
+            }
+        }
+        .ignoresSafeArea()
+    }
+}
+
 class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
     var lastContentOffset: CGPoint = .zero
 
@@ -28,9 +65,11 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
         }
 
         if csv === innerScrollView {
+            // Check if inner scroll view is at extremes
             let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
             let isAtTop = csv.contentOffset.y <= 0
 
+            // Allow outer scroll if inner is at extremes
             if (direction == .down && isAtBottom) || (direction == .up && isAtTop) {
                 lockOuterScrollView = false
                 outerScrollView?.showsVerticalScrollIndicator = true
@@ -38,7 +77,14 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
                 lockOuterScrollView = true
                 outerScrollView?.showsVerticalScrollIndicator = false
             }
+
+            // Lock inner scroll to bottom when outer is not at top
+            if let outerScrollView = outerScrollView, outerScrollView.contentOffset.y > 0 {
+                let maxOffset = csv.contentSize.height - csv.bounds.size.height
+                csv.contentOffset.y = maxOffset
+            }
         } else if lockOuterScrollView {
+            // Prevent outer scroll while inner is scrolling
             outerScrollView?.contentOffset = outerScrollView?.lastContentOffset ?? .zero
             outerScrollView?.showsVerticalScrollIndicator = false
         }
@@ -60,11 +106,14 @@ struct NestedScrollView<Content: View>: UIViewRepresentable {
 
     func makeUIView(context: Context) -> CollaborativeScrollView {
         let scrollView = CollaborativeScrollView()
+        scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.delegate = scrollDelegate
         scrollView.bounces = !isInner
 
         let hostController = UIHostingController(rootView: content)
         hostController.view.translatesAutoresizingMaskIntoConstraints = false
+        hostController.view.backgroundColor = .clear
+        hostController.safeAreaRegions = SafeAreaRegions()
         scrollView.addSubview(hostController.view)
 
         NSLayoutConstraint.activate([
@@ -77,7 +126,7 @@ struct NestedScrollView<Content: View>: UIViewRepresentable {
 
         if isInner {
             scrollDelegate.innerScrollView = scrollView
-            
+
             DispatchQueue.main.async {
                 let bottomOffset = CGPoint(
                     x: 0,
@@ -95,34 +144,6 @@ struct NestedScrollView<Content: View>: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: CollaborativeScrollView, context: Context) {}
-}
-
-struct Home: View {
-    let scrollDelegate = CSVDelegate()
-
-    var body: some View {
-        NestedScrollView(delegate: scrollDelegate) {
-            VStack {
-                NestedScrollView(isInner: true, delegate: scrollDelegate) {
-                    VStack {
-                        ForEach(0 ..< 60) { _ in
-                            Color.blue.frame(height: 100)
-                        }
-                    }
-                }
-                .frame(height: 300)
-
-                Color.red.frame(height: 300)
-
-                Color.green.frame(height: 500)
-            }
-        }
-    }
-}
-
-#Preview {
-    Home()
-        .ignoresSafeArea()
 }
 
 // .overlay(alignment: .bottom) {

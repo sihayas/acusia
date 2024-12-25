@@ -18,7 +18,7 @@ struct AcusiaApp: App {
                 .environmentObject(auth)
                 .environmentObject(uiState)
                 .environmentObject(musicKit)
-                // .onAppear { auth.authenticate() }
+            // .onAppear { auth.authenticate() }
         }
     }
 }
@@ -38,105 +38,22 @@ struct AcusiaAppView: View {
             AuthScreen()
         } else {
             GeometryReader { proxy in
-                // Split Layout Helpers
-                let screenHeight = proxy.size.height
-                let screenWidth = proxy.size.width
+                Home()
+                    .onAppear {
+                        uiState.size = proxy.size
+                        uiState.enableDarkMode()
+                        uiState.setupSymmetryWindow()
+                        uiState.setupNavigationBar()
 
-                let collapsedHomeHeight: CGFloat = safeAreaInsets.top * 2
+                        Task {
+                            await musicKitManager.requestMusicAuthorization()
 
-                let homeHeight: CGFloat = uiState.isSplit ?
-                    collapsedHomeHeight + dragOffset
-                    : screenHeight
-
-                let replyHeight: CGFloat = uiState.isSplit ?
-                    screenHeight - dragOffset
-                    : 0
-
-                ZStack(alignment: .top) {
-                    Home()
-                        .overlay {
-                            Rectangle()
-                                .foregroundStyle(.clear)
-                                .background(.thinMaterial)
-                                .opacity(uiState.isSplit ? 1.0 : 0)
-                                .animation(.snappy, value: uiState.isSplit)
-                                .allowsHitTesting(false)
-                        }
-                        .frame(minWidth: screenWidth, minHeight: screenHeight)
-                        .frame(height: homeHeight, alignment: .top)
-                        .background(.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .shadow(radius: 10)
-                        .animation(.snappy(), value: homeHeight)
-                        .zIndex(1)
-
-                    VStack {
-                        if uiState.isSplit {
-                            VStack(alignment: .leading) { // Align to top. This contains the clipped view.
-                                EmptyView()
-                                    .frame(minWidth: screenWidth, minHeight: screenHeight)
-                                    .frame(height: replyHeight, alignment: .top) // Align content inside to top.
-                                    .overlay(
-                                        Color.white.opacity(uiState.isSplit ? 0 : 0.05)
-                                            .blendMode(.exclusion)
-                                            .allowsHitTesting(false)
-                                    )
-                                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                    .animation(.spring(), value: replyHeight)
+                            if musicKitManager.isAuthorizedForMusicKit {
+                                await musicKitManager.loadRecentlyPlayedSongs()
                             }
-                            .frame(minWidth: screenWidth, minHeight: screenHeight, alignment: .bottom)
                         }
                     }
-                    .transition(.blurReplace)
-                    .zIndex(0)
-                }
-                .simultaneousGesture(
-                    DragGesture()
-                        .onChanged { value in
-                            /// Only allow gesture input to modify split progress if not fully split or if fully split and root scroll offset is at the top.
-                            guard uiState.isSplit, !uiState.isLayered, uiState.isOffsetAtTop else { return }
-                            let yOffset = value.translation.height
-
-                            /// Dragging up, means scrolling down, negative offset.
-                            /// Dragging down, means scrolling up, positive offset.
-                            if yOffset > 0 {
-                                dragOffset = yOffset
-                            }
-                        }
-                        .onEnded { value in
-                            guard uiState.isSplit, !uiState.isLayered, uiState.isOffsetAtTop else { return }
-
-                            let yOffset = value.translation.height
-                            let yVelocity = value.velocity.height
-
-                            if yOffset > 0, yVelocity > 1000 || yOffset >= (screenHeight / 2) { // User is dragging downwards
-                                withAnimation(.snappy) {
-                                    uiState.isSplit = false
-                                    dragOffset = 0
-                                }
-                            } else {
-                                dragOffset = 0
-                            }
-                        }
-                )
-                .onAppear {
-                    uiState.size = proxy.size
-                    uiState.collapsedHomeHeight = collapsedHomeHeight
-                    uiState.enableDarkMode()
-                    uiState.setupSymmetryWindow()
-                    uiState.setupNavigationBar()
-
-                    Task {
-                        await musicKitManager.requestMusicAuthorization()
-
-                        if musicKitManager.isAuthorizedForMusicKit {
-                            await musicKitManager.loadRecentlyPlayedSongs()
-                        }
-                    }
-                }
-                .environment(\.viewSize, proxy.size)
+                    .environment(\.viewSize, proxy.size)
             }
             .ignoresSafeArea()
             // .overlay(alignment: .top) {
