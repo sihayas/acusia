@@ -51,7 +51,7 @@ class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
 class CSVDelegate: NSObject, UIScrollViewDelegate {
     private var initialDirection: Direction = .none
     private var lockOuterScrollView = false
-    private var allowInnerScroll = false
+    private var lockInnerScrollView = true
     weak var outerScrollView: CollaborativeScrollView?
     weak var innerScrollView: CollaborativeScrollView?
 
@@ -63,9 +63,9 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 
         initialDirection = .none
 
-        /// Prepare to allow inner scroll view to scroll at the inflection point.
+        /// Prepare to unlock inner scroll view at the inflection point.
         if csv === outerScrollView {
-            allowInnerScroll = csv.initialContentOffset.y <= 0
+            lockInnerScrollView = csv.initialContentOffset.y > 0
         }
     }
 
@@ -97,19 +97,24 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
         }
 
         if csv === outerScrollView {
-            /// If the user chooses to scrolls down at the inflection point, lock the inner scroll view to abort.
-            if allowInnerScroll, !lockOuterScrollView, initialDirection == .down {
-                allowInnerScroll = false
+            /// If the user chooses to scroll down at the inflection point, lock the inner scroll view.
+            if !lockInnerScrollView, !lockOuterScrollView, initialDirection == .down {
+                lockInnerScrollView = true
+            }
+
+            if lockOuterScrollView {
+                csv.contentOffset = CGPoint(x: 0, y: 0)
+                csv.showsVerticalScrollIndicator = false
             }
         }
 
         if csv === innerScrollView {
-            // Check if inner scroll view is at extremes
+            /// Check if inner scroll view is at extremes
             let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
             let isAtTop = csv.contentOffset.y <= 0
 
-            // Allow outer scroll if inner is at extremes
-            if (direction == .down && isAtBottom) || (direction == .up && isAtTop) {
+            /// Allow outer scroll if inner is at extremes
+            if direction == .down && isAtBottom {
                 lockOuterScrollView = false
                 outerScrollView?.showsVerticalScrollIndicator = true
             } else {
@@ -117,17 +122,10 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
                 outerScrollView?.showsVerticalScrollIndicator = false
             }
 
-            if !allowInnerScroll {
-                /// Keep/set the inner scroll view to its resting position & do not allow scrolling.
+            /// Keep/set the inner scroll view to its resting position & do not allow scrolling.
+            if lockInnerScrollView {
                 csv.contentOffset.y = csv.contentSize.height - csv.bounds.size.height
             }
-        }
-
-        if lockOuterScrollView {
-            // print("Locking outer scroll view")
-            // Prevent outer scroll while inner is scrolling
-            outerScrollView?.contentOffset = outerScrollView?.lastContentOffset ?? .zero
-            outerScrollView?.showsVerticalScrollIndicator = false
         }
 
         csv.lastContentOffset = csv.contentOffset
