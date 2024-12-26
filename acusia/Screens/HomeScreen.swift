@@ -41,6 +41,7 @@ struct Home: View {
 
 class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
     var lastContentOffset: CGPoint = .zero
+    var initialContentOffset: CGPoint = .zero
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return otherGestureRecognizer.view is CollaborativeScrollView
@@ -48,11 +49,38 @@ class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
 }
 
 class CSVDelegate: NSObject, UIScrollViewDelegate {
+    private var initialDirection: Direction = .none
     private var lockOuterScrollView = false
+    private var allowInnerScroll = false
     weak var outerScrollView: CollaborativeScrollView?
     weak var innerScrollView: CollaborativeScrollView?
 
     enum Direction { case none, up, down }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        guard let csv = scrollView as? CollaborativeScrollView else { return }
+        csv.initialContentOffset = csv.contentOffset
+
+        initialDirection = .none
+
+        /// Prepare to allow inner scroll view to scroll at the inflection point.
+        if csv === outerScrollView {
+            allowInnerScroll = csv.initialContentOffset.y <= 0
+        }
+    }
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        // print("Will end dragging")
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        // if content offset <= 0 and i end dragging!
+        // print("Did end dragging")
+    }
+
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {}
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {}
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let csv = scrollView as? CollaborativeScrollView else { return }
@@ -62,6 +90,17 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
             direction = .up
         } else {
             direction = .down
+        }
+
+        if initialDirection == .none && csv.contentOffset.y != csv.initialContentOffset.y {
+            initialDirection = csv.contentOffset.y > csv.initialContentOffset.y ? .down : .up
+        }
+
+        if csv === outerScrollView {
+            /// If the user chooses to scrolls down at the inflection point, lock the inner scroll view to abort.
+            if allowInnerScroll, !lockOuterScrollView, initialDirection == .down {
+                allowInnerScroll = false
+            }
         }
 
         if csv === innerScrollView {
@@ -78,12 +117,14 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
                 outerScrollView?.showsVerticalScrollIndicator = false
             }
 
-            // Lock inner scroll to bottom when outer is not at top
-            if let outerScrollView = outerScrollView, outerScrollView.contentOffset.y > 0 {
-                let maxOffset = csv.contentSize.height - csv.bounds.size.height
-                csv.contentOffset.y = maxOffset
+            if !allowInnerScroll {
+                /// Keep/set the inner scroll view to its resting position & do not allow scrolling.
+                csv.contentOffset.y = csv.contentSize.height - csv.bounds.size.height
             }
-        } else if lockOuterScrollView {
+        }
+
+        if lockOuterScrollView {
+            // print("Locking outer scroll view")
             // Prevent outer scroll while inner is scrolling
             outerScrollView?.contentOffset = outerScrollView?.lastContentOffset ?? .zero
             outerScrollView?.showsVerticalScrollIndicator = false
