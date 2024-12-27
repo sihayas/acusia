@@ -6,7 +6,7 @@ import Transmission
 struct AcusiaApp: App {
     @StateObject private var auth = Auth.shared
     @ObservedObject private var uiState = UIState.shared
-    @ObservedObject private var musicKit = MusicKit.shared
+    // @ObservedObject private var musicKit = MusicKit.shared
 
     let persistenceController = PersistenceController.shared
     private var safeAreaInsets: UIEdgeInsets = .init()
@@ -17,7 +17,7 @@ struct AcusiaApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(auth)
                 .environmentObject(uiState)
-                .environmentObject(musicKit)
+                // .environmentObject(musicKit)
             // .onAppear { auth.authenticate() }
         }
     }
@@ -28,7 +28,7 @@ struct AcusiaAppView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var auth: Auth
     @EnvironmentObject private var uiState: UIState
-    @EnvironmentObject private var musicKitManager: MusicKit
+    // @EnvironmentObject private var musicKitManager: MusicKit
 
     @State private var dragOffset: CGFloat = 0
     var cornerRadius = max(UIScreen.main.displayCornerRadius, 12)
@@ -46,11 +46,11 @@ struct AcusiaAppView: View {
                         uiState.setupNavigationBar()
 
                         Task {
-                            await musicKitManager.requestMusicAuthorization()
-
-                            if musicKitManager.isAuthorizedForMusicKit {
-                                await musicKitManager.loadRecentlyPlayedSongs()
-                            }
+                            // await musicKitManager.requestMusicAuthorization()
+                           
+                            // if musicKitManager.isAuthorizedForMusicKit {
+                            //     await musicKitManager.loadRecentlyPlayedSongs()
+                            // }
                         }
                     }
                     .environment(\.viewSize, proxy.size)
@@ -144,7 +144,7 @@ struct AcusiaAppPreview: PreviewProvider {
     static var previews: some View {
         let auth = Auth.shared
         let uiState = UIState.shared
-        let musicKit = MusicKit.shared
+        // let musicKit = MusicKit.shared
 
         auth.isAuthenticated = true
         let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDA0NTEuYTVmN2Y5OGQxMzRlNGY1ZTg1NWY2YmNkYzUyMmViMDMuMDkwMSIsImV4cCI6MTczMzQyMTc4OX0.VTf2UT9IzFL3-mZtGJGjsn4L1v1rcuGf2JmGS3Jql58"
@@ -152,7 +152,7 @@ struct AcusiaAppPreview: PreviewProvider {
         return AcusiaAppView()
             .environmentObject(auth)
             .environmentObject(uiState)
-            .environmentObject(musicKit)
+            // .environmentObject(musicKit)
             .onAppear {
                 uiState.setupSymmetryWindow()
             }

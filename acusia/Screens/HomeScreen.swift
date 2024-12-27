@@ -49,9 +49,10 @@ class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
 }
 
 class CSVDelegate: NSObject, UIScrollViewDelegate {
-    private var initialDirection: Direction = .none
+    private var isExpanded = false
     private var lockOuterScrollView = false
     private var lockInnerScrollView = true
+    private var initialDirection: Direction = .none
     weak var outerScrollView: CollaborativeScrollView?
     weak var innerScrollView: CollaborativeScrollView?
 
@@ -63,19 +64,44 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 
         initialDirection = .none
 
-        /// Prepare to unlock inner scroll view at the inflection point.
-        if csv === outerScrollView {
-            lockInnerScrollView = csv.initialContentOffset.y > 0
+        if !isExpanded {
+            /// If the user begins dragging at the top of the outer, unlock the inner scroll view.
+            if csv === outerScrollView {
+                lockInnerScrollView = csv.initialContentOffset.y > 0
+            }
+        }
+
+        if isExpanded {
+            /// If the user begins dragging at the bottom of the inner, unlock the outer scroll view.
+            if csv === innerScrollView {
+                let bottom = csv.contentSize.height - csv.bounds.size.height
+                lockOuterScrollView = csv.contentOffset.y < bottom
+            }
         }
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        // print("Will end dragging")
+        guard let csv = scrollView as? CollaborativeScrollView else { return }
+
+        if !isExpanded, csv === innerScrollView {
+            let bottom = csv.contentSize.height - csv.bounds.size.height
+ 
+            if csv.contentOffset.y < bottom {
+                isExpanded = true
+                csv.bounces = true
+            }
+        }
+
+        if isExpanded, csv === outerScrollView {
+            if csv.contentOffset.y > 0 {
+                innerScrollView?.bounces = false
+                isExpanded = false
+            }
+        }
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        // if content offset <= 0 and i end dragging!
-        // print("Did end dragging")
+        /// to fix the snapping issue on locking a scroll, make it so that you set the locked scroll to base/0 after the user lets go of the scroll. disable scroll clipping as well.
     }
 
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {}
@@ -96,35 +122,70 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
             initialDirection = csv.contentOffset.y > csv.initialContentOffset.y ? .down : .up
         }
 
-        if csv === outerScrollView {
-            /// If the user chooses to scroll down at the inflection point, lock the inner scroll view.
-            if !lockInnerScrollView, !lockOuterScrollView, initialDirection == .down {
+        if !isExpanded {
+            /// ABORT!
+            /// If willDrag unlocked the scroll view, relock it in the case of user scrolling down.
+            if initialDirection == .down, !lockInnerScrollView {
                 lockInnerScrollView = true
             }
 
-            if lockOuterScrollView {
-                csv.contentOffset = CGPoint(x: 0, y: 0)
-                csv.showsVerticalScrollIndicator = false
+            if csv === innerScrollView {
+                let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
+                let isAtTop = csv.contentOffset.y <= 0
+
+                /// Keep/set the inner scroll view to its resting position & do not allow scrolling.
+                if lockInnerScrollView {
+                    csv.contentOffset.y = csv.contentSize.height - csv.bounds.size.height
+                }
+
+                if !lockInnerScrollView {
+                    if direction == .up && outerScrollView?.contentOffset.y ?? 0 <= 0 {
+                        lockOuterScrollView = true
+                    } else if direction == .down && isAtBottom {
+                        lockOuterScrollView = false
+                    }
+                }
+            }
+
+            if csv === outerScrollView {
+                if lockOuterScrollView {
+                    csv.contentOffset = CGPoint(x: 0, y: 0)
+                    csv.showsVerticalScrollIndicator = false
+                }
             }
         }
 
-        if csv === innerScrollView {
-            /// Check if inner scroll view is at extremes
-            let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
-            let isAtTop = csv.contentOffset.y <= 0
-
-            /// Allow outer scroll if inner is at extremes
-            if direction == .down && isAtBottom {
-                lockOuterScrollView = false
-                outerScrollView?.showsVerticalScrollIndicator = true
-            } else {
+        if isExpanded {
+            /// ABORT!
+            /// If willDrag unlocked the scroll view, relock it in the case of user scrolling back  up.
+            if initialDirection == .up, !lockOuterScrollView {
                 lockOuterScrollView = true
-                outerScrollView?.showsVerticalScrollIndicator = false
             }
 
-            /// Keep/set the inner scroll view to its resting position & do not allow scrolling.
-            if lockInnerScrollView {
-                csv.contentOffset.y = csv.contentSize.height - csv.bounds.size.height
+            /// Simulate locking a view without actually disabling its response to gestures.
+            if csv === outerScrollView {
+                if lockOuterScrollView {
+                    csv.contentOffset = CGPoint(x: 0, y: 0)
+                    csv.showsVerticalScrollIndicator = false
+                }
+            }
+
+            if csv === innerScrollView {
+                let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
+                let isAtTop = csv.contentOffset.y <= 0
+
+                /// Keep/set the inner scroll view to its resting position & do not allow scrolling.
+                if lockInnerScrollView {
+                    csv.contentOffset.y = csv.contentSize.height - csv.bounds.size.height
+                }
+
+                if !lockOuterScrollView {
+                    if direction == .down && isAtBottom {
+                        lockInnerScrollView = true
+                    } else if direction == .up && outerScrollView?.contentOffset.y ?? 0 <= 0 {
+                        lockOuterScrollView = true
+                    }
+                }
             }
         }
 
