@@ -10,9 +10,8 @@ struct Home: View {
     let scrollDelegate = CSVDelegate()
 
     var body: some View {
-        let size = viewSize
-        let innerSize = size.height * 0.7
-        let innerOffset = size.height - innerSize
+        let innerSize = viewSize.width
+        let innerOffset = viewSize.height - innerSize
 
         NestedScrollView(delegate: scrollDelegate) {
             ZStack(alignment: .top) {
@@ -26,11 +25,11 @@ struct Home: View {
                     Spacer()
                         .frame(height: innerOffset)
                 }
-                .ignoresSafeArea()
-                .frame(height: size.height)
+                .frame(height: viewSize.height)
                 .border(.green)
+                .ignoresSafeArea()
 
-                Color.red.frame(height: size.height * 2)
+                Color.red.frame(height: viewSize.height * 2)
                     .padding(.top, innerSize)
                     .opacity(0.5)
             }
