@@ -73,10 +73,8 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 
         if isExpanded {
             /// If the user begins dragging at the bottom of the inner, unlock the outer scroll view.
-            if csv === innerScrollView {
-                let bottom = csv.contentSize.height - csv.bounds.size.height
-                lockOuterScrollView = csv.contentOffset.y < bottom
-            }
+            let isAtBottom = ((innerScrollView!.contentOffset.y + innerScrollView!.frame.size.height) >= innerScrollView!.contentSize.height)
+            lockOuterScrollView = !isAtBottom
         }
     }
 
@@ -85,7 +83,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 
         if !isExpanded, csv === innerScrollView {
             let bottom = csv.contentSize.height - csv.bounds.size.height
- 
+
             if csv.contentOffset.y < bottom {
                 isExpanded = true
                 csv.bounces = true
