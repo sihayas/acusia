@@ -9,33 +9,172 @@ struct Home: View {
 
     let scrollDelegate = CSVDelegate()
 
+    private let columns = [
+        GridItem(.flexible(), spacing: 32),
+        GridItem(.flexible(), spacing: 32),
+        GridItem(.flexible(), spacing: 32)
+    ]
+
+    private let biomes = [
+        Biome(entities: biomePreviewOne),
+        Biome(entities: biomePreviewTwo)
+    ]
+
     var body: some View {
         let innerSize = viewSize.width
         let innerOffset = viewSize.height - innerSize
 
         NestedScrollView(delegate: scrollDelegate) {
             ZStack(alignment: .top) {
+                VStack {
+                    HStack {
+                        Text("Atlas")
+                            .font(.title3)
+                            .fontWeight(.light)
+                            .foregroundStyle(.secondary)
+                    }
+                    .safeAreaPadding([.horizontal, .top])
+
+                    LazyVStack(spacing: 12) {
+                        BiomePreviewView(biome: Biome(entities: biomePreviewOne))
+                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+                        BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+                    }
+                    .safeAreaPadding(.bottom)
+                    .padding(.horizontal, 12)
+                }
+                // .background(.red)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top, innerSize)
+
                 NestedScrollView(isInner: true, delegate: scrollDelegate) {
-                    VStack(spacing: 1) {
-                        ForEach(0 ..< 60) { _ in
-                            Color.blue.frame(height: 100)
+                    // MARK: - User History
+
+                    VStack(spacing: 0) {
+                        LazyVStack(alignment: .leading, spacing: 16) {
+                            ForEach(userHistorySample.indices, id: \.self) { index in
+                                EntityView(
+                                    rootEntity: userHistorySample[index],
+                                    previousEntity: userHistorySample[index],
+                                    entity: userHistorySample[index]
+                                )
+                            }
+                        }
+                        .safeAreaPadding([.horizontal, .top])
+
+                        // MARK: - Biomes
+
+                        VStack {
+                            VStack(spacing: 4) {
+                                Image(systemName: "chevron.up")
+                                    .font(.footnote)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.secondary)
+
+                                Image(systemName: "timelapse")
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.secondary)
+
+                                Text("History")
+                                    .font(.footnote)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .safeAreaPadding(.all)
+
+                            LazyVGrid(columns: columns, spacing: safeAreaInsets.top * 2) {
+                                ForEach(0 ..< biomes.count, id: \.self) { index in
+                                    BiomePreviewSphereView(biome: biomes[index])
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .padding(.top, 64)
+                            .safeAreaPadding(.all)
                         }
                     }
 
                     Spacer()
-                        .frame(height: innerOffset)
+                        .frame(minHeight: innerOffset)
+                        .frame(maxHeight: innerOffset)
                 }
                 .frame(height: viewSize.height)
-                .border(.green)
                 .ignoresSafeArea()
-
-                Color.red.frame(height: viewSize.height * 2)
-                    .padding(.top, innerSize)
-                    .opacity(0.5)
             }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
     }
+}
+
+struct NestedScrollView<Content: View>: UIViewRepresentable {
+    let content: Content
+    let isInner: Bool
+    private let scrollDelegate: CSVDelegate
+
+    init(isInner: Bool = false, delegate: CSVDelegate, @ViewBuilder content: () -> Content) {
+        self.content = content()
+        self.isInner = isInner
+        self.scrollDelegate = delegate
+    }
+
+    func makeUIView(context: Context) -> CollaborativeScrollView {
+        /// Create the CollaborativeScrollView in UIKit.
+        let scrollView = CollaborativeScrollView()
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.delegate = scrollDelegate
+        scrollView.bounces = !isInner
+
+        if isInner {
+            let hostController = UIHostingController(rootView: content)
+            hostController.view.translatesAutoresizingMaskIntoConstraints = false
+            hostController.view.backgroundColor = .clear
+            hostController.safeAreaRegions = SafeAreaRegions()
+            scrollView.addSubview(hostController.view)
+
+            /// Constrain the SwiftUI content to the edges of the CollaborativeScrollView.
+            NSLayoutConstraint.activate([
+                hostController.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+                hostController.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+                hostController.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+                hostController.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+                hostController.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            ])
+
+            scrollDelegate.innerScrollView = scrollView
+
+            DispatchQueue.main.async {
+                let bottomOffset = CGPoint(
+                    x: 0,
+                    y: scrollView.contentSize.height - scrollView.bounds.size.height
+                )
+                if bottomOffset.y > 0 {
+                    scrollView.setContentOffset(bottomOffset, animated: false)
+                }
+            }
+        } else {
+            /// Embed the SwiftUI content in a UIHostingController.
+            let hostController = UIHostingController(rootView: content)
+            hostController.view.translatesAutoresizingMaskIntoConstraints = false
+            hostController.view.backgroundColor = .clear
+            hostController.safeAreaRegions = SafeAreaRegions()
+            scrollView.addSubview(hostController.view)
+
+            /// Constrain the SwiftUI content to the edges of the CollaborativeScrollView.
+            NSLayoutConstraint.activate([
+                hostController.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+                hostController.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+                hostController.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+                hostController.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+                hostController.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            ])
+
+            scrollDelegate.outerScrollView = scrollView
+        }
+
+        return scrollView
+    }
+
+    func updateUIView(_ uiView: CollaborativeScrollView, context: Context) {}
 }
 
 class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
@@ -44,6 +183,25 @@ class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return otherGestureRecognizer.view is CollaborativeScrollView
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard let hitView = super.hitTest(point, with: event) else { return nil }
+
+        // If the hit view is not the root view controller's view, return it
+        // guard hitView == rootViewController?.view else { return hitView }
+
+        // Check if there are any visible, interactive subviews at the touch point
+        let interactiveSubview = hitView.subviews.first { subview in
+            !subview.isHidden &&
+                subview.alpha > 0.01 &&
+                subview.isUserInteractionEnabled &&
+                subview.frame.contains(point)
+        }
+
+        // If there's an interactive subview, return the hit view (allow interaction)
+        // Otherwise, return nil (pass through)
+        return interactiveSubview != nil ? hitView : nil
     }
 }
 
@@ -171,74 +329,3 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
         csv.lastContentOffset = csv.contentOffset
     }
 }
-
-struct NestedScrollView<Content: View>: UIViewRepresentable {
-    let content: Content
-    let isInner: Bool
-    private let scrollDelegate: CSVDelegate
-
-    init(isInner: Bool = false, delegate: CSVDelegate, @ViewBuilder content: () -> Content) {
-        self.content = content()
-        self.isInner = isInner
-        self.scrollDelegate = delegate
-    }
-
-    func makeUIView(context: Context) -> CollaborativeScrollView {
-        let scrollView = CollaborativeScrollView()
-        scrollView.contentInsetAdjustmentBehavior = .never
-        scrollView.delegate = scrollDelegate
-        scrollView.bounces = !isInner
-
-        let hostController = UIHostingController(rootView: content)
-        hostController.view.translatesAutoresizingMaskIntoConstraints = false
-        hostController.view.backgroundColor = .clear
-        hostController.safeAreaRegions = SafeAreaRegions()
-        scrollView.addSubview(hostController.view)
-
-        NSLayoutConstraint.activate([
-            hostController.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            hostController.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            hostController.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            hostController.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            hostController.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
-        ])
-
-        if isInner {
-            scrollDelegate.innerScrollView = scrollView
-
-            DispatchQueue.main.async {
-                let bottomOffset = CGPoint(
-                    x: 0,
-                    y: scrollView.contentSize.height - scrollView.bounds.size.height
-                )
-                if bottomOffset.y > 0 {
-                    scrollView.setContentOffset(bottomOffset, animated: false)
-                }
-            }
-        } else {
-            scrollDelegate.outerScrollView = scrollView
-        }
-
-        return scrollView
-    }
-
-    func updateUIView(_ uiView: CollaborativeScrollView, context: Context) {}
-}
-
-// .overlay(alignment: .bottom) {
-//     LinearGradientMask(gradientColors: [.black.opacity(0.5), Color.clear])
-//         .frame(height: safeAreaInsets.bottom * 2)
-//         .scaleEffect(x: 1, y: -1)
-// }
-// .overlay(alignment: .top) {
-//     LinearBlurView(radius: 2, gradientColors: [.clear, .black])
-//         .scaleEffect(x: 1, y: -1)
-//         .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top)
-// }
-/// User's Past?
-// VStack(spacing: 12) {
-//     /// Main Feed
-//     BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-//     // BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
-//     // BiomePreviewView(biome: Biome(entities: biomePreviewThree))
-// }

@@ -41,7 +41,6 @@ struct BiomePreviewSphereView: View {
                                 }
                             }
                         }
-                        .border(.red)
                         .padding(16)
                     )
                     .foregroundStyle(.thickMaterial)
@@ -72,8 +71,8 @@ struct BiomePreviewSphereView: View {
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fill)
                                                         .frame(
-                                                            width: proxy.size.width * 3,
-                                                            height: proxy.size.width * 3
+                                                            width: proxy.size.width * 2,
+                                                            height: proxy.size.width * 2
                                                         )
                                                         .clipped()
                                                 } placeholder: {
@@ -83,11 +82,11 @@ struct BiomePreviewSphereView: View {
                                             } else {
                                                 Text(biome.entities[0].text)
                                                     .foregroundColor(.secondary)
-                                                    .font(.system(size: 14, weight: .medium))
+                                                    .font(.system(size: 12, weight: .medium))
                                                     .padding(.horizontal, 12)
                                                     .padding(.vertical, 12)
                                                     .multilineTextAlignment(.center)
-                                                    .lineLimit(3)
+                                                    .lineLimit(4)
                                             }
                                         }
                                     }
@@ -115,10 +114,12 @@ struct BiomePreviewSphereView: View {
             }
             .aspectRatio(1, contentMode: .fit)
 
-            Text("god's weakest soldiers")
-                .font(.footnote)
+            Text("insert name here")
+                .font(.caption)
+                .fontWeight(.semibold)
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)
+                .lineLimit(1)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .sheet(isPresented: $showSheet) {

@@ -108,12 +108,85 @@ class VoiceAttachment: Attachment {
     }
 }
 
+let userHistorySample: [Entity] = [
+    Entity(
+        id: "1",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "stayed up way too late watching random vids... i regret nothing.",
+        created_at: Date(timeIntervalSinceNow: -3600)
+    ),
+    Entity(
+        id: "2",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "ok but why does my Wi-Fi pick the worst times to act up??",
+        created_at: Date(timeIntervalSinceNow: -3200)
+    ),
+    Entity(
+        id: "3",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "thinking about that one road trip we took last summer... we need to do that again.",
+        created_at: Date(timeIntervalSinceNow: -2900)
+    ),
+    Entity(
+        id: "4",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "forgot to charge my phone again 💀 why am i like this??",
+        created_at: Date(timeIntervalSinceNow: -2700)
+    ),
+    Entity(
+        id: "5",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "this group chat has been sus lately. is everyone just busy or what?",
+        created_at: Date(timeIntervalSinceNow: -2400)
+    ),
+    Entity(
+        id: "6",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "movie night soon?? i’ll bring snacks.",
+        created_at: Date(timeIntervalSinceNow: -2100)
+    ),
+    Entity(
+        id: "7",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "tried that pizza place downtown. garlic knots? amazing. the rest? meh.",
+        created_at: Date(timeIntervalSinceNow: -1800)
+    ),
+    Entity(
+        id: "8",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "early meetings should be illegal. that’s it. that’s the post.",
+        created_at: Date(timeIntervalSinceNow: -1500)
+    ),
+    Entity(
+        id: "9",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "saw a guy walking his cat on a leash today. 10/10 iconic.",
+        created_at: Date(timeIntervalSinceNow: -1200)
+    ),
+    Entity(
+        id: "10",
+        username: "debbievthang",
+        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+        text: "been at this coffee shop for 2 hours and i still haven’t done any work. classic.",
+        created_at: Date(timeIntervalSinceNow: -900)
+    )
+]
+
 let biomePreviewOne: [Entity] = [
     Entity(
         id: "1",
         username: "DeborahVthang",
         avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
-        text: "Honestly, the presentation is unique, but it does feel a little too polished for my taste.",
+        text: "unique pres, but it does feel a little too polished for my taste.",
         created_at: Date(timeIntervalSinceNow: -3000)
     ),
     Entity(

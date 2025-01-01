@@ -56,11 +56,11 @@ struct EntityView: View {
                                 ))
                         .frame(width: 40)
                         .opacity(!isRoot && !isRootChild ? 1 : 0)
-
+               
                     AvatarView(size: 40, imageURL: entity.avatar)
                 }
                 .frame(width: 40)
-                .frame(maxHeight: .infinity)
+                .frame(maxHeight: .infinity) 
 
                 MessageView(entity: entity)
             }
