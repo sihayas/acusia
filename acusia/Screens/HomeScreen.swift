@@ -2,6 +2,37 @@
 /// Thanks to https://stackoverflow.com/questions/25793141/continuous-vertical-scrolling-between-uicollectionview-nested-in-uiscrollview
 import SwiftUI
 
+struct Feed: View {
+    private let biomes = [
+        Biome(entities: biomePreviewOne),
+        Biome(entities: biomePreviewTwo)
+    ]
+    
+    let innerSize: CGFloat
+    let scrollDelegate: CSVDelegate
+    
+    var body: some View {
+        CSVRepresentable(delegate: scrollDelegate) {
+            ZStack(alignment: .top) {
+                VStack {
+                    Rectangle()
+                        .fill(.blue)
+                        .frame(height: innerSize)
+                    
+                    LazyVStack(spacing: 12) {
+                        BiomePreviewView(biome: Biome(entities: biomePreviewOne))
+                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+                        BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+                    }
+                    .shadow(radius: 16, y: 8)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .background(Color(.systemGray6))
+            }
+        }
+    }
+}
+
 struct Home: View {
     @Environment(\.viewSize) private var viewSize
     @Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -10,9 +41,10 @@ struct Home: View {
     let scrollDelegate = CSVDelegate()
 
     private let columns = [
-        GridItem(.flexible(), spacing: 32),
-        GridItem(.flexible(), spacing: 32),
-        GridItem(.flexible(), spacing: 32)
+        GridItem(.flexible(), spacing: 24),
+        GridItem(.flexible(), spacing: 24),
+        GridItem(.flexible(), spacing: 24),
+        GridItem(.flexible(), spacing: 24)
     ]
 
     private let biomes = [
@@ -24,33 +56,27 @@ struct Home: View {
         let innerSize = viewSize.width
         let innerOffset = viewSize.height - innerSize
 
-        NestedScrollView(delegate: scrollDelegate) {
+        CSVRepresentable(delegate: scrollDelegate) {
             ZStack(alignment: .top) {
                 VStack {
-                    HStack {
-                        Text("Atlas")
-                            .font(.title3)
-                            .fontWeight(.light)
-                            .foregroundStyle(.secondary)
-                    }
-                    .safeAreaPadding([.horizontal, .top])
-
+                    Rectangle()
+                        .fill(.blue)
+                        .frame(height: innerSize)
+                    
                     LazyVStack(spacing: 12) {
                         BiomePreviewView(biome: Biome(entities: biomePreviewOne))
                         BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
                         BiomePreviewView(biome: Biome(entities: biomePreviewThree))
                     }
-                    .safeAreaPadding(.bottom)
-                    .padding(.horizontal, 12)
+                    .shadow(radius: 16, y: 8)
                 }
-                // .background(.red)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.top, innerSize)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .background(Color(.systemGray6))
 
-                NestedScrollView(isInner: true, delegate: scrollDelegate) {
-                    // MARK: - User History
-
+                CSVRepresentable(isInner: true, delegate: scrollDelegate) {
                     VStack(spacing: 0) {
+                        /// User History
+               
                         LazyVStack(alignment: .leading, spacing: 16) {
                             ForEach(userHistorySample.indices, id: \.self) { index in
                                 EntityView(
@@ -60,45 +86,25 @@ struct Home: View {
                                 )
                             }
                         }
-                        .safeAreaPadding([.horizontal, .top])
-
-                        // MARK: - Biomes
-
-                        VStack {
-                            VStack(spacing: 4) {
-                                Image(systemName: "chevron.up")
-                                    .font(.footnote)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.secondary)
-
-                                Image(systemName: "timelapse")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.secondary)
-
-                                Text("History")
-                                    .font(.footnote)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.secondary)
+               
+                        /// Biomes
+               
+                        LazyVGrid(columns: columns, spacing: safeAreaInsets.top * 2) {
+                            ForEach(0 ..< biomes.count, id: \.self) { index in
+                                BiomePreviewSphereView(biome: biomes[index])
+                                    .frame(maxWidth: .infinity)
                             }
-                            .safeAreaPadding(.all)
-
-                            LazyVGrid(columns: columns, spacing: safeAreaInsets.top * 2) {
-                                ForEach(0 ..< biomes.count, id: \.self) { index in
-                                    BiomePreviewSphereView(biome: biomes[index])
-                                        .frame(maxWidth: .infinity)
-                                }
-                            }
-                            .padding(.top, 64)
-                            .safeAreaPadding(.all)
                         }
+                        .frame(height: viewSize.height - innerOffset - safeAreaInsets.top)
+                        
+               
+                        Rectangle()
+                            .fill(.red.opacity(0.4))
+                            .frame(height: innerOffset)
                     }
-
-                    Spacer()
-                        .frame(minHeight: innerOffset)
-                        .frame(maxHeight: innerOffset)
                 }
                 .frame(height: viewSize.height)
+                .border(.red)
                 .ignoresSafeArea()
             }
             .ignoresSafeArea()
@@ -106,7 +112,7 @@ struct Home: View {
     }
 }
 
-struct NestedScrollView<Content: View>: UIViewRepresentable {
+struct CSVRepresentable<Content: View>: UIViewRepresentable {
     let content: Content
     let isInner: Bool
     private let scrollDelegate: CSVDelegate
@@ -117,9 +123,10 @@ struct NestedScrollView<Content: View>: UIViewRepresentable {
         self.scrollDelegate = delegate
     }
 
-    func makeUIView(context: Context) -> CollaborativeScrollView {
+    func makeUIView(context: Context) -> CSV {
         /// Create the CollaborativeScrollView in UIKit.
-        let scrollView = CollaborativeScrollView()
+        let scrollView = CSV()
+        scrollView.isInner = isInner
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.delegate = scrollDelegate
         scrollView.bounces = !isInner
@@ -174,34 +181,16 @@ struct NestedScrollView<Content: View>: UIViewRepresentable {
         return scrollView
     }
 
-    func updateUIView(_ uiView: CollaborativeScrollView, context: Context) {}
+    func updateUIView(_ uiView: CSV, context: Context) {}
 }
 
-class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate {
+class CSV: UIScrollView, UIGestureRecognizerDelegate {
     var lastContentOffset: CGPoint = .zero
     var initialContentOffset: CGPoint = .zero
+    var isInner: Bool = false
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return otherGestureRecognizer.view is CollaborativeScrollView
-    }
-
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard let hitView = super.hitTest(point, with: event) else { return nil }
-
-        // If the hit view is not the root view controller's view, return it
-        // guard hitView == rootViewController?.view else { return hitView }
-
-        // Check if there are any visible, interactive subviews at the touch point
-        let interactiveSubview = hitView.subviews.first { subview in
-            !subview.isHidden &&
-                subview.alpha > 0.01 &&
-                subview.isUserInteractionEnabled &&
-                subview.frame.contains(point)
-        }
-
-        // If there's an interactive subview, return the hit view (allow interaction)
-        // Otherwise, return nil (pass through)
-        return interactiveSubview != nil ? hitView : nil
+        return otherGestureRecognizer.view is CSV
     }
 }
 
@@ -210,14 +199,14 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
     private var lockOuterScrollView = false
     private var lockInnerScrollView = true
     private var initialDirection: Direction = .none
-    weak var outerScrollView: CollaborativeScrollView?
-    weak var innerScrollView: CollaborativeScrollView?
+    weak var outerScrollView: CSV?
+    weak var innerScrollView: CSV?
 
     enum Direction { case none, up, down }
 
     /// Lets the user begin expanding/collapsing. Unlocks scrolls if conditions are met.
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        guard let csv = scrollView as? CollaborativeScrollView else { return }
+        guard let csv = scrollView as? CSV else { return }
         csv.initialContentOffset = csv.contentOffset
 
         initialDirection = .none
@@ -238,7 +227,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 
     /// Decides if we commit to expanded or collapsed based on final scroll position.
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        guard let csv = scrollView as? CollaborativeScrollView else { return }
+        guard let csv = scrollView as? CSV else { return }
 
         /// Mark expanded if user scrolled inner enough.
         if !isExpanded, csv === innerScrollView {
@@ -268,7 +257,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 
     /// Core logic that locks/unlocks outer and inner scrolls depending on state and direction.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let csv = scrollView as? CollaborativeScrollView else { return }
+        guard let csv = scrollView as? CSV else { return }
         let direction: Direction = csv.lastContentOffset.y > csv.contentOffset.y ? .up : .down
 
         /// Note the initial direction to abort a possible expansion/unexpansion
@@ -327,5 +316,32 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
         }
 
         csv.lastContentOffset = csv.contentOffset
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func viewExtractor(result: @escaping (UIView) -> ()) -> some View {
+        self
+            .background(ViewExtractorHelper(result: result))
+            .compositingGroup()
+    }
+}
+
+fileprivate struct ViewExtractorHelper: UIViewRepresentable {
+    var result: (UIView) -> ()
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .clear
+        DispatchQueue.main.async {
+            if let superView = view.superview?.superview?.subviews.last?.subviews.first {
+                result(superView)
+            }
+        }
+        return view
+    }
+    func updateUIView(_ uiView: UIView, context: Context) {
+        
     }
 }
