@@ -55,41 +55,37 @@ struct BiomePreviewView: View {
             )
             .background(.ultraThickMaterial)
             .overlay(alignment: .bottom) {
-                ZStack(alignment: .bottom) {
                     LinearBlurView(radius: 2, gradientColors: [.clear, .black])
                         .frame(maxWidth: .infinity, maxHeight: 112)
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 0)
                     
                     LinearGradientMask(gradientColors: [.clear, Color(.systemGray6)])
                         .frame(maxWidth: .infinity, maxHeight: 112)
-                        .padding(.horizontal, 20)
-                }
+                        .padding(.horizontal, 0)
             }
             .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-            .padding(.horizontal, 12)
 
-            HStack(alignment: .bottom) {
-                CollageLayout {
-                    ForEach(userDevs.shuffled().prefix(4), id: \.id) { user in
-                        Circle()
-                            .stroke(.ultraThinMaterial)
-                            .background(
-                                AsyncImage(url: URL(string: user.imageUrl)) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Rectangle()
-                                }
-                            )
-                            .foregroundStyle(.clear)
-                            .clipShape(Circle())
-                    }
-                }
-                .frame(width: 56, height: 56)
+            HStack() {
+                // CollageLayout {
+                //     ForEach(userDevs.shuffled().prefix(4), id: \.id) { user in
+                //         Circle()
+                //             .stroke(.ultraThinMaterial)
+                //             .background(
+                //                 AsyncImage(url: URL(string: user.imageUrl)) { image in
+                //                     image
+                //                         .resizable()
+                //                 } placeholder: {
+                //                     Rectangle()
+                //                 }
+                //             )
+                //             .foregroundStyle(.clear)
+                //             .clipShape(Circle())
+                //     }
+                // }
+                // .frame(width: 56, height: 56)
 
                 /// Biome Metadata
-                HStack(alignment: .bottom, spacing: 8) {
-                    // TypingIndicator()
+                HStack(spacing: 8) {
                     Text("lorem ipsum")
                         .fontWeight(.bold)
                         .font(.title3)
@@ -97,27 +93,23 @@ struct BiomePreviewView: View {
 
                     Spacer()
 
-                    ReplyButton()
-
                     Button {
                         // Perform button action here
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: "message.badge.fill")
                             .fontWeight(.semibold)
                             .font(.subheadline)
                             .foregroundStyle(.white)
                             .frame(width: 40, height: 40)
-                            .background(
-                                TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .brown, blurMutingFactor: 0.25)
-                            )
+                            .background(.black)
                             .clipShape(Capsule())
+                            .shadow(radius: 4)
                     }
                 }
-                .frame(height: 56, alignment: .bottom)
+                .frame(height: 56)
             }
-            .padding(.horizontal, 28)
+            .padding(.horizontal, 16)
             .padding(.bottom, 16)
-            .shadow(color: .black.opacity(0.3), radius: 12, x: 0, y: 4)
             .frame(maxWidth: .infinity)
         }
         .matchedTransitionSource(id: "hi", in: animation)

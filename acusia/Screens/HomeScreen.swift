@@ -1,37 +1,6 @@
 /// This took a MONTH to figure out for some reason. I spent way too long try to pull it off in pure SwiftUI.
-/// Thanks to https://stackoverflow.com/questions/25793141/continuous-vertical-scrolling-between-uicollectionview-nested-in-uiscrollview
+/// https://stackoverflow.com/questions/25793141/continuous-vertical-scrolling-between-uicollectionview-nested-in-uiscrollview
 import SwiftUI
-
-struct Feed: View {
-    private let biomes = [
-        Biome(entities: biomePreviewOne),
-        Biome(entities: biomePreviewTwo)
-    ]
-    
-    let innerSize: CGFloat
-    let scrollDelegate: CSVDelegate
-    
-    var body: some View {
-        CSVRepresentable(delegate: scrollDelegate) {
-            ZStack(alignment: .top) {
-                VStack {
-                    Rectangle()
-                        .fill(.blue)
-                        .frame(height: innerSize)
-                    
-                    LazyVStack(spacing: 12) {
-                        BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
-                        BiomePreviewView(biome: Biome(entities: biomePreviewThree))
-                    }
-                    .shadow(radius: 16, y: 8)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .background(Color(.systemGray6))
-            }
-        }
-    }
-}
 
 struct Home: View {
     @Environment(\.viewSize) private var viewSize
@@ -53,30 +22,16 @@ struct Home: View {
     ]
 
     var body: some View {
-        let innerSize = viewSize.width
-        let innerOffset = viewSize.height - innerSize
+        let upperSectionHeight = viewSize.width
+        let bottomSectionHeight = viewSize.height - upperSectionHeight
 
         CSVRepresentable(delegate: scrollDelegate) {
             ZStack(alignment: .top) {
-                VStack {
-                    Rectangle()
-                        .fill(.blue)
-                        .frame(height: innerSize)
-                    
-                    LazyVStack(spacing: 12) {
-                        BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
-                        BiomePreviewView(biome: Biome(entities: biomePreviewThree))
-                    }
-                    .shadow(radius: 16, y: 8)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .background(Color(.systemGray6))
+                // MARK: - Nested Scroll View
 
                 CSVRepresentable(isInner: true, delegate: scrollDelegate) {
                     VStack(spacing: 0) {
                         /// User History
-               
                         LazyVStack(alignment: .leading, spacing: 16) {
                             ForEach(userHistorySample.indices, id: \.self) { index in
                                 EntityView(
@@ -86,29 +41,78 @@ struct Home: View {
                                 )
                             }
                         }
-               
+                        .safeAreaPadding(.horizontal)
+
                         /// Biomes
-               
-                        LazyVGrid(columns: columns, spacing: safeAreaInsets.top * 2) {
+                        LazyVGrid(columns: columns) {
                             ForEach(0 ..< biomes.count, id: \.self) { index in
                                 BiomePreviewSphereView(biome: biomes[index])
                                     .frame(maxWidth: .infinity)
                             }
                         }
-                        .frame(height: viewSize.height - innerOffset - safeAreaInsets.top)
-                        
-               
+                        .frame(height: upperSectionHeight - safeAreaInsets.top)
+                        .border(.blue)
+
                         Rectangle()
-                            .fill(.red.opacity(0.4))
-                            .frame(height: innerOffset)
+                            .fill(.clear)
+                            .frame(height: bottomSectionHeight)
+                            .border(.red)
                     }
                 }
                 .frame(height: viewSize.height)
-                .border(.red)
-                .ignoresSafeArea()
+
+                // MARK: - Outer Scroll View
+
+                VStack(spacing: 0) {
+                    Rectangle()
+                        .fill(.clear)
+                        .frame(height: upperSectionHeight)
+
+                    LazyVStack(spacing: 12) {
+                        BiomePreviewView(biome: Biome(entities: biomePreviewOne))
+                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+                        BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+                    }
+                    .safeAreaPadding(.horizontal)
+                    .padding(.vertical, 32)
+                    // .padding(.all, 24)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
-            .ignoresSafeArea()
         }
+        .overlay(alignment: .top) {
+            LinearBlurView(radius: 4, gradientColors: [.clear, .black])
+                .scaleEffect(x: 1, y: -1)
+                .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 2)
+        
+            LinearGradientMask(gradientColors: [.black, Color.clear])
+                .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 2)
+        }
+
+    }
+}
+
+class CSV: UIScrollView, UIGestureRecognizerDelegate {
+    var lastContentOffset: CGPoint = .zero
+    var initialContentOffset: CGPoint = .zero
+    var isInner: Bool = false
+
+    // Add reference to the other scroll view's gesture recognizer
+    var otherPanGestureRecognizer: UIPanGestureRecognizer?
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        // Make sure we're the delegate for our own pan gesture recognizer
+        panGestureRecognizer.delegate = self
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Allow simultaneous recognition with the other scroll view's gesture
+        if otherGestureRecognizer == otherPanGestureRecognizer {
+            return true
+        }
+        return false
     }
 }
 
@@ -131,22 +135,22 @@ struct CSVRepresentable<Content: View>: UIViewRepresentable {
         scrollView.delegate = scrollDelegate
         scrollView.bounces = !isInner
 
+        let hostController = UIHostingController(rootView: content)
+        hostController.view.translatesAutoresizingMaskIntoConstraints = false
+        hostController.view.backgroundColor = .clear
+        hostController.safeAreaRegions = SafeAreaRegions()
+        scrollView.addSubview(hostController.view)
+
+        /// Constrain the SwiftUI content to the edges of the CollaborativeScrollView.
+        NSLayoutConstraint.activate([
+            hostController.view.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            hostController.view.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            hostController.view.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            hostController.view.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            hostController.view.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+        ])
+
         if isInner {
-            let hostController = UIHostingController(rootView: content)
-            hostController.view.translatesAutoresizingMaskIntoConstraints = false
-            hostController.view.backgroundColor = .clear
-            hostController.safeAreaRegions = SafeAreaRegions()
-            scrollView.addSubview(hostController.view)
-
-            /// Constrain the SwiftUI content to the edges of the CollaborativeScrollView.
-            NSLayoutConstraint.activate([
-                hostController.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-                hostController.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-                hostController.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-                hostController.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-                hostController.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
-            ])
-
             scrollDelegate.innerScrollView = scrollView
 
             DispatchQueue.main.async {
@@ -157,24 +161,10 @@ struct CSVRepresentable<Content: View>: UIViewRepresentable {
                 if bottomOffset.y > 0 {
                     scrollView.setContentOffset(bottomOffset, animated: false)
                 }
+
+                self.scrollDelegate.setupGestureRecognizers()
             }
         } else {
-            /// Embed the SwiftUI content in a UIHostingController.
-            let hostController = UIHostingController(rootView: content)
-            hostController.view.translatesAutoresizingMaskIntoConstraints = false
-            hostController.view.backgroundColor = .clear
-            hostController.safeAreaRegions = SafeAreaRegions()
-            scrollView.addSubview(hostController.view)
-
-            /// Constrain the SwiftUI content to the edges of the CollaborativeScrollView.
-            NSLayoutConstraint.activate([
-                hostController.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-                hostController.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-                hostController.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-                hostController.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-                hostController.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
-            ])
-
             scrollDelegate.outerScrollView = scrollView
         }
 
@@ -182,16 +172,6 @@ struct CSVRepresentable<Content: View>: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: CSV, context: Context) {}
-}
-
-class CSV: UIScrollView, UIGestureRecognizerDelegate {
-    var lastContentOffset: CGPoint = .zero
-    var initialContentOffset: CGPoint = .zero
-    var isInner: Bool = false
-
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return otherGestureRecognizer.view is CSV
-    }
 }
 
 class CSVDelegate: NSObject, UIScrollViewDelegate {
@@ -203,6 +183,19 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
     weak var innerScrollView: CSV?
 
     enum Direction { case none, up, down }
+
+    func setupGestureRecognizers() {
+        guard let inner = innerScrollView, let outer = outerScrollView else { return }
+
+        // Connect the gesture recognizers
+        inner.otherPanGestureRecognizer = outer.panGestureRecognizer
+        outer.otherPanGestureRecognizer = inner.panGestureRecognizer
+
+        // Add both gesture recognizers to the outer scroll view
+        if let innerPan = inner.panGestureRecognizer as? UIPanGestureRecognizer {
+            outer.addGestureRecognizer(innerPan)
+        }
+    }
 
     /// Lets the user begin expanding/collapsing. Unlocks scrolls if conditions are met.
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -322,15 +315,14 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 extension View {
     @ViewBuilder
     func viewExtractor(result: @escaping (UIView) -> ()) -> some View {
-        self
-            .background(ViewExtractorHelper(result: result))
+        background(ViewExtractorHelper(result: result))
             .compositingGroup()
     }
 }
 
-fileprivate struct ViewExtractorHelper: UIViewRepresentable {
+private struct ViewExtractorHelper: UIViewRepresentable {
     var result: (UIView) -> ()
-    
+
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .clear
@@ -341,7 +333,6 @@ fileprivate struct ViewExtractorHelper: UIViewRepresentable {
         }
         return view
     }
-    func updateUIView(_ uiView: UIView, context: Context) {
-        
-    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }

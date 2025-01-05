@@ -27,29 +27,29 @@ struct CreateSheet: View {
 
     var body: some View {
         List { /// List is a ScrollView.
-            CollageLayout {
-                ForEach(self.users.prefix(3), id: \.id) { user in
-                    Circle()
-                        .background(
-                            AsyncImage(url: URL(string: user.imageUrl)) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                Rectangle()
-                            }
-                        )
-                        .foregroundStyle(.clear)
-                        .clipShape(Circle())
-                }
-            }
-            .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.width * 0.5)
-            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
-            .shadow(color: .black.opacity(0.2), radius: 16, x: 0, y: 4)
-            .listRowBackground(
-                Rectangle()
-                    .foregroundStyle(.clear)
-                    .background(.clear)
-            )
+            // CollageLayout {
+            //     ForEach(self.users.prefix(3), id: \.id) { user in
+            //         Circle()
+            //             .background(
+            //                 AsyncImage(url: URL(string: user.imageUrl)) { image in
+            //                     image
+            //                         .resizable()
+            //                 } placeholder: {
+            //                     Rectangle()
+            //                 }
+            //             )
+            //             .foregroundStyle(.clear)
+            //             .clipShape(Circle())
+            //     }
+            // }
+            // .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.width * 0.5)
+            // .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
+            // .shadow(color: .black.opacity(0.2), radius: 16, x: 0, y: 4)
+            // .listRowBackground(
+            //     Rectangle()
+            //         .foregroundStyle(.clear)
+            //         .background(.clear)
+            // )
 
             // Stepper("Count: \(count)", value: $count.animation(), in: 1 ... 10)
             //     .padding()
