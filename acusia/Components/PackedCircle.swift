@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 // MARK: - PackedCircle Data Structure
+
 struct PackedCircle: Equatable {
     var x: Double
     var y: Double
@@ -16,38 +17,45 @@ struct PackedCircle: Equatable {
 }
 
 // MARK: - Utility
+
 func distance(_ c1: PackedCircle, _ c2: PackedCircle) -> Double {
     let dx = c2.x - c1.x
     let dy = c2.y - c1.y
-    return sqrt(dx * dx + dy * dy) - c1.r - c2.r
+    return sqrt(dx*dx + dy*dy) - c1.r - c2.r
 }
 
+// Simplified to avoid do/catch. Same math, less overhead.
 func getIntersections(_ c1: PackedCircle, _ c2: PackedCircle) -> (CGPoint?, CGPoint?) {
     let dx = c2.x - c1.x
     let dy = c2.y - c1.y
-    let d  = sqrt(dx*dx + dy*dy)
-    do {
-        let a = (c1.r*c1.r - c2.r*c2.r + d*d) / (2*d)
-        let h = sqrt(c1.r*c1.r - a*a)
-        let xm = c1.x + a*(dx/d)
-        let ym = c1.y + a*(dy/d)
-        let rx = -(dy * (h / d))
-        let ry =  (dx * (h / d))
-        let p1 = CGPoint(x: xm + rx, y: ym + ry)
-        let p2 = CGPoint(x: xm - rx, y: ym - ry)
-        if p1 == p2 { return (p1, nil) }
-        return (p1, p2)
-    } catch {
-        return (nil, nil)
-    }
+    let d = sqrt(dx*dx + dy*dy)
+    // If circles are coincident or there's no valid intersection, bail.
+    guard d > 1e-12 else { return (nil, nil) }
+
+    let a = (c1.r*c1.r - c2.r*c2.r + d*d) / (2*d)
+    let rr = c1.r*c1.r - a*a
+    guard rr >= 0 else { return (nil, nil) }
+
+    let h = sqrt(rr)
+    let xm = c1.x + (a*dx / d)
+    let ym = c1.y + (a*dy / d)
+    let rx = -(dy*(h / d))
+    let ry = (dx*(h / d))
+
+    let p1 = CGPoint(x: xm + rx, y: ym + ry)
+    let p2 = CGPoint(x: xm - rx, y: ym - ry)
+    if p1 == p2 { return (p1, nil) }
+    return (p1, p2)
 }
 
 // MARK: - Placement
+
 func getPlacementCandidates(radius: Double,
                             c1: PackedCircle,
-                            c2: PackedCircle) -> [PackedCircle] {
+                            c2: PackedCircle) -> [PackedCircle]
+{
     // Extra small margin
-    let margin = radius * Double.ulpOfOne * 10.0
+    let margin = radius*Double.ulpOfOne*10.0
     let ic1 = PackedCircle(x: c1.x, y: c1.y, r: c1.r + radius + margin)
     let ic2 = PackedCircle(x: c2.x, y: c2.y, r: c2.r + radius + margin)
     let (p1, p2) = getIntersections(ic1, ic2)
@@ -62,15 +70,20 @@ func getPlacementCandidates(radius: Double,
 }
 
 // MARK: - Hole Degree Functions
+
+// Keeping this around, though we won't call it in the new approach:
 func holeDegreeRadiusWeighted(_ candidate: PackedCircle,
-                              _ circles: [PackedCircle]) -> Double {
-    circles.reduce(0.0) { $0 + distance(candidate, $1) * $1.r }
+                              _ circles: [PackedCircle]) -> Double
+{
+    circles.reduce(0.0) { $0 + distance(candidate, $1)*$1.r }
 }
 
 // MARK: - A1.0 PackedCircle Packing
+
+// Optimized to avoid building 'otherPackedCircles' on each pass
 func placeNewPackedCircleA1_0(radius: Double,
-                        placed: [PackedCircle]) -> PackedCircle {
-    // If fewer than 2 circles placed, just place left/right of origin
+                              placed: [PackedCircle]) -> PackedCircle
+{
     switch placed.count {
     case 0:
         return PackedCircle(x: radius, y: 0, r: radius)
@@ -82,18 +95,27 @@ func placeNewPackedCircleA1_0(radius: Double,
 
     var bestHD: Double? = nil
     var bestCandidate: PackedCircle? = nil
-    
+
     for i in 0..<(placed.count - 1) {
-        for j in (i+1)..<placed.count {
+        for j in (i + 1)..<placed.count {
             let c1 = placed[i]
             let c2 = placed[j]
-            let otherPackedCircles = placed.filter { $0 != c1 && $0 != c2 }
             for cand in getPlacementCandidates(radius: radius, c1: c1, c2: c2) {
-                // Check if it overlaps
-                if otherPackedCircles.contains(where: { distance($0, cand) < 0.0 }) {
-                    continue
+                // Check overlap + compute hole degree in one pass
+                var overlaps = false
+                var hd = 0.0
+                for k in 0..<placed.count {
+                    // Skip the pair used for candidate
+                    if k == i || k == j { continue }
+                    let dist = distance(placed[k], cand)
+                    if dist < 0.0 {
+                        overlaps = true
+                        break
+                    }
+                    hd += dist*placed[k].r
                 }
-                let hd = holeDegreeRadiusWeighted(cand, otherPackedCircles)
+                if overlaps { continue }
+
                 if bestHD == nil || hd < bestHD! {
                     bestHD = hd
                     bestCandidate = cand
@@ -108,7 +130,7 @@ func placeNewPackedCircleA1_0(radius: Double,
 }
 
 func packA1_0(_ values: [Double]) -> [PackedCircle] {
-    // Sort descending just as in Python
+    // Sort descending
     precondition(values == values.sorted(by: >), "Data must be sorted descending.")
     var placed: [PackedCircle] = []
     for v in values {
@@ -119,27 +141,27 @@ func packA1_0(_ values: [Double]) -> [PackedCircle] {
     return placed
 }
 
-// MARK: - Enclose Helpers (Matoušek-Sharir-Welzl)
+// MARK: - Enclose Helpers
+
 func enclosesWeak(_ a: PackedCircle, _ b: PackedCircle) -> Bool {
     let dr = a.r - b.r + 1e-6
     let dx = b.x - a.x
     let dy = b.y - a.y
-    return dr > 0 && (dr * dr > dx * dx + dy * dy)
+    return dr > 0 && (dr*dr > dx*dx + dy*dy)
 }
 
 func encloseBasis2(_ a: PackedCircle, _ b: PackedCircle) -> PackedCircle {
     let dx = b.x - a.x
     let dy = b.y - a.y
     let dr = b.r - a.r
-    let d  = sqrt(dx*dx + dy*dy)
-    let cx = (a.x + b.x + (dx / d) * dr) * 0.5
-    let cy = (a.y + b.y + (dy / d) * dr) * 0.5
-    let cr = (d + a.r + b.r) * 0.5
+    let d = sqrt(dx*dx + dy*dy)
+    let cx = (a.x + b.x + (dx / d)*dr)*0.5
+    let cy = (a.y + b.y + (dy / d)*dr)*0.5
+    let cr = (d + a.r + b.r)*0.5
     return PackedCircle(x: cx, y: cy, r: cr)
 }
 
 func encloseBasis3(_ a: PackedCircle, _ b: PackedCircle, _ c: PackedCircle) -> PackedCircle {
-    // Straight translation of the math from Python
     let (x1, y1, r1) = (a.x, a.y, a.r)
     let (x2, y2, r2) = (b.x, b.y, b.r)
     let (x3, y3, r3) = (c.x, c.y, c.r)
@@ -153,10 +175,10 @@ func encloseBasis3(_ a: PackedCircle, _ b: PackedCircle, _ c: PackedCircle) -> P
     let d2 = d1 - (x2*x2 + y2*y2 - r2*r2)
     let d3 = d1 - (x3*x3 + y3*y3 - r3*r3)
     let ab = a3*b2 - a2*b3
-    let xa = (b2*d3 - b3*d2)/(ab*2) - x1
-    let xb = (b3*c2 - b2*c3)/ab
-    let ya = (a3*d2 - a2*d3)/(ab*2) - y1
-    let yb = (a2*c3 - a3*c2)/ab
+    let xa = (b2*d3 - b3*d2) / (ab*2) - x1
+    let xb = (b3*c2 - b2*c3) / ab
+    let ya = (a3*d2 - a2*d3) / (ab*2) - y1
+    let yb = (a2*c3 - a3*c2) / ab
     let A = xb*xb + yb*yb - 1
     let B = 2*(r1 + xa*xb + ya*yb)
     let C = xa*xa + ya*ya - r1*r1
@@ -181,33 +203,7 @@ func enclosesNot(_ a: PackedCircle, _ b: PackedCircle) -> Bool {
     let dr = a.r - b.r
     let dx = b.x - a.x
     let dy = b.y - a.y
-    return dr < 0 || (dr * dr < dx*dx + dy*dy)
-}
-
-func extendBasis(_ B: [PackedCircle], _ p: PackedCircle) -> [PackedCircle] {
-    if enclosesWeakAll(p, B) {
-        return [p]
-    }
-    for b in B {
-        if enclosesNot(p, b) && enclosesWeakAll(encloseBasis2(b, p), B) {
-            return [b, p]
-        }
-    }
-    let n = B.count
-    for i in 0..<(n - 1) {
-        for j in (i+1)..<n {
-            let b1 = B[i]
-            let b2 = B[j]
-            let eb3 = encloseBasis3(b1, b2, p)
-            if enclosesNot(encloseBasis2(b1, b2), p)
-                && enclosesNot(encloseBasis2(b1, p), b2)
-                && enclosesNot(encloseBasis2(b2, p), b1)
-                && enclosesWeakAll(eb3, B) {
-                return [b1, b2, p]
-            }
-        }
-    }
-    fatalError("extendBasis: unexpected state")
+    return dr < 0 || (dr*dr < dx*dx + dy*dy)
 }
 
 func enclosesWeakAll(_ a: PackedCircle, _ list: [PackedCircle]) -> Bool {
@@ -217,10 +213,37 @@ func enclosesWeakAll(_ a: PackedCircle, _ list: [PackedCircle]) -> Bool {
     return true
 }
 
+func extendBasis(_ B: [PackedCircle], _ p: PackedCircle) -> [PackedCircle] {
+    if enclosesWeakAll(p, B) {
+        return [p]
+    }
+    for b in B {
+        if enclosesNot(p, b), enclosesWeakAll(encloseBasis2(b, p), B) {
+            return [b, p]
+        }
+    }
+    let n = B.count
+    for i in 0..<(n - 1) {
+        for j in (i + 1)..<n {
+            let b1 = B[i]
+            let b2 = B[j]
+            let eb3 = encloseBasis3(b1, b2, p)
+            if enclosesNot(encloseBasis2(b1, b2), p),
+               enclosesNot(encloseBasis2(b1, p), b2),
+               enclosesNot(encloseBasis2(b2, p), b1),
+               enclosesWeakAll(eb3, B)
+            {
+                return [b1, b2, p]
+            }
+        }
+    }
+    fatalError("extendBasis: unexpected state")
+}
+
 func enclose(_ circles: [PackedCircle]) -> PackedCircle? {
     guard !circles.isEmpty else { return nil }
     var B: [PackedCircle] = []
-    var e: PackedCircle? = nil
+    var e: PackedCircle?
     var i = 0
     while i < circles.count {
         let p = circles[i]
@@ -236,18 +259,21 @@ func enclose(_ circles: [PackedCircle]) -> PackedCircle? {
 }
 
 // MARK: - Scaling & Circlify
+
 func scale(_ circle: PackedCircle,
            into target: PackedCircle,
-           enclosure: PackedCircle) -> PackedCircle {
+           enclosure: PackedCircle) -> PackedCircle
+{
     let r = target.r / enclosure.r
     let x = (circle.x - enclosure.x)*r + target.x
     let y = (circle.y - enclosure.y)*r + target.y
-    return PackedCircle(x: x, y: y, r: circle.r * r)
+    return PackedCircle(x: x, y: y, r: circle.r*r)
 }
 
 func circlify(_ data: [Double],
               targetEnclosure: PackedCircle = PackedCircle(x: 0, y: 0, r: 1),
-              showEnclosure: Bool = false) -> [PackedCircle] {
+              showEnclosure: Bool = false) -> [PackedCircle]
+{
     // 1) Pack using A1.0
     let packed = packA1_0(data.sorted(by: >))
     guard let encl = enclose(packed) else { return [] }
@@ -266,35 +292,44 @@ func circlify(_ data: [Double],
     return scaled
 }
 
-
-
 struct CirclifyPreviewView: View {
+    let size: CGSize
+    let values: [Double]
+    
+    @State private var rotate = false
+
     var body: some View {
-        let values = [80.0, 40.0]
+        let padding: CGFloat = 2.0
         let packed = circlify(values)
 
         ZStack {
             ForEach(packed.indices, id: \.self) { i in
                 let c = packed[i]
-                // Multiply by e.g. 100 to see them larger
-                let scaleFactor = 100.0
+                let scaleFactor = (size.width / 2) - padding
 
                 Circle()
-                    .stroke(Color.blue, lineWidth: 2)
+                    .fill(.blue)
+                    .padding(padding)
                     .frame(width: c.r * 2 * scaleFactor,
                            height: c.r * 2 * scaleFactor)
-                    .offset(x: c.x * scaleFactor,
-                            y: c.y * scaleFactor)
+                    .offset(x: c.x * scaleFactor, y: c.y * scaleFactor)
+                    .rotationEffect(.degrees(rotate ? 360 : 0), anchor: .center)
+                    .animation(Animation.linear(duration: Double.random(in: 2...5))
+                                           .repeatForever(autoreverses: false), value: rotate)
             }
         }
-        .frame(width: 300, height: 300)
-        .background(Color.gray.opacity(0.2), in: Circle())
+        .frame(width: size.width, height: size.height)
+        .background(Color(.systemGray6), in: Circle())
         .rotationEffect(.degrees(225))
     }
 }
 
 struct CirclifyPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        CirclifyPreviewView()
+        VStack {
+            CirclifyPreviewView(size: CGSize(width: 80, height: 80),
+                                values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05 ])
+        }
     }
 }
+
