@@ -77,7 +77,6 @@
 		CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7882C1955BD00958B39 /* AuthScreen.swift */; };
 		CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE14A442C8118C400D0F172 /* PathViews.swift */; };
 		CDE43C112C8671280009CB87 /* ReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C102C8671250009CB87 /* ReactionView.swift */; };
-		CDE47E8A2CBADE7000834783 /* RadialLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE47E892CBADE6D00834783 /* RadialLayout.swift */; };
 		CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* IridescentPreview.swift */; };
 		CDF4BD662D054CFC00F8D775 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD652D054CF500F8D775 /* Loupe.metal */; };
 		CDF4BD682D054D2B00F8D775 /* LoupePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD672D054D2900F8D775 /* LoupePreview.swift */; };
@@ -204,7 +203,6 @@
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
 		CDE14A442C8118C400D0F172 /* PathViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathViews.swift; sourceTree = "<group>"; };
 		CDE43C102C8671250009CB87 /* ReactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionView.swift; sourceTree = "<group>"; };
-		CDE47E892CBADE6D00834783 /* RadialLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialLayout.swift; sourceTree = "<group>"; };
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDF4BD652D054CF500F8D775 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
 		CDF4BD672D054D2900F8D775 /* LoupePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoupePreview.swift; sourceTree = "<group>"; };
@@ -468,7 +466,6 @@
 				CDF4BD7D2D0A8E6000F8D775 /* Biomes */,
 				CDF4BD782D0A1FF500F8D775 /* Blurs */,
 				CDBDA2462D00E11E005333B0 /* Message */,
-				CDE47E892CBADE6D00834783 /* RadialLayout.swift */,
 				CDE43C102C8671250009CB87 /* ReactionView.swift */,
 				CD9245092CA6713100635716 /* SymmetryView.swift */,
 			);
@@ -739,7 +736,6 @@
 				CD264CD82CD3A6B600A74D7E /* Grok.metal in Sources */,
 				CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */,
 				CD8A643B2D0092B300BE98DE /* JWT.swift in Sources */,
-				CDE47E8A2CBADE7000834783 /* RadialLayout.swift in Sources */,
 				CD81D0A12D0083510028F2DB /* Keychain.swift in Sources */,
 				CDBDA23F2D009834005333B0 /* Auth.swift in Sources */,
 				CDF4BD712D07A09A00F8D775 /* BiomeModel.swift in Sources */,

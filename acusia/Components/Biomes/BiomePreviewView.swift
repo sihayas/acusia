@@ -66,23 +66,8 @@ struct BiomePreviewView: View {
             .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
 
             HStack() {
-                // CollageLayout {
-                //     ForEach(userDevs.shuffled().prefix(4), id: \.id) { user in
-                //         Circle()
-                //             .stroke(.ultraThinMaterial)
-                //             .background(
-                //                 AsyncImage(url: URL(string: user.imageUrl)) { image in
-                //                     image
-                //                         .resizable()
-                //                 } placeholder: {
-                //                     Rectangle()
-                //                 }
-                //             )
-                //             .foregroundStyle(.clear)
-                //             .clipShape(Circle())
-                //     }
-                // }
-                // .frame(width: 56, height: 56)
+                CirclifyPreviewView(size: CGSize(width: 56, height: 56),
+                                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05 ])
 
                 /// Biome Metadata
                 HStack(spacing: 8) {
@@ -106,11 +91,8 @@ struct BiomePreviewView: View {
                             .shadow(radius: 4)
                     }
                 }
-                .frame(height: 56)
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 16)
-            .frame(maxWidth: .infinity)
+            .padding(.all, 16)
         }
         .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {

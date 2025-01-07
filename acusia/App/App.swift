@@ -42,8 +42,8 @@ struct AcusiaAppView: View {
                     .onAppear {
                         uiState.size = proxy.size
                         uiState.enableDarkMode()
-                        uiState.setupSymmetryWindow()
                         uiState.setupNavigationBar()
+                        // uiState.setupSymmetryWindow()
 
                         Task {
                             // await musicKitManager.requestMusicAuthorization()
@@ -153,8 +153,5 @@ struct AcusiaAppPreview: PreviewProvider {
             .environmentObject(auth)
             .environmentObject(uiState)
             // .environmentObject(musicKit)
-            .onAppear {
-                uiState.setupSymmetryWindow()
-            }
     }
 }

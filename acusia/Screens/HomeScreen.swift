@@ -51,8 +51,8 @@ struct Home: View {
                             }
                         }
                         .frame(height: upperSectionHeight - safeAreaInsets.top)
-                        .border(.blue)
 
+                        /// Spacer/Offset
                         Rectangle()
                             .fill(.clear)
                             .frame(height: bottomSectionHeight)
@@ -73,9 +73,7 @@ struct Home: View {
                         BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
                         BiomePreviewView(biome: Biome(entities: biomePreviewThree))
                     }
-                    .safeAreaPadding(.horizontal)
-                    .padding(.vertical, 32)
-                    // .padding(.all, 24)
+                    .padding(.horizontal, 16)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
