@@ -308,7 +308,7 @@ struct CirclifyPreviewView: View {
                 let scaleFactor = (size.width / 2) - padding
 
                 Circle()
-                    .fill(.blue)
+                    .fill(.white)
                     .padding(padding)
                     .frame(width: c.r * 2 * scaleFactor,
                            height: c.r * 2 * scaleFactor)

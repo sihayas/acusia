@@ -47,6 +47,7 @@ struct BiomePreviewView: View {
                 frameSize = newSize
             }
             .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity)
             .frame(
                 height: frameSize.height > 0
                     ? frameSize.height - firstMessageSize.height + 80
@@ -68,16 +69,17 @@ struct BiomePreviewView: View {
             HStack() {
                 CirclifyPreviewView(size: CGSize(width: 56, height: 56),
                                     values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05 ])
-
+                // .border(.yellow)
+           
                 /// Biome Metadata
                 HStack(spacing: 8) {
                     Text("lorem ipsum")
-                        .fontWeight(.bold)
-                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .font(.headline)
                         .foregroundColor(.white)
-
+           
                     Spacer()
-
+           
                     Button {
                         // Perform button action here
                     } label: {
@@ -92,7 +94,7 @@ struct BiomePreviewView: View {
                     }
                 }
             }
-            .padding(.all, 16)
+            .border(.purple)
         }
         .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
@@ -101,6 +103,7 @@ struct BiomePreviewView: View {
                 .presentationBackground(.black)
         }
         .onTapGesture { showSheet = true }
+        .padding(.horizontal, 24)
     }
 }
 

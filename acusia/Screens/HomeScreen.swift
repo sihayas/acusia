@@ -12,13 +12,16 @@ struct Home: View {
     private let columns = [
         GridItem(.flexible(), spacing: 24),
         GridItem(.flexible(), spacing: 24),
-        GridItem(.flexible(), spacing: 24),
         GridItem(.flexible(), spacing: 24)
     ]
 
     private let biomes = [
         Biome(entities: biomePreviewOne),
-        Biome(entities: biomePreviewTwo)
+        Biome(entities: biomePreviewTwo),
+        Biome(entities: biomePreviewTwo),
+        Biome(entities: biomePreviewThree),
+        Biome(entities: biomePreviewThree),
+        Biome(entities: biomePreviewThree)
     ]
 
     var body: some View {
@@ -44,13 +47,17 @@ struct Home: View {
                         .safeAreaPadding(.horizontal)
 
                         /// Biomes
-                        LazyVGrid(columns: columns) {
+                        LazyVGrid(columns: columns, spacing: 24) {
                             ForEach(0 ..< biomes.count, id: \.self) { index in
                                 BiomePreviewSphereView(biome: biomes[index])
-                                    .frame(maxWidth: .infinity)
                             }
                         }
-                        .frame(height: upperSectionHeight - safeAreaInsets.top)
+                        .padding([.horizontal, .bottom], 24)
+                        .frame(
+                            height: upperSectionHeight - safeAreaInsets.top,
+                            alignment: .bottom
+                        )
+                        .border(.purple)
 
                         /// Spacer/Offset
                         Rectangle()
@@ -73,20 +80,22 @@ struct Home: View {
                         BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
                         BiomePreviewView(biome: Biome(entities: biomePreviewThree))
                     }
-                    .padding(.horizontal, 16)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .top
+                )
             }
         }
         .overlay(alignment: .top) {
             LinearBlurView(radius: 4, gradientColors: [.clear, .black])
                 .scaleEffect(x: 1, y: -1)
                 .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 2)
-        
+
             LinearGradientMask(gradientColors: [.black, Color.clear])
                 .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 2)
         }
-
     }
 }
 

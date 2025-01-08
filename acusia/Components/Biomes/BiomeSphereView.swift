@@ -108,19 +108,10 @@ struct BiomePreviewSphereView: View {
                 //         }
                 //     }
                 // }
-                .border(.red)
-                .padding(12)
                 .scaleEffect(showSheet ? 0 : 1.0)
                 .animation(.smooth, value: showSheet)
             }
             .aspectRatio(1, contentMode: .fit)
-
-            Text("insert name here")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
-                .lineLimit(1)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .sheet(isPresented: $showSheet) {
@@ -129,5 +120,6 @@ struct BiomePreviewSphereView: View {
                 .presentationBackground(.black)
         }
         .onTapGesture { showSheet = true }
+        .border(.blue)
     }
 }
