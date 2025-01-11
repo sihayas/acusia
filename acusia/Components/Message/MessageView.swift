@@ -53,6 +53,11 @@ struct MessageView: View {
                         .font(.system(size: 11, weight: .regular))
                         .foregroundColor(.secondary)
                         .padding(.leading, 12)
+                } else {
+                    Text("biome_name")
+                        .font(.system(size: 11, weight: .regular))
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 20)
                 }
 
                 if let song = entity.getSongAttachment() {

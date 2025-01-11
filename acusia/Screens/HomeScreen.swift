@@ -46,7 +46,8 @@ struct Home: View {
                         }
                         .padding([.horizontal, .bottom], 20)
                         .background(
-                            .ultraThinMaterial
+                            TintedBlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 1.0)
+                                .edgesIgnoringSafeArea(.all)
                         )
 
                         /// Spacer/Offset
@@ -54,6 +55,8 @@ struct Home: View {
                             .fill(.clear)
                             .frame(height: bottomSectionHeight)
                     }
+                    .border(.red)
+                    
                 }
                 .frame(height: viewSize.height)
 
@@ -69,6 +72,7 @@ struct Home: View {
                         BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
                         BiomePreviewView(biome: Biome(entities: biomePreviewThree))
                     }
+                    .background(.black)
                     .padding(.top, 20)
                 }
                 .frame(
@@ -79,9 +83,9 @@ struct Home: View {
             }
         }
         .overlay(alignment: .top) {
-            LinearBlurView(radius: 4, gradientColors: [.clear, .black])
-                .scaleEffect(x: 1, y: -1)
-                .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
+            LinearBlurView(radius: 4, gradientColors: [.black, .clear])
+                .frame(height: safeAreaInsets.top * 1.5)
+                .ignoresSafeArea()
 
             HStack {
                 AvatarView(size: 31, imageURL: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg")
@@ -91,11 +95,10 @@ struct Home: View {
                     .foregroundColor(.white)
                     .fontWeight(.bold)
 
-
                 Spacer()
             }
             .frame(maxWidth: .infinity)
-            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+            .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 4)
             .padding(.top, safeAreaInsets.top)
             .padding(.horizontal, 20)
 

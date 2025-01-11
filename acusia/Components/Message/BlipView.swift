@@ -24,7 +24,7 @@ struct BlipView: View {
                             .foregroundStyle(.secondary)
                         
                         Circle()
-                            .strokeBorder(.ultraThickMaterial, lineWidth: 1)
+                            .strokeBorder(.black, lineWidth: 1)
                     }
                 
                 ForEach(0..<2) { index in
@@ -37,7 +37,7 @@ struct BlipView: View {
                                 .font(.system(size: 32 * 0.35))
                             
                             Capsule()
-                                .stroke(.ultraThickMaterial, lineWidth: 1)
+                                .stroke(.black, lineWidth: 1)
                         }
                 }
                 
@@ -50,11 +50,11 @@ struct BlipView: View {
                             .font(.system(size: 36 * 0.4))
                         
                         BlipBubbleWithTailInsettable(isFlipped: false)
-                            .stroke(.ultraThickMaterial, lineWidth: 1)
+                            .stroke(.black, lineWidth: 1)
                     }
             }
         } else {
-            HStack(spacing: -8) {
+            HStack(spacing: -6) {
                 Circle()
                     .frame(width: 36, height: 36)
                     .background(Color(.systemGray5), in: BlipBubbleWithTail(isFlipped: true))
@@ -64,9 +64,9 @@ struct BlipView: View {
                             .font(.system(size: 36 * 0.4))
                         
                         BlipBubbleWithTailInsettable(isFlipped: true)
-                            .stroke(.ultraThickMaterial, lineWidth: 1)
+                            .stroke(.black, lineWidth: 1)
                     }
-                    .zIndex(1)
+                    .zIndex(3)
                 
                 ForEach(0..<2) { index in
                     Capsule()
@@ -78,9 +78,9 @@ struct BlipView: View {
                                 .font(.system(size: 32 * 0.35))
                             
                             Capsule()
-                                .stroke(.ultraThickMaterial, lineWidth: 1)
+                                .stroke(.black, lineWidth: 1)
                         }
-                        .zIndex(2)
+                        .zIndex(Double(3 - (index + 1)))
                 }
                 
                 Circle()
@@ -93,9 +93,9 @@ struct BlipView: View {
                             .foregroundStyle(.secondary)
                         
                         Circle()
-                            .strokeBorder(.ultraThickMaterial, lineWidth: 1)
+                            .strokeBorder(.black, lineWidth: 1)
                     }
-                    .zIndex(3)
+                    .zIndex(0)
             }
         }
     }
