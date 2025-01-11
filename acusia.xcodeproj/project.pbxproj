@@ -338,13 +338,13 @@
 		CDBDA2462D00E11E005333B0 /* Message */ = {
 			isa = PBXGroup;
 			children = (
-				CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */,
 				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
 				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
 				CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */,
 				CD43B2C22CDEFBA10018DB16 /* EntityView.swift */,
 				CDBDA2492D00E32C005333B0 /* MessageView.swift */,
 				CDE14A442C8118C400D0F172 /* PathViews.swift */,
+				CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */,
 				CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */,
 			);
 			path = Message;

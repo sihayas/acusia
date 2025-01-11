@@ -54,47 +54,58 @@ struct BiomePreviewView: View {
                     : nil,
                 alignment: .top
             )
-            .background(.ultraThickMaterial)
             .overlay(alignment: .bottom) {
-                    LinearBlurView(radius: 2, gradientColors: [.clear, .black])
-                        .frame(maxWidth: .infinity, maxHeight: 112)
-                        .padding(.horizontal, 0)
-                    
-                    LinearGradientMask(gradientColors: [.clear, Color(.systemGray6)])
-                        .frame(maxWidth: .infinity, maxHeight: 112)
-                        .padding(.horizontal, 0)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+                LinearBlurView(radius: 2, gradientColors: [.clear, .black])
+                    .frame(maxWidth: .infinity, maxHeight: 112)
+                    .padding(.horizontal, 0)
 
-            HStack() {
+                LinearGradientMask(gradientColors: [.clear, Color(.black)])
+                    .frame(maxWidth: .infinity, maxHeight: 112)
+                    .padding(.horizontal, 0)
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: 44, style: .continuous)
+                    .stroke(.white.opacity(0.1), lineWidth: 4)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
+
+            HStack {
                 CirclifyPreviewView(size: CGSize(width: 56, height: 56),
-                                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05 ])
+                                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05])
                 // .border(.yellow)
-           
+
                 /// Biome Metadata
                 HStack(spacing: 8) {
-                    Text("lorem ipsum")
-                        .fontWeight(.semibold)
-                        .font(.headline)
-                        .foregroundColor(.white)
-           
+                    VStack(alignment: .leading) {
+                        Text("lorem ipsum")
+                            .fontWeight(.bold)
+                            .font(.headline)
+                            .foregroundColor(.white)
+
+                        Text("800 Messages")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
+                    }
                     Spacer()
-           
-                    Button {
-                        // Perform button action here
-                    } label: {
+
+                    Button {} label: {
                         Image(systemName: "message.badge.fill")
                             .fontWeight(.semibold)
                             .font(.subheadline)
                             .foregroundStyle(.white)
                             .frame(width: 40, height: 40)
-                            .background(.black)
+                            .background(.ultraThinMaterial)
                             .clipShape(Capsule())
+                            .overlay {
+                                Capsule()
+                                    .stroke(.white.opacity(0.1), lineWidth: 1)
+                            }
                             .shadow(radius: 4)
                     }
                 }
             }
-            .border(.purple)
+            .padding([.horizontal, .bottom], 16)
         }
         .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
@@ -103,7 +114,7 @@ struct BiomePreviewView: View {
                 .presentationBackground(.black)
         }
         .onTapGesture { showSheet = true }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 20)
     }
 }
 

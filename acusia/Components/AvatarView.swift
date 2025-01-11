@@ -20,6 +20,7 @@ struct AvatarView: View {
                 .clipShape(Circle())
                 .scaleEffect(isPressed ? 0.8 : 1)
                 .animation(.bouncy, value: isPressed)
+                .aspectRatio(contentMode: .fit)
         } placeholder: {
             Circle()
                 .fill(Color.gray)

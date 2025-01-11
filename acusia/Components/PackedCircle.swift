@@ -299,7 +299,7 @@ struct CirclifyPreviewView: View {
     @State private var rotate = false
 
     var body: some View {
-        let padding: CGFloat = 2.0
+        let padding: CGFloat = 1.0
         let packed = circlify(values)
 
         ZStack {
@@ -308,7 +308,7 @@ struct CirclifyPreviewView: View {
                 let scaleFactor = (size.width / 2) - padding
 
                 Circle()
-                    .fill(.white)
+                    .fill(.black)
                     .padding(padding)
                     .frame(width: c.r * 2 * scaleFactor,
                            height: c.r * 2 * scaleFactor)
@@ -319,8 +319,9 @@ struct CirclifyPreviewView: View {
             }
         }
         .frame(width: size.width, height: size.height)
-        .background(Color(.systemGray6), in: Circle())
-        .rotationEffect(.degrees(225))
+        .background(.ultraThinMaterial, in: Circle())
+        .overlay(Circle().stroke(.white.opacity(0.1), lineWidth: 1))
+        // .rotationEffect(.degrees(225))
     }
 }
 

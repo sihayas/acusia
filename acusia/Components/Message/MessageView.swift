@@ -13,32 +13,47 @@ struct MessageView: View {
     @State private var verticalSpacing: CGFloat = 0
 
     let entity: Entity
-    let blipXOffset: CGFloat = 88
+    let isOwn: Bool
+    let blipXOffset: CGFloat = 98
 
     var body: some View {
         let photos = entity.getPhotoAttachments()
 
         ZStack(alignment: .topLeading) {
             HStack(alignment: .bottom, spacing: -blipXOffset) {
-                TextBubbleView(entity: entity)
-                    .alignmentGuide(VerticalAlignment.bottom) { _ in 8 }
-                    .measure($textBubbleSize)
-                    .padding(.bottom, 4)
+                if !isOwn {
+                    TextBubbleView(entity: entity, isOwn: isOwn)
+                        .alignmentGuide(VerticalAlignment.bottom) { _ in 8 }
+                        .measure($textBubbleSize)
 
-                BlipView()
+                    BlipView(isOwn: isOwn)
+                } else {
+                    BlipView(isOwn: isOwn)
+                        .zIndex(1)
+
+                    TextBubbleView(entity: entity, isOwn: isOwn)
+                        .alignmentGuide(VerticalAlignment.bottom) { _ in 8 }
+                        .measure($textBubbleSize)
+                }
             }
-            .onChange(of: textBubbleSize.width) { oV, nV in
-                /// If the width of the top is greater than the width of the text bubble minus blip horizontal size, push the top down.
-                verticalSpacing = attachmentSize.width > (textBubbleSize.width - blipXOffset)
-                    ? -2
-                    : 24
+            .onChange(of: textBubbleSize.width) { _, _ in
+                if !isOwn {
+                    /// If the width of the top is greater than the width of the text bubble minus blip horizontal size, push the top down.
+                    verticalSpacing = attachmentSize.width > (textBubbleSize.width - blipXOffset)
+                        ? -2
+                        : 24
+                } else {
+                    verticalSpacing = -2
+                }
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(entity.username)
-                    .font(.system(size: 11, weight: .regular))
-                    .foregroundColor(.secondary)
-                    .padding(.leading, 12)
+                if !isOwn {
+                    Text("\(entity.username)")
+                        .font(.system(size: 11, weight: .regular))
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 12)
+                }
 
                 if let song = entity.getSongAttachment() {
                     HStack {
@@ -94,7 +109,7 @@ struct MessageView: View {
                         if let photo = photos.first {
                             PhotoMessageView(photo: photo)
                         }
-                    case 2...3:
+                    case 2 ... 3:
                         PhotoMessagesView(photos: photos)
                     default:
                         PhotoMessagesDeckView(photos: photos)

@@ -120,6 +120,5 @@ struct BiomePreviewSphereView: View {
                 .presentationBackground(.black)
         }
         .onTapGesture { showSheet = true }
-        .border(.blue)
     }
 }

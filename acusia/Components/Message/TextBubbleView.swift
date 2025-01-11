@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TextBubbleView: View {
     let entity: Entity
+    let isOwn: Bool
 
     let auxiliarySize: CGSize = .init(width: 216, height: 120)
 
@@ -24,7 +25,7 @@ struct TextBubbleView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Color(.systemGray5), in: BubbleWithTailShape(scale: 1))
+        .background(Color(.systemGray5), in: BubbleWithTailShape(isOwn: isOwn))
         .foregroundStyle(.secondary)
         .auxiliaryContextMenu(
             auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),

@@ -35,35 +35,24 @@ struct Home: View {
                 CSVRepresentable(isInner: true, delegate: scrollDelegate) {
                     VStack(spacing: 0) {
                         /// User History
-                        LazyVStack(alignment: .leading, spacing: 16) {
+                        LazyVStack(alignment: .trailing, spacing: 16) {
                             ForEach(userHistorySample.indices, id: \.self) { index in
-                                EntityView(
+                                EntityHistoryView(
                                     rootEntity: userHistorySample[index],
                                     previousEntity: userHistorySample[index],
                                     entity: userHistorySample[index]
                                 )
                             }
                         }
-                        .safeAreaPadding(.horizontal)
-
-                        /// Biomes
-                        LazyVGrid(columns: columns, spacing: 24) {
-                            ForEach(0 ..< biomes.count, id: \.self) { index in
-                                BiomePreviewSphereView(biome: biomes[index])
-                            }
-                        }
-                        .padding([.horizontal, .bottom], 24)
-                        .frame(
-                            height: upperSectionHeight - safeAreaInsets.top,
-                            alignment: .bottom
+                        .padding([.horizontal, .bottom], 20)
+                        .background(
+                            .ultraThinMaterial
                         )
-                        .border(.purple)
 
                         /// Spacer/Offset
                         Rectangle()
                             .fill(.clear)
                             .frame(height: bottomSectionHeight)
-                            .border(.red)
                     }
                 }
                 .frame(height: viewSize.height)
@@ -80,6 +69,7 @@ struct Home: View {
                         BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
                         BiomePreviewView(biome: Biome(entities: biomePreviewThree))
                     }
+                    .padding(.top, 20)
                 }
                 .frame(
                     maxWidth: .infinity,
@@ -91,10 +81,26 @@ struct Home: View {
         .overlay(alignment: .top) {
             LinearBlurView(radius: 4, gradientColors: [.clear, .black])
                 .scaleEffect(x: 1, y: -1)
-                .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 2)
+                .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
 
-            LinearGradientMask(gradientColors: [.black, Color.clear])
-                .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 2)
+            HStack {
+                AvatarView(size: 31, imageURL: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg")
+
+                Text("Alia")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+
+
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+            .padding(.top, safeAreaInsets.top)
+            .padding(.horizontal, 20)
+
+            // LinearGradientMask(gradientColors: [.black.opacity(0.5), Color.clear])
+            //     .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
         }
     }
 }
