@@ -17,10 +17,10 @@ struct BiomeExpandedView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 45, style: .continuous)
-                .fill(.ultraThickMaterial)
-                .opacity(didAppear ? 0 : 1)
-                .ignoresSafeArea()
+            // RoundedRectangle(cornerRadius: 45, style: .continuous)
+            //     .fill(.ultraThickMaterial)
+            //     .opacity(didAppear ? 0 : 1)
+            //     .ignoresSafeArea() 
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
@@ -35,7 +35,7 @@ struct BiomeExpandedView: View {
                         .frame(maxHeight: .infinity)
                     }
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 16)
                 .padding(.bottom, safeAreaInsets.bottom)
             }
             .defaultScrollAnchor(.bottom)

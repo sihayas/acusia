@@ -186,7 +186,7 @@ let biomePreviewOne: [Entity] = [
         id: "1",
         username: "DeborahVthang",
         avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
-        text: "unique pres, but it does feel a little too polished for my taste.",
+        text: "idk honestly",
         created_at: Date(timeIntervalSinceNow: -3000)
     ),
     Entity(
@@ -267,7 +267,7 @@ let biomePreviewThree: [Entity] = [
         id: "4",
         username: "vjeranski",
         avatar: "https://d2w9rnfcy7mm78.cloudfront.net/31132288/original_b3573ce965ab3459b25ab0977beec40b.jpg",
-        text: "have you all checked out azusa saga (for tracy hyde, aprilblue)'s idol group yet",
+        text: "u checked out azusa saga (for tracy hyde, aprilblue)'s idol group yet",
         created_at: Date(timeIntervalSinceNow: -1200),
         parent: Entity(
             id: "1",

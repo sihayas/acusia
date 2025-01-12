@@ -63,16 +63,12 @@ struct BiomePreviewView: View {
                     .frame(maxWidth: .infinity, maxHeight: 112)
                     .padding(.horizontal, 0)
             }
-            .overlay(
-                RoundedRectangle(cornerRadius: 44, style: .continuous)
-                    .stroke(.white.opacity(0.1), lineWidth: 4)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
 
             HStack {
-                CirclifyPreviewView(size: CGSize(width: 56, height: 56),
-                                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05])
-                // .border(.yellow)
+                CirclifyPreviewView(
+                    size: CGSize(width: 44, height: 44),
+                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05]
+                )
 
                 /// Biome Metadata
                 HStack(spacing: 8) {
@@ -94,19 +90,21 @@ struct BiomePreviewView: View {
                             .fontWeight(.semibold)
                             .font(.subheadline)
                             .foregroundStyle(.white)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 44, height: 44)
                             .background(.ultraThinMaterial)
                             .clipShape(Capsule())
-                            .overlay {
-                                Capsule()
-                                    .stroke(.white.opacity(0.1), lineWidth: 1)
-                            }
                             .shadow(radius: 4)
                     }
                 }
             }
-            .padding([.horizontal, .bottom], 16)
+            .padding([.horizontal, .bottom], 12)
         }
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(
+            RoundedRectangleCornerStroke(cornerRadius: 20, cornerLength: 0)
+                .strokeBorder(.ultraThinMaterial, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+        )
         .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
             BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
@@ -114,7 +112,7 @@ struct BiomePreviewView: View {
                 .presentationBackground(.black)
         }
         .onTapGesture { showSheet = true }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 12)
     }
 }
 

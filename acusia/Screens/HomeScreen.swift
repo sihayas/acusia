@@ -8,29 +8,14 @@ struct Home: View {
     @EnvironmentObject private var windowState: UIState
 
     let scrollDelegate = CSVDelegate()
-
-    private let columns = [
-        GridItem(.flexible(), spacing: 24),
-        GridItem(.flexible(), spacing: 24),
-        GridItem(.flexible(), spacing: 24)
-    ]
-
-    private let biomes = [
-        Biome(entities: biomePreviewOne),
-        Biome(entities: biomePreviewTwo),
-        Biome(entities: biomePreviewTwo),
-        Biome(entities: biomePreviewThree),
-        Biome(entities: biomePreviewThree),
-        Biome(entities: biomePreviewThree)
-    ]
-
+    
     var body: some View {
-        let upperSectionHeight = viewSize.width
+        let upperSectionHeight = safeAreaInsets.top * 2
         let bottomSectionHeight = viewSize.height - upperSectionHeight
 
         CSVRepresentable(delegate: scrollDelegate) {
             ZStack(alignment: .top) {
-                // MARK: - Nested Scroll View
+                // MARK: - Below Scroll View
 
                 CSVRepresentable(isInner: true, delegate: scrollDelegate) {
                     VStack(spacing: 0) {
@@ -44,23 +29,13 @@ struct Home: View {
                                 )
                             }
                         }
-                        .padding([.horizontal, .bottom], 20)
-                        .background(
-                            TintedBlurView(style: .dark, backgroundColor: .black, blurMutingFactor: 1.0)
-                                .edgesIgnoringSafeArea(.all)
-                        )
-
-                        /// Spacer/Offset
-                        Rectangle()
-                            .fill(.clear)
-                            .frame(height: bottomSectionHeight)
                     }
-                    .border(.red)
-                    
+                    .padding([.horizontal], 16)
+                    .padding(.bottom, bottomSectionHeight)
                 }
                 .frame(height: viewSize.height)
 
-                // MARK: - Outer Scroll View
+                // MARK: - Above Scroll View
 
                 VStack(spacing: 0) {
                     Rectangle()
@@ -69,11 +44,11 @@ struct Home: View {
 
                     LazyVStack(spacing: 12) {
                         BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
                         BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
                     }
+                    .padding(.top, 24)
                     .background(.black)
-                    .padding(.top, 20)
                 }
                 .frame(
                     maxWidth: .infinity,
@@ -81,29 +56,26 @@ struct Home: View {
                     alignment: .top
                 )
             }
+            .overlay(alignment: .top) {
+                LinearBlurView(radius: 8, gradientColors: [.black, .clear])
+                    .frame(height: upperSectionHeight + 24)
+                    .ignoresSafeArea()
+            }
         }
         .overlay(alignment: .top) {
-            LinearBlurView(radius: 4, gradientColors: [.black, .clear])
-                .frame(height: safeAreaInsets.top * 1.5)
-                .ignoresSafeArea()
-
-            HStack {
-                AvatarView(size: 31, imageURL: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg")
-
-                Text("Alia")
+            HStack(alignment: .bottom) {
+                Text("alia")
                     .font(.title)
                     .foregroundColor(.white)
                     .fontWeight(.bold)
 
                 Spacer()
-            }
-            .frame(maxWidth: .infinity)
-            .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 4)
-            .padding(.top, safeAreaInsets.top)
-            .padding(.horizontal, 20)
 
-            // LinearGradientMask(gradientColors: [.black.opacity(0.5), Color.clear])
-            //     .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top * 1.5)
+                AvatarView(size: 35, imageURL: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg")
+            }
+            .shadow(radius: 12)
+            .padding(.horizontal, 24)
+            .frame(height: upperSectionHeight, alignment: .bottom)
         }
     }
 }
@@ -197,6 +169,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
     private var initialDirection: Direction = .none
     weak var outerScrollView: CSV?
     weak var innerScrollView: CSV?
+    var dragOffset: CGFloat = 0
 
     enum Direction { case none, up, down }
 
@@ -326,29 +299,4 @@ class CSVDelegate: NSObject, UIScrollViewDelegate {
 
         csv.lastContentOffset = csv.contentOffset
     }
-}
-
-extension View {
-    @ViewBuilder
-    func viewExtractor(result: @escaping (UIView) -> ()) -> some View {
-        background(ViewExtractorHelper(result: result))
-            .compositingGroup()
-    }
-}
-
-private struct ViewExtractorHelper: UIViewRepresentable {
-    var result: (UIView) -> ()
-
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .clear
-        DispatchQueue.main.async {
-            if let superView = view.superview?.superview?.subviews.last?.subviews.first {
-                result(superView)
-            }
-        }
-        return view
-    }
-
-    func updateUIView(_ uiView: UIView, context: Context) {}
 }

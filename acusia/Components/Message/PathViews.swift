@@ -120,6 +120,73 @@ struct HeartbreakRightPath: Shape {
 
 // MARK: - Entity Paths
 
+struct RoundedRectangleCornerStroke: InsettableShape {
+    var cornerRadius: CGFloat
+    var cornerLength: CGFloat
+    var insetAmount: CGFloat = 0
+    
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let insetRect = rect.insetBy(dx: insetAmount, dy: insetAmount)
+        
+        // Top left corner
+        path.move(to: CGPoint(x: insetRect.minX, y: insetRect.minY + cornerRadius + cornerLength))
+        path.addLine(to: CGPoint(x: insetRect.minX, y: insetRect.minY + cornerRadius))
+        path.addArc(
+            center: CGPoint(x: insetRect.minX + cornerRadius, y: insetRect.minY + cornerRadius),
+            radius: cornerRadius,
+            startAngle: .degrees(180),
+            endAngle: .degrees(270),
+            clockwise: false
+        )
+        path.addLine(to: CGPoint(x: insetRect.minX + cornerRadius + cornerLength, y: insetRect.minY))
+        
+        // Top right corner
+        path.move(to: CGPoint(x: insetRect.maxX - cornerRadius - cornerLength, y: insetRect.minY))
+        path.addLine(to: CGPoint(x: insetRect.maxX - cornerRadius, y: insetRect.minY))
+        path.addArc(
+            center: CGPoint(x: insetRect.maxX - cornerRadius, y: insetRect.minY + cornerRadius),
+            radius: cornerRadius,
+            startAngle: .degrees(270),
+            endAngle: .degrees(0),
+            clockwise: false
+        )
+        path.addLine(to: CGPoint(x: insetRect.maxX, y: insetRect.minY + cornerRadius + cornerLength))
+        
+        // Bottom right corner
+        path.move(to: CGPoint(x: insetRect.maxX, y: insetRect.maxY - cornerRadius - cornerLength))
+        path.addLine(to: CGPoint(x: insetRect.maxX, y: insetRect.maxY - cornerRadius))
+        path.addArc(
+            center: CGPoint(x: insetRect.maxX - cornerRadius, y: insetRect.maxY - cornerRadius),
+            radius: cornerRadius,
+            startAngle: .degrees(0),
+            endAngle: .degrees(90),
+            clockwise: false
+        )
+        path.addLine(to: CGPoint(x: insetRect.maxX - cornerRadius - cornerLength, y: insetRect.maxY))
+        
+        // Bottom left corner
+        path.move(to: CGPoint(x: insetRect.minX + cornerRadius + cornerLength, y: insetRect.maxY))
+        path.addLine(to: CGPoint(x: insetRect.minX + cornerRadius, y: insetRect.maxY))
+        path.addArc(
+            center: CGPoint(x: insetRect.minX + cornerRadius, y: insetRect.maxY - cornerRadius),
+            radius: cornerRadius,
+            startAngle: .degrees(90),
+            endAngle: .degrees(180),
+            clockwise: false
+        )
+        path.addLine(to: CGPoint(x: insetRect.minX, y: insetRect.maxY - cornerRadius - cornerLength))
+        
+        return path
+    }
+    
+    func inset(by amount: CGFloat) -> some InsettableShape {
+        var shape = self
+        shape.insetAmount += amount
+        return shape
+    }
+}
+
 struct Line: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()

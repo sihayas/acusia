@@ -29,14 +29,14 @@ struct EntityView: View {
             if previousId == parentId && !isRootChild && !isRoot {
                 LoopPath()
                     .stroke(Color(.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                    .frame(width: 40, height: 32)
+                    .frame(width: 32, height: 32)
                     .scaleEffect(x: -1, y: 1)
             }
 
             if let parent = parent, parentId != previousParentId, parentId != previousId, !isRootChild {
                 HStack(alignment: .bottom, spacing: 8) {
-                    AvatarView(size: 32, imageURL: parent.avatar)
-                        .frame(width: 40)
+                    AvatarView(size: 24, imageURL: parent.avatar)
+                        .frame(width: 32)
 
                     ContextualMessageView(entity: parent)
                 }
@@ -54,17 +54,18 @@ struct EntityView: View {
                                     lineCap: .round,
                                     dash: previousParentId == parentId ? [4, 8] : []
                                 ))
-                        .frame(width: 40)
+                        .frame(width: 32)
                         .opacity(!isRoot && !isRootChild ? 1 : 0)
 
-                    AvatarView(size: 40, imageURL: entity.avatar)
+                    AvatarView(size: 32, imageURL: entity.avatar)
                 }
-                .frame(width: 40)
+                .frame(width: 32)
                 .frame(maxHeight: .infinity)
 
                 MessageView(entity: entity, isOwn: false)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
