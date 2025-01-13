@@ -12,6 +12,7 @@
 		CD0D90542CA40434004FD674 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CD0D90532CA40434004FD674 /* Kingfisher */; };
 		CD132AA32C6DDB7200C16804 /* BigUIPaging in Frameworks */ = {isa = PBXBuildFile; productRef = CD132AA22C6DDB7200C16804 /* BigUIPaging */; };
 		CD164BCE2D2B4246000D549A /* PackedCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD164BCD2D2B4246000D549A /* PackedCircle.swift */; };
+		CD16C9F12D34D46400AD368D /* CSVRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD16C9F02D34D45C00AD368D /* CSVRepresentable.swift */; };
 		CD17C1042CA8FC520014D3FD /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = CD17C1032CA8FC520014D3FD /* Transmission */; };
 		CD17C10E2CB195420014D3FD /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD17C10D2CB195400014D3FD /* SafeArea.swift */; };
 		CD264CD82CD3A6B600A74D7E /* Grok.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD264CD72CD3A6B600A74D7E /* Grok.metal */; };
@@ -143,6 +144,7 @@
 		CD06C26F2C69B10100FC010C /* IndexSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexSheet.swift; sourceTree = "<group>"; };
 		CD0D90502CA3C31A004FD674 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		CD164BCD2D2B4246000D549A /* PackedCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackedCircle.swift; sourceTree = "<group>"; };
+		CD16C9F02D34D45C00AD368D /* CSVRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVRepresentable.swift; sourceTree = "<group>"; };
 		CD17C10D2CB195400014D3FD /* SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeArea.swift; sourceTree = "<group>"; };
 		CD264CD72CD3A6B600A74D7E /* Grok.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Grok.metal; sourceTree = "<group>"; };
 		CD264CDF2CD69AD300A74D7E /* AuxiliaryContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxiliaryContextMenu.swift; sourceTree = "<group>"; };
@@ -296,6 +298,14 @@
 				CD4BAA9E2C950A3F0005F3DB /* Ripple */,
 			);
 			path = Metal;
+			sourceTree = "<group>";
+		};
+		CD16C9EF2D34D43600AD368D /* UIViewRepresentable */ = {
+			isa = PBXGroup;
+			children = (
+				CD16C9F02D34D45C00AD368D /* CSVRepresentable.swift */,
+			);
+			path = UIViewRepresentable;
 			sourceTree = "<group>";
 		};
 		CD4BAA9E2C950A3F0005F3DB /* Ripple */ = {
@@ -461,6 +471,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CD16C9EF2D34D43600AD368D /* UIViewRepresentable */,
 				CD164BCD2D2B4246000D549A /* PackedCircle.swift */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
 				CDF4BD7D2D0A8E6000F8D775 /* Biomes */,
@@ -718,6 +729,7 @@
 				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
+				CD16C9F12D34D46400AD368D /* CSVRepresentable.swift in Sources */,
 				CD92450A2CA6713800635716 /* SymmetryView.swift in Sources */,
 				CD54A56F2CB72E9B00B257EA /* PixellatePreview.swift in Sources */,
 				CD43B2BF2CDC0D900018DB16 /* Path.swift in Sources */,

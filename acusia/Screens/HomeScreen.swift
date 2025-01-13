@@ -7,8 +7,10 @@ struct Home: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: UIState
 
-    let scrollDelegate = CSVDelegate()
-    
+    @StateObject private var scrollDelegate = CSVDelegate()
+
+    @State var dragOffset: CGFloat = 0
+
     var body: some View {
         let upperSectionHeight = safeAreaInsets.top * 2
         let bottomSectionHeight = viewSize.height - upperSectionHeight
@@ -18,47 +20,25 @@ struct Home: View {
                 // MARK: - Below Scroll View
 
                 CSVRepresentable(isInner: true, delegate: scrollDelegate) {
-                    VStack(spacing: 0) {
-                        /// User History
-                        LazyVStack(alignment: .trailing, spacing: 16) {
-                            ForEach(userHistorySample.indices, id: \.self) { index in
-                                EntityHistoryView(
-                                    rootEntity: userHistorySample[index],
-                                    previousEntity: userHistorySample[index],
-                                    entity: userHistorySample[index]
-                                )
-                            }
-                        }
-                    }
-                    .padding([.horizontal], 16)
-                    .padding(.bottom, bottomSectionHeight)
+                    InnerContent(
+                        offset: $dragOffset,
+                        upperSectionHeight: upperSectionHeight,
+                        bottomSectionHeight: bottomSectionHeight
+                    )
                 }
                 .frame(height: viewSize.height)
 
                 // MARK: - Above Scroll View
 
-                VStack(spacing: 0) {
-                    Rectangle()
-                        .fill(.clear)
-                        .frame(height: upperSectionHeight)
-
-                    LazyVStack(spacing: 12) {
-                        BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                        BiomePreviewView(biome: Biome(entities: biomePreviewThree))
-                        BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
-                    }
-                    .padding(.top, 24)
-                    .background(.black)
-                }
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .top
+                OuterContent(
+                    offset: $dragOffset,
+                    upperSectionHeight: upperSectionHeight,
+                    bottomSectionHeight: bottomSectionHeight
                 )
             }
             .overlay(alignment: .top) {
                 LinearBlurView(radius: 8, gradientColors: [.black, .clear])
-                    .frame(height: upperSectionHeight + 24)
+                    .frame(height: upperSectionHeight + 32)
                     .ignoresSafeArea()
             }
         }
@@ -77,226 +57,61 @@ struct Home: View {
             .padding(.horizontal, 24)
             .frame(height: upperSectionHeight, alignment: .bottom)
         }
+        .onChange(of: scrollDelegate.dragOffset) { _, offset in
+            dragOffset = offset
+            print("offset: \(offset)")
+        }
     }
 }
 
-class CSV: UIScrollView, UIGestureRecognizerDelegate {
-    var lastContentOffset: CGPoint = .zero
-    var initialContentOffset: CGPoint = .zero
-    var isInner: Bool = false
-
-    // Add reference to the other scroll view's gesture recognizer
-    var otherPanGestureRecognizer: UIPanGestureRecognizer?
-
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-
-        // Make sure we're the delegate for our own pan gesture recognizer
-        panGestureRecognizer.delegate = self
-    }
-
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        // Allow simultaneous recognition with the other scroll view's gesture
-        if otherGestureRecognizer == otherPanGestureRecognizer {
-            return true
+struct OuterContent: View {
+    @Binding var offset: CGFloat
+    let upperSectionHeight: CGFloat
+    let bottomSectionHeight: CGFloat
+ 
+    var body: some View {
+        VStack(spacing: 0) {
+            LazyVStack(spacing: 12) {
+                BiomePreviewView(biome: Biome(entities: biomePreviewOne))
+                BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+                BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+            }
+            .padding(.top, 24)
+            .background(.black)
         }
-        return false
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity,
+            alignment: .top
+        )
+        .border(.blue)
+        .offset(y: upperSectionHeight + offset)
+        .animation(.spring(), value: offset)
     }
 }
 
-struct CSVRepresentable<Content: View>: UIViewRepresentable {
-    let content: Content
-    let isInner: Bool
-    private let scrollDelegate: CSVDelegate
+struct InnerContent: View {
+    @Binding var offset: CGFloat
+    let upperSectionHeight: CGFloat
+    let bottomSectionHeight: CGFloat
 
-    init(isInner: Bool = false, delegate: CSVDelegate, @ViewBuilder content: () -> Content) {
-        self.content = content()
-        self.isInner = isInner
-        self.scrollDelegate = delegate
-    }
-
-    func makeUIView(context: Context) -> CSV {
-        /// Create the CollaborativeScrollView in UIKit.
-        let scrollView = CSV()
-        scrollView.isInner = isInner
-        scrollView.contentInsetAdjustmentBehavior = .never
-        scrollView.delegate = scrollDelegate
-        scrollView.bounces = !isInner
-
-        let hostController = UIHostingController(rootView: content)
-        hostController.view.translatesAutoresizingMaskIntoConstraints = false
-        hostController.view.backgroundColor = .clear
-        hostController.safeAreaRegions = SafeAreaRegions()
-        scrollView.addSubview(hostController.view)
-
-        /// Constrain the SwiftUI content to the edges of the CollaborativeScrollView.
-        NSLayoutConstraint.activate([
-            hostController.view.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            hostController.view.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            hostController.view.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            hostController.view.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            hostController.view.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-        ])
-
-        if isInner {
-            scrollDelegate.innerScrollView = scrollView
-
-            DispatchQueue.main.async {
-                let bottomOffset = CGPoint(
-                    x: 0,
-                    y: scrollView.contentSize.height - scrollView.bounds.size.height
-                )
-                if bottomOffset.y > 0 {
-                    scrollView.setContentOffset(bottomOffset, animated: false)
-                }
-
-                self.scrollDelegate.setupGestureRecognizers()
-            }
-        } else {
-            scrollDelegate.outerScrollView = scrollView
-        }
-
-        return scrollView
-    }
-
-    func updateUIView(_ uiView: CSV, context: Context) {}
-}
-
-class CSVDelegate: NSObject, UIScrollViewDelegate {
-    private var isExpanded = false
-    private var lockOuterScrollView = false
-    private var lockInnerScrollView = true
-    private var initialDirection: Direction = .none
-    weak var outerScrollView: CSV?
-    weak var innerScrollView: CSV?
-    var dragOffset: CGFloat = 0
-
-    enum Direction { case none, up, down }
-
-    func setupGestureRecognizers() {
-        guard let inner = innerScrollView, let outer = outerScrollView else { return }
-
-        // Connect the gesture recognizers
-        inner.otherPanGestureRecognizer = outer.panGestureRecognizer
-        outer.otherPanGestureRecognizer = inner.panGestureRecognizer
-
-        // Add both gesture recognizers to the outer scroll view
-        if let innerPan = inner.panGestureRecognizer as? UIPanGestureRecognizer {
-            outer.addGestureRecognizer(innerPan)
-        }
-    }
-
-    /// Lets the user begin expanding/collapsing. Unlocks scrolls if conditions are met.
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        guard let csv = scrollView as? CSV else { return }
-        csv.initialContentOffset = csv.contentOffset
-
-        initialDirection = .none
-
-        /// If dragging starts at top of outer, unlock inner to allow expansion.
-        if !isExpanded {
-            if csv === outerScrollView {
-                lockInnerScrollView = csv.initialContentOffset.y > 0
-            }
-        }
-
-        /// If dragging starts at bottom of inner, unlock outer to allow collapse.
-        if isExpanded {
-            let isAtBottom = ((innerScrollView!.contentOffset.y + innerScrollView!.frame.size.height) >= innerScrollView!.contentSize.height)
-            lockOuterScrollView = !isAtBottom
-        }
-    }
-
-    /// Decides if we commit to expanded or collapsed based on final scroll position.
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        guard let csv = scrollView as? CSV else { return }
-
-        /// Mark expanded if user scrolled inner enough.
-        if !isExpanded, csv === innerScrollView {
-            let bottom = csv.contentSize.height - csv.bounds.size.height
-
-            if csv.contentOffset.y < bottom {
-                isExpanded = true
-                csv.bounces = true
-            }
-        }
-
-        /// Collapse if user scrolled outer (means they want to go back).
-        if isExpanded, csv === outerScrollView {
-            if csv.contentOffset.y > 0 {
-                innerScrollView?.bounces = false
-                isExpanded = false
-            }
-        }
-    }
-
-    /// Cleanup post-drag. Good place to snap locked scroll offsets if needed.
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {}
-
-    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {}
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {}
-
-    /// Core logic that locks/unlocks outer and inner scrolls depending on state and direction.
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let csv = scrollView as? CSV else { return }
-        let direction: Direction = csv.lastContentOffset.y > csv.contentOffset.y ? .up : .down
-
-        /// Note the initial direction to abort a possible expansion/unexpansion
-        if initialDirection == .none && csv.contentOffset.y != csv.initialContentOffset.y {
-            initialDirection = csv.contentOffset.y > csv.initialContentOffset.y ? .down : .up
-        }
-
-        /// Lock outer: force offset to top and hide indicator.
-        if lockOuterScrollView {
-            outerScrollView!.contentOffset = CGPoint(x: 0, y: 0)
-            outerScrollView!.showsVerticalScrollIndicator = false
-        }
-
-        /// Lock inner: force offset to bottom and hide indicator.
-        if lockInnerScrollView {
-            innerScrollView!.contentOffset.y = innerScrollView!.contentSize.height - innerScrollView!.bounds.size.height
-        }
-
-        if !isExpanded {
-            /// Abort expansion if user drags downward immediately. Works in tandom with
-            /// `scrollViewWillBeginDragging`.
-            if initialDirection == .down, !lockInnerScrollView {
-                lockInnerScrollView = true
-            }
-
-            if csv === innerScrollView {
-                let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
-
-                if !lockInnerScrollView {
-                    if direction == .up && outerScrollView?.contentOffset.y ?? 0 <= 0 {
-                        lockOuterScrollView = true
-                    } else if direction == .down && isAtBottom {
-                        lockOuterScrollView = false
-                    }
+    var body: some View {
+        VStack(spacing: 0) {
+            /// User History
+            LazyVStack(alignment: .trailing, spacing: 16) {
+                ForEach(userHistorySample.indices, id: \.self) { index in
+                    EntityHistoryView(
+                        rootEntity: userHistorySample[index],
+                        previousEntity: userHistorySample[index],
+                        entity: userHistorySample[index]
+                    )
                 }
             }
         }
-
-        if isExpanded {
-            /// Abort collapse if user scrolls upward immediately. Works in tandom with `scrollViewWillBeginDragging`.
-            if initialDirection == .up, !lockOuterScrollView {
-                lockOuterScrollView = true
-            }
-
-            if csv === innerScrollView {
-                let isAtBottom = (csv.contentOffset.y + csv.frame.size.height) >= csv.contentSize.height
-
-                if !lockOuterScrollView {
-                    if direction == .down && isAtBottom {
-                        lockInnerScrollView = true
-                    } else if direction == .up && outerScrollView?.contentOffset.y ?? 0 <= 0 {
-                        lockOuterScrollView = true
-                    }
-                }
-            }
-        }
-
-        csv.lastContentOffset = csv.contentOffset
+        .padding([.horizontal], 16)
+        .border(.red)
+        .offset(y: -bottomSectionHeight + offset)
+        .animation(.spring(), value: offset)
     }
 }
+
