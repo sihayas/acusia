@@ -19,14 +19,13 @@ struct Home: View {
             ZStack(alignment: .top) {
                 // MARK: - Below Scroll View
 
-                CSVRepresentable(isInner: true, delegate: scrollDelegate) {
-                    InnerContent(
-                        offset: $dragOffset,
-                        upperSectionHeight: upperSectionHeight,
-                        bottomSectionHeight: bottomSectionHeight
-                    )
-                }
-                .frame(height: viewSize.height)
+                InnerContent(
+                    offset: $dragOffset,
+                    scrollDelegate: scrollDelegate,
+                    viewSize: viewSize,
+                    upperSectionHeight: upperSectionHeight,
+                    bottomSectionHeight: bottomSectionHeight
+                )
 
                 // MARK: - Above Scroll View
 
@@ -34,7 +33,7 @@ struct Home: View {
                     offset: $dragOffset,
                     upperSectionHeight: upperSectionHeight,
                     bottomSectionHeight: bottomSectionHeight
-                )
+                ) 
             }
             .overlay(alignment: .top) {
                 LinearBlurView(radius: 8, gradientColors: [.black, .clear])
@@ -58,8 +57,16 @@ struct Home: View {
             .frame(height: upperSectionHeight, alignment: .bottom)
         }
         .onChange(of: scrollDelegate.dragOffset) { _, offset in
-            dragOffset = offset
-            print("offset: \(offset)")
+            if scrollDelegate.trackDragOffset {
+                dragOffset = offset
+            }
+        }
+        .onChange(of: scrollDelegate.isExpanded) { _, isExpanded in
+            withAnimation(.spring()) {
+                if isExpanded {
+                    dragOffset = 999
+                }
+            }
         }
     }
 }
@@ -68,7 +75,16 @@ struct OuterContent: View {
     @Binding var offset: CGFloat
     let upperSectionHeight: CGFloat
     let bottomSectionHeight: CGFloat
- 
+
+    // Compute bounded offset for outer content
+    private var boundedOffset: CGFloat {
+        // Start at upperSectionHeight (minimum)
+        // Can increase up to upperSectionHeight + bottomSectionHeight (maximum)
+        let minOffset = upperSectionHeight
+        let maxOffset = upperSectionHeight + bottomSectionHeight
+        return min(maxOffset, max(minOffset, upperSectionHeight + offset))
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             LazyVStack(spacing: 12) {
@@ -84,34 +100,43 @@ struct OuterContent: View {
             maxHeight: .infinity,
             alignment: .top
         )
-        .border(.blue)
-        .offset(y: upperSectionHeight + offset)
-        .animation(.spring(), value: offset)
+        .offset(y: boundedOffset)
     }
 }
 
 struct InnerContent: View {
     @Binding var offset: CGFloat
+    let scrollDelegate: CSVDelegate
+    let viewSize: CGSize
     let upperSectionHeight: CGFloat
     let bottomSectionHeight: CGFloat
 
+    // Compute bounded offset for inner content
+    private var boundedOffset: CGFloat {
+        // Start at -bottomSectionHeight (minimum)
+        // Can increase up to 0 (maximum)
+        let minOffset = -bottomSectionHeight
+        let maxOffset: CGFloat = 0
+        return min(maxOffset, max(minOffset, -bottomSectionHeight + offset))
+    }
+
     var body: some View {
-        VStack(spacing: 0) {
-            /// User History
-            LazyVStack(alignment: .trailing, spacing: 16) {
-                ForEach(userHistorySample.indices, id: \.self) { index in
-                    EntityHistoryView(
-                        rootEntity: userHistorySample[index],
-                        previousEntity: userHistorySample[index],
-                        entity: userHistorySample[index]
-                    )
+        CSVRepresentable(isInner: true, delegate: scrollDelegate) {
+            VStack(spacing: 0) {
+                /// User History
+                LazyVStack(alignment: .trailing, spacing: 16) {
+                    ForEach(userHistorySample.indices, id: \.self) { index in
+                        EntityHistoryView(
+                            rootEntity: userHistorySample[index],
+                            previousEntity: userHistorySample[index],
+                            entity: userHistorySample[index]
+                        )
+                    }
                 }
             }
+            .padding([.horizontal], 16)
         }
-        .padding([.horizontal], 16)
-        .border(.red)
-        .offset(y: -bottomSectionHeight + offset)
-        .animation(.spring(), value: offset)
+        .frame(height: viewSize.height)
+        .offset(y: boundedOffset)
     }
 }
-

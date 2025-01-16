@@ -41,10 +41,10 @@ struct BiomeExpandedView: View {
             .defaultScrollAnchor(.bottom)
         }
         .overlay(alignment: .top) {
-            LinearBlurView(radius: 4, gradientColors: [.clear, .black])
-                .scaleEffect(x: 1, y: -1)
-                .ignoresSafeArea()
-                .frame(maxWidth: .infinity, maxHeight: 0)
+            // LinearGradientMask(gradientColors: [.black, Color(.clear)])
+            //     .ignoresSafeArea()
+            //     .frame(height: safeAreaInsets.top)
+            //     .padding(.horizontal, 0)    
         }
         .onAppear {
             withAnimation(.smooth(duration: 0.7)) {

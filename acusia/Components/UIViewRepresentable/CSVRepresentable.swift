@@ -92,8 +92,8 @@ class CSV: UIScrollView, UIGestureRecognizerDelegate {
 class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
     @Published var isExpanded = false
     @Published var dragOffset: CGFloat = 0
-
-    private var trackDragOffset = true
+    @Published var trackDragOffset = true
+    
     private var lockOuterScrollView = false
     private var lockInnerScrollView = true
     private var initialDirection: Direction = .none
@@ -131,7 +131,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
                 }
             }
         }
-
+ 
         /// If dragging starts at bottom of inner, unlock outer to allow collapse.
         if isExpanded {
             let isAtBottom = ((innerScrollView!.contentOffset.y + innerScrollView!.frame.size.height) >= innerScrollView!.contentSize.height)
@@ -154,6 +154,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
             let bottom = csv.contentSize.height - csv.bounds.size.height
 
             if csv.contentOffset.y < bottom {
+                trackDragOffset = false
                 isExpanded = true
                 csv.bounces = true
             }
@@ -162,6 +163,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
         /// Collapse if user scrolled outer (means they want to go back).
         if isExpanded, csv === outerScrollView {
             if csv.contentOffset.y > 0 {
+                trackDragOffset = false
                 innerScrollView?.bounces = false
                 isExpanded = false
             }
@@ -199,7 +201,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
         if trackDragOffset {
             dragOffset = csv.panGestureRecognizer.translation(in: csv).y
         }
-
+  
         if !isExpanded {
             /// Abort expansion if user drags downward immediately. Works in tandom with
             /// `scrollViewWillBeginDragging`.
