@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct BiomePreviewView: View {
+    @Environment(\.viewSize) private var viewSize
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var windowState: UIState
 
     let biome: Biome
@@ -24,95 +26,104 @@ struct BiomePreviewView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 8) {
-                /// Ranked Messages
-                ForEach(0 ..< biome.entities.count, id: \.self) { index in
-                    let previousEntity = index > 0 ? biome.entities[index - 1] : nil
+        TimelineView(.animation) { timeline in
+            let time = timeline.date.timeIntervalSince1970
+            let x = (sin(time) + 1) / 2
 
-                    EntityView(
-                        rootEntity: biome.entities[0],
-                        previousEntity: previousEntity,
-                        entity: biome.entities[index]
+            ZStack {
+                MeshGradient(width: 3, height: 3, points: [
+                    [0, 0], [0.5, Float(x * 0.1)], [1, 0],
+                    [Float(x * 0.1), 0.5], [0.5, Float(x * 0.15)], [Float(x * 0.1), 0.5],
+                    [0, 1], [0.5, Float(x * 0.1)], [1, 1]
+                ], colors: [
+                    .black,
+                    .orange.opacity(0.75),
+                    .black,
+                    .blue.opacity(0.75),
+                    .orange.opacity(0.75),
+                    .blue.opacity(0.75),
+                    .black,
+                    .orange.opacity(0.75),
+                    .black
+                ])
+                .ignoresSafeArea()
+
+                VStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        /// Ranked Messages
+                        ForEach(0 ..< biome.entities.count, id: \.self) { index in
+                            let previousEntity = index > 0 ? biome.entities[index - 1] : nil
+
+                            EntityView(
+                                rootEntity: biome.entities[0],
+                                previousEntity: previousEntity,
+                                entity: biome.entities[index]
+                            )
+                        }
+                    }
+                    .padding(24)
+                    .frame(
+                        height: viewSize.height - safeAreaInsets.top - safeAreaInsets.bottom * 2.4,
+                        alignment: .bottom
                     )
-                    .readSize { newSize in
-                        if index == 2 {
-                            firstMessageSize = newSize
+                    .overlay(alignment: .top) {
+                        LinearBlurView(radius: 2, gradientColors: [.black, .clear])
+                            .frame(maxWidth: .infinity, maxHeight: safeAreaInsets.top)
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 45, style: .continuous)
+                            .stroke(.ultraThinMaterial, lineWidth: 2)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
+                    .contentShape(RoundedRectangle(cornerRadius: 45, style: .continuous))
+                    .matchedTransitionSource(id: "hi", in: animation)
+
+                    HStack {
+                        CirclifyPreviewView(
+                            size: CGSize(width: 40, height: 40),
+                            values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05]
+                        )
+
+                        Spacer()
+
+                        VStack {
+                            Text("lorem ipsum")
+                                .fontWeight(.regular)
+                                .font(.subheadline)
+                                .foregroundColor(.white)
+
+                            Text("800 Messages")
+                                .font(.footnote)
+                                .fontWeight(.medium)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Button {} label: {
+                            Image(systemName: "message.fill")
+                                .fontWeight(.medium)
+                                .font(.footnote)
+                                .foregroundStyle(.white)
+                                .frame(width: 40, height: 40)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Capsule())
                         }
                     }
                 }
-            }
-            .padding([.horizontal, .top], 24)
-            .readSize { newSize in
-                frameSize = newSize
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity)
-            .frame(
-                height: frameSize.height > 0
-                    ? frameSize.height - firstMessageSize.height + 80
-                    : nil,
-                alignment: .top
-            )
-            .overlay(alignment: .bottom) {
-                LinearBlurView(radius: 2, gradientColors: [.clear, .black])
-                    .frame(maxWidth: .infinity, maxHeight: 112)
-                    .padding(.horizontal, 0)
-
-                LinearGradientMask(gradientColors: [.clear, Color(.black)])
-                    .frame(maxWidth: .infinity, maxHeight: 112)
-                    .padding(.horizontal, 0)
-            }
-
-            HStack {
-                CirclifyPreviewView(
-                    size: CGSize(width: 44, height: 44),
-                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05]
+                .padding(.horizontal, 28)
+                .background(
+                    TintedBlurView(style: .systemChromeMaterialDark, backgroundColor: .black, blurMutingFactor: 0.75)
+                        .edgesIgnoringSafeArea(.all)
                 )
-
-                /// Biome Metadata
-                HStack(spacing: 8) {
-                    VStack(alignment: .leading) {
-                        Text("lorem ipsum")
-                            .fontWeight(.bold)
-                            .font(.headline)
-                            .foregroundColor(.white)
-
-                        Text("800 Messages")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
-
-                    Button {} label: {
-                        Image(systemName: "message.badge.fill")
-                            .fontWeight(.semibold)
-                            .font(.subheadline)
-                            .foregroundStyle(.white)
-                            .frame(width: 44, height: 44)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Capsule())
-                            .shadow(radius: 4)
-                    }
+                .sheet(isPresented: $showSheet) {
+                    BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
+                        .navigationTransition(.zoom(sourceID: "hi", in: animation))
+                        .presentationBackground(.black)
                 }
+                .onTapGesture { showSheet = true }
             }
-            .padding([.horizontal, .bottom], 12)
         }
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .overlay(
-            RoundedRectangleCornerStroke(cornerRadius: 20, cornerLength: 0)
-                .strokeBorder(.ultraThinMaterial, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
-        )
-        .matchedTransitionSource(id: "hi", in: animation)
-        .sheet(isPresented: $showSheet) {
-            BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
-                .navigationTransition(.zoom(sourceID: "hi", in: animation))
-                .presentationBackground(.black)
-        }
-        .onTapGesture { showSheet = true }
-        .padding(.horizontal, 12)
     }
 }
 

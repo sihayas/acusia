@@ -121,6 +121,10 @@ struct HeartbreakRightPath: Shape {
 // MARK: - Entity Paths
 
 struct RoundedRectangleCornerStroke: InsettableShape {
+    // RoundedRectangleCornerStroke(cornerRadius: 32, cornerLength: 0)
+    //     .strokeBorder(.ultraThinMaterial,
+    //                   style: StrokeStyle(lineWidth: 4,
+    //                                      lineCap: .round, lineJoin: .round))
     var cornerRadius: CGFloat
     var cornerLength: CGFloat
     var insetAmount: CGFloat = 0

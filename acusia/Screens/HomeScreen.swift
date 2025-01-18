@@ -12,7 +12,7 @@ struct Home: View {
     @State var dragOffset: CGFloat = 0
 
     var body: some View {
-        let upperSectionHeight = safeAreaInsets.top * 2
+        let upperSectionHeight = safeAreaInsets.top
         let bottomSectionHeight = viewSize.height - upperSectionHeight
 
         CSVRepresentable(delegate: scrollDelegate) {
@@ -33,38 +33,48 @@ struct Home: View {
                     offset: $dragOffset,
                     upperSectionHeight: upperSectionHeight,
                     bottomSectionHeight: bottomSectionHeight
-                ) 
+                )
             }
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .top
+            )
             .overlay(alignment: .top) {
                 LinearBlurView(radius: 8, gradientColors: [.black, .clear])
-                    .frame(height: upperSectionHeight + 32)
+                    .frame(height: upperSectionHeight)
                     .ignoresSafeArea()
             }
         }
         .overlay(alignment: .top) {
             HStack(alignment: .bottom) {
-                Text("alia")
-                    .font(.title)
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
+                // Text("alia")
+                //     .font(.title)
+                //     .foregroundColor(.white)
+                //     .fontWeight(.bold)
 
-                Spacer()
+                // Spacer()
 
-                AvatarView(size: 35, imageURL: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg")
+                // AvatarView(size: 35, imageURL: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg")
             }
             .shadow(radius: 12)
             .padding(.horizontal, 24)
-            .frame(height: upperSectionHeight, alignment: .bottom)
+            .frame(
+                height: upperSectionHeight,
+                alignment: .bottom
+            )
         }
         .onChange(of: scrollDelegate.dragOffset) { _, offset in
-            if scrollDelegate.trackDragOffset {
+            withAnimation(.spring()) {
                 dragOffset = offset
             }
         }
         .onChange(of: scrollDelegate.isExpanded) { _, isExpanded in
             withAnimation(.spring()) {
                 if isExpanded {
-                    dragOffset = 999
+                    scrollDelegate.dragOffset = bottomSectionHeight
+                } else {
+                    dragOffset = 0
                 }
             }
         }
@@ -80,26 +90,24 @@ struct OuterContent: View {
     private var boundedOffset: CGFloat {
         // Start at upperSectionHeight (minimum)
         // Can increase up to upperSectionHeight + bottomSectionHeight (maximum)
-        let minOffset = upperSectionHeight
+        let minOffset: CGFloat = upperSectionHeight
         let maxOffset = upperSectionHeight + bottomSectionHeight
         return min(maxOffset, max(minOffset, upperSectionHeight + offset))
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            LazyVStack(spacing: 12) {
-                BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-                BiomePreviewView(biome: Biome(entities: biomePreviewThree))
-                BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
-            }
-            .padding(.top, 24)
-            .background(.black)
+        LazyVStack(spacing: 24) {
+            BiomePreviewView(biome: Biome(entities: biomePreviewOne))
+            BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+            BiomePreviewView(biome: Biome(entities: biomePreviewThree))
         }
+        .background(.black)
         .frame(
             maxWidth: .infinity,
             maxHeight: .infinity,
             alignment: .top
         )
+        .padding(.bottom, upperSectionHeight)
         .offset(y: boundedOffset)
     }
 }
@@ -134,7 +142,8 @@ struct InnerContent: View {
                     }
                 }
             }
-            .padding([.horizontal], 16)
+            .padding(.bottom, 12)
+            .padding(.horizontal, 24)
         }
         .frame(height: viewSize.height)
         .offset(y: boundedOffset)

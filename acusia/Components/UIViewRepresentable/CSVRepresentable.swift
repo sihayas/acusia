@@ -56,6 +56,7 @@ struct CSVRepresentable<Content: View>: UIViewRepresentable {
                 self.scrollDelegate.setupGestureRecognizers()
             }
         } else {
+            // scrollView.isPagingEnabled = true
             scrollDelegate.outerScrollView = scrollView
         }
 
@@ -93,7 +94,8 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
     @Published var isExpanded = false
     @Published var dragOffset: CGFloat = 0
     @Published var trackDragOffset = true
-    
+    private var previousTranslation: CGFloat = 0
+
     private var lockOuterScrollView = false
     private var lockInnerScrollView = true
     private var initialDirection: Direction = .none
@@ -131,7 +133,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
                 }
             }
         }
- 
+
         /// If dragging starts at bottom of inner, unlock outer to allow collapse.
         if isExpanded {
             let isAtBottom = ((innerScrollView!.contentOffset.y + innerScrollView!.frame.size.height) >= innerScrollView!.contentSize.height)
@@ -201,7 +203,7 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
         if trackDragOffset {
             dragOffset = csv.panGestureRecognizer.translation(in: csv).y
         }
-  
+
         if !isExpanded {
             /// Abort expansion if user drags downward immediately. Works in tandom with
             /// `scrollViewWillBeginDragging`.
@@ -234,14 +236,19 @@ class CSVDelegate: NSObject, UIScrollViewDelegate, ObservableObject {
 
                 /// Collapse logic
                 if !lockOuterScrollView {
-                    dragOffset = csv.panGestureRecognizer.translation(in: csv).y
-                    print("expanded dragOffset: \(dragOffset)")
                     if direction == .down && isAtBottom {
                         lockInnerScrollView = true
                     } else if direction == .up && outerScrollView?.contentOffset.y ?? 0 <= 0 {
                         lockOuterScrollView = true
                     }
                 }
+            }
+
+            if !lockOuterScrollView {
+                let currentTranslation = csv.panGestureRecognizer.translation(in: csv).y
+                let translationChange = currentTranslation - previousTranslation
+                dragOffset += translationChange
+                previousTranslation = currentTranslation
             }
         }
 

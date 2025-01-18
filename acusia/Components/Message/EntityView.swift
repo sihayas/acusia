@@ -8,6 +8,7 @@ import SwiftUI
 
 struct EntityView: View {
     @State private var hasContext = false
+    @State private var messageSize: CGSize?
 
     let rootEntity: Entity
     let previousEntity: Entity?
@@ -59,10 +60,16 @@ struct EntityView: View {
 
                     AvatarView(size: 32, imageURL: entity.avatar)
                 }
-                .frame(width: 32)
-                .frame(maxHeight: .infinity)
-
+                .frame(
+                    width: 32,
+                    height: messageSize?.height,
+                    alignment: .bottom
+                )
+ 
                 MessageView(entity: entity, isOwn: false)
+                    .readSize { size in
+                        messageSize = size
+                    }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
