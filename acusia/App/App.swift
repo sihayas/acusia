@@ -2,6 +2,20 @@ import CoreData
 import SwiftUI
 import Transmission
 
+#Preview {
+    let auth = Auth.shared
+    let uiState = UIState.shared
+    // let musicKit = MusicKit.shared
+    
+    auth.isAuthenticated = true
+    let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDA0NTEuYTVmN2Y5OGQxMzRlNGY1ZTg1NWY2YmNkYzUyMmViMDMuMDkwMSIsImV4cCI6MTczMzQyMTc4OX0.VTf2UT9IzFL3-mZtGJGjsn4L1v1rcuGf2JmGS3Jql58"
+    
+    return MainView()
+        .environmentObject(auth)
+        .environmentObject(uiState)
+        // .environmentObject(musicKit)
+}
+
 @main
 struct AcusiaApp: App {
     @StateObject private var auth = Auth.shared
@@ -13,7 +27,7 @@ struct AcusiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AcusiaAppView()
+            MainView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(auth)
                 .environmentObject(uiState)
@@ -23,7 +37,7 @@ struct AcusiaApp: App {
     }
 }
 
-struct AcusiaAppView: View {
+struct MainView: View {
     @Environment(\.viewSize) private var viewSize
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @EnvironmentObject private var auth: Auth
@@ -106,52 +120,5 @@ struct AcusiaAppView: View {
                     .presentationCornerRadius(40)
             }
         }
-    }
-}
-
-/// IMPORTANT: Putting a border on the outer stack prevents touch inputs from being passed through.
-struct SymmetryWindowView: View {
-    @EnvironmentObject private var uiState: UIState
-    @EnvironmentObject private var musicKitManager: MusicKit
-    @Environment(\.safeAreaInsets) private var safeAreaInsets
-
-    @State private var keyboardHeight: CGFloat = 0
-
-    var body: some View {
-        ZStack {
-            SymmetryView()
-                .offset(y: -keyboardHeight)
-                .animation(.snappy, value: keyboardHeight)
-                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
-                    if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                        self.keyboardHeight = keyboardFrame.height + 24
-                    }
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-                    self.keyboardHeight = safeAreaInsets.bottom
-                }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .onAppear {
-            self.keyboardHeight = safeAreaInsets.bottom
-            uiState.symmetryState = .feed
-            uiState.enableDarkMode()
-        }
-    }
-}
-
-struct AcusiaAppPreview: PreviewProvider {
-    static var previews: some View {
-        let auth = Auth.shared
-        let uiState = UIState.shared
-        // let musicKit = MusicKit.shared
-
-        auth.isAuthenticated = true
-        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDA0NTEuYTVmN2Y5OGQxMzRlNGY1ZTg1NWY2YmNkYzUyMmViMDMuMDkwMSIsImV4cCI6MTczMzQyMTc4OX0.VTf2UT9IzFL3-mZtGJGjsn4L1v1rcuGf2JmGS3Jql58"
-
-        return AcusiaAppView()
-            .environmentObject(auth)
-            .environmentObject(uiState)
-            // .environmentObject(musicKit)
     }
 }

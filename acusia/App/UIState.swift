@@ -38,12 +38,12 @@ class UIState: ObservableObject {
 
     // MARK: - Symmetry Window Presentation
 
-    func setupSymmetryWindow() {
+    func setupSecondaryWindow() {
         guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return
         }
 
-        let view = SymmetryWindowView()
+        let view = SecondaryView()
             .environmentObject(UIState.shared)
             .environmentObject(MusicKit.shared)
             .environmentObject(Auth.shared)

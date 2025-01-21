@@ -27,8 +27,13 @@ struct Home: View {
                     bottomSectionHeight: bottomSectionHeight
                 )
 
-                // MARK: - Above Scroll View
+                
+                LinearBlurView(radius: 4, gradientColors: [.clear, .black])
+                    .frame(height: viewSize.height + upperSectionHeight)
+                    .ignoresSafeArea()
+                    .offset(y: -viewSize.height + upperSectionHeight * 2)
 
+                // MARK: - Above Scroll View
                 OuterContent(
                     offset: $dragOffset,
                     upperSectionHeight: upperSectionHeight,
@@ -41,9 +46,7 @@ struct Home: View {
                 alignment: .top
             )
             .overlay(alignment: .top) {
-                LinearBlurView(radius: 8, gradientColors: [.black, .clear])
-                    .frame(height: upperSectionHeight)
-                    .ignoresSafeArea()
+
             }
         }
         .overlay(alignment: .top) {
@@ -95,19 +98,33 @@ struct OuterContent: View {
         return min(maxOffset, max(minOffset, upperSectionHeight + offset))
     }
 
+    let gridItems = [
+        GridItem(.fixed(192),
+                 spacing: 10,
+                 alignment: .leading),
+        GridItem(.fixed(192),
+                 spacing: 10,
+                 alignment: .leading),
+    ]
+
     var body: some View {
-        LazyVStack(spacing: 24) {
+        VStack(spacing: 16) {
+            Text("@alia")
+                .font(.system(size: 72, weight: .regular))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
             BiomePreviewView(biome: Biome(entities: biomePreviewOne))
             BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
             BiomePreviewView(biome: Biome(entities: biomePreviewThree))
         }
-        .background(.black)
+        .background(.clear)
         .frame(
             maxWidth: .infinity,
             maxHeight: .infinity,
             alignment: .top
         )
         .padding(.bottom, upperSectionHeight)
+        .padding(.horizontal, 12)
         .offset(y: boundedOffset)
     }
 }
@@ -142,7 +159,6 @@ struct InnerContent: View {
                     }
                 }
             }
-            .padding(.bottom, 12)
             .padding(.horizontal, 24)
         }
         .frame(height: viewSize.height)

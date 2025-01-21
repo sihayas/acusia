@@ -67,7 +67,8 @@ struct BiomePreviewView: View {
             HStack {
                 CirclifyPreviewView(
                     size: CGSize(width: 44, height: 44),
-                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05]
+                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05],
+                    padding: 1.0
                 )
 
                 /// Biome Metadata
@@ -112,7 +113,6 @@ struct BiomePreviewView: View {
                 .presentationBackground(.black)
         }
         .onTapGesture { showSheet = true }
-        .padding(.horizontal, 12)
     }
 }
 

@@ -69,7 +69,6 @@
 		CDDED7362C194C8400958B39 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7352C194C8400958B39 /* App.swift */; };
 		CDDED73A2C194C8500958B39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED7392C194C8500958B39 /* Assets.xcassets */; };
 		CDDED73D2C194C8500958B39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */; };
-		CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED73E2C194C8500958B39 /* Persistence.swift */; };
 		CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7402C194C8500958B39 /* acusia.xcdatamodeld */; };
 		CDDED74C2C194C8600958B39 /* acusiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED74B2C194C8600958B39 /* acusiaTests.swift */; };
 		CDDED7562C194C8600958B39 /* acusiaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7552C194C8600958B39 /* acusiaUITests.swift */; };
@@ -92,6 +91,7 @@
 		CDF4BD7F2D0AA42900F8D775 /* ReplyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD7E2D0AA42400F8D775 /* ReplyButton.swift */; };
 		CDF4BD812D0BA51000F8D775 /* CustomHomeGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD802D0BA50B00F8D775 /* CustomHomeGesture.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
+		CDFA15C02D3FEBAE00DFC3FF /* SecondaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFA15BF2D3FEBA700DFC3FF /* SecondaryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -193,7 +193,6 @@
 		CDDED7352C194C8400958B39 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CDDED7392C194C8500958B39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CDDED73C2C194C8500958B39 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		CDDED73E2C194C8500958B39 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		CDDED7412C194C8500958B39 /* acusia.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = acusia.xcdatamodel; sourceTree = "<group>"; };
 		CDDED7472C194C8600958B39 /* acusiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = acusiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDDED74B2C194C8600958B39 /* acusiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = acusiaTests.swift; sourceTree = "<group>"; };
@@ -218,6 +217,7 @@
 		CDF4BD7E2D0AA42400F8D775 /* ReplyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyButton.swift; sourceTree = "<group>"; };
 		CDF4BD802D0BA50B00F8D775 /* CustomHomeGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHomeGesture.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
+		CDFA15BF2D3FEBA700DFC3FF /* SecondaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -332,7 +332,7 @@
 				CDDED7352C194C8400958B39 /* App.swift */,
 				CDBDA23E2D009832005333B0 /* Auth.swift */,
 				CDDED7852C19543D00958B39 /* CoreData.swift */,
-				CDDED73E2C194C8500958B39 /* Persistence.swift */,
+				CDFA15BF2D3FEBA700DFC3FF /* SecondaryView.swift */,
 				CDBDA2422D00CE08005333B0 /* UIState.swift */,
 			);
 			path = App;
@@ -701,6 +701,7 @@
 				CDF4BD752D09229A00F8D775 /* BiomeSphereView.swift in Sources */,
 				CDBDA2502D03CECC005333B0 /* BiomePreviewView.swift in Sources */,
 				CDDED7862C19543D00958B39 /* CoreData.swift in Sources */,
+				CDFA15C02D3FEBAE00DFC3FF /* SecondaryView.swift in Sources */,
 				CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */,
 				CDD48E2E2C62FA6B0001C4E8 /* MKSymbolShape.swift in Sources */,
 				CD264CE02CD69ADD00A74D7E /* AuxiliaryContextMenu.swift in Sources */,
@@ -721,7 +722,6 @@
 				CDBDA24E2D03B156005333B0 /* UserSheet.swift in Sources */,
 				CDBDA24C2D00F28F005333B0 /* CreateSheet.swift in Sources */,
 				CDF4BD7C2D0A835200F8D775 /* SizePreferenceKey.swift in Sources */,
-				CDDED73F2C194C8500958B39 /* Persistence.swift in Sources */,
 				CDF4BD6F2D062A4200F8D775 /* Int.swift in Sources */,
 				CDF4BD6D2D06045100F8D775 /* PhotoMessageView.swift in Sources */,
 				CDF4BD7A2D0A200800F8D775 /* RadialBlur.swift in Sources */,
