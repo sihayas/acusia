@@ -84,7 +84,7 @@ class SongAttachment: Attachment {
     }
 }
 
-class PhotoAttachment: Attachment {
+class PhotoAttachment: Attachment, Identifiable {
     let id: String
     let url: String
     let width: Int
@@ -346,6 +346,12 @@ let biomePreviewTwo: [Entity] = [
             ),
             PhotoAttachment(
                 id: "4552",
+                url: "https://img.vsco.co/cdn-cgi/image/width=1136,height=1513/f69c13/151110606/65d5c302b4f2ec346ea4f301/vsco_022124.jpg",
+                width: 1136,
+                height: 1513
+            ),
+            PhotoAttachment(
+                id: "45652",
                 url: "https://img.vsco.co/cdn-cgi/image/width=1136,height=1513/f69c13/151110606/65d5c302b4f2ec346ea4f301/vsco_022124.jpg",
                 width: 1136,
                 height: 1513

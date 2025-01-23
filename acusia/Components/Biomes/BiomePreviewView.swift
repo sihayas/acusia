@@ -42,7 +42,7 @@ struct BiomePreviewView: View {
                     }
                 }
             }
-            .padding([.horizontal, .top], 24)
+            .padding([.horizontal, .top], 16)
             .readSize { newSize in
                 frameSize = newSize
             }
@@ -56,14 +56,21 @@ struct BiomePreviewView: View {
             )
             .overlay(alignment: .bottom) {
                 LinearBlurView(radius: 2, gradientColors: [.clear, .black])
-                    .frame(maxWidth: .infinity, maxHeight: 112)
-                    .padding(.horizontal, 0)
+                    .frame(maxWidth: .infinity, maxHeight: 80)
 
                 LinearGradientMask(gradientColors: [.clear, Color(.black)])
-                    .frame(maxWidth: .infinity, maxHeight: 112)
-                    .padding(.horizontal, 0)
+                    .frame(maxWidth: .infinity, maxHeight: 80)
             }
-
+            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .matchedTransitionSource(id: "hi", in: animation)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .overlay(){
+            RoundedRectangleCornerStroke(cornerRadius: 28, cornerLength: 0)
+                .strokeBorder(.ultraThinMaterial, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+            
             HStack {
                 CirclifyPreviewView(
                     size: CGSize(width: 44, height: 44),
@@ -99,14 +106,8 @@ struct BiomePreviewView: View {
                 }
             }
             .padding([.horizontal, .bottom], 12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .overlay(
-            RoundedRectangleCornerStroke(cornerRadius: 28, cornerLength: 0)
-                .strokeBorder(.ultraThinMaterial, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-        )
-        .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
             BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
                 .navigationTransition(.zoom(sourceID: "hi", in: animation))

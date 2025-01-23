@@ -10,7 +10,8 @@ import SwiftUI
 
 #Preview {
     HoloPreview()
-        .background(Color.black)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.white)
 }
 
 struct HoloPreview: View {
@@ -35,6 +36,7 @@ struct HoloPreview: View {
                             ))
                     .fill(.white)
                     .frame(width: 170, height: 56)
+                    .shadow(color: .black.opacity(0.25), radius: 12, x: 0, y: 0)
                 
                 Image("helloSticker")
                     .resizable()
@@ -60,39 +62,39 @@ struct HoloPreview: View {
                     .opacity(1.0)
             }
             
-            ZStack {
-                mkShape2
-                    .stroke(.white,
-                            style: StrokeStyle(
-                                lineWidth: 8,
-                                lineCap: .round,
-                                lineJoin: .round
-                            ))
-                    .fill(.white)
-                    .frame(width: 90, height: 110)
-                
-                Image("bunnySticker")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 90, height: 110)
-                    .aspectRatio(contentMode: .fill)
-                
-                // Metal shader view with circular mask
-                HoloShaderView()
-                    .frame(width: 98, height: 118)
-                    .mask(
-                        mkShape2
-                            .stroke(.white,
-                                    style: StrokeStyle(
-                                        lineWidth: 8,
-                                        lineCap: .round,
-                                        lineJoin: .round
-                                    ))
-                            .fill(.white)
-                            .frame(width: 90, height: 110)
-                    )
-                    .blendMode(.screen)
-            }
+            // ZStack {
+            //     mkShape2
+            //         .stroke(.white,
+            //                 style: StrokeStyle(
+            //                     lineWidth: 8,
+            //                     lineCap: .round,
+            //                     lineJoin: .round
+            //                 ))
+            //         .fill(.white)
+            //         .frame(width: 90, height: 110)
+            //     
+            //     Image("bunnySticker")
+            //         .resizable()
+            //         .scaledToFill()
+            //         .frame(width: 90, height: 110)
+            //         .aspectRatio(contentMode: .fill)
+            //     
+            //     // Metal shader view with circular mask
+            //     HoloShaderView()
+            //         .frame(width: 98, height: 118)
+            //         .mask(
+            //             mkShape2
+            //                 .stroke(.white,
+            //                         style: StrokeStyle(
+            //                             lineWidth: 8,
+            //                             lineCap: .round,
+            //                             lineJoin: .round
+            //                         ))
+            //                 .fill(.white)
+            //                 .frame(width: 90, height: 110)
+            //         )
+            //         .blendMode(.screen)
+            // }
             
             
         }

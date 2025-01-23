@@ -3,7 +3,7 @@ import SwiftUI
 struct BlipView: View {
     let isOwn: Bool
     let emojis = [
-        "😡", "💀", "🔥", "🎉", "😎", "👻", "🚀", "🌈", "🦄",
+        "😡", "💀", "🔥", "😎", "👻", "🚀", "🌈", "🦄",
         "🍕", "🎸", "🌊", "🍦", "🌺", "🦋", "🌙"
     ]
 
@@ -16,7 +16,7 @@ struct BlipView: View {
             HStack(spacing: -6) {
                 Circle()
                     .frame(width: 32, height: 32)
-                    .background(Color(.systemGray5), in: Circle())
+                    .background(Color(.systemGray6), in: Circle())
                     .foregroundStyle(.clear)
                     .overlay {
                         Text("22")
@@ -27,10 +27,10 @@ struct BlipView: View {
                             .strokeBorder(.black, lineWidth: 1)
                     }
                 
-                ForEach(0..<2) { index in
+                ForEach(0..<1) { index in
                     Capsule()
                         .frame(width: 32, height: 32)
-                        .background(Color(.systemGray5), in: Capsule())
+                        .background(Color(.systemGray6), in: Capsule())
                         .foregroundStyle(.clear)
                         .overlay {
                             Text(selectedEmojis[index])
@@ -43,7 +43,7 @@ struct BlipView: View {
                 
                 Circle()
                     .frame(width: 36, height: 36)
-                    .background(Color(.systemGray5), in: BlipBubbleWithTail(isFlipped: false))
+                    .background(Color(.systemGray6), in: BlipBubbleWithTail(isFlipped: false))
                     .foregroundStyle(.clear)
                     .overlay {
                         Text(selectedEmojis[2])
@@ -57,7 +57,7 @@ struct BlipView: View {
             HStack(spacing: -6) {
                 Circle()
                     .frame(width: 36, height: 36)
-                    .background(Color(.systemGray5), in: BlipBubbleWithTail(isFlipped: true))
+                    .background(Color(.systemGray6), in: BlipBubbleWithTail(isFlipped: true))
                     .foregroundStyle(.clear)
                     .overlay {
                         Text(selectedEmojis[2])
@@ -68,10 +68,10 @@ struct BlipView: View {
                     }
                     .zIndex(3)
                 
-                ForEach(0..<2) { index in
+                ForEach(0..<1) { index in
                     Capsule()
                         .frame(width: 32, height: 32)
-                        .background(Color(.systemGray5), in: Capsule())
+                        .background(Color(.systemGray6), in: Capsule())
                         .foregroundStyle(.clear)
                         .overlay {
                             Text(selectedEmojis[index])
@@ -85,7 +85,7 @@ struct BlipView: View {
                 
                 Circle()
                     .frame(width: 32, height: 32)
-                    .background(Color(.systemGray5), in: Circle())
+                    .background(Color(.systemGray6), in: Circle())
                     .foregroundStyle(.clear)
                     .overlay {
                         Text("1k")

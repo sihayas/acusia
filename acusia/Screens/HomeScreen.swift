@@ -117,14 +117,14 @@ struct OuterContent: View {
             BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
             BiomePreviewView(biome: Biome(entities: biomePreviewThree))
         }
-        .background(.clear)
         .frame(
             maxWidth: .infinity,
             maxHeight: .infinity,
             alignment: .top
         )
+        .background(.clear)
         .padding(.bottom, upperSectionHeight)
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 20)
         .offset(y: boundedOffset)
     }
 }

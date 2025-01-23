@@ -5,6 +5,7 @@
 //  Created by decoherence on 12/8/24.
 //
 import SwiftUI
+import BigUIPaging
 
 struct PhotoMessagePreviewView: View {
     let photo: PhotoAttachment
@@ -107,15 +108,17 @@ struct PhotoMessagesView: View {
 struct PhotoMessagesDeckView: View {
     let photos: [PhotoAttachment]
     private let scaleFactor: CGFloat = 0.8
+    @State private var selection: String = "" // Changed to String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: -40) {
-            ForEach(photos.prefix(3), id: \.id) { index, photo in
+        PageView(selection: $selection) {
+            ForEach(photos.prefix(3), id: \.id) { photo in
+                let displayIndex = photos.firstIndex(where: { $0.id == photo.id })! + 1
                 let originalWidth: CGFloat = min(CGFloat(photo.width), 196)
                 let originalHeight: CGFloat = min(CGFloat(photo.height), originalWidth * 4 / 3)
                 let scaledWidth = originalWidth * scaleFactor
                 let scaledHeight = originalHeight * scaleFactor
-
+                
                 AsyncImage(url: URL(string: photo.url)) { image in
                     image
                         .resizable()
@@ -128,10 +131,23 @@ struct PhotoMessagesDeckView: View {
                         .clipped()
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .rotationEffect(.degrees(index == 1 ? -2 : 2))
-                .padding(.leading, index == 1 ? 0 : scaledWidth * 0.3)
                 .shadow(radius: 8)
             }
         }
+        .pageViewStyle(.customCardDeck)
+        .pageViewCardShadow(.visible)
+        .frame(width: 240, height: 320)
+    }
+
+    var indicatorSelection: Binding<Int> {
+        Binding(
+            get: {
+                guard let index = photos.firstIndex(where: { $0.id == selection }) else { return 0 }
+                return index
+            },
+            set: { newValue in
+                selection = photos[newValue].id
+            }
+        )
     }
 }

@@ -25,7 +25,7 @@ struct TextBubbleView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Color(.systemGray5), in: BubbleWithTailShape(isOwn: isOwn))
+        .background(Color(.systemGray6), in: BubbleWithTailShape(isOwn: isOwn))
         .foregroundStyle(.secondary)
         .auxiliaryContextMenu(
             auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),

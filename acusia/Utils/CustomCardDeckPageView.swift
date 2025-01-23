@@ -28,22 +28,19 @@ struct CardDeckPreview: View {
     @State private var selection: Int = 1
     
     var body: some View {
-        VStack {
-            // Use ForEach with a collection of identifiable data
-            PageView(selection: $selection) {
-                ForEach([1, 2], id: \.self) { index in
-                    if index == 1 {
-                        Rectangle()
-                            .fill(.red)
-                    } else {
-                        Rectangle()
-                            .fill(.blue)
-                    }
+        PageView(selection: $selection) {
+            ForEach([1, 2], id: \.self) { index in
+                if index == 1 {
+                    Rectangle()
+                        .fill(.red)
+                } else {
+                    Rectangle()
+                        .fill(.blue)
                 }
             }
-            .pageViewStyle(.customCardDeck)
-            .pageViewCardShadow(.visible)
         }
+        .pageViewStyle(.customCardDeck)
+        .pageViewCardShadow(.visible)
     }
     
     var indicatorSelection: Binding<Int> {

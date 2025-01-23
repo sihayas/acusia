@@ -92,6 +92,8 @@
 		CDF4BD812D0BA51000F8D775 /* CustomHomeGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD802D0BA50B00F8D775 /* CustomHomeGesture.swift */; };
 		CDF652B32C6EE1EC00C5D42B /* CustomCardDeckPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */; };
 		CDFA15C02D3FEBAE00DFC3FF /* SecondaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFA15BF2D3FEBA700DFC3FF /* SecondaryView.swift */; };
+		CDFA15C22D40303400DFC3FF /* OldRatingPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFA15C12D40303300DFC3FF /* OldRatingPrototype.swift */; };
+		CDFA15C42D42DC1200DFC3FF /* SongMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFA15C32D42DC0D00DFC3FF /* SongMessageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -218,6 +220,8 @@
 		CDF4BD802D0BA50B00F8D775 /* CustomHomeGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHomeGesture.swift; sourceTree = "<group>"; };
 		CDF652B22C6EE1E700C5D42B /* CustomCardDeckPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardDeckPageView.swift; sourceTree = "<group>"; };
 		CDFA15BF2D3FEBA700DFC3FF /* SecondaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryView.swift; sourceTree = "<group>"; };
+		CDFA15C12D40303300DFC3FF /* OldRatingPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldRatingPrototype.swift; sourceTree = "<group>"; };
+		CDFA15C32D42DC0D00DFC3FF /* SongMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMessageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -348,6 +352,7 @@
 		CDBDA2462D00E11E005333B0 /* Message */ = {
 			isa = PBXGroup;
 			children = (
+				CDFA15C32D42DC0D00DFC3FF /* SongMessageView.swift */,
 				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
 				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
 				CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */,
@@ -471,6 +476,7 @@
 		CDDED7712C1951BE00958B39 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CDFA15C12D40303300DFC3FF /* OldRatingPrototype.swift */,
 				CD16C9EF2D34D43600AD368D /* UIViewRepresentable */,
 				CD164BCD2D2B4246000D549A /* PackedCircle.swift */,
 				CD27939B2C7B883C00486C1D /* AvatarView.swift */,
@@ -695,6 +701,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD43B2C72CE136860018DB16 /* EntityModel.swift in Sources */,
+				CDFA15C42D42DC1200DFC3FF /* SongMessageView.swift in Sources */,
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
 				CDBDA24A2D00E32E005333B0 /* MessageView.swift in Sources */,
 				CD8A64392D00903B00BE98DE /* FileCache.swift in Sources */,
@@ -720,6 +727,7 @@
 				CD06C2702C69B10600FC010C /* IndexSheet.swift in Sources */,
 				CDAE7D0F2C718CA900254E56 /* LinearBlur.swift in Sources */,
 				CDBDA24E2D03B156005333B0 /* UserSheet.swift in Sources */,
+				CDFA15C22D40303400DFC3FF /* OldRatingPrototype.swift in Sources */,
 				CDBDA24C2D00F28F005333B0 /* CreateSheet.swift in Sources */,
 				CDF4BD7C2D0A835200F8D775 /* SizePreferenceKey.swift in Sources */,
 				CDF4BD6F2D062A4200F8D775 /* Int.swift in Sources */,
