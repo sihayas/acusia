@@ -120,6 +120,44 @@ struct HeartbreakRightPath: Shape {
 
 // MARK: - Entity Paths
 
+struct RectangleCornerStroke: InsettableShape {
+    var cornerLength: CGFloat
+    var insetAmount: CGFloat = 0
+    
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let insetRect = rect.insetBy(dx: insetAmount, dy: insetAmount)
+        
+        // Top left corner
+        path.move(to: CGPoint(x: insetRect.minX, y: insetRect.minY + cornerLength))
+        path.addLine(to: CGPoint(x: insetRect.minX, y: insetRect.minY))
+        path.addLine(to: CGPoint(x: insetRect.minX + cornerLength, y: insetRect.minY))
+        
+        // Top right corner
+        path.move(to: CGPoint(x: insetRect.maxX - cornerLength, y: insetRect.minY))
+        path.addLine(to: CGPoint(x: insetRect.maxX, y: insetRect.minY))
+        path.addLine(to: CGPoint(x: insetRect.maxX, y: insetRect.minY + cornerLength))
+        
+        // Bottom right corner
+        path.move(to: CGPoint(x: insetRect.maxX, y: insetRect.maxY - cornerLength))
+        path.addLine(to: CGPoint(x: insetRect.maxX, y: insetRect.maxY))
+        path.addLine(to: CGPoint(x: insetRect.maxX - cornerLength, y: insetRect.maxY))
+        
+        // Bottom left corner
+        path.move(to: CGPoint(x: insetRect.minX + cornerLength, y: insetRect.maxY))
+        path.addLine(to: CGPoint(x: insetRect.minX, y: insetRect.maxY))
+        path.addLine(to: CGPoint(x: insetRect.minX, y: insetRect.maxY - cornerLength))
+        
+        return path
+    }
+    
+    func inset(by amount: CGFloat) -> some InsettableShape {
+        var shape = self
+        shape.insetAmount += amount
+        return shape
+    }
+}
+
 struct RoundedRectangleCornerStroke: InsettableShape {
     // RoundedRectangleCornerStroke(cornerRadius: 32, cornerLength: 0)
     //     .strokeBorder(.ultraThinMaterial,

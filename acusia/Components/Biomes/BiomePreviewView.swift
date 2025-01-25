@@ -15,16 +15,11 @@ struct BiomePreviewView: View {
     @State private var frameSize: CGSize = .zero
     @State private var firstMessageSize: CGSize = .zero
     @Namespace var animation
-
-    private var adjustedHeight: CGFloat? {
-        guard frameSize.height > 0, firstMessageSize.height > 0 else {
-            return nil
-        }
-        return frameSize.height - firstMessageSize.height
-    }
+    
+    let cR: CGFloat = 40
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack() {
             VStack(alignment: .leading, spacing: 8) {
                 /// Ranked Messages
                 ForEach(0 ..< biome.entities.count, id: \.self) { index in
@@ -40,9 +35,10 @@ struct BiomePreviewView: View {
                             firstMessageSize = newSize
                         }
                     }
+                    .blur(radius: index == 2 ? 6 : 0)
                 }
             }
-            .padding([.horizontal, .top], 16)
+            .padding([.horizontal, .top], 32)
             .readSize { newSize in
                 frameSize = newSize
             }
@@ -54,59 +50,53 @@ struct BiomePreviewView: View {
                     : nil,
                 alignment: .top
             )
+            .clipShape(Rectangle())
+            .matchedTransitionSource(id: "hi", in: animation)
             .overlay(alignment: .bottom) {
-                LinearBlurView(radius: 2, gradientColors: [.clear, .black])
-                    .frame(maxWidth: .infinity, maxHeight: 80)
-
                 LinearGradientMask(gradientColors: [.clear, Color(.black)])
                     .frame(maxWidth: .infinity, maxHeight: 80)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-            .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-            .matchedTransitionSource(id: "hi", in: animation)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .overlay(){
-            RoundedRectangleCornerStroke(cornerRadius: 28, cornerLength: 0)
-                .strokeBorder(.ultraThinMaterial, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
-            
-            HStack {
-                CirclifyPreviewView(
-                    size: CGSize(width: 44, height: 44),
-                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05],
-                    padding: 1.0
-                )
+            .overlay(){
+                HStack {
+                    CirclifyPreviewView(
+                        size: CGSize(width: 72, height: 72),
+                        values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05],
+                        padding: 1.0
+                    )
 
-                /// Biome Metadata
-                HStack(spacing: 8) {
-                    VStack(alignment: .leading) {
-                        Text("lorem ipsum")
-                            .fontWeight(.bold)
-                            .font(.headline)
-                            .foregroundColor(.white)
+                    /// Biome Metadata
+                    HStack(spacing: 8) {
+                        Spacer()
 
-                        Text("800 Messages")
-                            .font(.footnote)
-                            .fontWeight(.regular)
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
-
-                    Button {} label: {
-                        Image(systemName: "message.badge.fill")
-                            .fontWeight(.semibold)
-                            .font(.subheadline)
-                            .foregroundStyle(.white)
-                            .frame(width: 44, height: 44)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Capsule())
-                            .shadow(radius: 4)
+                        Button {} label: {
+                            Image(systemName: "message.badge.fill")
+                                .fontWeight(.semibold)
+                                .font(.subheadline)
+                                .foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Capsule())
+                                .shadow(radius: 4)
+                        }
                     }
                 }
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .bottom
+                )
+                .padding(.horizontal, 12)
             }
-            .padding([.horizontal, .bottom], 12)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            
+            
+            VStack(alignment: .leading) {
+                Text("lorem ipsum")
+                    .fontWeight(.semibold)
+                    .font(.footnote)
+                    .foregroundColor(.white)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
         }
         .sheet(isPresented: $showSheet) {
             BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))

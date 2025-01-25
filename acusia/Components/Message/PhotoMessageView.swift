@@ -7,31 +7,6 @@
 import SwiftUI
 import BigUIPaging
 
-struct PhotoMessagePreviewView: View {
-    let photo: PhotoAttachment
-
-    var body: some View {
-        let maxWidth: CGFloat = 196
-        let maxHeight: CGFloat = maxWidth * 4 / 3
-        let aspectRatio = CGFloat(photo.width) / CGFloat(photo.height)
-        let displayedWidth = min(CGFloat(photo.width), maxWidth)
-        let displayedHeight = min(CGFloat(photo.height), maxHeight)
-
-        AsyncImage(url: URL(string: photo.url)) { image in
-            image
-                .resizable()
-                .aspectRatio(aspectRatio, contentMode: .fill)
-                .frame(width: displayedWidth, height: displayedHeight)
-                .clipped()
-        } placeholder: {
-            Rectangle()
-                .frame(width: displayedWidth, height: displayedHeight)
-                .clipped()
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-    }
-}
-
 struct PhotoMessageView: View {
     let photo: PhotoAttachment
 
@@ -108,46 +83,30 @@ struct PhotoMessagesView: View {
 struct PhotoMessagesDeckView: View {
     let photos: [PhotoAttachment]
     private let scaleFactor: CGFloat = 0.8
-    @State private var selection: String = "" // Changed to String
-
+    
+    @State private var selection: Int = 1
+    
     var body: some View {
         PageView(selection: $selection) {
-            ForEach(photos.prefix(3), id: \.id) { photo in
-                let displayIndex = photos.firstIndex(where: { $0.id == photo.id })! + 1
-                let originalWidth: CGFloat = min(CGFloat(photo.width), 196)
-                let originalHeight: CGFloat = min(CGFloat(photo.height), originalWidth * 4 / 3)
-                let scaledWidth = originalWidth * scaleFactor
-                let scaledHeight = originalHeight * scaleFactor
+            ForEach(1...3, id: \.self) { index in
+                let photo = photos[index - 1]
                 
                 AsyncImage(url: URL(string: photo.url)) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: scaledWidth, height: scaledHeight)
                         .clipped()
                 } placeholder: {
                     Rectangle()
-                        .frame(width: scaledWidth, height: scaledHeight)
                         .clipped()
                 }
+                .frame(width: 240, height: 320)
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .shadow(radius: 8)
             }
         }
         .pageViewStyle(.customCardDeck)
         .pageViewCardShadow(.visible)
         .frame(width: 240, height: 320)
-    }
-
-    var indicatorSelection: Binding<Int> {
-        Binding(
-            get: {
-                guard let index = photos.firstIndex(where: { $0.id == selection }) else { return 0 }
-                return index
-            },
-            set: { newValue in
-                selection = photos[newValue].id
-            }
-        )
+        
     }
 }

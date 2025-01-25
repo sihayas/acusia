@@ -25,7 +25,14 @@ struct TextBubbleView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Color(.systemGray6), in: BubbleWithTailShape(isOwn: isOwn))
+        .background(
+            Color(.systemGray6),
+            in: BubbleWithTailShape(isOwn: isOwn)
+        )
+        .overlay(
+            BubbleWithTailShape(isOwn: isOwn)
+                .stroke(.black, lineWidth: 1)
+        )
         .foregroundStyle(.secondary)
         .auxiliaryContextMenu(
             auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),
@@ -97,7 +104,7 @@ struct ContextualTextBubbleView: View {
         .padding(.vertical, 6)
         .overlay(
             ContextualBubbleWithTailShape()
-                .stroke(.white.opacity(0.05), lineWidth: 1)
+                .stroke(.black, lineWidth: 1)
         )
         .auxiliaryContextMenu(
             auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),

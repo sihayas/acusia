@@ -26,32 +26,30 @@ struct SongAttachmentView: View {
                 VStack(alignment: .leading) {
                     Text(song.artistName)
                         .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color(.systemGray6))
                     Text(song.name)
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color(.systemGray6))
                 }
 
                 HStack(alignment: .lastTextBaseline, spacing: 2) {
                     Image(systemName: "applelogo")
                         .font(.system(size: 13))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color(.systemGray2))
 
                     Text("Music")
                         .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color(.systemGray2))
                 }
             }
-            .blendMode(.difference)
 
             Button(action: {
                 // Play song
             }) {
                 Image(systemName: "play.circle.fill")
                     .font(.system(size: 25))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color(.systemGray6))
             }
-            .blendMode(.difference)
         }
         .padding(12)
         .frame(height: 72, alignment: .leading)

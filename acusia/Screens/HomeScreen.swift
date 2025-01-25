@@ -108,14 +108,21 @@ struct OuterContent: View {
     ]
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text("@alia")
-                .font(.system(size: 72, weight: .regular))
+        VStack(spacing: 8) {
+            Text("alia's feed")
+                .font(.title)
+                .fontWeight(.bold)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
             BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-            BiomePreviewView(biome: Biome(entities: biomePreviewTwo))
+            
+            Divider()
             BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+            
+            Divider()
+            // BiomePreviewView(biome: Biome(entities: biomePreviewThree))
         }
         .frame(
             maxWidth: .infinity,
@@ -124,7 +131,7 @@ struct OuterContent: View {
         )
         .background(.clear)
         .padding(.bottom, upperSectionHeight)
-        .padding(.horizontal, 20)
+        // .padding(.horizontal, 12)
         .offset(y: boundedOffset)
     }
 }

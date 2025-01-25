@@ -29,7 +29,7 @@ struct EntityView: View {
 
             if previousId == parentId && !isRootChild && !isRoot {
                 LoopPath()
-                    .stroke(Color(.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .stroke(Color(.black), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .frame(width: 32, height: 32)
                     .scaleEffect(x: -1, y: 1)
             }
@@ -46,10 +46,10 @@ struct EntityView: View {
 
             // MARK: Main Message
 
-            HStack(alignment: .bottom, spacing: 8) {
+            HStack(alignment: .bottom, spacing: 10) {
                 VStack {
                     Line()
-                        .stroke(Color(.systemGray6),
+                        .stroke(Color(.black),
                                 style: StrokeStyle(
                                     lineWidth: 4,
                                     lineCap: .round,
