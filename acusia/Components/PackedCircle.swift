@@ -305,21 +305,18 @@ struct CirclifyPreviewView: View {
         ZStack {
             ForEach(packed.indices, id: \.self) { i in
                 let c = packed[i]
-                let scaleFactor = (size.width / 2) - padding
+                let scaleFactor = (size.width / 2)
 
                 Circle()
-                    .fill(.black)
+                    .fill(Color(.systemGray6))
                     .padding(padding)
                     .frame(width: c.r * 2 * scaleFactor,
                            height: c.r * 2 * scaleFactor)
                     .offset(x: c.x * scaleFactor, y: c.y * scaleFactor)
-                    .rotationEffect(.degrees(rotate ? 360 : 0), anchor: .center)
-                    .animation(Animation.linear(duration: Double.random(in: 2...5))
-                                           .repeatForever(autoreverses: false), value: rotate)
             }
         }
         .frame(width: size.width, height: size.height)
-        .background(.ultraThinMaterial, in: Circle())
+        .background(.clear, in: Circle())
         // .rotationEffect(.degrees(225))
     }
 }

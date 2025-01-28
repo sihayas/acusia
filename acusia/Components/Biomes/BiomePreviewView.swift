@@ -15,11 +15,23 @@ struct BiomePreviewView: View {
     @State private var frameSize: CGSize = .zero
     @State private var firstMessageSize: CGSize = .zero
     @Namespace var animation
-    
-    let cR: CGFloat = 40
 
     var body: some View {
-        VStack() {
+        HStack {
+            VStack {
+                CirclifyPreviewView(
+                    size: CGSize(width: 72, height: 72),
+                    values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05],
+                    padding: 2.0
+                )
+                
+                Text("biome_name")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(width: 72)
+
             VStack(alignment: .leading, spacing: 8) {
                 /// Ranked Messages
                 ForEach(0 ..< biome.entities.count, id: \.self) { index in
@@ -38,7 +50,6 @@ struct BiomePreviewView: View {
                     .blur(radius: index == 2 ? 6 : 0)
                 }
             }
-            .padding([.horizontal, .top], 32)
             .readSize { newSize in
                 frameSize = newSize
             }
@@ -46,58 +57,14 @@ struct BiomePreviewView: View {
             .frame(maxWidth: .infinity)
             .frame(
                 height: frameSize.height > 0
-                    ? frameSize.height - firstMessageSize.height + 80
+                    ? frameSize.height
                     : nil,
                 alignment: .top
             )
-            .clipShape(Rectangle())
-            .matchedTransitionSource(id: "hi", in: animation)
-            .overlay(alignment: .bottom) {
-                LinearGradientMask(gradientColors: [.clear, Color(.black)])
-                    .frame(maxWidth: .infinity, maxHeight: 80)
-            }
-            .overlay(){
-                HStack {
-                    CirclifyPreviewView(
-                        size: CGSize(width: 72, height: 72),
-                        values: [0.6, 0.4, 0.3, 0.15, 0.1, 0.05],
-                        padding: 1.0
-                    )
-
-                    /// Biome Metadata
-                    HStack(spacing: 8) {
-                        Spacer()
-
-                        Button {} label: {
-                            Image(systemName: "message.badge.fill")
-                                .fontWeight(.semibold)
-                                .font(.subheadline)
-                                .foregroundStyle(.white)
-                                .frame(width: 44, height: 44)
-                                .background(.ultraThinMaterial)
-                                .clipShape(Capsule())
-                                .shadow(radius: 4)
-                        }
-                    }
-                }
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .bottom
-                )
-                .padding(.horizontal, 12)
-            }
-            
-            
-            VStack(alignment: .leading) {
-                Text("lorem ipsum")
-                    .fontWeight(.semibold)
-                    .font(.footnote)
-                    .foregroundColor(.white)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 12)
         }
+        .contentShape(Rectangle())
+        .clipShape(Rectangle())
+        .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
             BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
                 .navigationTransition(.zoom(sourceID: "hi", in: animation))
@@ -106,6 +73,33 @@ struct BiomePreviewView: View {
         .onTapGesture { showSheet = true }
     }
 }
+
+// .overlay(){
+//     HStack {
+
+//         /// Biome Metadata
+//         HStack(spacing: 8) {
+//             Spacer()
+
+//             Button {} label: {
+//                 Image(systemName: "message.badge.fill")
+//                     .fontWeight(.semibold)
+//                     .font(.subheadline)
+//                     .foregroundStyle(.white)
+//                     .frame(width: 44, height: 44)
+//                     .background(.ultraThinMaterial)
+//                     .clipShape(Capsule())
+//                     .shadow(radius: 4)
+//             }
+//         }
+//     }
+//     .frame(
+//         maxWidth: .infinity,
+//         maxHeight: .infinity,
+//         alignment: .bottom
+//     )
+//     .padding(.horizontal, 12)
+// }
 
 struct UserDev: Identifiable {
     let id: String

@@ -27,7 +27,9 @@ struct AcusiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView()
+            ImprintPreview()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(auth)
                 .environmentObject(uiState)

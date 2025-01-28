@@ -106,16 +106,7 @@ struct CustomCardDeckPageView: View {
             }
         }
         .measure($containerSize)
-        .gesture(CardDragGesture(
-            onChange: { translation in
-                self.dragProgress = -(translation / containerSize.width)
-            },
-            onEnd: { finalTranslation in
-                let normalizedTranslation = -(finalTranslation / containerSize.width)
-                self.dragProgress = normalizedTranslation
-                snapToNearestIndex()
-            }
-        ))
+        .highPriorityGesture(dragGesture)
         .task {
             makePages(from: configuration.selection.wrappedValue)
         }
@@ -255,50 +246,6 @@ extension EnvironmentValues {
 public extension PageViewStyle where Self == CustomCardDeckPageViewStyle {
     static var customCardDeck: CustomCardDeckPageViewStyle {
         CustomCardDeckPageViewStyle()
-    }
-}
-
-@available(iOS 18.0, *)
-private struct CardDragGesture: UIGestureRecognizerRepresentable {
-    let onChange: (_ value: CGFloat) -> Void
-    let onEnd: (_ value: CGFloat) -> Void
-
-    func makeUIGestureRecognizer(context: Context) -> some UIGestureRecognizer {
-        let recognizer = UIPanGestureRecognizer()
-        recognizer.delegate = context.coordinator
-        return recognizer
-    }
-
-    func makeCoordinator(converter: CoordinateSpaceConverter) -> Coordinator {
-        Coordinator(converter: converter)
-    }
-
-    func handleUIGestureRecognizerAction(_ recognizer: UIGestureRecognizerType, context: Context) {
-        guard let panGesture = recognizer as? UIPanGestureRecognizer, let view = panGesture.view else { return }
-
-        switch recognizer.state {
-        case .possible:
-            break
-        case .changed:
-            onChange(panGesture.translation(in: view).x)
-        case .ended:
-            //could do better: not accounting for velocity & decay over time
-            onEnd(panGesture.translation(in: view).x + panGesture.velocity(in: view).x)
-        default:
-            break
-        }
-    }
-
-    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
-        let converter: CoordinateSpaceConverter
-        init(converter: CoordinateSpaceConverter) {
-            self.converter = converter
-        }
-
-        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer, let view = panGesture.view else { return false }
-            return abs(panGesture.translation(in: view).x) > abs(panGesture.translation(in: view).y)
-        }
     }
 }
 

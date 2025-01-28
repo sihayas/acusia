@@ -51,15 +51,14 @@
 		CD9F27442C5C3C2A0094C7E5 /* NormalMap.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */; };
 		CDA73C392CD7B71A006F8B4A /* DGSwiftUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = CDA73C382CD7B71A006F8B4A /* DGSwiftUtilities */; };
 		CDA73C3D2CD7B7FE006F8B4A /* DGSwiftUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = CDA73C3C2CD7B7FE006F8B4A /* DGSwiftUtilities */; };
-		CDABF18F2CD1838F00FBE750 /* TextBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */; };
+		CDABF18F2CD1838F00FBE750 /* TextBubbleViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABF18E2CD1838200FBE750 /* TextBubbleViews.swift */; };
 		CDAE7D0F2C718CA900254E56 /* LinearBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAE7D0E2C718CA700254E56 /* LinearBlur.swift */; };
 		CDB61FB82D17F0FA001905C3 /* ScrollableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB61FB72D17F0F6001905C3 /* ScrollableView.swift */; };
 		CDBBC9DF2D22F9E40062B372 /* HostingPassThrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBBC9DE2D22F9E10062B372 /* HostingPassThrough.swift */; };
 		CDBDA23F2D009834005333B0 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA23E2D009832005333B0 /* Auth.swift */; };
 		CDBDA2432D00CE0B005333B0 /* UIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2422D00CE08005333B0 /* UIState.swift */; };
 		CDBDA2452D00CF99005333B0 /* UDTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2442D00CF94005333B0 /* UDTModel.swift */; };
-		CDBDA2482D00E1C9005333B0 /* ContextualMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */; };
-		CDBDA24A2D00E32E005333B0 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2492D00E32C005333B0 /* MessageView.swift */; };
+		CDBDA24A2D00E32E005333B0 /* MessageViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA2492D00E32C005333B0 /* MessageViews.swift */; };
 		CDBDA24C2D00F28F005333B0 /* CreateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA24B2D00F28A005333B0 /* CreateSheet.swift */; };
 		CDBDA24E2D03B156005333B0 /* UserSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA24D2D03B154005333B0 /* UserSheet.swift */; };
 		CDBDA2502D03CECC005333B0 /* BiomePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBDA24F2D03CEC6005333B0 /* BiomePreviewView.swift */; };
@@ -75,7 +74,7 @@
 		CDDED7582C194C8600958B39 /* acusiaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7572C194C8600958B39 /* acusiaUITestsLaunchTests.swift */; };
 		CDDED7862C19543D00958B39 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7852C19543D00958B39 /* CoreData.swift */; };
 		CDDED7892C1955C100958B39 /* AuthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDED7882C1955BD00958B39 /* AuthScreen.swift */; };
-		CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE14A442C8118C400D0F172 /* PathViews.swift */; };
+		CDE14A452C8118C600D0F172 /* MessagePaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE14A442C8118C400D0F172 /* MessagePaths.swift */; };
 		CDE43C112C8671280009CB87 /* ReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE43C102C8671250009CB87 /* ReactionView.swift */; };
 		CDE879012C778EA700052193 /* IridescentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE879002C778E9F00052193 /* IridescentPreview.swift */; };
 		CDF4BD662D054CFC00F8D775 /* Loupe.metal in Sources */ = {isa = PBXBuildFile; fileRef = CDF4BD652D054CF500F8D775 /* Loupe.metal */; };
@@ -175,15 +174,14 @@
 		CD8E0BDA2C8D6C83003A6F91 /* TintedBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintedBlurView.swift; sourceTree = "<group>"; };
 		CD9245092CA6713100635716 /* SymmetryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetryView.swift; sourceTree = "<group>"; };
 		CD9F27432C5C3C2A0094C7E5 /* NormalMap.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = NormalMap.ci.metal; sourceTree = "<group>"; };
-		CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBubbleView.swift; sourceTree = "<group>"; };
+		CDABF18E2CD1838200FBE750 /* TextBubbleViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBubbleViews.swift; sourceTree = "<group>"; };
 		CDAE7D0E2C718CA700254E56 /* LinearBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearBlur.swift; sourceTree = "<group>"; };
 		CDB61FB72D17F0F6001905C3 /* ScrollableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableView.swift; sourceTree = "<group>"; };
 		CDBBC9DE2D22F9E10062B372 /* HostingPassThrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingPassThrough.swift; sourceTree = "<group>"; };
 		CDBDA23E2D009832005333B0 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		CDBDA2422D00CE08005333B0 /* UIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIState.swift; sourceTree = "<group>"; };
 		CDBDA2442D00CF94005333B0 /* UDTModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTModel.swift; sourceTree = "<group>"; };
-		CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualMessageView.swift; sourceTree = "<group>"; };
-		CDBDA2492D00E32C005333B0 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		CDBDA2492D00E32C005333B0 /* MessageViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViews.swift; sourceTree = "<group>"; };
 		CDBDA24B2D00F28A005333B0 /* CreateSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSheet.swift; sourceTree = "<group>"; };
 		CDBDA24D2D03B154005333B0 /* UserSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSheet.swift; sourceTree = "<group>"; };
 		CDBDA24F2D03CEC6005333B0 /* BiomePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomePreviewView.swift; sourceTree = "<group>"; };
@@ -204,7 +202,7 @@
 		CDDED7852C19543D00958B39 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		CDDED7882C1955BD00958B39 /* AuthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthScreen.swift; sourceTree = "<group>"; };
 		CDDED79E2C1991D600958B39 /* acusia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = acusia.entitlements; sourceTree = "<group>"; };
-		CDE14A442C8118C400D0F172 /* PathViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathViews.swift; sourceTree = "<group>"; };
+		CDE14A442C8118C400D0F172 /* MessagePaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagePaths.swift; sourceTree = "<group>"; };
 		CDE43C102C8671250009CB87 /* ReactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionView.swift; sourceTree = "<group>"; };
 		CDE879002C778E9F00052193 /* IridescentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IridescentPreview.swift; sourceTree = "<group>"; };
 		CDF4BD652D054CF500F8D775 /* Loupe.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Loupe.metal; sourceTree = "<group>"; };
@@ -355,12 +353,11 @@
 				CDFA15C32D42DC0D00DFC3FF /* SongMessageView.swift */,
 				CD43B2C42CDFB4AA0018DB16 /* AuxiliaryView.swift */,
 				CD720E4D2CB8713A00CEEE00 /* BlipView.swift */,
-				CDBDA2472D00E1C3005333B0 /* ContextualMessageView.swift */,
 				CD43B2C22CDEFBA10018DB16 /* EntityView.swift */,
-				CDBDA2492D00E32C005333B0 /* MessageView.swift */,
-				CDE14A442C8118C400D0F172 /* PathViews.swift */,
+				CDBDA2492D00E32C005333B0 /* MessageViews.swift */,
+				CDE14A442C8118C400D0F172 /* MessagePaths.swift */,
 				CDF4BD6C2D06044700F8D775 /* PhotoMessageView.swift */,
-				CDABF18E2CD1838200FBE750 /* TextBubbleView.swift */,
+				CDABF18E2CD1838200FBE750 /* TextBubbleViews.swift */,
 			);
 			path = Message;
 			sourceTree = "<group>";
@@ -703,7 +700,7 @@
 				CD43B2C72CE136860018DB16 /* EntityModel.swift in Sources */,
 				CDFA15C42D42DC1200DFC3FF /* SongMessageView.swift in Sources */,
 				CD6438C92C92829000D7436E /* HoloManager.swift in Sources */,
-				CDBDA24A2D00E32E005333B0 /* MessageView.swift in Sources */,
+				CDBDA24A2D00E32E005333B0 /* MessageViews.swift in Sources */,
 				CD8A64392D00903B00BE98DE /* FileCache.swift in Sources */,
 				CDF4BD752D09229A00F8D775 /* BiomeSphereView.swift in Sources */,
 				CDBDA2502D03CECC005333B0 /* BiomePreviewView.swift in Sources */,
@@ -734,7 +731,7 @@
 				CDF4BD6D2D06045100F8D775 /* PhotoMessageView.swift in Sources */,
 				CDF4BD7A2D0A200800F8D775 /* RadialBlur.swift in Sources */,
 				CD43B2C32CDEFBA40018DB16 /* EntityView.swift in Sources */,
-				CDE14A452C8118C600D0F172 /* PathViews.swift in Sources */,
+				CDE14A452C8118C600D0F172 /* MessagePaths.swift in Sources */,
 				CDDED7422C194C8500958B39 /* acusia.xcdatamodeld in Sources */,
 				CD8CFDA62C6F02E600D7DEA7 /* HomeScreen.swift in Sources */,
 				CD16C9F12D34D46400AD368D /* CSVRepresentable.swift in Sources */,
@@ -750,8 +747,7 @@
 				CD8E0BDB2C8D6C8C003A6F91 /* TintedBlurView.swift in Sources */,
 				CDDED7362C194C8400958B39 /* App.swift in Sources */,
 				CDBDA2452D00CF99005333B0 /* UDTModel.swift in Sources */,
-				CDBDA2482D00E1C9005333B0 /* ContextualMessageView.swift in Sources */,
-				CDABF18F2CD1838F00FBE750 /* TextBubbleView.swift in Sources */,
+				CDABF18F2CD1838F00FBE750 /* TextBubbleViews.swift in Sources */,
 				CD54A5712CB72F1200B257EA /* Pixellate.metal in Sources */,
 				CD264CD82CD3A6B600A74D7E /* Grok.metal in Sources */,
 				CD27939C2C7B883D00486C1D /* AvatarView.swift in Sources */,

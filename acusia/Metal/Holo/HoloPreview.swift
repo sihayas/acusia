@@ -35,18 +35,18 @@ struct HoloPreview: View {
                                 lineJoin: .round
                             ))
                     .fill(.white)
-                    .frame(width: 170, height: 56)
+                    .frame(width: 340, height: 112)
                     .shadow(color: .black.opacity(0.25), radius: 12, x: 0, y: 0)
                 
                 Image("helloSticker")
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 170, height: 56)
+                    .frame(width: 340, height: 112)
                     .aspectRatio(contentMode: .fill)
                 
                 // Metal shader view with circular mask
                 HoloShaderView()
-                    .frame(width: 178, height: 178)
+                    .frame(width: 348, height: 348)
                     .mask(
                         mkShape
                             .stroke(.white,
@@ -56,7 +56,7 @@ struct HoloPreview: View {
                                         lineJoin: .round
                                     ))
                             .fill(.white)
-                            .frame(width: 170, height: 56)
+                            .frame(width: 340, height: 112)
                     )
                     .blendMode(.screen)
                     .opacity(1.0)

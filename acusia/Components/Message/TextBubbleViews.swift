@@ -95,7 +95,7 @@ struct ContextualTextBubbleView: View {
             HStack(alignment: .lastTextBaseline) {
                 Text(entity.text)
                     .foregroundColor(.secondary)
-                    .font(.system(size: 11))
+                    .font(.caption)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
             }
@@ -103,8 +103,8 @@ struct ContextualTextBubbleView: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .overlay(
-            ContextualBubbleWithTailShape()
-                .stroke(.black, lineWidth: 1)
+            ContextualBubbleWithTailShape(isOwn: false)
+                .strokeBorder(Color(.systemGray6), lineWidth: 1)
         )
         .auxiliaryContextMenu(
             auxiliaryContent: AuxiliaryView(size: auxiliarySize, gestureTranslation: $gestureTranslation, gestureVelocity: $gestureVelocity),

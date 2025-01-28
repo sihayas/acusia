@@ -18,32 +18,19 @@ class Biome: Identifiable {
 
 let biomePreviewOne: [Entity] = [
     Entity(
-        id: "1",
-        username: "DeborahVthang",
-        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
-        text: "idk honestly",
-        created_at: Date(timeIntervalSinceNow: -3000)
-    ),
-    Entity(
-        id: "3",
-        username: "echoVerse",
-        avatar: "https://i.pinimg.com/280x280_RS/3e/6f/e2/3e6fe2a2aec4488e6bc937a5118b09dc.jpg",
-        text: "Alright, maybe I’ll give it another shot. I guess I was expecting something less… polished.",
-        created_at: Date(timeIntervalSinceNow: -2400),
-        parent: Entity(
-            id: "1",
-            username: "DeborahVthang",
-            avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
-            text: "Honestly, the presentation is unique, but it does feel a little too polished for my taste.",
-            created_at: Date(timeIntervalSinceNow: -3000)
-        )
-    ),
-    Entity(
         id: "2",
         username: "synesthesia",
         avatar: "https://i.pinimg.com/280x280_RS/4c/ba/fb/4cbafbfab791255a004740a491e85f6d.jpg",
         text: "idk if it’s just me but if you stick around it kinda pulls you in lowkey like random core memories or smth",
-        created_at: Date(timeIntervalSinceNow: -2800))
+        created_at: Date(timeIntervalSinceNow: -2800),
+        parent: Entity(
+            id: "1",
+            username: "DeborahVthang",
+            avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
+            text: "real as real can be",
+            created_at: Date(timeIntervalSinceNow: -3000)
+        )
+    )
 ]
 
 let biomePreviewTwo: [Entity] = [
@@ -106,63 +93,43 @@ let biomePreviewTwo: [Entity] = [
 let biomePreviewThree: [Entity] = [
     Entity(
         id: "4",
-        username: "vjeranski",
-        avatar: "https://d2w9rnfcy7mm78.cloudfront.net/31132288/original_b3573ce965ab3459b25ab0977beec40b.jpg",
-        text: "u checked out azusa saga (for tracy hyde, aprilblue)'s idol group yet",
+        username: "annabannnana",
+        avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
+        text: "BEEES!!!",
         created_at: Date(timeIntervalSinceNow: -1200),
         parent: Entity(
-            id: "1",
-            username: "qwertyyy",
-            avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
-            text: "sentimental outlook on Hotel Insomnia, mainly since it soundtracked a good portion of my trip to Japan",
-            created_at: Date(timeIntervalSinceNow: -2400),
-            attachments: [
-                SongAttachment(id: "idk",
-                               artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/b9/c4/a6/b9c4a69d-a8f4-019f-d4a5-05b2bbc30e94/4538182723500_cov.jpg/632x632bb.webp",
-                               name: "he(r)art",
-                               artistName: "For Tracy Hyde",
-                               color: "#33253b")
-            ]
+            id: "5",
+            username: "Kells",
+            avatar: "https://d2w9rnfcy7mm78.cloudfront.net/31132288/original_b3573ce965ab3459b25ab0977beec40b.jpg",
+            text: "Notre Dame has housed three beehives on the first floor on a roof over the sacristy, just beneath the rose window, since 2013 - they all survived the fire.",
+            created_at: Date(timeIntervalSinceNow: -2400)
         )
-    ),
-    Entity(
-        id: "5",
-        username: "zack+",
-        avatar: "https://i.pinimg.com/474x/fd/f1/21/fdf12119ecb977a68bc10d185dbb2523.jpg",
-        text: """
-        Really a shame for Tracy Hyde broke up. The goats of Japanese shoegaze. At least Azusa still writes music for other groups like Aprilblue, Fennel, Tricot, and RAY. Their legacy lives on, but man, I’ll miss them.
-        """,
-        created_at: Date(timeIntervalSinceNow: -600),
-        parent: Entity(
-            id: "1",
-            username: "qwertyyy",
-            avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
-            text: "sentimental outlook on Hotel Insomnia, mainly since it soundtracked a good portion of my trip to Japan",
-            created_at: Date(timeIntervalSinceNow: -2400),
-            attachments: [
-                SongAttachment(id: "idk",
-                               artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music71/v4/90/74/50/9074507a-c12c-50e5-122f-5d9b4918d1f2/4538182661741_cov.jpg/632x632bb.webp",
-                               name: "Film Bleu",
-                               artistName: "For Tracy Hyde",
-                               color: "#FFF")
-            ]
-        ),
-        attachments: [
-            SongAttachment(id: "idk",
-                           artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/2b/cb/44/2bcb44f7-306c-db16-91e7-d5c6a3bb994a/19UMGIM51757.rgb.jpg/632x632bb.webp",
-                           name: "Ad Astra",
-                           artistName: "Max Richter, Lorne Balfe",
-                           color: "#091023")
-        ]
-    ),
-    Entity(
-        id: "1",
-        username: "DeborahVthang",
-        avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
-        text: "Honestly, the presentation is unique, but it does feel a little too polished for my taste.",
-        created_at: Date(timeIntervalSinceNow: -3000)
     )
 ]
+
+// let biomePreviewThree: [Entity] = [
+//     Entity(
+//         id: "4",
+//         username: "vjeranski",
+//         avatar: "https://d2w9rnfcy7mm78.cloudfront.net/31132288/original_b3573ce965ab3459b25ab0977beec40b.jpg",
+//         text: "Notre Dame has housed three beehives on the first floor on a roof over the sacristy, just beneath the rose window, since 2013 - they all survived the fire.",
+//         created_at: Date(timeIntervalSinceNow: -1200),
+//         parent: Entity(
+//             id: "1",
+//             username: "qwertyyy",
+//             avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
+//             text: "sentimental outlook on Hotel Insomnia, mainly since it soundtracked a good portion of my trip to Japan",
+//             created_at: Date(timeIntervalSinceNow: -2400),
+//             attachments: [
+//                 SongAttachment(id: "idk",
+//                                artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/b9/c4/a6/b9c4a69d-a8f4-019f-d4a5-05b2bbc30e94/4538182723500_cov.jpg/632x632bb.webp",
+//                                name: "he(r)art",
+//                                artistName: "For Tracy Hyde",
+//                                color: "#33253b")
+//             ]
+//         )
+//     )
+// ]
 
 let biomeOneExpanded: [Entity] = {
     let parentEntity = Entity(

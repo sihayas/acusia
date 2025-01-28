@@ -29,13 +29,13 @@ struct EntityView: View {
 
             if previousId == parentId && !isRootChild && !isRoot {
                 LoopPath()
-                    .stroke(Color(.black), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .stroke(Color(.systemGray6), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .frame(width: 32, height: 32)
                     .scaleEffect(x: -1, y: 1)
             }
 
             if let parent = parent, parentId != previousParentId, parentId != previousId, !isRootChild {
-                HStack(alignment: .bottom, spacing: 8) {
+                HStack(alignment: .bottom, spacing: 12) {
                     AvatarView(size: 24, imageURL: parent.avatar)
                         .frame(width: 32)
 
@@ -46,10 +46,10 @@ struct EntityView: View {
 
             // MARK: Main Message
 
-            HStack(alignment: .bottom, spacing: 10) {
+            HStack(alignment: .bottom, spacing: 12) {
                 VStack {
                     Line()
-                        .stroke(Color(.black),
+                        .stroke(Color(.systemGray6),
                                 style: StrokeStyle(
                                     lineWidth: 4,
                                     lineCap: .round,

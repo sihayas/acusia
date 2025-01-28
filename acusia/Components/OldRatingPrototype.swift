@@ -53,9 +53,9 @@ struct ImprintPreview: View {
     @State private var velocity: CGFloat = 1.0
 
     var body: some View {
-        let imageUrl = "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/ab/9d/c9/ab9dc97e-4147-e677-c7f3-05afd5562c23/cover.jpg/600x600bb.jpg"
-        let name = "megacity1000"
-        let artistName = "1tbsp"
+        let imageUrl = "https://is1-ssl.mzstatic.com/image/thumb/Video211/v4/65/14/2c/65142c17-4e8d-3049-0272-363307f09160/Job269ee82f-3d63-436c-bbf6-14db5a51e33b-183757043-PreviewImage_Preview_Image_Intermediate_nonvideo_sdr_359319945_2021523669-Time1736908482381.png/632x632bb.webp"
+        let name = "Balloonerism"
+        let artistName = "Mac Miller"
 
         VStack {
             // Card stack
@@ -68,7 +68,7 @@ struct ImprintPreview: View {
                                 .overlay {
                                     ZStack(alignment: .bottomTrailing) {
                                         VStack {
-                                            Text("")
+                                            Text("I’m sure we all cried at some point in the album, but the piano on “Funny Papers” & “Excelsior” broke me ⛓️‍💥🌱")
                                                 .foregroundColor(.white)
                                                 .font(.system(size: 15, weight: .semibold))
                                                 .multilineTextAlignment(.leading)
@@ -154,8 +154,8 @@ struct ImprintPreview: View {
             ZStack {
                 GeometryReader { geo in
                     MorphableShape(controlPoints: self.controlPoints)
-                        .fill(morphShape ? .white : .secondary)
-                        .frame(width: morphShape ? 28 : 80, height: morphShape ? 28 : 80)
+                        .fill(.white)
+                        .frame(width: morphShape ? 28 : 72, height: morphShape ? 28 : 72)
                         .onAppear {
                             // Capture the initial position of the blue rectangle
                             shapeInitialPosition = CGPoint(x: geo.frame(in: .global).minX, y: geo.frame(in: .global).minY)

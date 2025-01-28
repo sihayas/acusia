@@ -259,7 +259,7 @@ struct BubbleWithTailShape: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 6
+        let secondCircleSize: CGFloat = 8
         let secondCircleRect = CGRect(
             x: isOwn
                 ? tailRect.maxX + secondCircleSize * 0.25
@@ -281,7 +281,7 @@ struct BubbleWithTailPath {
     func path(in rect: CGRect) -> UIBezierPath {
         let cornerRadius: CGFloat = 20
         let firstCircleSize: CGFloat = 12
-        let secondCircleSize: CGFloat = 6
+        let secondCircleSize: CGFloat = 8
 
         let bubblePath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
 
@@ -307,39 +307,47 @@ struct BubbleWithTailPath {
     }
 }
 
-struct ContextualBubbleWithTailShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        let bubbleRect = rect
-        let bubble = RoundedRectangle(cornerRadius: 16, style: .continuous)
-            .path(in: bubbleRect)
+struct ContextualBubbleWithTailShape: Shape, InsettableShape {
+   let isOwn: Bool
+   var insetAmount: CGFloat = 0
 
-        let firstCircleSize: CGFloat = 8
-        let firstCircleOffsetX: CGFloat = 0
-        let firstCircleOffsetY: CGFloat = bubbleRect.height - firstCircleSize
+   func path(in rect: CGRect) -> Path {
+       let bubbleRect = rect.insetBy(dx: insetAmount, dy: insetAmount)
+       let bubble = RoundedRectangle(cornerRadius: 14, style: .continuous)
+           .path(in: bubbleRect)
 
-        let tailRect = CGRect(
-            x: bubbleRect.minX + firstCircleOffsetX,
-            y: bubbleRect.minY + firstCircleOffsetY,
-            width: firstCircleSize,
-            height: firstCircleSize
-        )
-        let tail = Circle().path(in: tailRect)
+       let firstCircleSize: CGFloat = 10
 
-        let secondCircleSize: CGFloat = 4
-        let secondCircleOffsetX = tailRect.minX - secondCircleSize
-        let secondCircleOffsetY = tailRect.maxY - secondCircleSize / 2
-        let secondCircleRect = CGRect(
-            x: secondCircleOffsetX,
-            y: secondCircleOffsetY,
-            width: secondCircleSize,
-            height: secondCircleSize
-        )
-        let secondCircle = Circle().path(in: secondCircleRect)
+       let tailRect = CGRect(
+           x: isOwn
+               ? bubbleRect.maxX - firstCircleSize
+               : bubbleRect.minX,
+           y: bubbleRect.minY + bubbleRect.height - firstCircleSize,
+           width: firstCircleSize,
+           height: firstCircleSize
+       )
+       let tail = Circle().path(in: tailRect)
 
-        let combined = bubble.union(tail).union(secondCircle)
+       let secondCircleSize: CGFloat = 6
+       let secondCircleRect = CGRect(
+           x: isOwn
+               ? tailRect.maxX + secondCircleSize * 0.25
+               : tailRect.minX - secondCircleSize * 1.5,
+           y: tailRect.maxY - secondCircleSize,
+           width: secondCircleSize,
+           height: secondCircleSize
+       )
+       let secondCircle = Circle().path(in: secondCircleRect)
 
-        return combined
-    }
+       let combined = bubble.union(tail).union(secondCircle)
+       return combined
+   }
+   
+   func inset(by amount: CGFloat) -> Self {
+       var shape = self
+       shape.insetAmount = amount
+       return shape
+   }
 }
 
 // MARK: Thread Paths

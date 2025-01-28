@@ -109,20 +109,20 @@ struct OuterContent: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            Text("alia's feed")
+            Text("Atlas")
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            Divider()
-            BiomePreviewView(biome: Biome(entities: biomePreviewOne))
-            
-            Divider()
-            BiomePreviewView(biome: Biome(entities: biomePreviewThree))
-            
-            Divider()
-            // BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+            VStack(spacing: 32) {
+                BiomePreviewView(biome: Biome(entities: biomePreviewOne))
+                
+                // BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+                
+                // Divider()
+                BiomePreviewView(biome: Biome(entities: biomePreviewThree))
+            }
         }
         .frame(
             maxWidth: .infinity,
@@ -131,7 +131,7 @@ struct OuterContent: View {
         )
         .background(.clear)
         .padding(.bottom, upperSectionHeight)
-        // .padding(.horizontal, 12)
+        .padding(.horizontal, 8)
         .offset(y: boundedOffset)
     }
 }
