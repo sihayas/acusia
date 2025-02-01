@@ -7,7 +7,6 @@
 import CoreMotion
 import SwiftUI
 
-
 #Preview {
     HoloPreview()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -17,16 +16,18 @@ import SwiftUI
 struct HoloPreview: View {
     private let motionManager = CMMotionManager()
     
-    // Baseline for pitch and roll
     @State private var pitchBaseline: Double = 30
     @State private var rollBaseline: Double = 0
+    @State private var isExpanded: Bool = false
+    @State private var currentPitch: Double = 0
+    @State private var currentRotationX: Float = 30
     
     var body: some View {
         let mkShape = MKSymbolShape(imageName: "helloSticker")
-        let mkShape2 = MKSymbolShape(imageName: "bunnySticker")
         
         VStack {
             ZStack {
+                // Base white layer
                 mkShape
                     .stroke(.white,
                             style: StrokeStyle(
@@ -35,18 +36,29 @@ struct HoloPreview: View {
                                 lineJoin: .round
                             ))
                     .fill(.white)
-                    .frame(width: 340, height: 112)
-                    .shadow(color: .black.opacity(0.25), radius: 12, x: 0, y: 0)
+                    .frame(width: 170, height: 56)
+                    .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 0)
+                    .modifier(Layer3DEffect(
+                        isExpanded: isExpanded,
+                        yOffset: 0,
+                        zIndex: 1
+                    ))
                 
+                // Image layer
                 Image("helloSticker")
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 340, height: 112)
+                    .frame(width: 170, height: 56)
                     .aspectRatio(contentMode: .fill)
+                    .modifier(Layer3DEffect(
+                        isExpanded: isExpanded,
+                        yOffset: 15,
+                        zIndex: 2
+                    ))
                 
-                // Metal shader view with circular mask
+                // Holographic shader layer
                 HoloShaderView()
-                    .frame(width: 348, height: 348)
+                    .frame(width: 178, height: 178)
                     .mask(
                         mkShape
                             .stroke(.white,
@@ -56,63 +68,69 @@ struct HoloPreview: View {
                                         lineJoin: .round
                                     ))
                             .fill(.white)
-                            .frame(width: 340, height: 112)
+                            .frame(width: 170, height: 56)
                     )
                     .blendMode(.screen)
                     .opacity(1.0)
+                    .modifier(Layer3DEffect(
+                        isExpanded: isExpanded,
+                        yOffset: 40,
+                        zIndex: 3
+                    ))
+            }
+            .onTapGesture {
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                    isExpanded.toggle()
+                }
             }
             
-            // ZStack {
-            //     mkShape2
-            //         .stroke(.white,
-            //                 style: StrokeStyle(
-            //                     lineWidth: 8,
-            //                     lineCap: .round,
-            //                     lineJoin: .round
-            //                 ))
-            //         .fill(.white)
-            //         .frame(width: 90, height: 110)
-            //     
-            //     Image("bunnySticker")
-            //         .resizable()
-            //         .scaledToFill()
-            //         .frame(width: 90, height: 110)
-            //         .aspectRatio(contentMode: .fill)
-            //     
-            //     // Metal shader view with circular mask
-            //     HoloShaderView()
-            //         .frame(width: 98, height: 118)
-            //         .mask(
-            //             mkShape2
-            //                 .stroke(.white,
-            //                         style: StrokeStyle(
-            //                             lineWidth: 8,
-            //                             lineCap: .round,
-            //                             lineJoin: .round
-            //                         ))
-            //                 .fill(.white)
-            //                 .frame(width: 90, height: 110)
-            //         )
-            //         .blendMode(.screen)
-            // }
-            
-            
+            // Motion values display
+            Text("Pitch: \(currentPitch, specifier: "%.1f")° | Rotation X: \(currentRotationX, specifier: "%.1f")°")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.top, 8)
         }
         .gesture(
             DragGesture()
                 .onChanged { value in
                     HoloRotationManager.shared.rotationAngleX = Float(-value.translation.height / 20)
                     HoloRotationManager.shared.rotationAngleY = Float(value.translation.width / 20)
+                    currentRotationX = Float(-value.translation.height / 20)
                 }
                 .onEnded { _ in
                     withAnimation(.spring()) {
                         HoloRotationManager.shared.rotationAngleX = 30
                         HoloRotationManager.shared.rotationAngleY = 0
+                        currentRotationX = 30
                     }
                 }
         )
         .onAppear {
             startDeviceMotionUpdates()
+        }
+    }
+    
+    struct Layer3DEffect: ViewModifier {
+        let isExpanded: Bool
+        let yOffset: CGFloat
+        let zIndex: Double
+        
+        func body(content: Content) -> some View {
+            content
+                .rotation3DEffect(
+                    .degrees(isExpanded ? -45 : 0),
+                    axis: (x: 0, y: 0, z: 1),
+                    anchor: .center,
+                    perspective: 0.3
+                )
+                .rotation3DEffect(
+                    .degrees(isExpanded ? 45 : 0),
+                    axis: (x: 1, y: 0, z: 0),
+                    anchor: .center,
+                    perspective: 0.3
+                )
+                .offset(y: isExpanded ? -yOffset : 0)
+                .zIndex(zIndex)
         }
     }
     
@@ -124,31 +142,26 @@ struct HoloPreview: View {
                 guard let motion = motionData else { return }
                 
                 let pitch = motion.attitude.pitch * 180 / .pi
+                currentPitch = pitch
                 
-                // Adjust pitch based on baseline
                 var adjustedPitch = pitch - pitchBaseline
                 
-                // Shader progression: map pitch to -15 to 75 range
                 if adjustedPitch <= -45 {
-                    // Rebase if pitch exceeds lower limit
                     pitchBaseline = pitch
-                    adjustedPitch = 30 // Reset shader progression to middle
+                    adjustedPitch = 30
                 } else if adjustedPitch >= 45 {
-                    // Rebase if pitch exceeds upper limit
                     pitchBaseline = pitch
-                    adjustedPitch = 30 // Reset shader progression to middle
+                    adjustedPitch = 30
                 }
                 
-                // Ensure shader progression stays within the -15 to 75 range
                 let shaderValue = clamp(30 + adjustedPitch, -15, 75)
+                currentRotationX = Float(shaderValue)
                 
-                // Apply shader value to rotationAngleX via the manager
                 HoloRotationManager.shared.rotationAngleX = Float(shaderValue)
             }
         }
     }
     
-    // Helper function to clamp values
     func clamp(_ value: Double, _ minValue: Double, _ maxValue: Double) -> Double {
         return min(max(value, minValue), maxValue)
     }

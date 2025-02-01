@@ -35,38 +35,30 @@ struct BiomePreviewView: View {
             VStack(alignment: .leading, spacing: 8) {
                 /// Ranked Messages
                 ForEach(0 ..< biome.entities.count, id: \.self) { index in
-                    let previousEntity = index > 0 ? biome.entities[index - 1] : nil
-
-                    EntityView(
-                        rootEntity: biome.entities[0],
-                        previousEntity: previousEntity,
-                        entity: biome.entities[index]
-                    )
+                    MessageView(entity: biome.entities[index])
                     .readSize { newSize in
                         if index == 2 {
                             firstMessageSize = newSize
                         }
                     }
-                    .blur(radius: index == 2 ? 6 : 0)
                 }
             }
-            .readSize { newSize in
-                frameSize = newSize
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity)
-            .frame(
-                height: frameSize.height > 0
-                    ? frameSize.height
-                    : nil,
-                alignment: .top
-            )
+            // .readSize { newSize in
+            //     frameSize = newSize
+            // }
+            // .frame(maxWidth: .infinity)
+            // .frame(
+            //     height: frameSize.height > 0
+            //         ? frameSize.height
+            //         : nil,
+            //     alignment: .top
+            // )
         }
         .contentShape(Rectangle())
         .clipShape(Rectangle())
         .matchedTransitionSource(id: "hi", in: animation)
         .sheet(isPresented: $showSheet) {
-            BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
+            BiomeView(biome: Biome(entities: biomeOneExpanded))
                 .navigationTransition(.zoom(sourceID: "hi", in: animation))
                 .presentationBackground(.black)
         }

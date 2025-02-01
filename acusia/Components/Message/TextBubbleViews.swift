@@ -9,7 +9,6 @@ import SwiftUI
 
 struct TextBubbleView: View {
     let entity: Entity
-    let isOwn: Bool
 
     let auxiliarySize: CGSize = .init(width: 216, height: 120)
 
@@ -20,18 +19,14 @@ struct TextBubbleView: View {
         HStack(alignment: .lastTextBaseline) {
             Text(entity.text)
                 .foregroundColor(.white)
-                .font(.system(size: 16))
+                .font(.callout)
                 .multilineTextAlignment(.leading)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .background(
             Color(.systemGray6),
-            in: BubbleWithTailShape(isOwn: isOwn)
-        )
-        .overlay(
-            BubbleWithTailShape(isOwn: isOwn)
-                .stroke(.black, lineWidth: 1)
+            in: BubbleWithTailShape()
         )
         .foregroundStyle(.secondary)
         .auxiliaryContextMenu(
@@ -60,7 +55,7 @@ struct TextBubbleView: View {
     }
 }
 
-struct ContextualTextBubbleView: View {
+struct TextBubbleContextView: View {
     @State private var gestureTranslation = CGPoint.zero
     @State private var gestureVelocity = CGPoint.zero
 
@@ -68,42 +63,17 @@ struct ContextualTextBubbleView: View {
     let auxiliarySize: CGSize = .init(width: 216, height: 120)
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            if let song = entity.getSongAttachment() {
-                HStack {
-                    AsyncImage(url: URL(string: song.artwork)) { image in
-                        image
-                            .resizable()
-                    } placeholder: {
-                        Rectangle()
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .aspectRatio(contentMode: .fit)
-
-                    VStack(alignment: .leading) {
-                        Text(song.artistName)
-                            .font(.system(size: 11, weight: .regular))
-                            .foregroundColor(.secondary)
-                        Text(song.name)
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
-            }
-
-            HStack(alignment: .lastTextBaseline) {
-                Text(entity.text)
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(2)
-            }
+        HStack(alignment: .lastTextBaseline) {
+            Text(entity.text)
+                .foregroundColor(.secondary)
+                .font(.caption)
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .overlay(
-            ContextualBubbleWithTailShape(isOwn: false)
+            ContextualBubbleWithTailShape()
                 .strokeBorder(Color(.systemGray6), lineWidth: 1)
         )
         .auxiliaryContextMenu(
@@ -129,6 +99,5 @@ struct ContextualTextBubbleView: View {
             ) { _ in
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

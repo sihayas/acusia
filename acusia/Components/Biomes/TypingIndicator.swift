@@ -14,7 +14,7 @@ struct TypingIndicator: View {
             .foregroundStyle(Color(.systemGray2))
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
-            .background(Color(.systemGray6), in: BubbleWithTailShape(isOwn: false))
+            .background(Color(.systemGray6), in: BubbleWithTailShape())
             .padding(.bottom, 4)
     }
 }

@@ -239,7 +239,7 @@ struct Line: Shape {
 }
 
 struct BubbleWithTailShape: Shape {
-    let isOwn: Bool
+    let isOwn = false
 
     func path(in rect: CGRect) -> Path {
         let bubbleRect = rect
@@ -259,7 +259,7 @@ struct BubbleWithTailShape: Shape {
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 8
+        let secondCircleSize: CGFloat = 6
         let secondCircleRect = CGRect(
             x: isOwn
                 ? tailRect.maxX + secondCircleSize * 0.25
@@ -308,7 +308,7 @@ struct BubbleWithTailPath {
 }
 
 struct ContextualBubbleWithTailShape: Shape, InsettableShape {
-   let isOwn: Bool
+   let isOwn = false
    var insetAmount: CGFloat = 0
 
    func path(in rect: CGRect) -> Path {
@@ -328,7 +328,7 @@ struct ContextualBubbleWithTailShape: Shape, InsettableShape {
        )
        let tail = Circle().path(in: tailRect)
 
-       let secondCircleSize: CGFloat = 6
+       let secondCircleSize: CGFloat = 5
        let secondCircleRect = CGRect(
            x: isOwn
                ? tailRect.maxX + secondCircleSize * 0.25
@@ -353,26 +353,25 @@ struct ContextualBubbleWithTailShape: Shape, InsettableShape {
 // MARK: Thread Paths
 
 struct BlipBubbleWithTail: Shape {
-    var isFlipped: Bool = false
+    var isFlipped = false
 
     func path(in rect: CGRect) -> Path {
-        var bubbleRect = rect
-        let bubble = Circle().path(in: bubbleRect)
+        let bubble = Circle().path(in: rect)
 
-        let tailSize: CGFloat = 12
+        let tailSize: CGFloat = rect.height*0.3
 
         let tailRect = CGRect(
-            x: bubbleRect.maxX - tailSize,
-            y: bubbleRect.maxY - tailSize / 1.25,
+            x: rect.maxX - tailSize,
+            y: rect.maxY - tailSize,
             width: tailSize,
             height: tailSize
         )
         let tail = Circle().path(in: tailRect)
 
-        let secondCircleSize: CGFloat = 6
+        let secondCircleSize: CGFloat = tailSize * 0.5
         let secondCircleRect = CGRect(
-            x: tailRect.maxX,
-            y: tailRect.maxY,
+            x: tailRect.maxX + secondCircleSize,
+            y: tailRect.maxY - secondCircleSize,
             width: secondCircleSize,
             height: secondCircleSize
         )
@@ -390,44 +389,56 @@ struct BlipBubbleWithTail: Shape {
     }
 }
 
-struct BlipBubbleWithTailInsettable: InsettableShape {
+struct BlipTail: InsettableShape {
     var insetAmount: CGFloat = 0
     var isFlipped: Bool = false
-
+    
     func path(in rect: CGRect) -> Path {
-        let bubbleRect = rect.insetBy(dx: insetAmount, dy: insetAmount)
-        let bubble = Circle().path(in: bubbleRect)
-
-        let tailSize: CGFloat = 12
+        // Calculate the base sizes
+        let tailSize: CGFloat = rect.height * 0.3
+        let secondCircleSize: CGFloat = tailSize * 0.5
+        
+        // Inset the main bubble
+        let insetRect = rect.insetBy(dx: insetAmount, dy: insetAmount)
+        let bubble = Circle().path(in: insetRect)
+        
+        // Calculate and inset the tail circle
         let tailRect = CGRect(
-            x: bubbleRect.maxX - tailSize,
-            y: bubbleRect.maxY - tailSize / 1.25,
+            x: insetRect.maxX - tailSize,
+            y: insetRect.maxY - tailSize,
             width: tailSize,
             height: tailSize
         ).insetBy(dx: insetAmount, dy: insetAmount)
         let tail = Circle().path(in: tailRect)
-
-        let secondCircleSize: CGFloat = 6
-        let secondCircleRect = CGRect(
-            x: tailRect.maxX,
-            y: tailRect.maxY,
+        
+        // Calculate and inset the second circle
+        // First calculate the base position without inset
+        let baseSecondCircleRect = CGRect(
+            x: rect.maxX - tailSize + tailSize + secondCircleSize,
+            y: rect.maxY - secondCircleSize,
             width: secondCircleSize,
             height: secondCircleSize
-        ).insetBy(dx: insetAmount, dy: insetAmount)
+        )
+        // Then apply the inset to both position and size
+        let secondCircleRect = CGRect(
+            x: baseSecondCircleRect.origin.x + insetAmount,
+            y: baseSecondCircleRect.origin.y + insetAmount,
+            width: baseSecondCircleRect.width - (insetAmount * 2),
+            height: baseSecondCircleRect.height - (insetAmount * 2)
+        )
         let secondCircle = Circle().path(in: secondCircleRect)
-
+        
+        // Combine all inset shapes
         let combined = bubble.union(tail).union(secondCircle)
-
-        // Apply horizontal flipping if `isFlipped` is true
+        
         if isFlipped {
             let transform = CGAffineTransform(scaleX: -1, y: 1)
                 .translatedBy(x: -rect.width, y: 0)
             return combined.applying(transform)
         }
-
         return combined
     }
-
+    
     func inset(by amount: CGFloat) -> some InsettableShape {
         var shape = self
         shape.insetAmount += amount

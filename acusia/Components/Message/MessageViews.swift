@@ -8,117 +8,174 @@
 import SwiftUI
 
 struct MessageView: View {
+    @State private var bubbleSize: CGSize = .zero
     @State private var attachmentSize: CGSize = .zero
-    @State private var textBubbleSize: CGSize = .zero
+    @State private var blipSize: CGSize = .zero
     @State private var verticalSpacing: CGFloat = 0
 
     let entity: Entity
-    let isOwn: Bool
-    let blipXOffset: CGFloat = 72
-    var isPreview = true
 
     var body: some View {
         let photos = entity.getPhotoAttachments()
-
-        ZStack(alignment: .topLeading) {
-            HStack(alignment: .bottom, spacing: -blipXOffset) {
-                if !isOwn {
-                    TextBubbleView(entity: entity, isOwn: isOwn)
-                        .alignmentGuide(VerticalAlignment.bottom) { _ in 8 }
-                        .measure($textBubbleSize)
-
-                    BlipView(isOwn: isOwn)
-                } else {
-                    BlipView(isOwn: isOwn)
-                        .zIndex(1)
-
-                    TextBubbleView(entity: entity, isOwn: isOwn)
-                        .alignmentGuide(VerticalAlignment.bottom) { _ in 8 }
-                        .measure($textBubbleSize)
+        let parent = entity.parent
+        
+        VStack(spacing: 8) {
+            /// Message Context
+            if let parent = parent {
+                MessageContextView(entity: parent)
+            }
+            
+            /// Message
+            HStack(alignment: .bottom, spacing: 12) {
+                AvatarView(size: 32, imageURL: entity.avatar)
+                
+                /// Body
+                ZStack(alignment: .topLeading) {
+                    VStack(alignment: .leading) {
+                        Text("\(entity.username)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 12)
                         
-                }
-            }
-            .onChange(of: textBubbleSize.width) { _, _ in
-                if !isOwn {
-                    /// If the width of the top is greater than the width of the text bubble minus blip horizontal size, push the top down.
-                    verticalSpacing = attachmentSize.width > (textBubbleSize.width - blipXOffset)
-                        ? -2
-                        : 24
-                } else {
-                    verticalSpacing = -2
-                }
-            }
-
-            VStack(alignment: .leading, spacing: 4) {
-                if !isOwn {
-                    Text("\(entity.username)")
-                        .font(.system(size: 11, weight: .regular))
-                        .foregroundColor(.secondary)
-                        .padding(.leading, 12)
-                } else {
-                    Text("biome_name")
-                        .font(.system(size: 11, weight: .regular))
-                        .foregroundColor(.secondary)
-                        .padding(.leading, 20)
-                }
-
-                if let song = entity.getSongAttachment() {
-                    SongAttachmentView(song: song)
-                }
-
-                if !photos.isEmpty {
-                    if isPreview {
-                        PhotoMessagesDeckView(photos: photos)
-                    } else {
-                        switch photos.count {
-                        case 1:
-                            if let photo = photos.first {
-                                PhotoMessageView(photo: photo)
+                        /// Attachment
+                        VStack(alignment: .leading, spacing: 4) {
+                            if let song = entity.getSongAttachment() {
+                                SongAttachmentView(song: song)
                             }
-                        case 2 ... 3:
-                            PhotoMessagesView(photos: photos)
-                        default:
-                            PhotoMessagesDeckView(photos: photos)
+                        
+                            if !photos.isEmpty {
+                                PhotoMessagesDeckView(photos: photos)
+                            }
                         }
+                        .measure($attachmentSize)
+                    }
+                    .readSize { size in
+                        attachmentSize = size
+                    }
+                    .alignmentGuide(.top) { d in
+                        d[.bottom] - verticalSpacing
+                    }
+                    
+                    ZStack(alignment: .topTrailing) {
+                        TextBubbleView(
+                            entity: entity
+                        )
+                        .padding(.trailing, 20)
+                        .frame(
+                            minWidth: bubbleSize.width,
+                            alignment: .leading
+                        )
+                        
+                        BlipView()
+                            .readSize { size in
+                                blipSize = size
+                            }
+                            .alignmentGuide(.top) { d in
+                                d[.bottom] - 8
+                            }
+                    }
+                    .readSize { size in
+                        bubbleSize = size
                     }
                 }
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .bottomLeading
+                )
+                .onChange(of: bubbleSize.width) { _, _ in
+                    /// If the width of the top is greater than the width of the text bubble minus blip horizontal size, push the top down.
+                    verticalSpacing = attachmentSize.width < bubbleSize.width - blipSize.width
+                        ? 24
+                        : -4
+                }
             }
-            .alignmentGuide(VerticalAlignment.top) { dimensions in
-                dimensions.height - verticalSpacing
+            .overlay(alignment: .leading) {
+                Line()
+                    .stroke(Color(.systemGray6),
+                            style: StrokeStyle(
+                                lineWidth: 4,
+                                lineCap: .round
+                            ))
+                    .frame(width: 32)
+                    .padding(.bottom, 40)
             }
-            .measure($attachmentSize)
         }
     }
 }
 
-struct ContextualMessageView: View {
-    @State private var parentAttachmentSize: CGSize = .zero
-    @State private var textBubbleSize: CGSize = .zero
+struct MessageContextView: View {
+    @State private var bubbleSize: CGSize = .zero
+    @State private var attachmentSize: CGSize = .zero
+    @State private var blipSize: CGSize = .zero
     @State private var verticalSpacing: CGFloat = 0
-    
+
     let entity: Entity
-    let blipXOffset: CGFloat = 92
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            HStack(alignment: .bottom, spacing: -blipXOffset) {
-                ContextualTextBubbleView(entity: entity)
-                    .alignmentGuide(VerticalAlignment.bottom) { _ in 8 }
-                    .measure($textBubbleSize)
+        let photos = entity.getPhotoAttachments()
+        
+        HStack(alignment: .bottom, spacing: 12) {
+            AvatarView(size: 24, imageURL: entity.avatar)
+                .frame(width: 32)
+            
+            /// Body
+            ZStack(alignment: .topLeading) {
+                VStack(alignment: .leading) {
+                    Text("\(entity.username)")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 10)
+                    
+                    /// Attachment
+                    VStack(alignment: .leading, spacing: 4) {
+                        if let song = entity.getSongAttachment() {
+                            SongAttachmentView(song: song)
+                        }
+                    
+                        if !photos.isEmpty {
+                            PhotoMessagesDeckView(photos: photos)
+                        }
+                    }
+                }
+                .readSize { size in
+                    attachmentSize = size
+                }
+                .alignmentGuide(.top) { d in
+                    d[.bottom] - verticalSpacing
+                }
+                
+                ZStack(alignment: .topTrailing) {
+                    TextBubbleContextView(
+                        entity: entity
+                    )
+                    .padding(.trailing, 16)
+                    .frame(
+                        minWidth: bubbleSize.width,
+                        alignment: .leading
+                    )
+                    
+                    BlipContextView()
+                        .readSize { size in
+                            blipSize = size
+                        }
+                        .alignmentGuide(.top) { d in
+                            d[.bottom] - 6
+                        }
+                }
+                .readSize { size in
+                    bubbleSize = size
+                }
             }
-            .onChange(of: textBubbleSize.width) {
-                /// If the width of the top is greater than the width of the text bubble minus 16, push the top down.
-                verticalSpacing = parentAttachmentSize.width > (textBubbleSize.width) ? 0 : 4
+            .onChange(of: bubbleSize.width) { _, _ in
+                /// If the width of the top is greater than the width of the text bubble minus blip horizontal size, push the top down.
+                verticalSpacing = attachmentSize.width < bubbleSize.width - blipSize.width
+                ? 24
+                : -4
             }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(entity.username)
-                    .font(.system(size: 9, weight: .regular))
-                    .foregroundColor(.secondary)
-                    .padding(.leading, 8)
-            }
-            .alignmentGuide(VerticalAlignment.top) { d in d.height + verticalSpacing }
-            .measure($parentAttachmentSize)
+            .frame(
+                maxWidth: .infinity,
+                alignment: .bottomLeading
+            )
         }
     }
 }

@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct BiomeExpandedView: View {
+struct BiomeView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     @State var didAppear = false
@@ -25,11 +25,7 @@ struct BiomeExpandedView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(0 ..< biome.entities.count, id: \.self) { index in
-                        let previousEntity = index > 0 ? biome.entities[index - 1] : nil
-
-                        EntityView(
-                            rootEntity: biome.entities[0],
-                            previousEntity: previousEntity,
+                        MessageView(
                             entity: biome.entities[index]
                         )
                         .frame(maxHeight: .infinity)

@@ -95,7 +95,7 @@ let biomePreviewThree: [Entity] = [
         id: "4",
         username: "annabannnana",
         avatar: "https://i.pinimg.com/originals/6f/61/30/6f61303117eb9da74e554f75ddf913d3.gif",
-        text: "BEEES!!!",
+        text: "Bbbb",
         created_at: Date(timeIntervalSinceNow: -1200),
         parent: Entity(
             id: "5",

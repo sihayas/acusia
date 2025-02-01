@@ -115,7 +115,7 @@ struct BiomePreviewSphereView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .sheet(isPresented: $showSheet) {
-            BiomeExpandedView(biome: Biome(entities: biomeOneExpanded))
+            BiomeView(biome: Biome(entities: biomeOneExpanded))
                 .navigationTransition(.zoom(sourceID: "hi", in: animation))
                 .presentationBackground(.black)
         }

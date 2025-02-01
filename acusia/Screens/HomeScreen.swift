@@ -158,10 +158,7 @@ struct InnerContent: View {
                 /// User History
                 LazyVStack(alignment: .trailing, spacing: 16) {
                     ForEach(userHistorySample.indices, id: \.self) { index in
-                        EntityHistoryView(
-                            rootEntity: userHistorySample[index],
-                            previousEntity: userHistorySample[index],
-                            entity: userHistorySample[index]
+                        MessageView(entity: userHistorySample[index]
                         )
                     }
                 }
