@@ -140,31 +140,6 @@ struct SymmetryView: View {
                             }
                             
                             if uiState.symmetryState == .reply, let result = uiState.selectedResult {
-                                GeometryReader { _ in
-                                    AsyncImage(url: result.artwork?.url(width: 1000, height: 1000)) { image in
-                                        image
-                                            .resizable()
-                                    } placeholder: {
-                                        Rectangle()
-                                    }
-                                    .clipShape(RoundedRectangle(cornerRadius: symmetryState.center.cornerRadius - 2, style: .continuous))
-                                    .aspectRatio(contentMode: .fit)
-                                    .padding(2)
-                                    .coordinateSpace(name: "AsyncImage")
-                                    .onTapGesture(count: 2) { location in
-                                        loved = true
-                                        origin = location
-                                        velocity = 1.5
-                                        rippleTrigger += 1
-                                    }
-                                    .onTapGesture(count: 1) { location in
-                                        loved = false
-                                        origin = location // Ripple
-                                        velocity = 0.5
-                                        rippleTrigger += 1
-                                    }
-                                    .modifier(RippleEffect(at: origin, trigger: rippleTrigger, velocity: velocity))
-                                }
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)

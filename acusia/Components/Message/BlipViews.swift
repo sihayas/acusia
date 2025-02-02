@@ -55,7 +55,7 @@ struct BlipView: View {
     }
 }
 
-struct BlipContextView: View {
+struct ContextBlipView: View {
     let emojis = [
         "😡", "💀", "🔥", "😎", "👻", "🚀", "🌈", "🦄",
         "🍕", "🎸", "🌊", "🍦", "🌺", "🦋", "🌙"

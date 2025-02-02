@@ -155,7 +155,7 @@ struct MessageContextView: View {
                         alignment: .leading
                     )
                     
-                    BlipContextView()
+                    ContextBlipView()
                         .readSize { size in
                             blipSize = size
                         }

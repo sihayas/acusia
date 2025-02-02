@@ -68,7 +68,7 @@ struct TextBubbleContextView: View {
                 .foregroundColor(.secondary)
                 .font(.caption)
                 .multilineTextAlignment(.leading)
-                .lineLimit(2)
+                .lineLimit(4)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
