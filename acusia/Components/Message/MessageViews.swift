@@ -40,7 +40,7 @@ struct MessageView: View {
                         /// Attachment
                         VStack(alignment: .leading, spacing: 4) {
                             if let song = entity.getSongAttachment() {
-                                SongAttachmentView(song: song)
+                                SongMessageView(song: song)
                             }
                         
                             if !photos.isEmpty {
@@ -129,13 +129,14 @@ struct MessageContextView: View {
                     /// Attachment
                     VStack(alignment: .leading, spacing: 4) {
                         if let song = entity.getSongAttachment() {
-                            SongAttachmentView(song: song)
+                            SongContextMessageView(song: song)
                         }
                     
                         if !photos.isEmpty {
                             PhotoMessagesDeckView(photos: photos)
                         }
                     }
+                    .padding(.bottom, 4)
                 }
                 .readSize { size in
                     attachmentSize = size

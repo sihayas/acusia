@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SongAttachmentView: View {
+struct SongMessageView: View {
     let song: SongAttachment
 
     var body: some View {
@@ -54,5 +54,47 @@ struct SongAttachmentView: View {
         .padding(12)
         .frame(height: 72, alignment: .leading)
         .background(Color(hex: song.color), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+}
+
+struct SongContextMessageView: View {
+    let song: SongAttachment
+
+    var body: some View {
+        HStack {
+            AsyncImage(url: URL(string: song.artwork)) { image in
+                image
+                    .resizable()
+            } placeholder: {
+                Rectangle()
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+            .aspectRatio(contentMode: .fit)
+
+            VStack(alignment: .leading) {
+                Text(song.artistName)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Text(song.name)
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+            }
+
+            Button(action: {
+                // Play song
+            }) {
+                Image(systemName: "play.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(8)
+        .frame(height: 55, alignment: .leading)
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color(.systemGray5), lineWidth: 1)
+        )
+        .background(.black)
     }
 }

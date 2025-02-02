@@ -28,7 +28,14 @@ let biomePreviewOne: [Entity] = [
             username: "DeborahVthang",
             avatar: "https://i.pinimg.com/280x280_RS/1a/78/35/1a7835ae1ff5062889bbf675e0d329dc.jpg",
             text: "real as real can be",
-            created_at: Date(timeIntervalSinceNow: -3000)
+            created_at: Date(timeIntervalSinceNow: -3000),
+            attachments: [
+                SongAttachment(id: "idk",
+                               artwork: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/18/62/27/18622713-a797-9f9d-b85c-f0373f190a27/075679634382.jpg/632x632bb.webp",
+                               name: "Eusexua",
+                               artistName: "FKA Twigs",
+                               color: "#FFF")
+            ]
         )
     )
 ]

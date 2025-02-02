@@ -176,7 +176,7 @@ struct ContextMenuContainer<Content: View, AuxiliaryContent: View>: UIViewRepres
         ) -> UITargetedPreview? {
             guard let targetView = interaction.view else { return nil }
         
-            let bubbleWithTail = BubbleWithTailPath()
+            let bubbleWithTail = MessageTailPath()
             let customPath = bubbleWithTail.path(in: targetView.bounds)
         
             let parameters = UIPreviewParameters()

@@ -97,16 +97,7 @@ struct OuterContent: View {
         let maxOffset = upperSectionHeight + bottomSectionHeight
         return min(maxOffset, max(minOffset, upperSectionHeight + offset))
     }
-
-    let gridItems = [
-        GridItem(.fixed(192),
-                 spacing: 10,
-                 alignment: .leading),
-        GridItem(.fixed(192),
-                 spacing: 10,
-                 alignment: .leading),
-    ]
-
+    
     var body: some View {
         VStack(spacing: 8) {
             Text("Atlas")
@@ -114,6 +105,7 @@ struct OuterContent: View {
                 .fontWeight(.bold)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
             
             VStack(spacing: 32) {
                 BiomePreviewView(biome: Biome(entities: biomePreviewOne))
@@ -122,7 +114,7 @@ struct OuterContent: View {
                 
                 // Divider()
                 BiomePreviewView(biome: Biome(entities: biomePreviewThree))
-            }
+                    }
         }
         .frame(
             maxWidth: .infinity,
@@ -131,7 +123,6 @@ struct OuterContent: View {
         )
         .background(.clear)
         .padding(.bottom, upperSectionHeight)
-        .padding(.horizontal, 8)
         .offset(y: boundedOffset)
     }
 }

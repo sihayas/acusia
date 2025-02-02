@@ -43,16 +43,6 @@ struct BiomePreviewView: View {
                     }
                 }
             }
-            // .readSize { newSize in
-            //     frameSize = newSize
-            // }
-            // .frame(maxWidth: .infinity)
-            // .frame(
-            //     height: frameSize.height > 0
-            //         ? frameSize.height
-            //         : nil,
-            //     alignment: .top
-            // )
         }
         .contentShape(Rectangle())
         .clipShape(Rectangle())

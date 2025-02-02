@@ -11,18 +11,19 @@ struct BlipView: View {
     }
 
     var body: some View {
-        HStack(spacing: -6) {
+        HStack(spacing: -4) {
             Circle()
                 .frame(width: 32, height: 32)
                 .background(Color(.systemGray6), in: Circle())
                 .foregroundStyle(.clear)
                 .overlay {
-                    Text("22")
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                    Text("37")
+                        .font(.caption)
                         .foregroundStyle(.secondary)
+                        .fontWeight(.bold)
 
                     Circle()
-                        .strokeBorder(.black, lineWidth: 1)
+                        .stroke(.black, lineWidth: 1)
                 }
 
             ForEach(0..<1) { index in
@@ -46,7 +47,7 @@ struct BlipView: View {
                     Text(selectedEmojis[2])
                         .font(.footnote)
                     
-                    BlipTail(insetAmount: -1)
+                    BlipTail()
                         .stroke(Color(.black), lineWidth: 1)
                 }
                 .padding(.trailing, 36 * 0.3)
@@ -65,19 +66,19 @@ struct BlipContextView: View {
     }
 
     var body: some View {
-        HStack(spacing: -6) {
+        HStack(spacing: -4) {
             Circle()
                 .frame(width: 28, height: 28)
                 .background(Color(.black), in: Circle())
                 .foregroundStyle(.clear)
                 .overlay {
-                    Text("22")
+                    Text("37")
                         .font(.caption2)
                         .fontWeight(.bold)
                         .foregroundStyle(.secondary)
 
                     Circle()
-                        .strokeBorder(Color(.systemGray6), lineWidth: 1)
+                        .stroke(Color(.systemGray5), lineWidth: 1)
                 }
 
             ForEach(0..<1) { index in
@@ -90,7 +91,7 @@ struct BlipContextView: View {
                             .font(.caption2)
 
                         Capsule()
-                            .strokeBorder(Color(.systemGray6), lineWidth: 1)
+                            .stroke(Color(.systemGray5), lineWidth: 1)
                     }
             }
             
@@ -101,8 +102,8 @@ struct BlipContextView: View {
                     Text(selectedEmojis[2])
                         .font(.caption)
                     
-                    BlipTail(insetAmount: -1)
-                        .strokeBorder(Color(.systemGray6), lineWidth: 1)
+                    BlipTail()
+                        .stroke(Color(.systemGray5), lineWidth: 1)
                 }
                 .padding(.trailing, 32 * 0.3)
         }
